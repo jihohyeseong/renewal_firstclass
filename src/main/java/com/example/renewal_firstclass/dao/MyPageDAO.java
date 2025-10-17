@@ -10,5 +10,6 @@ public interface MyPageDAO {
 	UserDTO findByUserName(String username);
 	//주소 정보 수정
 	int updateAddress(UserDTO userDTO);
+	//전화번호 수정
 
 }

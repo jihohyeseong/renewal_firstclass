@@ -32,7 +32,7 @@ public class MyPageController {
         
         if (userInfo == null) {
             System.out.println("사용자 정보를 불러올 수 없음");
-            return "redirect:/main"; 
+            return "redirect:/user/main"; 
         }
         
         model.addAttribute("user", userInfo);

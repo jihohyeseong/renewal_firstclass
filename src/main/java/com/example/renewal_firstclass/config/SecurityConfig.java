@@ -58,7 +58,7 @@ public class SecurityConfig {
 	                response.sendRedirect("/renewal_firstclass/comp/main");
 	            } else {
 	                // 일반 사용자이면 /main으로 리디렉션
-	                response.sendRedirect("/renewal_firstclass/main");
+	                response.sendRedirect("/renewal_firstclass/user/main");
 	            }
 	        })
 	        .permitAll();
