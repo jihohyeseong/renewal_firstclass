@@ -148,7 +148,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
         .stat-card.active {
-            border-left: 5px solid #3f58d4;
+            border-left: 5px solid #24A960;
         }
         .stat-card-header {
             display: flex;
@@ -296,13 +296,13 @@
             transition: all 0.2s ease-in-out;
 		}
 		.pagination a:hover {
-            background-color: var(--primary-light-color);
-            border-color: var(--primary-color);
-            color: var(--primary-color);
+            background-color: var(--success-light-color);
+            border-color: var(--success-color);
+            color: var(--success-color);
 		}
 		.pagination .active {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
+            background-color: var(--success-color);
+            border-color: var(--success-color);
             color: var(--white-color);
             cursor: default;
 		}

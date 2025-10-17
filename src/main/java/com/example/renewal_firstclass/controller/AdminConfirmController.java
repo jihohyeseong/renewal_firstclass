@@ -20,6 +20,6 @@ public class AdminConfirmController {
 
     @GetMapping("/confirm")
     public String confirm() {
-    	return "adminconfirm";
+    	return "admin/adminconfirm";
     }
 }
