@@ -84,7 +84,7 @@
 </style>
 
 <header class="header">
-    <a href="${pageContext.request.contextPath}/main" class="logo"><img src="${pageContext.request.contextPath}/resources/images/logo.png" alt="Logo" width="80" height="80"></a>
+    <a href="${pageContext.request.contextPath}/main" class="logo"><img src="${pageContext.request.contextPath}/resources/images/logo.png" alt="Logo" width="auto" height="80"></a>
     <nav>
         <ul class="header-nav">
             <%-- [수정됨] 현재 URI에 '/main'이 포함되어 있으면 'active' 클래스를 추가합니다. --%>

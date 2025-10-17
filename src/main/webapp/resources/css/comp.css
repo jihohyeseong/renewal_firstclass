@@ -1,0 +1,228 @@
+/* 버튼 공통 */
+.btn { 
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 10px 16px; border-radius: 10px; font-weight: 500;
+    border: 1px solid transparent; cursor: pointer;
+    transition: transform .05s ease, box-shadow .2s ease, background-color .2s ease, color .2s ease, border-color .2s ease;
+}
+
+/* 기본(primary) 버튼: 가득 채운 초록 */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #fff;
+}
+.btn-primary:hover { filter: brightness(0.95); }
+.btn-primary:active { transform: translateY(1px); }
+
+/* 보조(secondary) 버튼: 라인 초록 */
+.btn-secondary {
+    background-color: #fff;
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+.btn-secondary:hover { background-color: rgba(36, 169, 96, 0.08); }
+.btn-secondary:active { transform: translateY(1px); }
+
+
+   /* ========== Header & Navigation Styles ========== */
+    .header {
+        background-color: var(--white-color);
+        padding: 15px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border-color);
+        box-shadow: var(--shadow-sm);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    .header .logo img { vertical-align: middle; }
+    .header nav { display: flex; align-items: center; gap: 15px; }
+    .header .welcome-msg { font-size: 16px; color: var(--dark-gray-color); }
+
+    .header-nav {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    .header-nav .nav-link {
+        display: block;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        color: #495057;
+        transition: color 0.3s ease-in-out;
+        position: relative;
+    }
+    .header-nav .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 2px;
+        background-color: var(--primary-color);
+        transition: width 0.3s ease;
+    }
+    .header-nav .nav-link:hover,
+    .header-nav .nav-link.active {
+        color: var(--primary-color);
+    }
+    .header-nav .nav-link:hover::after,
+    .header-nav .nav-link.active::after {
+        width: 100%;
+    }
+        .btn-logout { background-color: var(--dark-gray-color); color: var(--white-color); border: none; }
+    .btn-logout:hover { background-color: #555; }
+    
+            /* ========== Global & Layout Styles ========== */
+        :root {
+	    --primary-color: #24A960; /* 통일된 기본색 (초록) */
+	    --white-color: #ffffff;
+	    --light-gray-color: #f9fafb;
+	    --gray-color: #6b7280;
+	    --dark-gray-color: #1f2937;
+	    --border-color: #e5e7eb;
+	    --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.1);
+		}
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { height: 100%; }
+        
+        body {
+            display: flex; flex-direction: column; min-height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif; background-color: #f3f5f9;
+            color: var(--dark-gray-color); position: relative; overflow-x: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* ========== Main Content Styles ========== */
+        .main-container {
+            flex-grow: 1; display: flex; flex-direction: column;
+            width: 100%; max-width: 1100px; margin: 60px auto; padding: 0 20px;
+            position: relative; z-index: 1;
+        }
+
+        .content-wrapper {
+            flex-grow: 1; display: flex; flex-direction: column;
+            background-color: var(--white-color); border-radius: 20px; padding: 40px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .content-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 40px; padding-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .content-header h2 { font-size: 24px; font-weight: 700; }
+        
+        .empty-state-box {
+            flex-grow: 1; display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            background-color: var(--light-gray-color); border: 1px dashed var(--border-color);
+            border-radius: 12px; text-align: center;
+        }
+        
+        /* ========== Segmented Card Design ========== */
+        .card-list {
+            display: flex; flex-direction: column; gap: 30px;
+        }
+
+        .application-card {
+            background-color: var(--white-color); border: 1px solid var(--border-color);
+            border-radius: 16px; overflow: hidden;
+            transition: all 0.2s ease-in-out;
+        }
+        .application-card:hover {
+            transform: translateY(-5px); box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-color: var(--primary-color);
+        }
+        
+        .card-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 25px;
+        }
+        .card-title { font-size: 18px; font-weight: 700; }
+
+        .card-body { padding: 0 25px 25px 25px; }
+
+        .segmented-progress {
+            display: flex; border: 1px solid var(--border-color);
+            border-radius: 12px; overflow: hidden;
+        }
+
+        .step {
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 15px 10px; text-align: center;
+            background-color: var(--light-gray-color);
+            color: var(--gray-color);
+            border-right: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        .step:last-child { border-right: none; }
+        
+        .step i { font-size: 18px; margin-bottom: 8px; }
+        .step .step-label { font-size: 13px; font-weight: 500; }
+
+        /* [수정] 모든 상태 색상을 파란색으로 통일 */
+        .step.completed {
+            color: var(--primary-color);
+        }
+        
+        .step.active {
+            background-color: var(--primary-color);
+            color: var(--white-color);
+        }
+        
+        .footer {
+            text-align: center; padding: 20px 0;
+            position: relative; z-index: 1;
+        }
+        
+        /* 주의상자 추가 */
+        .notice-box {
+            background-color: var(--white-color);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px 25px;
+            margin-bottom: 30px;
+            color: var(--gray-color);
+        }
+        .notice-box .title {
+        	display: flex;
+            align-items: center;
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        .notice-box .title i {
+            margin-right: 10px;
+        }
+        .notice-box ul {
+            list-style-type: none;
+            padding-left: 28px;
+        }
+        .notice-box li {
+            position: relative;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .notice-box li::before {
+            content: '•';
+            position: absolute;
+            left: -15px;
+            font-weight: 700;
+        }
+        .notice-box li:last-child {
+            margin-bottom: 0;
+        }
+        
