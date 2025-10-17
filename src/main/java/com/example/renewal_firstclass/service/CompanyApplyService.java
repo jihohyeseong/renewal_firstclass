@@ -1,49 +1,169 @@
 package com.example.renewal_firstclass.service;
 
 import com.example.renewal_firstclass.dao.ConfirmApplyDAO;
+import com.example.renewal_firstclass.dao.TermAmountDAO;
 import com.example.renewal_firstclass.domain.ConfirmApplyDTO;
+import com.example.renewal_firstclass.dao.UserDAO;
+import com.example.renewal_firstclass.domain.TermAmountDTO;
+import com.example.renewal_firstclass.domain.UserDTO;
 import com.example.renewal_firstclass.util.AES256Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class CompanyApplyService {
 
     private final ConfirmApplyDAO confirmApplyDAO;
-    private final AES256Util aes256Util; // 민감정보 암호화용 (없으면 제거)
+    private final TermAmountDAO termAmountDAO;
+    private final UserDAO userDAO;
+    private final AES256Util aes256Util;
 
+    /* ========== 공개 로직 예시 ========== */
+
+    /** 신규 저장(ST_10) + (필요 시) 단위기간: 삭제→계산→삽입 */
     @Transactional
     public Long createConfirm(ConfirmApplyDTO dto) {
-        // 1) 기본값 보정
-
-        // 2) 민감정보 암호화
-        //    - 근로자 주민등록번호: registration_number
-        //    - 자녀 주민등록번호: child_resi_regi_number
+        // 0) 암호화
         try {
-            if (notBlank(dto.getRegistrationNumber())) {
+            if (notBlank(dto.getRegistrationNumber()))
                 dto.setRegistrationNumber(aes256Util.encrypt(dto.getRegistrationNumber()));
-            }
-            if (notBlank(dto.getChildResiRegiNumber())) {
+            if (notBlank(dto.getChildResiRegiNumber()))
                 dto.setChildResiRegiNumber(aes256Util.encrypt(dto.getChildResiRegiNumber()));
-            }
         } catch (Exception e) {
-            // 암호화 실패는 치명적이므로 트랜잭션 롤백
-            throw new IllegalStateException("개인정보 암호화 중 오류가 발생했습니다.", e);
+            throw new IllegalStateException("개인정보 암호화 오류", e);
         }
 
-        // 3) INSERT 실행
+        // 1) 확인서 저장 (ST_10)
+        dto.setStatusCode("ST_10");
         int rows = confirmApplyDAO.insertConfirmApplication(dto);
-        if (rows != 1 || dto.getConfirmId() == null) {
-            throw new IllegalStateException("확인서 저장에 실패했습니다.");
+        if (rows != 1 || dto.getConfirmNumber() == null) {
+            throw new IllegalStateException("확인서 저장 실패");
         }
 
-        // 4) 생성된 PK 반환
-        return dto.getConfirmId();
+        // 2) 단위기간: 값이 충분할 때만 처리
+        LocalDate s = dto.getStartDate() == null ? null : dto.getStartDate().toLocalDate();
+        LocalDate e = dto.getEndDate()   == null ? null : dto.getEndDate().toLocalDate();
+        Long wage   = dto.getRegularWage();
+
+        if (s != null && e != null && wage != null && !e.isBefore(s)) {
+            deleteTerms(dto.getConfirmNumber());
+            List<TermAmountDTO> terms = calculateTerms(s, e, wage, /*monthlyCompanyPay*/ null, /*noCompanyPay*/ true);
+            saveTerms(dto.getConfirmNumber(), terms);
+        }
+
+        return dto.getConfirmNumber();
     }
 
-    private static boolean notBlank(String s) {
-        return s != null && !s.trim().isEmpty();
+    /** 상세보기에서 제출: ST_10 → ST_20 & apply_dt = SYSDATE */
+    @Transactional
+    public void submitConfirm(Long confirmNumber, Long userId) {
+        int rows = confirmApplyDAO.submitConfirm(confirmNumber, userId);
+        if (rows != 1) throw new IllegalStateException("제출 실패(이미 제출/권한)");
     }
+
+    /** 기존 단위기간 삭제 */
+    @Transactional
+    public void deleteTerms(Long confirmNumber) {
+        if (confirmNumber == null) return;
+        termAmountDAO.deleteTermsByConfirmId(confirmNumber);
+    }
+
+    /**단위기간 계산*/
+    public List<TermAmountDTO> calculateTerms(LocalDate start, LocalDate end,
+                                              long regularWage,
+                                              List<Long> monthlyCompanyPay,
+                                              boolean noCompanyPay) {
+        if (start == null || end == null) throw new IllegalArgumentException("기간 누락");
+        if (end.isBefore(start)) throw new IllegalArgumentException("종료일이 시작일보다 빠릅니다.");
+
+        List<TermAmountDTO> list = new ArrayList<>();
+        LocalDate curStart = start;
+        int monthIdx = 1;
+
+        while (!curStart.isAfter(end) && monthIdx <= 12) {
+            LocalDate nextStart = start.plusMonths(monthIdx);
+            if (nextStart.getDayOfMonth() != start.getDayOfMonth()) {
+                nextStart = nextStart.plusMonths(1).withDayOfMonth(1);
+            }
+            LocalDate theoreticalEnd = nextStart.minusDays(1);
+            LocalDate actualEnd = theoreticalEnd.isAfter(end) ? end : theoreticalEnd;
+            if (curStart.isAfter(actualEnd)) break;
+
+            long companyPay = (!noCompanyPay && monthlyCompanyPay != null && monthlyCompanyPay.size() >= monthIdx)
+                    ? nz(monthlyCompanyPay.get(monthIdx - 1)) : 0L;
+
+            long base;
+            if (monthIdx <= 3) base = Math.min(regularWage, 2_500_000L);
+            else if (monthIdx <= 6) base = Math.min(regularWage, 2_000_000L);
+            else base = Math.min(Math.round(regularWage * 0.8), 1_600_000L);
+
+            long daysInTerm = ChronoUnit.DAYS.between(curStart, actualEnd) + 1;
+            long daysInFull = ChronoUnit.DAYS.between(curStart, theoreticalEnd) + 1;
+            long gov = (daysInTerm >= daysInFull)
+                    ? base
+                    : (long) Math.floor((base * (double) daysInTerm / daysInFull) / 10) * 10;
+
+            if (regularWage < companyPay + gov) gov = regularWage - companyPay;
+
+            TermAmountDTO t = TermAmountDTO.builder()
+                    .startMonthDate(Date.valueOf(curStart))
+                    .endMonthDate(Date.valueOf(actualEnd))
+                    .paymentDate(Date.valueOf(actualEnd.plusMonths(1).withDayOfMonth(1)))
+                    .companyPayment(companyPay)
+                    .govPayment(gov)
+                    .build();
+            list.add(t);
+
+            curStart = actualEnd.plusDays(1);
+            monthIdx++;
+        }
+        return list;
+    }
+
+    /** 3) 계산된 리스트 저장(confirmId만 주입하여 일괄 INSERT) */
+    @Transactional
+    public void saveTerms(Long confirmNumber, List<TermAmountDTO> terms) {
+        if (confirmNumber == null || terms == null || terms.isEmpty()) return;
+        for (TermAmountDTO t : terms) {
+            t.setConfirmNumber(confirmNumber);
+        }
+        termAmountDAO.insertTermAmount(terms);
+    }
+
+    /* 유틸 */
+    private static boolean notBlank(String s) { return s != null && !s.trim().isEmpty(); }
+    private static long nz(Long v) { return v == null ? 0L : v; }
+
+    
+    @Transactional(readOnly = true)
+    public ConfirmApplyDTO findByConfirmNumber(Long confirmNumber) {
+        if (confirmNumber == null) return null;
+
+        ConfirmApplyDTO dto = confirmApplyDAO.selectByConfirmNumber(confirmNumber);
+        if (dto == null) return null;
+
+        try {
+            if (dto.getRegistrationNumber() != null && !dto.getRegistrationNumber().trim().isEmpty()) {
+                dto.setRegistrationNumber(aes256Util.decrypt(dto.getRegistrationNumber()));
+            }
+        } catch (Exception ignore) {}
+
+        try {
+            if (dto.getChildResiRegiNumber() != null && !dto.getChildResiRegiNumber().trim().isEmpty()) {
+                dto.setChildResiRegiNumber(aes256Util.decrypt(dto.getChildResiRegiNumber()));
+            }
+        } catch (Exception ignore) {}
+
+        return dto;
+    }
+
+    
 }

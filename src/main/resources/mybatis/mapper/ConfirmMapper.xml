@@ -5,7 +5,8 @@
 <insert id="insertConfirmApplication"
         parameterType="com.example.renewal_firstclass.domain.ConfirmApplyDTO"
         useGeneratedKeys="true"
-        keyProperty="confirmId">
+        keyProperty="confirmNumber" 
+        keyColumn="confirm_number">
   INSERT INTO TB_CONFIRM_APPLICATION (
     apply_dt, start_date, end_date,
     weekly_hours, regular_wage,
@@ -19,9 +20,67 @@
     #{childName}, #{childResiRegiNumber}, #{childBirthDate},
     #{registrationNumber}, #{name},
     #{responseName}, #{responsePhoneNumber},
-    #{statusCode}, #{centerId}, #{userId}
+    'ST_10', #{centerId}, #{userId}
   )
 </insert>
+
+ <update id="updateDraft"
+          parameterType="com.example.renewal_firstclass.domain.ConfirmApplyDTO">
+    UPDATE TB_CONFIRM_APPLICATION
+       SET start_date             = #{startDate},
+           end_date               = #{endDate},
+           weekly_hours           = #{weeklyHours},
+           regular_wage           = #{regularWage},
+           child_name             = #{childName},
+           child_resi_regi_number = #{childResiRegiNumber},
+           child_birth_date       = #{childBirthDate},
+           registration_number    = #{registrationNumber},
+           name                   = #{name},
+           response_name          = #{responseName},
+           response_phone_number  = #{responsePhoneNumber}
+     WHERE confirm_number             = #{confirmNumber}
+       AND user_id                = #{userId}
+       AND status_code            = 'ST_10'
+       AND NVL(delt_at, 'N')      = 'N'
+  </update>
+
+  <update id="submitConfirm"
+          parameterType="map">
+    UPDATE TB_CONFIRM_APPLICATION
+       SET status_code = 'ST_20',
+           apply_dt    = NVL(apply_dt, SYSDATE)
+     WHERE confirm_number  = #{confirmNumber}
+       AND user_id     = #{userId}
+       AND status_code = 'ST_10'
+       AND NVL(delt_at, 'N') = 'N'
+  </update>
+
+<select id="selectByConfirmNumber"
+        parameterType="long"
+        resultType="com.example.renewal_firstclass.domain.ConfirmApplyDTO">
+  SELECT
+    confirm_number,
+    apply_dt,
+    start_date,
+    end_date,
+    weekly_hours,
+    regular_wage,
+    child_name,
+    child_resi_regi_number,
+    child_birth_date,
+    registration_number,
+    name,
+    response_name,
+    response_phone_number,
+    status_code,
+    processor_id,
+    center_id,
+    user_id
+  FROM TB_CONFIRM_APPLICATION
+  WHERE confirm_number = #{confirmNumber}
+    AND NVL(delt_at,'N') = 'N'
+</select>
+
 
 
 

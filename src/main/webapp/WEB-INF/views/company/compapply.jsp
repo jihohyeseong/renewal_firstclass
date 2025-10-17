@@ -79,13 +79,30 @@
 	href="${pageContext.request.contextPath}/resources/css/comp.css">
 	
 <%@ include file="compheader.jsp" %>
+
+<c:if test="${not empty error}">
+  <div class="alert alert-danger">${error}</div>
+</c:if>
+<c:if test="${not empty errors}">
+  <div class="alert alert-warning">
+    <ul>
+      <c:forEach var="e" items="${errors}">
+        <li>${e.key} : ${e.value}</li>
+      </c:forEach>
+    </ul>
+  </div>
+</c:if>
+<c:if test="${not empty message}">
+  <div class="alert alert-success">${message}</div>
+</c:if>
+
 <main class="main-container">
 <div class="content-wrapper">
 	<div class="content-header">
 		<h2>육아휴직 확인서 제출</h2>
 	</div>
 
-	<form action="${pageContext.request.contextPath}/confirmation/submit"
+	<form id="confirm-form" action="${pageContext.request.contextPath}/comp/apply/save"
 		method="post">
 		<sec:csrfInput />
 
@@ -216,6 +233,37 @@
 				</div>
 			</div>
 		</div>
+		
+		<!-- =======================
+    	 0. 센터 선택 (고정 1개)
+		======================== -->
+		<div class="form-section">
+			<h3>0. 처리 센터 선택</h3>
+
+			<div class="form-group">
+				<label class="field-title">고용복지플러스센터</label>
+				<div class="input-field">
+					<label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer;">
+						<input type="radio" name="centerId" value="1" required checked>
+						<div style="border: 1px solid var(- -border-color); border-radius: 8px; padding: 12px; flex: 1;">
+							<div style="font-weight: 600; margin-bottom: 6px;">서울고용복지플러스센터</div>
+							<div style="color: #555; line-height: 1.6;">
+								<div>주소: 서울특별시 중구 삼일대로 363</div>
+								<div>상세: 장교빌딩 2층~5층, 10층</div>
+								<div>우편번호: 04520</div>
+								<div>전화: 02-2022-6000</div> 
+								<div>
+									홈페이지: <a href="https://www.work.go.kr/seoul/main.do"
+										target="_blank" rel="noopener">
+										https://www.work.go.kr/seoul/main.do </a>
+								</div>
+							</div>
+						</div>
+					</label>
+				</div>
+			</div>
+		</div>
+
 
 		<%-- =======================
                  4. 확인서 작성자 정보
@@ -239,11 +287,15 @@
 		</div>
 
 		<div class="submit-button-container">
-			<button type="submit" class="btn btn-primary">확인서 제출하기</button>
+			<button type="submit" class="btn btn-primary">저장하기</button>
 		</div>
 	</form>
 </div>
 </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 육아휴직 서비스. All Rights Reserved.</p>
+    </footer>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -276,7 +328,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // ─────────────────────────────────────
    var startDateInput = document.getElementById('start-date');
    var endDateInput = document.getElementById('end-date');
-   var periodInputSection = document.getElementById('period-input-section');
+   //var periodInputSection = document.getElementById('period-input-section');
    var generateBtn = document.getElementById('generate-forms-btn');
    var formsContainer = document.getElementById('dynamic-forms-container');
    var noPaymentChk = document.getElementById('no-payment');
@@ -390,16 +442,17 @@ document.addEventListener('DOMContentLoaded', function () {
       });
    }
 
-   startDateInput.addEventListener('change', function() {
-      if (startDateInput.value) {
-         periodInputSection.style.display = 'block';
-         endDateInput.min = startDateInput.value;
-         formsContainer.innerHTML = '';
-         if (noPaymentWrapper) noPaymentWrapper.style.display = 'none';
-      } else {
-         periodInputSection.style.display = 'none';
-      }
-   });
+   startDateInput.addEventListener('change', function () {
+	    if (startDateInput.value) {
+	      endDateInput.min = startDateInput.value;
+	      formsContainer.innerHTML = '';
+	      if (noPaymentWrapper) noPaymentWrapper.style.display = 'none';
+	    } else {
+	      endDateInput.removeAttribute('min');
+	      formsContainer.innerHTML = '';
+	      if (noPaymentWrapper) noPaymentWrapper.style.display = 'none';
+	    }
+	  });
    endDateInput.addEventListener('change', function () {
       formsContainer.innerHTML = '';
       if (noPaymentWrapper) noPaymentWrapper.style.display = 'none';
@@ -431,21 +484,29 @@ document.addEventListener('DOMContentLoaded', function () {
     // ─────────────────────────────────────
     // 제출 전 데이터 정리
     // ─────────────────────────────────────
-    const form = document.querySelector('form');
+    const form = document.getElementById('confirm-form');
     if (form) {
         form.addEventListener('submit', function(e) {
-            // 숫자 필드 콤마 제거
-            document.querySelectorAll('#regularWage, input[name="companyPayments"]').forEach(el => {
-                el.value = onlyDigits(el.value);
-            });
-            // 주민번호 합치기
-            const empRrnHidden = document.getElementById('employee-rrn-hidden');
-            empRrnHidden.value = onlyDigits(document.getElementById('employee-rrn-a').value) + onlyDigits(document.getElementById('employee-rrn-b').value);
-            
-            const childRrnHidden = document.getElementById('child-rrn-hidden');
-            const a = onlyDigits(document.getElementById('child-rrn-a').value), b = onlyDigits(document.getElementById('child-rrn-b').value);
-            childRrnHidden.value = (a.length === 6 && b.length === 7) ? (a + b) : '';
+          // 콤마 제거 대상: 통상임금 + 월별 지급액들
+          document.querySelectorAll('#regularWage, input[name^="monthly_payment_"]').forEach(el => {
+            el.value = (el.value || '').replace(/[^\d]/g, '');
+          });
+
+          // 주민번호 합치기
+          const empRrnHidden = document.getElementById('employee-rrn-hidden');
+          empRrnHidden.value =
+            (document.getElementById('employee-rrn-a').value || '').replace(/[^\d]/g,'') +
+            (document.getElementById('employee-rrn-b').value || '').replace(/[^\d]/g,'');
+
+          const childRrnHidden = document.getElementById('child-rrn-hidden');
+          const a = (document.getElementById('child-rrn-a').value || '').replace(/[^\d]/g,'');
+          const b = (document.getElementById('child-rrn-b').value || '').replace(/[^\d]/g,'');
+          childRrnHidden.value = (a.length === 6 && b.length === 7) ? (a + b) : '';
+
+          // childBirthDate 비어있으면 name 제거 (빈 문자열 Date 바인딩 방지)
+          const hidden = document.getElementById('childBirthDateHidden');
+          if (hidden && !hidden.value) hidden.removeAttribute('name');
         });
-    }
+      }
 });
 </script>

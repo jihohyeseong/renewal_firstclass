@@ -9,7 +9,7 @@ import java.sql.Date;
 @AllArgsConstructor
 @Builder
 public class ConfirmApplyDTO {
-    private Long confirmId;                 // PK 
+    private Long confirmNumber;                 // PK 
 
     // 기본/필수 필드
     private Date applyDt;                   // 제출일자
