@@ -22,31 +22,7 @@
 </head>
 <body>
 
-    <header class="header">
-    <a href="${pageContext.request.contextPath}/main" class="logo"><img src="${pageContext.request.contextPath}/resources/images/logo_comp.png" alt="Logo" width="auto" height="80"></a>
-    <nav>
-        <ul class="header-nav">
-            <%-- [수정됨] 현재 URI에 '/main'이 포함되어 있으면 'active' 클래스를 추가합니다. --%>
-            <li><a class="nav-link ${fn:contains(currentURI, '/main') ? 'active' : ''}" href="${pageContext.request.contextPath}/main">신청내역</a></li>
-            <%-- [수정됨] 현재 URI에 '/calc'가 포함되어 있으면 'active' 클래스를 추가합니다. --%>
-            <li><a class="nav-link ${fn:contains(currentURI, '/calc') ? 'active' : ''}" href="${pageContext.request.contextPath}/calc">모의 계산하기</a></li>
-            <%-- [수정됨] 현재 URI에 '/mypage'가 포함되어 있으면 'active' 클래스를 추가합니다. --%>
-            <li><a class="nav-link ${fn:contains(currentURI, '/mypage') ? 'active' : ''}" href="${pageContext.request.contextPath}/mypage">마이페이지</a></li>
-        </ul>
-        <sec:authorize access="isAnonymous()">
-            <a href="${pageContext.request.contextPath}/login" class="btn btn-primary">로그인</a>
-        </sec:authorize>
-        <sec:authorize access="isAuthenticated()">
-            <span class="welcome-msg">
-                <sec:authentication property="principal.username"/>님, 환영합니다.
-            </span>
-            <form id="logout-form" action="${pageContext.request.contextPath}/logout" method="post" style="display: none;">
-                <sec:csrfInput/>
-            </form>
-            <a href="#" onclick="document.getElementById('logout-form').submit(); return false;" class="btn btn-logout">로그아웃</a>
-        </sec:authorize>
-    </nav>
-</header>
+<%@ include file="compheader.jsp" %>
 
     <main class="main-container"> 
     

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.renewal_firstclass.dao.ConfirmApplyDAO">
+
+<insert id="insertConfirmApplication"
+        parameterType="com.example.renewal_firstclass.domain.ConfirmApplyDTO"
+        useGeneratedKeys="true"
+        keyProperty="confirmId">
+  INSERT INTO TB_CONFIRM_APPLICATION (
+    apply_dt, start_date, end_date,
+    weekly_hours, regular_wage,
+    child_name, child_resi_regi_number, child_birth_date,
+    registration_number, name,
+    response_name, response_phone_number,
+    status_code, center_id, user_id
+  ) VALUES (
+    SYSDATE, #{startDate}, #{endDate},
+    #{weeklyHours}, #{regularWage},
+    #{childName}, #{childResiRegiNumber}, #{childBirthDate},
+    #{registrationNumber}, #{name},
+    #{responseName}, #{responsePhoneNumber},
+    #{statusCode}, #{centerId}, #{userId}
+  )
+</insert>
+
+
+
+</mapper>
