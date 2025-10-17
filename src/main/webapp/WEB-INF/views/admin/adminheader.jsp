@@ -32,11 +32,11 @@
 </style>
 
 <header class="header">
-    <a href="${pageContext.request.contextPath}/admin/applications" class="logo"><img src="${pageContext.request.contextPath}/resources/images/logo.png" alt="Logo" width="80" height="80"></a>
+    <a href="${pageContext.request.contextPath}/admin/applications" class="logo"><img src="${pageContext.request.contextPath}/resources/images/logo.png" alt="Logo" width="auto" height="80"></a>
     <nav>
     	<ul class="header-nav">
-    		<li><a class="nav-link ${fn:contains(currentURI, '/main') ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/confirm">확인서 보기</a></li>
-    		<li><a class="nav-link ${fn:contains(currentURI, '/main') ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/applications">신청서 보기</a></li>
+    		<li><a class="nav-link ${fn:contains(currentURI, '/confirm') ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/confirm">확인서 보기</a></li>
+    		<li><a class="nav-link ${fn:contains(currentURI, '/applications') ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/applications">신청서 보기</a></li>
     		<li><a class="nav-link" href="${pageContext.request.contextPath}/main">추가지급</a></li>
     	</ul>
         <sec:authorize access="isAnonymous()">

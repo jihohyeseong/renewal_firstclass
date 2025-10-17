@@ -42,6 +42,6 @@ public class AdminListController {
         model.addAttribute("status", status);
         model.addAttribute("date", date);
 
-        return "adminlist";
+        return "admin/adminlist";
     }
 }
