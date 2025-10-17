@@ -319,25 +319,25 @@
     <%@ include file="adminheader.jsp" %>
 
         <main class="main-content">
-            <h2 class="page-title">관리자 신청서 목록</h2>
+            <h2 class="page-title">관리자 확인서 목록</h2>
 
             <div class="stat-cards-container">
-                <a href="${pageContext.request.contextPath}/admin/applications">
+                <a href="${pageContext.request.contextPath}/admin/confirm">
 	                <div class="stat-card ${empty status ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
-	                            <h6>총 신청 수</h6><h1>${counts.total}</h1><small>모든 육아휴직 신청 수</small>
+	                            <h6>총 확인서 수</h6><h1>${counts.total}</h1><small>모든 육아휴직 확인서</small>
 	                        </div>
 	                        <i class="bi bi-files"></i>
 	                    </div>
 	                </div>
                 </a>
 
-                <a href="${pageContext.request.contextPath}/admin/applications?status=PENDING">
+                <a href="${pageContext.request.contextPath}/admin/confirm?status=PENDING">
 	                <div class="stat-card ${status == 'PENDING' ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
-	                            <h6>대기 중 신청</h6><h1>${counts.pending}</h1><small>현재 검토가 필요한 신청</small>
+	                            <h6>대기 중 확인서</h6><h1>${counts.pending}</h1><small>현재 검토가 필요한 확인서</small>
 	                        </div>
 	                        <i class="bi bi-clock-history"></i>
 	                    </div>
@@ -348,7 +348,7 @@
 	                <div class="stat-card ${status == 'APPROVED' ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
-	                            <h6>승인된 신청</h6><h1>${counts.approved}</h1><small>성공적으로 승인된 신청</small>
+	                            <h6>승인된 확인서</h6><h1>${counts.approved}</h1><small>성공적으로 승인된 확인서</small>
 	                        </div>
 	                        <i class="bi bi-check-circle"></i>
 	                    </div>
@@ -359,7 +359,7 @@
 	                <div class="stat-card ${status == 'REJECTED' ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
-	                            <h6>반려된 신청</h6><h1>${counts.rejected}</h1><small>문제가 있어 반려된 신청</small>
+	                            <h6>반려된 확인서</h6><h1>${counts.rejected}</h1><small>문제가 있어 반려된 신청</small>
 	                        </div>
 	                        <i class="bi bi-x-circle"></i>
 	                    </div>
@@ -369,14 +369,14 @@
 
             <div class="table-wrapper">
                 <div class="table-header">
-                    <h4>모든 육아휴직 신청서</h4>
+                    <h4>모든 육아휴직 확인서</h4>
                     <button class="table-btn btn-refresh" id="btnReset"><i class="bi bi-arrow-clockwise"></i></button>
                 </div>
 
                 <form id="searchForm" action="${pageContext.request.contextPath}/admin/applications" method="get" class="table-filters">
                     
                     <div class="search-box">
-                        <input type="text" name="keyword" placeholder="신청자 이름 또는 신청번호로 검색..." value="${keyword}">
+                        <input type="text" name="keyword" placeholder="기업 이름 또는 신청번호로 검색..." value="${keyword}">
                         <button type="submit" style="background:none; border:none; position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer;">
                             <i class="bi bi-search"></i>
                         </button>
@@ -398,9 +398,9 @@
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>신청 번호</th>
-                            <th>신청자 이름</th>
-                            <th>신청일
+                            <th>확인서 번호</th>
+                            <th>기업 이름</th>
+                            <th>제출일
                             	<button type="button" id="selectDate" style="background:none; border:none; cursor:pointer; margin-left:5px;">
                                     <i class="bi bi-calendar-week"></i>
                                 </button>
