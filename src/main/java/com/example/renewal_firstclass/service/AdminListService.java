@@ -43,13 +43,13 @@ public class AdminListService {
         // 전체 신청 건수
         counts.put("total", adminListDAO.selectTotalCount(null, null, null));
 
-        // 대기 건수 ='제출'(ST_20) + '심사중'(ST_30)
-        List<String> pendingStatusCodes = Arrays.asList("ST_20", "ST_30");
+        // 대기 건수 ='제출'(ST_20) + '심사중'(ST_30) + '2차 심사중'(ST_40)
+        List<String> pendingStatusCodes = Arrays.asList("ST_20", "ST_30", "ST_40");
         counts.put("pending", adminListDAO.selectStatusCountIn(pendingStatusCodes));
         
         // 승인/반려
-        counts.put("approved", adminListDAO.selectStatusCount("ST_40", "Y"));
-        counts.put("rejected", adminListDAO.selectStatusCount("ST_40", "N")); 
+        counts.put("approved", adminListDAO.selectStatusCount("ST_50", "Y"));
+        counts.put("rejected", adminListDAO.selectStatusCount("ST_50", "N")); 
         
         //결과 반환
         result.put("list", applicationList);

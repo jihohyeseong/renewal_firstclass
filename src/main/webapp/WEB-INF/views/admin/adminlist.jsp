@@ -326,7 +326,7 @@
 	                <div class="stat-card ${empty status ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
-	                            <h6>총 신청 수</h6><h1>${counts.total}</h1><small>모든 육아휴직 신청 수</small>
+	                            <h6>총 신청서 수</h6><h1>${counts.total}</h1><small>모든 육아휴직 신청서</small>
 	                        </div>
 	                        <i class="bi bi-files"></i>
 	                    </div>
@@ -337,7 +337,7 @@
 	                <div class="stat-card ${status == 'PENDING' ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
-	                            <h6>대기 중 신청</h6><h1>${counts.pending}</h1><small>현재 검토가 필요한 신청</small>
+	                            <h6>대기 중 신청서</h6><h1>${counts.pending}</h1><small>현재 검토가 필요한 신청서</small>
 	                        </div>
 	                        <i class="bi bi-clock-history"></i>
 	                    </div>
@@ -348,7 +348,7 @@
 	                <div class="stat-card ${status == 'APPROVED' ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
-	                            <h6>승인된 신청</h6><h1>${counts.approved}</h1><small>성공적으로 승인된 신청</small>
+	                            <h6>승인된 신청서</h6><h1>${counts.approved}</h1><small>성공적으로 승인된 신청서</small>
 	                        </div>
 	                        <i class="bi bi-check-circle"></i>
 	                    </div>
@@ -359,7 +359,7 @@
 	                <div class="stat-card ${status == 'REJECTED' ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
-	                            <h6>반려된 신청</h6><h1>${counts.rejected}</h1><small>문제가 있어 반려된 신청</small>
+	                            <h6>반려된 신청서</h6><h1>${counts.rejected}</h1><small>문제가 있어 반려된 신청서</small>
 	                        </div>
 	                        <i class="bi bi-x-circle"></i>
 	                    </div>
@@ -398,7 +398,7 @@
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>신청 번호</th>
+                            <th>신청서 번호</th>
                             <th>신청자 이름</th>
                             <th>신청일
                             	<button type="button" id="selectDate" style="background:none; border:none; cursor:pointer; margin-left:5px;">

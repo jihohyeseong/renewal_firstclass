@@ -359,7 +359,7 @@
 	                <div class="stat-card ${status == 'REJECTED' ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
-	                            <h6>반려된 확인서</h6><h1>${counts.rejected}</h1><small>문제가 있어 반려된 신청</small>
+	                            <h6>반려된 확인서</h6><h1>${counts.rejected}</h1><small>문제가 있어 반려된 확인서</small>
 	                        </div>
 	                        <i class="bi bi-x-circle"></i>
 	                    </div>
