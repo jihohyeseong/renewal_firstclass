@@ -11,20 +11,20 @@
 </head>
 <body>
 <header class="header">
-	<a href="${pageContext.request.contextPath}/main" class="logo"><img
+	<a href="${pageContext.request.contextPath}/comp/main" class="logo"><img
 		src="${pageContext.request.contextPath}/resources/images/logo_comp.png"
 		alt="Logo" width="auto" height="80"></a>
 	<nav>
 		<ul class="header-nav">
 			<li><a
-				class="nav-link ${fn:contains(currentURI, '/main') ? 'active' : ''}"
-				href="${pageContext.request.contextPath}/main">신청내역</a></li>
-			<li><a
-				class="nav-link ${fn:contains(currentURI, '/calc') ? 'active' : ''}"
-				href="${pageContext.request.contextPath}/calc">모의 계산하기</a></li>
-			<li><a
-				class="nav-link ${fn:contains(currentURI, '/mypage') ? 'active' : ''}"
-				href="${pageContext.request.contextPath}/mypage">마이페이지</a></li>
+                class="nav-link ${fn:contains(pageContext.request.requestURI, '/compmain') ? 'active' : ''}"
+                href="${pageContext.request.contextPath}/comp/main">신청내역</a></li>
+            <li><a
+                class="nav-link ${fn:contains(pageContext.request.requestURI, '/calc') ? 'active' : ''}"
+                href="${pageContext.request.contextPath}/calc/corp">모의 계산하기</a></li>
+            <li><a
+                class="nav-link ${fn:contains(pageContext.request.requestURI, '/mypage') ? 'active' : ''}"
+                href="${pageContext.request.contextPath}/mypage">마이페이지</a></li>
 		</ul>
 		<sec:authorize access="isAnonymous()">
 			<a href="${pageContext.request.contextPath}/login"
