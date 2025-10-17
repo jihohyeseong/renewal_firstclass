@@ -3,6 +3,7 @@ package com.example.renewal_firstclass.dao;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.example.renewal_firstclass.domain.CorpJoinDTO;
 import com.example.renewal_firstclass.domain.JoinDTO;
 import com.example.renewal_firstclass.domain.UserDTO;
 import com.example.renewal_firstclass.domain.UserVO;
@@ -12,6 +13,8 @@ import com.example.renewal_firstclass.domain.UserVO;
 public interface UserDAO {
 
 	void save(JoinDTO joinDTO);
+	
+	void saveCorp(CorpJoinDTO joinDTO);
 
 	UserVO findByUsername(String username);
 	

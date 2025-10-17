@@ -8,6 +8,7 @@
 	
 	<typeAliases>
 		<typeAlias alias="JoinDTO" type="com.example.renewal_firstclass.domain.JoinDTO" />
+		<typeAlias alias="CorpJoinDTO" type="com.example.renewal_firstclass.domain.CorpJoinDTO" />
 		<typeAlias alias="UserVO" type="com.example.renewal_firstclass.domain.UserVO" />
 		<typeAlias alias="UserDTO" type="com.example.renewal_firstclass.domain.UserDTO" />
 	</typeAliases>

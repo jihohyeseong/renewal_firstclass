@@ -4,6 +4,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.renewal_firstclass.dao.UserDAO;
+import com.example.renewal_firstclass.domain.CorpJoinDTO;
 import com.example.renewal_firstclass.domain.JoinDTO;
 import com.example.renewal_firstclass.util.AES256Util;
 
@@ -29,6 +30,15 @@ public class JoinService {
 		joinDTO.setDeltAt("N");
 		
 		userDAO.save(joinDTO);
+	}
+	
+	public void corpJoinProcess(CorpJoinDTO joinDTO) {
+		
+		joinDTO.setPassword(bCryptPasswordEncoder.encode(joinDTO.getPassword()));
+		joinDTO.setRole("ROLE_CORP");
+		joinDTO.setDeltAt("N");
+		
+		userDAO.saveCorp(joinDTO);
 	}
 
 	public boolean existsByUsername(String username) {

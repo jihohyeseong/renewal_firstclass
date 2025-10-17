@@ -4,19 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>개인회원 가입 (4/4) - 가입 완료</title>
+    <title>기업회원 가입 (4/4) - 가입 완료</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #3f58d4; /* 파란색 계열 유지 */
+            --primary-color: #24A960; /* 테마 색상 변경 */
             --white-color: #ffffff;
             --light-gray-color: #f0f2f5;
             --gray-color: #888;
             --dark-gray-color: #333;
             --border-color: #e0e0e0;
-            --success-color-blue: #5cb85c; /* 완료 아이콘 색상을 파란 계열에 맞춰서 변경 */
+            --success-color: #28a745;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -49,12 +49,11 @@
             text-align: center;
         }
 
-        /* 완료 아이콘 스타일 */
         .completion-icon {
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background-color: var(--primary-color); /* Primary color와 일관되게 파란색으로 변경 */
+            background-color: var(--success-color);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -76,7 +75,7 @@
         .action-buttons { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
         .btn { padding: 14px 35px; font-size: 16px; font-weight: 500; border-radius: 8px; border: 1px solid var(--border-color); cursor: pointer; transition: all 0.3s ease; text-decoration: none; }
         .btn-primary { background-color: var(--primary-color); color: var(--white-color); border-color: var(--primary-color); }
-        .btn-primary:hover { background-color: #364ab1; } /* 호버 색상 변경 */
+        .btn-primary:hover { background-color: #1f8f50; } /* 호버 색상 변경 */
         .btn-secondary { background-color: var(--white-color); color: var(--dark-gray-color); border-color: var(--dark-gray-color); }
         .btn-secondary:hover { background-color: var(--dark-gray-color); color: var(--white-color); }
         
@@ -90,10 +89,10 @@
 <body>
     <div class="page-wrapper">
         <div class="signup-container">
-            <h1 class="main-title">개인회원 가입</h1>
+            <h1 class="main-title">기업회원 가입</h1>
 
             <div class="progress-stepper">
-                <div class="step">01. 본인 확인</div>
+                <div class="step">01. 사업자 확인</div>
                 <div class="step">02. 약관 동의</div>
                 <div class="step">03. 정보 입력</div>
                 <div class="step active">04. 가입 완료</div>
@@ -101,7 +100,7 @@
 
             <div class="content-box">
                 <div class="completion-icon"></div>
-                <h2>회원가입이 완료되었습니다!</h2>
+                <h2>기업회원 가입이 완료되었습니다!</h2>
                 <p>가입을 축하합니다. 지금 바로 로그인하여 모든 서비스를 이용해 보세요.</p>
                 
                 <div class="action-buttons">

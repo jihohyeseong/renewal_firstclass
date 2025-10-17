@@ -30,6 +30,33 @@
         )
     </insert>
     
+	<!-- 기업 회원가입  -->
+	<insert id="saveCorp" parameterType="CorpJoinDTO">
+        INSERT INTO TB_User (
+            name,
+            buisiness_regi_number,
+            zip_number,
+            address_base,
+            address_detail,
+            username,
+            password,
+            phone_number,
+            role,
+            DELT_AT
+        ) VALUES (
+            #{name},
+            #{buisinessRegiNumber},
+            #{zipNumber},
+            #{addressBase},
+            #{addressDetail},
+            #{username},
+            #{password},
+            #{phoneNumber},
+            #{role},
+            #{deltAt}
+        )
+    </insert>
+    
     <!-- 로그인 확인  -->
     <select id="findByUsername" parameterType="string" resultType="UserVO">
     	SELECT username, password, role

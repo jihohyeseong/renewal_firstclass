@@ -28,7 +28,7 @@ public class SecurityConfig {
 	                new AntPathRequestMatcher("/login"),
 	                new AntPathRequestMatcher("/loginProc"),
 	                new AntPathRequestMatcher("/join/**"),
-	                new AntPathRequestMatcher("/joinProc"),
+	                new AntPathRequestMatcher("/joinProc/**"),
 	                new AntPathRequestMatcher("/find/**")
 	            ).permitAll()
 	            .requestMatchers(

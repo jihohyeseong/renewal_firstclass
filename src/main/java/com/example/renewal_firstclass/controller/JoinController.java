@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.renewal_firstclass.domain.CorpJoinDTO;
 import com.example.renewal_firstclass.domain.JoinDTO;
 import com.example.renewal_firstclass.domain.UsernameCheckDTO;
 import com.example.renewal_firstclass.service.JoinService;
@@ -187,4 +188,48 @@ public class JoinController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
+	// 기업 회원가입 step1
+	@GetMapping("/join/corp/1")
+	public String corpJoinPage1() {
+		
+		return "join/step1_corp";
+	}
+	
+	// 기업 회원가입 step2
+	@GetMapping("/join/corp/2")
+	public String corpJoinPage2() {
+		
+		return "join/step2_corp";
+	}
+	
+	// 기업 회원가입 step3
+	@GetMapping("/join/corp/3")
+	public String corpJoinPage3() {
+		
+		return "join/step3_corp";
+	}
+	
+	// 기업 회원가입 스텝 3 db저장후 완료
+	@PostMapping("/joinProc/corp")
+	public String corpJoinProcess(@Valid CorpJoinDTO joinDTO, BindingResult bindingResult, Model model) {
+			
+		if (bindingResult.hasErrors()) {
+	        Map<String, String> errorsMap = new HashMap<>();
+	        for (FieldError error : bindingResult.getFieldErrors()) {
+	            errorsMap.put(error.getField(), error.getDefaultMessage());
+	        }
+	        model.addAttribute("errors", errorsMap);
+	        model.addAttribute("joinDTO", joinDTO);
+	        
+	        return "join/step3_corp"; 
+	    }
+			
+		if(joinService.existsByUsername(joinDTO.getUsername())) {
+			model.addAttribute("idDuplicate", "이미 사용중인 아이디입니다.");
+			return "join/step3_corp";
+		}
+		joinService.corpJoinProcess(joinDTO);
+		
+		return "join/corp_end";
+	}
 }
