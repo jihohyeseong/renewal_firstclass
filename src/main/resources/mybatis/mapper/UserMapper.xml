@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.renewal_firstclass.dao.UserDAO">
+	<!-- 회원가입  -->
+	<insert id="save" parameterType="JoinDTO">
+        INSERT INTO TB_User (
+            name,
+            registration_number,
+            zip_number,
+            address_base,
+            address_detail,
+            username,
+            password,
+            phone_number,
+            role,
+            DELT_AT
+        ) VALUES (
+            #{name},
+            #{registrationNumber},
+            #{zipNumber},
+            #{addressBase},
+            #{addressDetail},
+            #{username},
+            #{password},
+            #{phoneNumber},
+            #{role},
+            #{deltAt}
+        )
+    </insert>
+    
+    <!-- 로그인 확인  -->
+    <select id="findByUsername" parameterType="string" resultType="UserVO">
+    	SELECT username, password, role
+    	FROM TB_User
+    	WHERE username = #{username}
+    </select>
+    
+    <!-- 신청서 유저정보  -->
+    <select id="findUserInfo" parameterType="string" resultType="UserDTO">
+    	SELECT id, name, registration_number, zip_number, address_base, address_detail, username, phone_number
+    	FROM TB_User
+    	WHERE username = #{username}
+    </select>
+    
+    <!-- id 중복 확인  -->
+    <select id="existsByUsername" parameterType="string" resultType="boolean">
+	    SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+	    FROM TB_User
+	    WHERE username = #{username}
+	</select>
+	
+	<!-- 신청서 유저정보  -->
+	<select id="findById" parameterType="long" resultType="UserDTO">
+    	SELECT id, name, registration_number, zip_number, address_base, address_detail, username, phone_number
+    	FROM TB_User
+    	WHERE id = #{id}
+    </select>
+    
+    <!-- 비밀번호찾기 db 검증  -->
+    <select id="existsByUsernameAndPhoneNumber" resultType="boolean">
+	    SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+	    FROM TB_User
+	    WHERE username = #{username} AND phone_number = #{phoneNumber}
+	</select>
+	
+	<!-- 비밀번호 재설정 -->
+	<update id="updatePasswordByUsername">
+		UPDATE TB_User
+		SET password = #{password}
+		WHERE username = #{username}
+	</update>
+	
+	<!-- 아이디찾기 db 검증  -->
+    <select id="findUsernameByNameAndPhoneNumber" resultType="string">
+	    SELECT username
+	    FROM TB_User
+	    WHERE name = #{name} AND phone_number = #{phoneNumber}
+	</select>
+</mapper>
