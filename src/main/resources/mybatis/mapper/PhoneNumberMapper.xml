@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.renewal_firstclass.dao.PhoneNumberDAO">
+    <!-- 로그인 유저 정보 조회  -->
+    <insert id="save">
+    	INSERT INTO TB_PHONE_NUMBER(phone_number, user_id)
+    	VALUES(#{phoneNumber}, #{id})
+    </insert>
+</mapper>

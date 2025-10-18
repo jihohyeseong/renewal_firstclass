@@ -2,7 +2,9 @@ package com.example.renewal_firstclass.service;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.example.renewal_firstclass.dao.PhoneNumberDAO;
 import com.example.renewal_firstclass.dao.UserDAO;
 import com.example.renewal_firstclass.domain.CorpJoinDTO;
 import com.example.renewal_firstclass.domain.JoinDTO;
@@ -15,9 +17,11 @@ import lombok.RequiredArgsConstructor;
 public class JoinService {
 
 	private final UserDAO userDAO;
+	private final PhoneNumberDAO phoneNumberDAO;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 	private final AES256Util aes256Util;
 
+	@Transactional
 	public void joinProcess(JoinDTO joinDTO) {
 		
 		joinDTO.setPassword(bCryptPasswordEncoder.encode(joinDTO.getPassword()));
@@ -30,6 +34,7 @@ public class JoinService {
 		joinDTO.setDeltAt("N");
 		
 		userDAO.save(joinDTO);
+		phoneNumberDAO.save(joinDTO.getId(), joinDTO.getPhoneNumber());
 	}
 	
 	public void corpJoinProcess(CorpJoinDTO joinDTO) {
@@ -39,6 +44,7 @@ public class JoinService {
 		joinDTO.setDeltAt("N");
 		
 		userDAO.saveCorp(joinDTO);
+		phoneNumberDAO.save(joinDTO.getId(), joinDTO.getPhoneNumber());
 	}
 
 	public boolean existsByUsername(String username) {
