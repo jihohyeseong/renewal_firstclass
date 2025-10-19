@@ -344,7 +344,7 @@
 	                </div>
 	            </a>
 
-                <a href="${pageContext.request.contextPath}/admin/applications?status=APPROVED">
+                <a href="${pageContext.request.contextPath}/admin/confirm?status=APPROVED">
 	                <div class="stat-card ${status == 'APPROVED' ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
@@ -355,7 +355,7 @@
 	                </div>
                 </a>
                 
-                <a href="${pageContext.request.contextPath}/admin/applications?status=REJECTED">
+                <a href="${pageContext.request.contextPath}/admin/confirm?status=REJECTED">
 	                <div class="stat-card ${status == 'REJECTED' ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
@@ -373,7 +373,7 @@
                     <button class="table-btn btn-refresh" id="btnReset"><i class="bi bi-arrow-clockwise"></i></button>
                 </div>
 
-                <form id="searchForm" action="${pageContext.request.contextPath}/admin/applications" method="get" class="table-filters">
+                <form id="searchForm" action="${pageContext.request.contextPath}/admin/confirm" method="get" class="table-filters">
                     
                     <div class="search-box">
                         <input type="text" name="keyword" placeholder="기업 이름 또는 신청번호로 검색..." value="${keyword}">
@@ -414,27 +414,30 @@
                     </thead>
                     <tbody>
                         <c:choose>
-                            <c:when test="${not empty applicationList}">
-                                <c:forEach var="app" items="${applicationList}">
+                            <c:when test="${not empty confirmList}">
+                                <c:forEach var="app" items="${confirmList}">
                                     <tr>
-                                        <td>${app.applicationNumber}</td>
+                                        <td>${app.confirmNumber}</td>
                                         <td>${app.name}</td>
-                                        <td>${app.submittedDate}</td>
+                                        <td>${app.applyDate}</td>
                                         <td>
                                             <c:choose>
                                                 <c:when test="${app.statusName == '대기'}">
                                                     <span class="badge badge-wait">${app.statusName}</span>
                                                 </c:when>
-                                                <c:when test="${app.paymentResult == 'Y'}">
+                                                <c:when test="${app.statusCode == 'ST50' and empty app.rejectionReasonCode}">
                                                     <span class="badge badge-approved">승인</span>
                                                 </c:when>
+                                                <c:when test="${app.statusCode == 'ST_50' and not empty app.rejectionReasonCode}">
+                                                    <span class="badge badge-rejected">반려</span>
+                                                </c:when>
                                                 <c:otherwise>
-                                                    <span class="badge badge-rejected">반려</span>
+                                                    <span class="badge badge-rejected">기타</span>
                                                 </c:otherwise>
                                             </c:choose>
                                         </td>
                                         <td>
-                                            <a href="${pageContext.request.contextPath}/apply/detail?appNo=${app.applicationNumber}" class="table-btn btn-secondary">상세보기</a>
+                                            <a href="${pageContext.request.contextPath}/apply/detail?appNo=${app.confirmNumber}" class="table-btn btn-secondary">상세보기</a>
                                         </td>
                                     </tr>
                                 </c:forEach>
@@ -449,18 +452,18 @@
                 </table>
                 <div class="pagination">
 				    <c:if test="${pageDTO.startPage > 1}">
-				        <a href="${pageContext.request.contextPath}/admin/applications?page=${pageDTO.startPage - 1}&keyword=${keyword}&status=${status}&date=${date}">&laquo;</a>
+				        <a href="${pageContext.request.contextPath}/admin/confirm?page=${pageDTO.startPage - 1}&keyword=${keyword}&status=${status}&date=${date}">&laquo;</a>
 				    </c:if>
 				
 				    <c:forEach begin="${pageDTO.paginationStart}" end="${pageDTO.paginationEnd}" var="p">
-				        <a href="${pageContext.request.contextPath}/admin/applications?page=${p}&keyword=${keyword}&status=${status}&date=${date}" 
+				        <a href="${pageContext.request.contextPath}/admin/confirm?page=${p}&keyword=${keyword}&status=${status}&date=${date}" 
 				           class="${p == pageDTO.pageNum ? 'active' : ''}">
 				            ${p}
 				        </a>
 				    </c:forEach>
 				
 				    <c:if test="${pageDTO.endPage > pageDTO.paginationEnd}">
-				        <a href="${pageContext.request.contextPath}/admin/applications?page=${pageDTO.paginationEnd + 1}&keyword=${keyword}&status=${status}&date=${date}">&raquo;</a>
+				        <a href="${pageContext.request.contextPath}/admin/confirm?page=${pageDTO.paginationEnd + 1}&keyword=${keyword}&status=${status}&date=${date}">&raquo;</a>
 				    </c:if>
 				</div>
             </div>

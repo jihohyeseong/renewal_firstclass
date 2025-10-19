@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.renewal_firstclass.domain.PageDTO;
-import com.example.renewal_firstclass.service.AdminListService;
+import com.example.renewal_firstclass.service.AdminConfirmListService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,9 +17,30 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/admin")
 @RequiredArgsConstructor
 public class AdminConfirmController {
-
+	private final AdminConfirmListService adminConfirmListService;
+	
     @GetMapping("/confirm")
-    public String confirm() {
-    	return "admin/adminconfirm";
+    public String showConfirmList(@RequestParam(value= "page", defaultValue="1") int page,
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "date", required = false) String date,
+            Model model) {
+    	
+    	//페이징 DTO 생성
+    	int pageSize = 10;
+ 		PageDTO pageDTO = new PageDTO(page, pageSize); 	// 10개씩 보여줌 
+ 		//서비스 호출
+ 		Map<String, Object> result = adminConfirmListService.getPagedApplicationsAndCounts(keyword, status, date, pageDTO);
+
+	    model.addAttribute("confirmList", result.get("list"));
+	    model.addAttribute("pageDTO", result.get("pageDTO"));
+	    model.addAttribute("counts", result.get("counts"));
+        
+        // 사용자가 입력한 검색어와 상태를 다시 화면에 전달하여 유지시킴
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("status", status);
+        model.addAttribute("date", date);
+
+        return "admin/adminconfirm";
     }
 }
