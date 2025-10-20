@@ -84,13 +84,13 @@
 </style>
 
 <header class="header">
-    <a href="${pageContext.request.contextPath}/main" class="logo"><img src="${pageContext.request.contextPath}/resources/images/logo.png" alt="Logo" width="auto" height="80"></a>
+    <a href="${pageContext.request.contextPath}/user/main" class="logo"><img src="${pageContext.request.contextPath}/resources/images/logo.png" alt="Logo" width="auto" height="80"></a>
     <nav>
         <ul class="header-nav">
             <%-- [수정됨] 현재 URI에 '/main'이 포함되어 있으면 'active' 클래스를 추가합니다. --%>
-            <li><a class="nav-link ${fn:contains(currentURI, '/main') ? 'active' : ''}" href="${pageContext.request.contextPath}/main">신청내역</a></li>
+            <li><a class="nav-link ${fn:contains(currentURI, '/main') ? 'active' : ''}" href="${pageContext.request.contextPath}/user/main">신청내역</a></li>
             <%-- [수정됨] 현재 URI에 '/calc'가 포함되어 있으면 'active' 클래스를 추가합니다. --%>
-            <li><a class="nav-link ${fn:contains(currentURI, '/calc') ? 'active' : ''}" href="${pageContext.request.contextPath}/calc">모의 계산하기</a></li>
+            <li><a class="nav-link ${fn:contains(currentURI, '/calc') ? 'active' : ''}" href="${pageContext.request.contextPath}/calc/user">모의 계산하기</a></li>
             <%-- [수정됨] 현재 URI에 '/mypage'가 포함되어 있으면 'active' 클래스를 추가합니다. --%>
             <li><a class="nav-link ${fn:contains(currentURI, '/mypage') ? 'active' : ''}" href="${pageContext.request.contextPath}/mypage">마이페이지</a></li>
         </ul>

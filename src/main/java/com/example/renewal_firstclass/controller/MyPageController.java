@@ -36,7 +36,7 @@ public class MyPageController {
         }
         
         model.addAttribute("user", userInfo);
-        return "mypage";
+        return "user/mypage";
     }
     
     //마이페이지 수정

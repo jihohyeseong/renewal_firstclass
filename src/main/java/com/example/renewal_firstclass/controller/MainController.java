@@ -6,6 +6,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class MainController {
 
+	
+	@GetMapping("/user/main")
+	public String userMain() {
+		
+		return "user/main";
+	}
+	
+	@GetMapping("/calc/user")
+	public String caculatorUserMain() {
+		
+		return "user/calcmain";
+	}
+	
 	@GetMapping("/calc/corp")
 	public String caculatorMain() {
 		
