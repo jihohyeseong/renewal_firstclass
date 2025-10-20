@@ -19,11 +19,13 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserDTO findByUsername(String username) {
     	UserDTO user = userDAO.findUserInfo(username);
-    	try {
-			user.setRegistrationNumber(aes256Util.decrypt(user.getRegistrationNumber()));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+    	if(user.getRegistrationNumber() != null) {
+	    	try {
+				user.setRegistrationNumber(aes256Util.decrypt(user.getRegistrationNumber()));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+    	}
         return user;
     }
 
