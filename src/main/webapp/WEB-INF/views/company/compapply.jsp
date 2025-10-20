@@ -74,6 +74,7 @@
         background-color: #e9ecef;
         color: #888;
     }
+    
 </style>
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/resources/css/comp.css">
@@ -312,7 +313,7 @@ document.addEventListener('DOMContentLoaded', function () {
             el.value = withCommas(originalValue);
         }
         el.addEventListener('input', format);
-        format(); // 초기 로드 시 포맷팅
+        format();
     }
 
     allowDigitsAndCommas(document.getElementById('regularWage'), 19);
@@ -409,11 +410,11 @@ document.addEventListener('DOMContentLoaded', function () {
          var row = document.createElement('div');
          row.className = 'dynamic-form-row';
          row.innerHTML =
-            '<div class="date-range-display"><div>' + rangeText + '</div></div>' +
-            '<div class="payment-input-field" style="margin-left:auto;">' +
-            '<input type="text" name="monthly_payment_' + monthIdx + '" ' +
-            'placeholder="해당 기간의 사업장 지급액(원) 입력" autocomplete="off">' +
-            '</div>';
+        	 row.innerHTML =
+        		  '<div class="date-range-display"><div>' + rangeText + '</div></div>' +
+        		  '<div class="payment-input-field" style="margin-left:auto;">' +
+        		  '<input type="text" name="monthlyCompanyPay" placeholder="사업장 지급액(원)" autocomplete="off">' +
+        		  '</div>';
          formsContainer.appendChild(row);
 
          currentPeriodStart = new Date(actualPeriodEnd);
@@ -428,7 +429,7 @@ document.addEventListener('DOMContentLoaded', function () {
    });
    
    function applyNoPaymentState() {
-      const inputs = formsContainer.querySelectorAll('input[name^="monthly_payment_"]');
+      const inputs = formsContainer.querySelectorAll('input[name^="monthlyCompanyPay"]');
       inputs.forEach(function(inp){
          if (noPaymentChk && noPaymentChk.checked) {
             inp.value = 0;
@@ -488,7 +489,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (form) {
         form.addEventListener('submit', function(e) {
           // 콤마 제거 대상: 통상임금 + 월별 지급액들
-          document.querySelectorAll('#regularWage, input[name^="monthly_payment_"]').forEach(el => {
+          document.querySelectorAll('#regularWage, input[name^="monthlyCompanyPay"]').forEach(el => {
             el.value = (el.value || '').replace(/[^\d]/g, '');
           });
 

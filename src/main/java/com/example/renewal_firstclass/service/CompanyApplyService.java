@@ -3,6 +3,7 @@ package com.example.renewal_firstclass.service;
 import com.example.renewal_firstclass.dao.ConfirmApplyDAO;
 import com.example.renewal_firstclass.dao.TermAmountDAO;
 import com.example.renewal_firstclass.domain.ConfirmApplyDTO;
+import com.example.renewal_firstclass.domain.ConfirmListDTO;
 import com.example.renewal_firstclass.dao.UserDAO;
 import com.example.renewal_firstclass.domain.TermAmountDTO;
 import com.example.renewal_firstclass.domain.UserDTO;
@@ -30,7 +31,8 @@ public class CompanyApplyService {
 
     /** 신규 저장(ST_10) + (필요 시) 단위기간: 삭제→계산→삽입 */
     @Transactional
-    public Long createConfirm(ConfirmApplyDTO dto) {
+    public Long createConfirm(ConfirmApplyDTO dto,
+    		List<Long> monthlyCompanyPay) {
         // 0) 암호화
         try {
             if (notBlank(dto.getRegistrationNumber()))
@@ -55,7 +57,7 @@ public class CompanyApplyService {
 
         if (s != null && e != null && wage != null && !e.isBefore(s)) {
             deleteTerms(dto.getConfirmNumber());
-            List<TermAmountDTO> terms = calculateTerms(s, e, wage, /*monthlyCompanyPay*/ null, /*noCompanyPay*/ true);
+            List<TermAmountDTO> terms = calculateTerms(s, e, wage, monthlyCompanyPay);
             saveTerms(dto.getConfirmNumber(), terms);
         }
 
@@ -78,55 +80,59 @@ public class CompanyApplyService {
 
     /**단위기간 계산*/
     public List<TermAmountDTO> calculateTerms(LocalDate start, LocalDate end,
-                                              long regularWage,
-                                              List<Long> monthlyCompanyPay,
-                                              boolean noCompanyPay) {
-        if (start == null || end == null) throw new IllegalArgumentException("기간 누락");
-        if (end.isBefore(start)) throw new IllegalArgumentException("종료일이 시작일보다 빠릅니다.");
-
-        List<TermAmountDTO> list = new ArrayList<>();
-        LocalDate curStart = start;
-        int monthIdx = 1;
-
-        while (!curStart.isAfter(end) && monthIdx <= 12) {
-            LocalDate nextStart = start.plusMonths(monthIdx);
-            if (nextStart.getDayOfMonth() != start.getDayOfMonth()) {
-                nextStart = nextStart.plusMonths(1).withDayOfMonth(1);
-            }
-            LocalDate theoreticalEnd = nextStart.minusDays(1);
-            LocalDate actualEnd = theoreticalEnd.isAfter(end) ? end : theoreticalEnd;
-            if (curStart.isAfter(actualEnd)) break;
-
-            long companyPay = (!noCompanyPay && monthlyCompanyPay != null && monthlyCompanyPay.size() >= monthIdx)
-                    ? nz(monthlyCompanyPay.get(monthIdx - 1)) : 0L;
-
-            long base;
-            if (monthIdx <= 3) base = Math.min(regularWage, 2_500_000L);
-            else if (monthIdx <= 6) base = Math.min(regularWage, 2_000_000L);
-            else base = Math.min(Math.round(regularWage * 0.8), 1_600_000L);
-
-            long daysInTerm = ChronoUnit.DAYS.between(curStart, actualEnd) + 1;
-            long daysInFull = ChronoUnit.DAYS.between(curStart, theoreticalEnd) + 1;
-            long gov = (daysInTerm >= daysInFull)
-                    ? base
-                    : (long) Math.floor((base * (double) daysInTerm / daysInFull) / 10) * 10;
-
-            if (regularWage < companyPay + gov) gov = regularWage - companyPay;
-
-            TermAmountDTO t = TermAmountDTO.builder()
-                    .startMonthDate(Date.valueOf(curStart))
-                    .endMonthDate(Date.valueOf(actualEnd))
-                    .paymentDate(Date.valueOf(actualEnd.plusMonths(1).withDayOfMonth(1)))
-                    .companyPayment(companyPay)
-                    .govPayment(gov)
-                    .build();
-            list.add(t);
-
-            curStart = actualEnd.plusDays(1);
-            monthIdx++;
-        }
-        return list;
-    }
+            long regularWage,
+            List<Long> monthlyCompanyPay) {
+	if (start == null || end == null) throw new IllegalArgumentException("기간 누락");
+	if (end.isBefore(start)) throw new IllegalArgumentException("종료일이 시작일보다 빠릅니다.");
+	
+	List<TermAmountDTO> list = new ArrayList<>();
+	LocalDate curStart = start;
+	int monthIdx = 1;
+	
+	while (!curStart.isAfter(end) && monthIdx <= 12) {
+	LocalDate nextStart = start.plusMonths(monthIdx);
+	if (nextStart.getDayOfMonth() != start.getDayOfMonth()) {
+	nextStart = nextStart.plusMonths(1).withDayOfMonth(1);
+	}
+	LocalDate theoreticalEnd = nextStart.minusDays(1);
+	LocalDate actualEnd = theoreticalEnd.isAfter(end) ? end : theoreticalEnd;
+	if (curStart.isAfter(actualEnd)) break;
+	
+	long companyPay = (monthlyCompanyPay != null && monthlyCompanyPay.size() >= monthIdx)
+	? nz(monthlyCompanyPay.get(monthIdx - 1)) : 0L;
+	
+	// 월별 상한(제도 상한) 계산
+	long monthlyCap;
+	if (monthIdx <= 3)      monthlyCap = Math.min(regularWage, 2_500_000L);
+	else if (monthIdx <= 6) monthlyCap = Math.min(regularWage, 2_000_000L);
+	else                    monthlyCap = Math.min(Math.round(regularWage * 0.8), 1_600_000L);
+	
+	long daysInTerm = ChronoUnit.DAYS.between(curStart, actualEnd) + 1;
+	long daysInFull = ChronoUnit.DAYS.between(curStart, theoreticalEnd) + 1;
+	
+	// 부분월이면 일할 상한 적용 (10원 단위 내림)
+	long proratedCap = (daysInTerm >= daysInFull)
+	? monthlyCap
+	: ((long) Math.floor((monthlyCap * (double) daysInTerm / daysInFull) / 10)) * 10;
+	
+	// 정부지급액 계산:
+	long gov = Math.min(proratedCap, Math.max(0L, regularWage - companyPay));
+	gov = (gov / 10L) * 10L;
+	
+	TermAmountDTO t = TermAmountDTO.builder()
+	.startMonthDate(Date.valueOf(curStart))
+	.endMonthDate(Date.valueOf(actualEnd))
+	.paymentDate(Date.valueOf(actualEnd.plusMonths(1).withDayOfMonth(1)))
+	.companyPayment(companyPay)
+	.govPayment(gov)
+	.build();
+	list.add(t);
+	
+	curStart = actualEnd.plusDays(1);
+	monthIdx++;
+	}
+	return list;
+	}
 
     /** 3) 계산된 리스트 저장(confirmId만 주입하여 일괄 INSERT) */
     @Transactional
@@ -161,9 +167,19 @@ public class CompanyApplyService {
                 dto.setChildResiRegiNumber(aes256Util.decrypt(dto.getChildResiRegiNumber()));
             }
         } catch (Exception ignore) {}
-
+        
+        List<TermAmountDTO> terms = termAmountDAO.selectByConfirmId(confirmNumber);
+        dto.setTermAmounts(terms);
+        
         return dto;
     }
+    
+    @Transactional(readOnly = true)
+    public List<ConfirmListDTO> getListByUser(Long userId) {
+        return confirmApplyDAO.selectByUserId(userId);
+    }   
+    
+    
 
     
 }

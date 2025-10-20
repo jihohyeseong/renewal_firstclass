@@ -8,14 +8,14 @@
         keyProperty="confirmNumber" 
         keyColumn="confirm_number">
   INSERT INTO TB_CONFIRM_APPLICATION (
-    apply_dt, start_date, end_date,
+    start_date, end_date,
     weekly_hours, regular_wage,
     child_name, child_resi_regi_number, child_birth_date,
     registration_number, name,
     response_name, response_phone_number,
     status_code, center_id, user_id
   ) VALUES (
-    SYSDATE, #{startDate}, #{endDate},
+    #{startDate}, #{endDate},
     #{weeklyHours}, #{regularWage},
     #{childName}, #{childResiRegiNumber}, #{childBirthDate},
     #{registrationNumber}, #{name},
@@ -81,6 +81,21 @@
     AND NVL(delt_at,'N') = 'N'
 </select>
 
+
+<select id="selectByUserId" parameterType="long"
+        resultType="com.example.renewal_firstclass.domain.ConfirmListDTO">
+  SELECT
+    ca.confirm_number,
+    ca.apply_dt,
+    ca.status_code,
+    ca.name,
+    c.name AS statusName
+  FROM TB_CONFIRM_APPLICATION ca
+  LEFT JOIN TB_CODE c
+    ON ca.status_code = c.code
+  WHERE ca.user_id = #{userId}
+  ORDER BY ca.apply_dt DESC
+</select>
 
 
 

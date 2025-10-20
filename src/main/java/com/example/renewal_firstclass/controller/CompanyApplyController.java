@@ -1,6 +1,7 @@
 package com.example.renewal_firstclass.controller;
 
 import com.example.renewal_firstclass.domain.ConfirmApplyDTO;
+import com.example.renewal_firstclass.domain.ConfirmListDTO;
 import com.example.renewal_firstclass.domain.CustomUserDetails; // 프로젝트 경로 맞게
 import com.example.renewal_firstclass.domain.UserDTO;
 import com.example.renewal_firstclass.service.CompanyApplyService;
@@ -18,7 +19,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -29,10 +32,24 @@ public class CompanyApplyController {
 
     private final CompanyApplyService companyApplyService;
     private final UserService userService;
+    
     /* 메인 */
     @GetMapping("/comp/main")
-    public String compMain() {
+    public String main(Model model) {
+        UserDTO user = currentUserOrNull();
+        if (user != null && user.getId() != null) {
+            model.addAttribute("confirmList", companyApplyService.getListByUser(user.getId()));
+        }
         return "company/compmain";
+    }
+    
+    private UserDTO currentUserOrNull() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
+            return null;
+        }
+        CustomUserDetails ud = (CustomUserDetails) auth.getPrincipal();
+        return userService.findByUsername(ud.getUsername());
     }
 
     /* 작성 화면 — 로그인 필수 */
@@ -57,7 +74,8 @@ public class CompanyApplyController {
     public String compSave(@Valid @ModelAttribute("form") ConfirmApplyDTO form,
                             BindingResult binding,
                             java.security.Principal principal,
-                            RedirectAttributes ra) {
+                            RedirectAttributes ra, 
+                            @RequestParam(name="monthlyCompanyPay", required=false) List<String> monthlyCompanyPayRaw) {
         if (principal == null) {
             ra.addFlashAttribute("error", "로그인이 필요합니다.");
             return "redirect:/login";
@@ -81,9 +99,17 @@ public class CompanyApplyController {
             ra.addFlashAttribute("errors", errors);
             return "redirect:/comp/apply";
         }
+        
+        List<Long> monthlyCompanyPay = new ArrayList<>();
+        if (monthlyCompanyPayRaw != null) {
+            for (String s : monthlyCompanyPayRaw) {
+                String digits = (s == null) ? "" : s.replaceAll("[^0-9]", "");
+                monthlyCompanyPay.add(digits.isEmpty() ? 0L : Long.parseLong(digits));
+            }
+        }
 
         try {
-            Long confirmNumber = companyApplyService.createConfirm(form);
+            Long confirmNumber = companyApplyService.createConfirm(form,monthlyCompanyPay);
             ra.addFlashAttribute("message", "임시저장 완료 (확인서 ID: " + confirmNumber + ")");
             return "redirect:/comp/detail?confirmNumber=" + confirmNumber;
         } catch (Exception e) {
@@ -114,7 +140,7 @@ public class CompanyApplyController {
     }
 
 
-    /* 상세 화면 — 로그인 필수(권한 체크까지 하려면 서비스/DAO로 확인서 소유자 확인 로직 추가) */
+    /* 상세 화면*/
     @GetMapping("/comp/detail")
     public String compDetail(@RequestParam("confirmNumber") Long confirmNumber,
                              @AuthenticationPrincipal CustomUserDetails me,
@@ -127,11 +153,12 @@ public class CompanyApplyController {
 
         try {
             ConfirmApplyDTO confirmDTO = companyApplyService.findByConfirmNumber(confirmNumber);
+            ConfirmApplyDTO dto = companyApplyService.findByConfirmNumber(confirmNumber);
             if (confirmDTO == null) {
                 ra.addFlashAttribute("error", "확인서를 찾을 수 없습니다.");
                 return "redirect:/comp/main";
             }
-
+            model.addAttribute("termList", dto.getTermAmounts()); 
             model.addAttribute("confirmDTO", confirmDTO);
             return "company/compdetail";
 

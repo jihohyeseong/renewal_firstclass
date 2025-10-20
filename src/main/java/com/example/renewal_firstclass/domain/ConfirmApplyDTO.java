@@ -3,6 +3,7 @@ package com.example.renewal_firstclass.domain;
 import lombok.*;
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -45,4 +46,6 @@ public class ConfirmApplyDTO {
     private Long processorId;               // 관리자 유저 id
     private Long centerId;                  // 센터 id
     private Long userId;                    // 신청하는 기업(유저) id
+    
+    private List<TermAmountDTO> termAmounts;
 }
