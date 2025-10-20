@@ -1,22 +1,23 @@
 package com.example.renewal_firstclass.service;
 
-import com.example.renewal_firstclass.dao.ConfirmApplyDAO;
-import com.example.renewal_firstclass.dao.TermAmountDAO;
-import com.example.renewal_firstclass.domain.ConfirmApplyDTO;
-import com.example.renewal_firstclass.domain.ConfirmListDTO;
-import com.example.renewal_firstclass.dao.UserDAO;
-import com.example.renewal_firstclass.domain.TermAmountDTO;
-import com.example.renewal_firstclass.domain.UserDTO;
-import com.example.renewal_firstclass.util.AES256Util;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example.renewal_firstclass.dao.ConfirmApplyDAO;
+import com.example.renewal_firstclass.dao.TermAmountDAO;
+import com.example.renewal_firstclass.dao.UserDAO;
+import com.example.renewal_firstclass.domain.ConfirmApplyDTO;
+import com.example.renewal_firstclass.domain.ConfirmListDTO;
+import com.example.renewal_firstclass.domain.TermAmountDTO;
+import com.example.renewal_firstclass.util.AES256Util;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor

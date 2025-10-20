@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.renewal_firstclass.dao.AdminApprovalDAO">
+	<select id="selectByConfirmNumber"
+        parameterType="long"
+        resultType="com.example.renewal_firstclass.domain.ConfirmApplyDTO">
+	  SELECT
+	    confirm_number,
+	    apply_dt,
+	    start_date,
+	    end_date,
+	    weekly_hours,
+	    regular_wage,
+	    child_name,
+	    child_resi_regi_number,
+	    child_birth_date,
+	    registration_number,
+	    name,
+	    response_name,
+	    response_phone_number,
+	    status_code,
+	    processor_id,
+	    center_id,
+	    user_id
+	  FROM TB_CONFIRM_APPLICATION
+	  WHERE confirm_number = #{confirmNumber}
+	    AND NVL(delt_at,'N') = 'N'
+	</select>
+	
+	<!-- 관리자 부지급 -->
+	<update id="updateAdminJudge" parameterType="com.example.renewal_firstclass.domain.ConfirmApplyDTO">
+		UPDATE TB_CONFIRM_APPLICATION
+		SET
+			processor_id = #{processorId},
+			rejection_reason_code = #{rejectionReasonCode},
+			reject_comment = #{rejectComment},
+			status_code = #{statusCode}
+		WHERE confirm_number = #{confirmNumber}
+			AND status_code NOT IN ('ST_10', 'ST_50', 'ST_60', 'ST_70')
+			AND NVL(delt_at,'N') = 'N'
+	</update>
+	
+	<!-- 처리 완료 여부 확인 (상태 코드가 최종 처리 완료(ST_50)인지 확인) -->
+	<select id="isProcessed" parameterType="long" resultType="int">
+		SELECT COUNT(*)
+		FROM TB_CONFIRM_APPLICATION
+		WHERE confirm_number = #{confirmNumber}
+			AND status_code IN ('ST_50', 'ST_60')
+			AND NVL(delt_at,'N') = 'N'
+	</select>
+</mapper>

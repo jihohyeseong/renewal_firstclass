@@ -1,13 +1,11 @@
 package com.example.renewal_firstclass.controller;
 
-import com.example.renewal_firstclass.domain.ConfirmApplyDTO;
-import com.example.renewal_firstclass.domain.ConfirmListDTO;
-import com.example.renewal_firstclass.domain.CustomUserDetails; // 프로젝트 경로 맞게
-import com.example.renewal_firstclass.domain.UserDTO;
-import com.example.renewal_firstclass.service.CompanyApplyService;
-import com.example.renewal_firstclass.service.UserService;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-import lombok.RequiredArgsConstructor;
+import javax.validation.Valid;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,15 +14,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import com.example.renewal_firstclass.domain.ConfirmApplyDTO;
+import com.example.renewal_firstclass.domain.CustomUserDetails; // 프로젝트 경로 맞게
+import com.example.renewal_firstclass.domain.UserDTO;
+import com.example.renewal_firstclass.service.CompanyApplyService;
+import com.example.renewal_firstclass.service.UserService;
 
-import javax.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor

@@ -437,7 +437,7 @@
                                             </c:choose>
                                         </td>
                                         <td>
-                                            <a href="${pageContext.request.contextPath}/apply/detail?appNo=${app.confirmNumber}" class="table-btn btn-secondary">상세보기</a>
+                                            <a href="${pageContext.request.contextPath}/admin/judge/detail/${app.confirmNumber}" class="table-btn btn-secondary">상세보기</a>
                                         </td>
                                     </tr>
                                 </c:forEach>
