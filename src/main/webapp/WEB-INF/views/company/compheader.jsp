@@ -8,8 +8,10 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/comp.css">
 </head>
 <body>
+
 <header class="header">
 	<a href="${pageContext.request.contextPath}/comp/main" class="logo"><img
 		src="${pageContext.request.contextPath}/resources/images/logo_comp.png"

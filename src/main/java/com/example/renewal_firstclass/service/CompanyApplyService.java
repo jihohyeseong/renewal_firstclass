@@ -28,7 +28,6 @@ public class CompanyApplyService {
     private final UserDAO userDAO;
     private final AES256Util aes256Util;
 
-    /* ========== 공개 로직 예시 ========== */
 
     /** 신규 저장(ST_10) + (필요 시) 단위기간: 삭제→계산→삽입 */
     @Transactional
@@ -175,10 +174,17 @@ public class CompanyApplyService {
         return dto;
     }
     
-    @Transactional(readOnly = true)
-    public List<ConfirmListDTO> getListByUser(Long userId) {
-        return confirmApplyDAO.selectByUserId(userId);
-    }   
+    
+    /*메인페이지 + 페이징처리용*/
+    public List<ConfirmListDTO> getListByUser(Long userId, int page, int size) {
+        int offset = (page - 1) * size;
+        return confirmApplyDAO.selectByUserId(userId, offset, size);
+    }
+
+    public int countByUser(Long userId) {
+        return confirmApplyDAO.countByUser(userId);
+    }  
+    
     
     
 

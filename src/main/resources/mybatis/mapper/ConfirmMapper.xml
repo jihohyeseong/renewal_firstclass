@@ -24,7 +24,7 @@
   )
 </insert>
 
- <update id="updateDraft"
+ <update id="updateConfirm"
           parameterType="com.example.renewal_firstclass.domain.ConfirmApplyDTO">
     UPDATE TB_CONFIRM_APPLICATION
        SET start_date             = #{startDate},
@@ -59,30 +59,54 @@
         parameterType="long"
         resultType="com.example.renewal_firstclass.domain.ConfirmApplyDTO">
   SELECT
-    confirm_number,
-    apply_dt,
-    start_date,
-    end_date,
-    weekly_hours,
-    regular_wage,
-    child_name,
-    child_resi_regi_number,
-    child_birth_date,
-    registration_number,
-    name,
-    response_name,
-    response_phone_number,
-    status_code,
-    processor_id,
-    center_id,
-    user_id
-  FROM TB_CONFIRM_APPLICATION
-  WHERE confirm_number = #{confirmNumber}
-    AND NVL(delt_at,'N') = 'N'
+    -- 본문
+    ca.confirm_number,
+    ca.apply_dt,
+    ca.start_date,
+    ca.end_date,
+    ca.weekly_hours,
+    ca.regular_wage,
+    ca.child_name,
+    ca.child_resi_regi_number,
+    ca.child_birth_date,
+    ca.registration_number,
+    ca.name,
+    ca.response_name,
+    ca.response_phone_number,
+    ca.status_code,
+    ca.processor_id,
+    ca.center_id,
+    ca.user_id,
+    ca.reject_comment,
+
+    -- 상태 코드 이름
+    sc.name  AS statusName,
+
+    -- 센터 정보
+    ctr.center_name        	 	AS centerName,
+    ctr.center_phone_number	 	AS centerPhoneNumber,
+    ctr.center_URL				AS centerURL,
+    ctr.center_zip_code			AS centerZipCode,
+    ctr.center_address_base		AS centerAddressBase,
+    ctr.center_address_detail	AS centerAddressDetail,
+
+    -- 반려 코드/사유 
+    ca.rejection_reason_code,
+    rc.name                   AS rejectReasonName
+
+
+  FROM TB_CONFIRM_APPLICATION ca
+  LEFT JOIN TB_CODE   sc  ON sc.code  = ca.status_code
+  LEFT JOIN TB_CENTER ctr ON ctr.center_id = ca.center_id
+  LEFT JOIN TB_CODE   rc  ON rc.code  = ca.rejection_reason_code
+
+  WHERE ca.confirm_number = #{confirmNumber}
+    AND NVL(ca.delt_at, 'N') = 'N'
 </select>
 
 
-<select id="selectByUserId" parameterType="long"
+
+<select id="selectByUserId"
         resultType="com.example.renewal_firstclass.domain.ConfirmListDTO">
   SELECT
     ca.confirm_number,
@@ -95,8 +119,12 @@
     ON ca.status_code = c.code
   WHERE ca.user_id = #{userId}
   ORDER BY ca.apply_dt DESC
+  OFFSET #{offset} ROWS FETCH NEXT #{size} ROWS ONLY
 </select>
 
+<select id="countByUser" parameterType="long" resultType="int">
+    SELECT COUNT(*) FROM TB_CONFIRM_APPLICATION WHERE user_id = #{userId}
+</select>
 
 
 </mapper>

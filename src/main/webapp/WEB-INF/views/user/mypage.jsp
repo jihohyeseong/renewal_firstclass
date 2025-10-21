@@ -132,9 +132,26 @@
    }
 </style>
 </head>
-
 <body>
-   <%@ include file="header.jsp" %>
+
+<c:set var="role" value="${user.role}" />
+<c:choose>
+  <c:when test="${role == 'ROLE_CORP'}">
+    <jsp:include page="../company/compheader.jsp"/>
+    <style>
+      :root{
+        --primary-color:#24A960;
+        --primary-light-color:rgba(36,169,96,.08);
+        --success-color:#24A960;
+      }
+      .btn-primary:hover { background-color: #3ed482; box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    </style>
+  </c:when>
+  <c:otherwise>
+    <jsp:include page="header.jsp"/>
+  </c:otherwise>
+</c:choose>
+
  
    <main class="main-container">
      <h2>마이페이지</h2>

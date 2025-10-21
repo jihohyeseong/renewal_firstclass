@@ -168,7 +168,7 @@
 
     <div class="detail-actions">
       <a href="${pageContext.request.contextPath}/comp/main" class="btn btn-secondary">목록</a>
-      <c:if test="${confirmDTO.statusCode == 'ST_10'}">
+      <c:if test="${confirmDTO.statusCode == 'ST_10'||confirmDTO.statusCode == 'ST_30'}">
         <a href="${pageContext.request.contextPath}/comp/apply?confirmNumber=${confirmDTO.confirmNumber}" class="btn btn-secondary">내용 수정</a>
         <form method="post" action="${pageContext.request.contextPath}/comp/submit" style="display:inline;">
           <input type="hidden" name="confirmNumber" value="${confirmDTO.confirmNumber}" />

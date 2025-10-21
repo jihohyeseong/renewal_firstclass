@@ -47,5 +47,13 @@ public class ConfirmApplyDTO {
     private Long centerId;                  // 센터 id
     private Long userId;                    // 신청하는 기업(유저) id
     
+    //센터정보
+    private String centerName;
+    private String centerPhoneNumber;
+    private String centerURL;
+    private String centerZipCode;
+    private String centerAddressBase;
+    private String centerAddressDetail;
+    
     private List<TermAmountDTO> termAmounts;
 }

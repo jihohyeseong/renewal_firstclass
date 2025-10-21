@@ -15,5 +15,10 @@ public interface ConfirmApplyDAO {
     int submitConfirm(@Param("confirmNumber") Long confirmNumber,
                       @Param("userId") Long userId);
     ConfirmApplyDTO selectByConfirmNumber(@Param("confirmNumber") Long confirmNumber);
-    List<ConfirmListDTO> selectByUserId(@Param("userId") Long userId);
+   
+    List<ConfirmListDTO> selectByUserId(@Param("userId") Long userId,
+            @Param("offset") int offset,
+            @Param("size") int size);
+
+    int countByUser(Long userId);
 }

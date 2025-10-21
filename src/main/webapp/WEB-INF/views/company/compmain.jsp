@@ -33,12 +33,6 @@
         --white: #ffffff;
     }
 
-    body {
-        font-family: 'Noto Sans KR', sans-serif;
-        background-color: var(--bg-color-soft); /* 전체 페이지 배경색 */
-        color: var(--text-color);
-        line-height: 1.6;
-    }
 
     .main-container {
         max-width: 1100px;
@@ -135,73 +129,76 @@
 
     /* --- 리스트 테이블 --- */
     .list-table {
-        width: 100%;
-        border-collapse: collapse;
-        table-layout: fixed;
-        font-size: 15px;
-    }
-    .list-table thead th {
-        padding: 14px 16px;
-        font-weight: 600;
-        background-color: var(--primary-color); /* 메인 색상 헤더 */
-        color: var(--white);
-        text-align: left;
-        border-bottom: 2px solid var(--primary-color-dark);
-    }
-    .list-table thead th:nth-child(4), /* 상태 */
-    .list-table thead th:nth-child(5) { /* 작업 */
-        text-align: center;
-    }
-    
-    .list-table tbody td {
-        padding: 14px 16px; /* 행 높이 확보 */
-        line-height: 1.5;
-        vertical-align: middle;
-        border-bottom: 1px solid var(--border-color);
-        color: var(--text-color-light);
-    }
-    /* 신청번호 강조 */
-    .list-table tbody td:first-child {
-        color: var(--text-color);
-        font-weight: 500;
-    }
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;          /* 고정 레이아웃 유지 */
+    font-size: 15px;
+	}
+	
+	.list-table th, .list-table td {
+	    padding: 14px 16px;           /* 헤더/바디 패딩 동일 */
+	    box-sizing: border-box;       /* 패딩 포함해서 폭 계산 -> 오차 방지 */
+	    vertical-align: middle;
+	}
+	
+	.list-table thead th {
+	    font-weight: 600;
+	    background-color: var(--primary-color);
+	    color: var(--white);
+	    text-align: left;
+	    border-bottom: 2px solid var(--primary-color-dark);
+	}
+	
+	/* 정렬만 다르게 */
+	.list-table thead th:nth-child(4),
+	.list-table td:nth-child(4) {     /* 상태 */
+	    text-align: center;
+	}
+	.list-table thead th:nth-child(5),
+	.list-table td:nth-child(5) {     /* 작업 */
+	    text-align: right;
+	    white-space: nowrap;
+	}
     .list-table tbody tr:hover { 
         background: var(--primary-color-light); /* 연한 녹색 호버 */
     }
 
     /* --- 상태 배지 --- */
     .status-badge {
-        display: inline-block;
+        display: inline-flex;
+        align-items:center;
+  		justify-content:center;
+  		box-sizing:border-box;
         font-size: 12px;
         font-weight: 600;
-        padding: 5px 12px;
+        padding:6px 12px;
         border-radius: 999px;
         line-height: 1;
         text-align: center;
-        /* 기본 상태 (알 수 없는 값일 경우) */
-        background-color: #f3f4f6; 
-        color: #4b5563;
+        width: 8.5em; 
     }
     
-    /* ※ statusCode 매핑 이름(한글) 기준으로 클래스명 변경 */
-    .status-badge.status-등록,  /* ST_10 (임시저장) */
-    .status-badge.status-제출,  /* ST_20 */
-    .status-badge.status-대기 {  /* otherwise */
-        background-color: #f3f4f6; /* 기본 회색 */
-        color: #4b5563;
-    }
-    .status-badge.status-심사중 { /* ST_30 */
-        background-color: #fffbeb; /* 연한 황색 */
-        color: #b45309;
-    }
-    .status-badge.status-심사완료 { /* ST_50 */
-        background-color: var(--primary-color-light);
-        color: var(--primary-color-dark);
-    }
-    .status-badge.status-반려 { /* (반려 코드 추가 시) */
-        background-color: #ffebeb; /* 연한 적색 */
-        color: #b91c1c;
-    }
+	.status-badge.status-ST_10{
+	    background-color: #f3f4f6;
+	    color: #4b5563;
+	}
+
+	.status-badge.status-ST_20 {
+	    background-color: #c6c6cc;
+	    color: #4b5563;
+	}
+	.status-badge.status-ST_30 { /* 심사중 */
+	    background-color: #fcf5d8 !important; 
+	    color: #b45309 !important;
+	}
+	.status-badge.status-ST_50 { /* 승인완료 */
+	    background-color: #d2f8de !important;
+	    color: var(--primary-color-dark) !important;
+	}
+	.status-badge.status-ST_60 { /* 반려 */
+	    background-color: #ffebeb !important; 
+	    color: #b91c1c !important;
+	}
 
     /* 상태 셀 중앙 정렬 */
     .list-table td.status-cell {
@@ -252,6 +249,32 @@
         color: var(--text-color-light);
         margin: 0;
     }
+    
+    /* 페이징처리용 */ 
+.pagination-wrap{
+  display:flex;
+  justify-content:center;   /* 가운데로 */
+  align-items:center;
+  margin-top:18px;
+}
+.pagination{ list-style:none; display:flex; gap:6px; padding:0; margin:0; }
+.page-item .page-link{
+  display:inline-flex; align-items:center; justify-content:center;
+  min-width:38px; height:36px; padding:0 10px; border-radius:8px;
+  border:1px solid var(--border-color); text-decoration:none;
+  font-size:14px; color:#374151; background:#fff;
+  transition:.15s ease;
+}
+.page-item .page-link:hover{ filter:brightness(0.98); }
+.page-item.active .page-link{
+  background:var(--primary-color); color:#fff; border-color:var(--primary-color);
+}
+.page-item.disabled .page-link{
+  pointer-events:none; opacity:.5;
+}
+.pagination-meta{ display:flex; align-items:center; gap:12px; font-size:13px; color:#6b7280; }
+.page-size-form{ display:inline-flex; align-items:center; gap:6px; }
+.page-size-form select{ height:32px; border:1px solid var(--border-color); border-radius:8px; padding:0 8px; }
 
 </style>
 </head>
@@ -286,47 +309,87 @@
                 </div>
             </c:when>
             <c:otherwise>
-                <table class="list-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 18%;">신청번호</th>
-                            <th style="width: 20%;">신청일</th>
-                            <th style="width: 20%;">신청자 이름</th>
-                            <th style="width: 18%;">상태</th>
-                            <th style="width: 140px;">작업</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <c:forEach var="app" items="${confirmList}">
-                            <tr>
-                                <td>${app.confirmNumber}</td>
-                                <td>${not empty app.applyDt ? app.applyDt : '-'}</td>
-                                <td>${app.name}</td>
-                                
-                                <td class="status-cell"> 
-                                    <c:set var="stCode" value="${app.statusCode}" />
-                                    <c:set var="stName">
-                                        <c:choose>
-                                            <c:when test="${stCode == 'ST_10'}">등록(임시저장)</c:when>
-                                            <c:when test="${stCode == 'ST_20'}">제출</c:when>
-                                            <c:when test="${stCode == 'ST_30'}">심사중</c:when>
-                                            <c:when test="${stCode == 'ST_50'}">심사완료</c:when>
-                                            <c:otherwise>대기</c:otherwise> <%-- 예외 처리 (기본값) --%>
-                                        </c:choose>
-                                    </c:set>
-                                    
-                                    <span class="status-badge status-${stName}">${stName}</span>
-                                </td>
-    
-                                <td class="actions">
-                                    <a href="${pageContext.request.contextPath}/comp/detail?confirmNumber=${app.confirmNumber}" class="btn btn-secondary">
-                                        상세보기</a>
-                                </td>
-                            </tr>
-                        </c:forEach>
-                    </tbody>
-                </table>
-            </c:otherwise>
+				<table class="list-table">
+					<colgroup>
+						<col style="width: 18%;">
+						<col style="width: 20%;">
+						<col style="width: 20%;">
+						<col style="width: 18%;">
+						<col style="width: 24%;">
+					</colgroup>
+					<thead>
+						<tr>
+							<th>신청번호</th>
+							<th>신청일</th>
+							<th>신청자 이름</th>
+							<th>상태</th>
+							<th>상세보기</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:forEach var="app" items="${confirmList}">
+							<tr>
+								<td>${app.confirmNumber}</td>
+								<td>${not empty app.applyDt ? app.applyDt : '-'}</td>
+								<td>${app.name}</td>
+
+								<td class="status-cell"><c:set var="stCode"
+										value="${app.statusCode}" /> <%-- 화면에 보여줄 텍스트 결정 --%> <c:set
+										var="stName">
+										<c:choose>
+											<c:when test="${stCode == 'ST_10'}">등록(임시저장)</c:when>
+											<c:when test="${stCode == 'ST_20'}">제출</c:when>
+											<c:when test="${stCode == 'ST_30'}">심사중</c:when>
+											<c:when test="${stCode == 'ST_50'}">승인완료</c:when>
+											<c:when test="${stCode == 'ST_60'}">반려처리</c:when>
+										</c:choose>
+									</c:set> <span class="status-badge status-${stCode}">${stName}</span></td>
+
+								<td class="actions"><a
+									href="${pageContext.request.contextPath}/comp/detail?confirmNumber=${app.confirmNumber}"
+									class="btn btn-secondary"> 상세보기</a></td>
+							</tr>
+						</c:forEach>
+					</tbody>
+				</table>
+
+				<c:url var="pageUrl" value="/comp/main" />
+
+				<!-- 페이지 네비게이션 -->
+				<c:if test="${totalPages > 1}">
+					<nav class="pagination-wrap" aria-label="pagination">
+						<ul class="pagination">
+
+							<!-- 처음/이전 -->
+							<li class="page-item ${page == 1 ? 'disabled' : ''}"><a
+								class="page-link" href="${pageUrl}?page=1&size=${size}">«</a>
+							</li>
+							<li class="page-item ${page == 1 ? 'disabled' : ''}"><a
+								class="page-link" href="${pageUrl}?page=${page-1}&size=${size}">‹
+									이전</a></li>
+
+							<!-- 번호 -->
+							<c:forEach var="p" begin="1" end="${totalPages}">
+								<li class="page-item ${p == page ? 'active' : ''}"><a
+									class="page-link" href="${pageUrl}?page=${p}&size=${size}">${p}</a>
+								</li>
+							</c:forEach>
+
+							<!-- 다음/마지막 -->
+							<li class="page-item ${page == totalPages ? 'disabled' : ''}">
+								<a class="page-link"
+								href="${pageUrl}?page=${page+1}&size=${size}">다음 ›</a>
+							</li>
+							<li class="page-item ${page == totalPages ? 'disabled' : ''}">
+								<a class="page-link"
+								href="${pageUrl}?page=${totalPages}&size=${size}">»</a>
+							</li>
+
+						</ul>
+					</nav>
+				</c:if>
+
+			</c:otherwise>
         </c:choose>
     </div>
 </main>

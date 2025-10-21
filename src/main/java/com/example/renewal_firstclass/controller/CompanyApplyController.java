@@ -37,14 +37,32 @@ public class CompanyApplyController {
     
     /* 메인 */
     @GetMapping("/comp/main")
-    public String main(Model model) {
+    public String main(@RequestParam(defaultValue = "1") int page,
+                       @RequestParam(defaultValue = "10") int size,
+                       Model model) {
+
         UserDTO user = currentUserOrNull();
-        if (user != null && user.getId() != null) {
-            model.addAttribute("confirmList", companyApplyService.getListByUser(user.getId()));
+        if (user == null || user.getId() == null) {
+            return "redirect:/login";
         }
+
+        // 전체 건수 & 목록
+        int total = companyApplyService.countByUser(user.getId());
+        int totalPages = (int) Math.ceil((double) total / Math.max(1, size));
+
+        // 페이지 경계 보정
+        if (page < 1) page = 1;
+        if (totalPages > 0 && page > totalPages) page = totalPages;
+
+        model.addAttribute("confirmList", companyApplyService.getListByUser(user.getId(), page, size));
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
+        model.addAttribute("total", total);
+        model.addAttribute("totalPages", totalPages);
+
         return "company/compmain";
     }
-    
+
     private UserDTO currentUserOrNull() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
@@ -53,12 +71,11 @@ public class CompanyApplyController {
         CustomUserDetails ud = (CustomUserDetails) auth.getPrincipal();
         return userService.findByUsername(ud.getUsername());
     }
-
     /* 작성 화면 — 로그인 필수 */
     @GetMapping("/comp/apply")
     public String compApply(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName(); // principal이 CustomUserDetails든 아닐든 username
+        String username = auth.getName();
         UserDTO user = userService.findByUsername(username);
 
         if (!model.containsAttribute("form")) {
@@ -134,10 +151,36 @@ public class CompanyApplyController {
             Long userId = userService.findByUsername(principal.getName()).getId();
             companyApplyService.submitConfirm(confirmNumber, userId);
             ra.addFlashAttribute("message", "제출이 완료되었습니다.");
-            return "redirect:/comp/detail?confirmNumber=" + confirmNumber;
+            return "redirect:/comp/complete?confirmNumber=" + confirmNumber;
         } catch (Exception e) {
             ra.addFlashAttribute("error", "제출 실패: " + e.getMessage());
             return "redirect:/comp/detail?confirmNumber=" + confirmNumber;
+        }
+    }
+    
+    @GetMapping("/comp/complete")
+    public String compComplete(@RequestParam("confirmNumber") Long confirmNumber,
+                             @AuthenticationPrincipal CustomUserDetails me,
+                             Model model,
+                             RedirectAttributes ra) {
+        if (me == null) {
+            ra.addFlashAttribute("error", "로그인이 필요합니다.");
+            return "redirect:/login";
+        }
+
+        try {
+            ConfirmApplyDTO confirmDTO = companyApplyService.findByConfirmNumber(confirmNumber);
+
+            if (confirmDTO == null) {
+                ra.addFlashAttribute("error", "확인서를 찾을 수 없습니다.");
+                return "redirect:/comp/main";
+            }
+            model.addAttribute("confirmDTO", confirmDTO);
+            return "company/compcomplete";
+
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "상세 조회 중 오류 발생: " + e.getMessage());
+            return "redirect:/comp/main";
         }
     }
 
