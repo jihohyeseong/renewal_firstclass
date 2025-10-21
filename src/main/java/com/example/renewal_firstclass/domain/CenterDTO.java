@@ -11,7 +11,7 @@ public class CenterDTO {
 	private String centerName;
 	private String centerUrl;
 	private String centerZipCode;
-	private String cneterAddressBase;
+	private String centerAddressBase;
 	private String centerAddressDetail;
 	private String centerPhoneNumber;
 }

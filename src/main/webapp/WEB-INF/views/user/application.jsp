@@ -240,21 +240,21 @@
                     <h2>신청인 정보</h2>
                     <div class="form-group">
                         <label class="field-title">이름</label>
-                        <div class="input-field"><input type="text" value="${applicationDTO.name}" name="name" readonly></div>
+                        <div class="input-field"><input type="text" value="${applicationDTO.name}" name="name" disabled></div>
                     </div>
                     <div class="form-group">
                         <label class="field-title">주민등록번호</label>
                         <div class="input-field">
-                            <input type="text" value="${applicationDTO.registrationNumber}" name="registrationNumber" readonly>
+                            <input type="text" value="${applicationDTO.registrationNumber}" name="registrationNumber" disabled>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="field-title">주소</label>
-                        <div class="input-field"><input type="text" value="[${applicationDTO.zipNumber}] ${applicationDTO.addressBase} ${applicationDTO.addressDetail}" readonly></div>
+                        <div class="input-field"><input type="text" value="[${applicationDTO.zipNumber}] ${applicationDTO.addressBase} ${applicationDTO.addressDetail}" disabled></div>
                     </div>
                     <div class="form-group">
                         <label class="field-title">휴대전화번호</label>
-                        <div class="input-field"><input type="text" value="${applicationDTO.phoneNumber}" readonly></div>
+                        <div class="input-field"><input type="text" value="${applicationDTO.phoneNumber}" disabled></div>
                     </div>
                 </div>
 
@@ -281,7 +281,7 @@
                         <label class="field-title">사업장 등록번호</label>
                         <div class="input-field">
                             <input type="text" id="businessRegiNumber"
-                                value="${applicationDTO.buisinessRegiNumber}" inputmode="numeric" autocomplete="off" readonly/>
+                                value="${applicationDTO.buisinessRegiNumber}" inputmode="numeric" autocomplete="off" disabled/>
                             </div>
                     </div>
                     <div class="form-group">
@@ -290,12 +290,12 @@
                             <div class="addr-row">
                                 <input type="text" id="biz-postcode"
                                     placeholder="우편번호" value="${applicationDTO.companyZipNumber}"
-                                    readonly>
+                                    disabled>
                             </div>
                             <input type="text" id="biz-base"
                                 placeholder="기본주소" value="${applicationDTO.companyAddressBase}"
-                                readonly style="margin-top: 8px;"> 
-                            <input type="text" id="biz-detail" value="${applicationDTO.companyAddressDetail}" readonly>
+                                readonly style="margin-top: 8px;" disabled> 
+                            <input type="text" id="biz-detail" value="${applicationDTO.companyAddressDetail}" disabled>
                         </div>
                     </div>
                 </div>
@@ -308,7 +308,7 @@
                     <div class="form-group">
                         <label class="field-title" for="start-date">① 육아휴직 시작일</label>
                         <div class="input-field">
-                            <input type="date" id="start-date" value="${applicationDTO.startDate}">
+                            <input type="date" id="start-date" value="${applicationDTO.startDate}" disabled>
                         </div>
                     </div>
 
@@ -317,7 +317,7 @@
                             <label class="field-title" for="end-date">② 육아휴직 종료일</label>
                             <div class="input-field"
                                 style="display: flex; align-items: center; gap: 10px;">
-                                <input type="date" id="end-date" value="${applicationDTO.endDate}"
+                                <input type="date" id="end-date" value="${applicationDTO.endDate}" disabled
                                     style="width: auto; flex-grow: 1;">
                             </div>
                         </div>
@@ -347,7 +347,7 @@
                                         name="monthly_payment_${status.count}" 
                                         value="${term.companyPayment}" 
                                         placeholder="해당 기간의 사업장 지급액(원) 입력" 
-                                        autocomplete="off">
+                                        autocomplete="off" disabled>
                                 </div>
                             </div>
                         </c:forEach>
@@ -376,13 +376,13 @@
                         <div class="form-group">
                             <label class="field-title" for="child-name">자녀 이름</label>
                             <div class="input-field">
-                                <input type="text" id="child-name" name="childName" value="${applicationDTO.childName}">
+                                <input type="text" id="child-name" name="childName" value="${applicationDTO.childName}" disabled>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="field-title" for="birth-date">출생일</label>
                             <div class="input-field">
-                                <input type="date" id="birth-date" value="${applicationDTO.childBirthDate}">
+                                <input type="date" id="birth-date" value="${applicationDTO.childBirthDate}" disabled>
                             </div>
                         </div>
                         <div class="form-group">
@@ -391,10 +391,10 @@
                                 <div class="input-field"
                                     style="display: flex; align-items: center; gap: 10px;">
                                     <input type="text" id="child-rrn-a" maxlength="6"
-                                        placeholder="생년월일 6자리" value="${fn:substring(applicationDTO.childResiRegiNumber, 0, 6)}"> 
+                                        placeholder="생년월일 6자리" value="${fn:substring(applicationDTO.childResiRegiNumber, 0, 6)}" disabled> 
                                     <span class="hyphen">-</span> 
-                                    <input type="password" id="child-rrn-b" maxlength="7"
-                                        placeholder="뒤 7자리" value="${fn:substring(applicationDTO.childResiRegiNumber, 6, 13)}">
+                                    <input type="text" id="child-rrn-b" maxlength="7"
+                                        placeholder="뒤 7자리" value="${fn:substring(applicationDTO.childResiRegiNumber, 6, 13)}" disabled>
                                 </div>
                                 <input type="hidden" name="childResiRegiNumber"
                                     id="child-rrn-hidden">
@@ -430,9 +430,9 @@
                             </div>
                         </div>
                         <div class="info-box">
-                            <p><strong>관할센터:</strong> <span id="center-name-display">서울 고용 복지 플러스 센터</span></p>
-                            <p><strong>대표전화:</strong> <span id="center-phone-display">02-2004-7301</span></p>
-                            <p><strong>주소:</strong> <span id="center-address-display">서울 중구 삼일대로363 1층 (장교동)</span></p>
+                            <p><strong>관할센터:</strong> <span id="center-name-display"></span></p>
+                            <p><strong>대표전화:</strong> <span id="center-phone-display"></span></p>
+                            <p><strong>주소:</strong> <span id="center-address-display"></span></p>
                         </div>
                         <input type="hidden" name="centerId" id="centerId">
                     </div>
@@ -446,7 +446,7 @@
                     </div>
                     <div style="display:flex; flex-direction:column; align-items:flex-end; text-align:right; margin-top:16px;">
                         <label class="field-title" style="width:auto; margin-bottom:12px;">
-                        신청인&nbsp;:&nbsp;${userDTO.name}
+                        신청인&nbsp;:&nbsp;${applicationDTO.name}
                         </label>
                         <div class="radio-group" style="justify-content:flex-end; gap:24px;">
                             <input type="radio" id="gov-yes" name="govInfoAgree" value="Y">
@@ -1064,41 +1064,41 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   if (findCenterBtn) {
-    findCenterBtn.addEventListener('click', function() {
-      $.getJSON('${pageContext.request.contextPath}/center/list', function(list) {
-        centerListBody.innerHTML = ''; // 기존 목록 초기화
-        
-        if (list && list.length > 0) {
-          list.forEach(center => {
-            const row = document.createElement('tr');
-            const fullAddress = `[${center.centerZipCode}] ${center.cneterAddressBase} ${center.centerAddressDetail || ''}`;
-            
-            row.innerHTML = `
-              <td>${center.centerName}</td>
-              <td>${fullAddress}</td>
-              <td>${center.centerPhoneNumber}</td>
-              <td>
-                <button type="button" class="btn btn-primary btn-select-center">선택</button>
-              </td>
-            `;
+	  findCenterBtn.addEventListener('click', function() {
+	    $.getJSON('${pageContext.request.contextPath}/center/list', function(list) {
+	      centerListBody.innerHTML = ''; // 기존 목록 초기화
 
-            const selectBtn = row.querySelector('.btn-select-center');
-            selectBtn.dataset.centerId = center.centerId;
-            selectBtn.dataset.centerName = center.centerName;
-            selectBtn.dataset.centerPhone = center.centerPhoneNumber;
-            selectBtn.dataset.centerAddress = fullAddress;
+	      if (list && list.length > 0) {
+	        list.forEach(center => {
+	          const row = document.createElement('tr');
+	          // 백틱 대신 + 연산자 사용
+	          const fullAddress = '[' + center.centerZipCode + '] ' + center.centerAddressBase + ' ' + (center.centerAddressDetail || '');
 
-            centerListBody.appendChild(row);
-          });
-        } else {
-          centerListBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">검색된 센터 정보가 없습니다.</td></tr>';
-        }
-        openModal();
-      }).fail(function() {
-          alert('센터 목록을 불러오는 데 실패했습니다.');
-      });
-    });
-  }
+	          // 백틱 대신 + 연산자 사용 (가독성을 위해 여러 줄로 나눔)
+	          row.innerHTML = '<td>' + center.centerName + '</td>' +
+	            '<td>' + fullAddress + '</td>' +
+	            '<td>' + center.centerPhoneNumber + '</td>' +
+	            '<td>' +
+	            '<button type="button" class="btn btn-primary btn-select-center">선택</button>' +
+	            '</td>';
+
+	          const selectBtn = row.querySelector('.btn-select-center');
+	          selectBtn.dataset.centerId = center.centerId;
+	          selectBtn.dataset.centerName = center.centerName;
+	          selectBtn.dataset.centerPhone = center.centerPhoneNumber;
+	          selectBtn.dataset.centerAddress = fullAddress;
+
+	          centerListBody.appendChild(row);
+	        });
+	      } else {
+	        centerListBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">검색된 센터 정보가 없습니다.</td></tr>';
+	      }
+	      openModal();
+	    }).fail(function() {
+	      alert('센터 목록을 불러오는 데 실패했습니다.');
+	    });
+	  });
+	}
 
   if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
   if (centerModal) {
