@@ -19,4 +19,9 @@ public class CodeService {
 		
 		return codeDAO.findAllRejectCode();
 	}
+
+	public List<CodeDTO> getBankCodeList() {
+		
+		return codeDAO.findAllBankCode();
+	}
 }

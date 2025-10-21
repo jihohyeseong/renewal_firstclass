@@ -10,4 +10,6 @@ import com.example.renewal_firstclass.domain.CodeDTO;
 public interface CodeDAO {
 
 	List<CodeDTO> findAllRejectCode();
+
+	List<CodeDTO> findAllBankCode();
 }

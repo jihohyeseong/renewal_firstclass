@@ -28,4 +28,13 @@ public class CodeController {
 		
 		return ResponseEntity.status(HttpStatus.OK).body(list);
 	}
+	
+	@GetMapping("/code/bank")
+	@ResponseBody
+	public ResponseEntity<List<CodeDTO>> getBankCode(){
+		
+		List<CodeDTO> list = codeService.getBankCodeList();
+		
+		return ResponseEntity.status(HttpStatus.OK).body(list);
+	}
 }

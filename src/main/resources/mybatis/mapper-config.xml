@@ -11,5 +11,7 @@
 		<typeAlias alias="CorpJoinDTO" type="com.example.renewal_firstclass.domain.CorpJoinDTO" />
 		<typeAlias alias="UserVO" type="com.example.renewal_firstclass.domain.UserVO" />
 		<typeAlias alias="UserDTO" type="com.example.renewal_firstclass.domain.UserDTO" />
+		<typeAlias alias="SimpleConfirmVO" type="com.example.renewal_firstclass.domain.SimpleConfirmVO" />
+		<typeAlias alias="SimpleUserInfoVO" type="com.example.renewal_firstclass.domain.SimpleUserInfoVO" />
 	</typeAliases>
 </configuration>

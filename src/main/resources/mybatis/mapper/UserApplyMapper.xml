@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.renewal_firstclass.dao.UserApplyDAO">
+	<select id="findByUsername" parameterType="string" resultType="SimpleUserInfoVO">
+		SELECT name, registration_number
+		FROM TB_User
+		WHERE username = #{username}
+	</select>
+	<select id="selectSimpleConfirmList" parameterType="map" resultType="SimpleConfirmVO">
+        SELECT
+            c.confirm_number,
+            TO_CHAR(c.apply_dt, 'YYYY-MM-DD') AS applyDt,
+            TO_CHAR(c.start_date, 'YYYY-MM-DD') AS startDate,
+            TO_CHAR(c.end_date, 'YYYY-MM-DD')   AS endDate,
+            u.name,
+            u.phone_number
+        FROM
+            TB_CONFIRM_APPLICATION c
+        INNER JOIN
+            TB_USER u ON c.user_id = u.id
+        WHERE
+            c.delt_at = 'N'
+            AND c.status_code = 'ST_50'
+            AND c.name = #{name}
+            AND c.registration_number = #{registrationNumber}
+            AND u.role = 'ROLE_CORP'
+    </select>
+    <resultMap id="applicationSingleQueryResultMap" type="com.example.renewal_firstclass.domain.ApplicationDTO">
+        <id property="confirmNumber" column="app_confirm_number"/> <id column="app_confirm_number" /> <result property="name" column="user_name"/>
+        <result property="registrationNumber" column="user_reg_num"/>
+        <result property="zipNumber" column="user_zip_number"/>
+        <result property="addressBase" column="user_address_base"/>
+        <result property="addressDetail" column="user_address_detail"/>
+        <result property="phoneNumber" column="user_phone_number"/>
+        
+        <result property="companyName" column="comp_name"/>
+        <result property="buisinessRegiNumber" column="comp_busi_reg_num"/>
+        <result property="companyZipNumber" column="comp_zip_number"/>
+        <result property="companyAddressBase" column="comp_address_base"/>
+        <result property="companyAddressDetail" column="comp_address_detail"/>
+
+        <result property="startDate" column="app_start_date"/>
+        <result property="endDate" column="app_end_date"/>
+        <result property="regularWage" column="app_regular_wage"/>
+        <result property="weeklyHours" column="app_weekly_hours"/>
+        <result property="childName" column="app_child_name"/>
+        <result property="childBirthDate" column="app_child_birth_date"/>
+        <result property="childResiRegiNumber" column="app_child_resi_regi_num"/>
+        
+        <collection property="list" ofType="com.example.renewal_firstclass.domain.TermAmountDTO">
+            <id property="termId" column="term_id"/>
+            <result property="companyPayment" column="company_payment"/>
+            <result property="govPayment" column="gov_payment"/>
+            <result property="paymentDate" column="payment_date"/>
+            <result property="startMonthDate" column="start_month_date"/>
+            <result property="endMonthDate" column="end_month_date"/>
+            <result property="confirmNumber" column="term_confirm_number"/>
+        </collection>
+    </resultMap>
+
+
+    <select id="getApplicationDTO" parameterType="long" resultMap="applicationSingleQueryResultMap">
+        SELECT
+            -- 4. Application 정보
+            a.confirm_number AS app_confirm_number,
+            a.start_date AS app_start_date,
+            a.end_date AS app_end_date,
+            a.regular_wage AS app_regular_wage,
+            a.weekly_hours AS app_weekly_hours,
+            a.child_name AS app_child_name,
+            a.child_birth_date AS app_child_birth_date,
+            a.child_resi_regi_number AS app_child_resi_regi_num,
+            
+            -- 1. 신청자 정보 (TB_USER as u1)
+            u1.name AS user_name,
+            u1.registration_number AS user_reg_num,
+            u1.zip_number AS user_zip_number,
+            u1.address_base AS user_address_base,
+            u1.address_detail AS user_address_detail,
+            u1.phone_number AS user_phone_number,
+            
+            -- 2. 회사 정보 (TB_USER as u2)
+            u2.name AS comp_name,
+            u2.buisiness_regi_number AS comp_busi_reg_num,
+            u2.zip_number AS comp_zip_number,
+            u2.address_base AS comp_address_base,
+            u2.address_detail AS comp_address_detail,
+            
+            -- 3. Term Amount 정보
+            t.term_id,
+            t.payment_date,
+            t.company_payment,
+            t.gov_payment,
+            t.start_month_date,
+            t.end_month_date,
+            t.confirm_number AS term_confirm_number
+        FROM
+            TB_CONFIRM_APPLICATION a
+        -- 1. 신청자 정보 조인
+        JOIN
+            TB_USER u1 ON a.registration_number = u1.registration_number
+        -- 2. 회사 정보 조인
+        JOIN
+            TB_USER u2 ON a.user_id = u2.id
+        -- 3. Term Amount 정보 조인 (LEFT JOIN 필수)
+        LEFT JOIN
+            TB_TERM_AMOUNT t ON a.confirm_number = t.confirm_number
+        WHERE
+            a.confirm_number = #{confirmNumber}
+    </select>
+</mapper>
