@@ -9,4 +9,10 @@
     	FROM TB_Code
     	WHERE code LIKE 'RJ%'
     </select>
+    <!-- Bank 코드 가져오기  -->
+    <select id="findAllBankCode" resultType="com.example.renewal_firstclass.domain.CodeDTO">
+    	SELECT code, name
+    	FROM TB_Code
+    	WHERE REGEXP_LIKE(code, '^[0-9]{3}$')
+    </select>
 </mapper>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.renewal_firstclass.dao.CenterDAO">
+    <!-- Reject 코드 가져오기  -->
+    <select id="getCenterList" resultType="com.example.renewal_firstclass.domain.CenterDTO">
+    	SELECT
+    		center_id,
+    		center_name,
+    		center_url,
+    		center_zip_code,
+    		center_address_base,
+    		center_address_detail,
+    		center_phone_number
+    	FROM TB_CENTER
+    </select>
+</mapper>
