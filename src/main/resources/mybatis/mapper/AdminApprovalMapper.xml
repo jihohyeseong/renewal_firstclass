@@ -40,7 +40,7 @@
 			AND NVL(delt_at,'N') = 'N'
 	</update>
 	
-	<!-- 처리 완료 여부 확인 (상태 코드가 최종 처리 완료(ST_50)인지 확인) -->
+	<!-- 처리 완료 여부 확인 (상태 코드가 최종 처리 완료(ST_50, ST_60)인지 확인) -->
 	<select id="isProcessed" parameterType="long" resultType="int">
 		SELECT COUNT(*)
 		FROM TB_CONFIRM_APPLICATION
@@ -48,4 +48,11 @@
 			AND status_code IN ('ST_50', 'ST_60')
 			AND NVL(delt_at,'N') = 'N'
 	</select>
+	
+	<!-- 상태 코드 업데이트 -->
+	<update id="updateStatusCode" parameterType="long">
+		UPDATE TB_CONFIRM_APPLICATION
+		SET status_code = 'ST_30'
+		WHERE confirm_number = #{confirmNumber}
+	</update>
 </mapper>

@@ -15,24 +15,26 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.renewal_firstclass.domain.AdminJudgeDTO;
 import com.example.renewal_firstclass.domain.ConfirmApplyDTO;
 import com.example.renewal_firstclass.domain.CustomUserDetails;
 import com.example.renewal_firstclass.domain.UserDTO;
 import com.example.renewal_firstclass.service.AdminApprovalService;
+import com.example.renewal_firstclass.service.CompanyApplyService;
 import com.example.renewal_firstclass.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
-@RequestMapping("/admin/judge")
 @RequiredArgsConstructor
 @Slf4j
 public class AdminApprovalController {
 	private final UserService userService;
 	private final AdminApprovalService adminApprovalService;
+	private final CompanyApplyService companyApplyService;
 	
 	private UserDTO currentUserOrNull() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -44,7 +46,7 @@ public class AdminApprovalController {
     }
 
 	// 관리자 지급 (승인)
-    @PostMapping("/approve")
+    @PostMapping("admin/judge/approve")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> adminApprove(@RequestBody AdminJudgeDTO judgeDTO){
     	
@@ -74,7 +76,7 @@ public class AdminApprovalController {
     }
     
     // 관리자 부지급 (반려)
-    @PostMapping("/reject")
+    @PostMapping("admin/judge/reject")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> adminReject(@RequestBody AdminJudgeDTO judgeDTO){
     	
@@ -104,9 +106,9 @@ public class AdminApprovalController {
     }
     
     // 관리자가 이미 처리했는지 확인
-    @GetMapping("/check/{confirmNumber}")
+    @GetMapping("admin/judge/check/{confirmNumber}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> adminChecked(@PathVariable Long confirmNumber){ // [수정] PathVariable명을 confirmNumber로 통일
+    public ResponseEntity<Map<String, Object>> adminChecked(@PathVariable("confirmNumber") Long confirmNumber){ // [수정] PathVariable명을 confirmNumber로 통일
     	
     	Map<String, Object> response = new HashMap<>();
     	boolean adminChecked = adminApprovalService.adminChecked(confirmNumber);
@@ -120,11 +122,35 @@ public class AdminApprovalController {
     	return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     //상세페이지 조회 
-    @GetMapping("/detail/{confirmNumber}")
-    public String adminCompDetailView(@PathVariable Long confirmNumber, Model model) {
-    	ConfirmApplyDTO confirmDTO = adminApprovalService.getConfirmDetail(confirmNumber);
-        model.addAttribute("confirmDTO", confirmDTO);
-        
-        return "admin/admincompdetail";
+    @GetMapping("admin/judge/detail/{confirmNumber}")
+    public String adminCompDetailView(@PathVariable("confirmNumber") Long confirmNumber, Model model,
+    		RedirectAttributes ra) {
+    	try {
+    		ConfirmApplyDTO confirmDTO = adminApprovalService.getConfirmDetail(confirmNumber);
+    		ConfirmApplyDTO dto = companyApplyService.findByConfirmNumber(confirmNumber);
+            if (confirmDTO == null) {
+                ra.addFlashAttribute("error", "확인서를 찾을 수 없습니다.");
+                return "redirect:/admin/confirm";
+            }
+            // 기업(신청자) 정보 조회
+            UserDTO userDTO = userService.findById(confirmDTO.getUserId());
+            if (userDTO == null) {
+                ra.addFlashAttribute("error", "해당 신청자의 기업정보를 찾을 수 없습니다.");
+                return "redirect:/admin/confirm";
+            }
+            // 제출 상태일 경우 심사중으로 변경
+            if ("ST_20".equals(dto.getStatusCode())) {
+            	adminApprovalService.updateStatusCode(confirmNumber);
+                dto.setStatusCode("ST_30"); // DTO에도 반영
+            }
+            model.addAttribute("termList", dto.getTermAmounts()); 
+            model.addAttribute("confirmDTO", confirmDTO);
+            model.addAttribute("userDTO", userDTO);
+            return "admin/admincompdetail";
+            
+    	} catch(Exception e) {
+    		ra.addFlashAttribute("error", "상세 조회 중 오류 발생: " + e.getMessage());
+    		return "redirect:/admin/confirm";
+    	}
     }
 }

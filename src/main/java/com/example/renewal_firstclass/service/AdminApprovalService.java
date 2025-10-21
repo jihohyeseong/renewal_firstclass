@@ -1,10 +1,16 @@
 package com.example.renewal_firstclass.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.example.renewal_firstclass.dao.AdminApprovalDAO;
+import com.example.renewal_firstclass.dao.ConfirmApplyDAO;
+import com.example.renewal_firstclass.dao.TermAmountDAO;
 import com.example.renewal_firstclass.domain.AdminJudgeDTO;
 import com.example.renewal_firstclass.domain.ConfirmApplyDTO;
+import com.example.renewal_firstclass.domain.TermAmountDTO;
+import com.example.renewal_firstclass.util.AES256Util;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,18 +21,35 @@ import lombok.extern.slf4j.Slf4j;
 public class AdminApprovalService {
 
     private final AdminApprovalDAO adminApprovalDAO;
-    /**
-     * 신청 상세 조회
-     */
+    private final ConfirmApplyDAO confirmApplyDAO;
+    private final TermAmountDAO termAmountDAO;
+    private final AES256Util aes256Util;
+    // 신청 상세 조회
     public ConfirmApplyDTO getConfirmDetail(Long confirmNumber) {
         log.info("=== Get Confirm Detail ===");
         log.info("confirmNumber: {}", confirmNumber);
-        return adminApprovalDAO.selectByConfirmNumber(confirmNumber);
+        ConfirmApplyDTO dto = confirmApplyDAO.selectByConfirmNumber(confirmNumber);
+        if (dto == null) return null;
+
+        try {
+            if (dto.getRegistrationNumber() != null && !dto.getRegistrationNumber().trim().isEmpty()) {
+                dto.setRegistrationNumber(aes256Util.decrypt(dto.getRegistrationNumber()));
+            }
+        } catch (Exception ignore) {}
+
+        try {
+            if (dto.getChildResiRegiNumber() != null && !dto.getChildResiRegiNumber().trim().isEmpty()) {
+                dto.setChildResiRegiNumber(aes256Util.decrypt(dto.getChildResiRegiNumber()));
+            }
+        } catch (Exception ignore) {}
+        
+        List<TermAmountDTO> terms = termAmountDAO.selectByConfirmId(confirmNumber);
+        dto.setTermAmounts(terms);
+        
+        return dto;
     }
 
-    /**
-     * 관리자 승인 처리
-     */
+    // 승인 처리
     public boolean adminApprove(AdminJudgeDTO judgeDTO, Long userId) {
         log.info("=== Admin Approve Request ===");
         log.info("confirmNumber: {}", judgeDTO.getConfirmNumber());
@@ -65,17 +88,15 @@ public class AdminApprovalService {
         log.info("Update result: {} rows affected", result);
         
         if (result > 0) {
-            log.info("✅ Application {} approved successfully.", judgeDTO.getConfirmNumber());
+            log.info("Application {} approved successfully.", judgeDTO.getConfirmNumber());
             return true;
         } else {
-            log.error("❌ Failed to approve application {} - No rows updated!", judgeDTO.getConfirmNumber());
+            log.error("Failed to approve application {} - No rows updated!", judgeDTO.getConfirmNumber());
             return false;
         }
     }
 
-    /**
-     * 관리자 반려 처리
-     */
+    // 반려 처리
     public boolean adminReject(AdminJudgeDTO judgeDTO, Long userId) {
         log.info("=== Admin Reject Request ===");
         log.info("confirmNumber: {}", judgeDTO.getConfirmNumber());
@@ -121,18 +142,21 @@ public class AdminApprovalService {
         log.info("Update result: {} rows affected", result);
         
         if (result > 0) {
-            log.info("✅ Application {} rejected successfully.", judgeDTO.getConfirmNumber());
+            log.info(" Application {} rejected successfully.", judgeDTO.getConfirmNumber());
             return true;
         } else {
-            log.error("❌ Failed to reject application {} - No rows updated!", judgeDTO.getConfirmNumber());
+            log.error("Failed to reject application {} - No rows updated!", judgeDTO.getConfirmNumber());
             return false;
         }
     }
     
-    /**
-     * 처리 완료 여부 확인
-     */
+    // 처리 완료 여부 
     public boolean adminChecked(Long confirmNumber) {
         return adminApprovalDAO.isProcessed(confirmNumber) > 0;
     }
+    // 심사중으로 변경
+ 	public void updateStatusCode(Long confirmNumber) {
+ 		
+ 		adminApprovalDAO.updateStatusCode(confirmNumber);
+ 	}
 }

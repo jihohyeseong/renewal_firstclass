@@ -17,11 +17,11 @@
 	                    AND c.rejection_reason_code IS NULL
 	                </when>
 	                <when test="status == 'REJECTED'">
-	                    AND c.status_code = 'ST_50'
+	                    AND c.status_code = 'ST_60'
 	                    AND c.rejection_reason_code IS NOT NULL
 	                </when>
 	                <when test="status == 'ST_50'">
-	                    AND c.status_code = 'ST_50'
+	                    AND c.status_code IN ('ST_50', 'ST_60')
 	                </when>
             	</choose>
             </if>
@@ -30,7 +30,7 @@
             </if>
             AND c.delt_at = 'N'
             AND c.status_code != 'ST_10'
-            AND c.status_code != 'ST_60'
+            AND c.status_code != 'ST_70'
         </where>
     </sql>
 
@@ -43,8 +43,8 @@
             c.rejection_reason_code AS rejectionReasonCode,
             TO_CHAR(c.apply_dt, 'YYYY-MM-DD') AS applyDate,
             CASE
-                WHEN c.status_code IN ('ST_20', 'ST_30') THEN '대기'
-                WHEN c.status_code = 'ST_50' THEN '처리완료'
+                WHEN c.status_code IN ('ST_20', 'ST_30', 'ST_40') THEN '대기'
+                WHEN c.status_code IN ('ST_50', 'ST_60') THEN '처리완료'
                 ELSE '기타'
             END AS statusName
         FROM

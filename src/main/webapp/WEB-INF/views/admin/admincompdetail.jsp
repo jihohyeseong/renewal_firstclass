@@ -17,6 +17,32 @@
     <%@ include file="adminheader.jsp" %>
 
     <main class="main-container">
+    	<div class="info-table-container">
+            <h2 class="section-title">처리상태(상태바)</h2>
+            <table class="info-table">
+                <tbody>
+                    <tr>
+                        <th>확인서 번호</th>
+                        <td><c:out value="${confirmDTO.confirmNumber}" /></td>
+                    </tr>
+                    <tr>
+                        <th>제출일</th>
+                        <td><fmt:formatDate value="${confirmDTO.applyDt}" pattern="yyyy-MM-dd" /></td>
+                    </tr>
+                    <tr>
+                        <th>처리 상태</th>
+                        <td>
+                             <c:choose>
+                                <c:when test="${confirmDTO.statusCode == 'ST_20'}"><span class="status-badge status-pending">검토중</span></c:when>
+                                <c:when test="${confirmDTO.statusCode == 'ST_50'}"><span class="status-badge status-approved">승인</span></c:when>
+                                <c:when test="${confirmDTO.statusCode == 'ST_60'}"><span class="status-badge status-rejected">반려</span></c:when>
+                                <c:otherwise><c:out value="${confirmDTO.statusCode}" /></c:otherwise>
+                            </c:choose>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         <h1>육아휴직 확인서 상세 정보</h1>
 
         <div class="info-table-container">
@@ -35,13 +61,26 @@
                         <th>처리 상태</th>
                         <td>
                              <c:choose>
-                                <c:when test="${confirmDTO.statusCode == 'PENDING'}"><span class="status-badge status-pending">검토중</span></c:when>
-                                <c:when test="${confirmDTO.statusCode == 'APPROVED'}"><span class="status-badge status-approved">승인</span></c:when>
-                                <c:when test="${confirmDTO.statusCode == 'REJECTED'}"><span class="status-badge status-rejected">반려</span></c:when>
+                                <c:when test="${confirmDTO.statusCode == 'ST_20'}"><span class="status-badge status-pending">검토중</span></c:when>
+                                <c:when test="${confirmDTO.statusCode == 'ST_50'}"><span class="status-badge status-approved">승인</span></c:when>
+                                <c:when test="${confirmDTO.statusCode == 'ST_60'}"><span class="status-badge status-rejected">반려</span></c:when>
                                 <c:otherwise><c:out value="${confirmDTO.statusCode}" /></c:otherwise>
                             </c:choose>
                         </td>
                     </tr>
+                    <tr>
+					    <th>기업명</th>
+					    <td>${userDTO.name}</td>
+					</tr>
+					<tr>
+					    <th>주소</th>
+					    <td>${userDTO.addressBase} ${userDTO.addressDetail}</td>
+					</tr>
+					<tr>
+					    <th>전화번호</th>
+					    <td>${userDTO.phoneNumber}</td>
+					</tr>
+                    
                 </tbody>
             </table>
         </div>
@@ -58,7 +97,7 @@
                         <th>주민등록번호</th>
                         <td>
                             <c:set var="rrnDigits" value="${fn:replace(confirmDTO.registrationNumber, '-', '')}" />
-                            ${fn:substring(rrnDigits,0,6)}-${fn:substring(rrnDigits,6,7)}******
+                            ${fn:substring(rrnDigits,0,6)}-${fn:substring(rrnDigits,6,12)}
                         </td>
                     </tr>
                     <tr>
@@ -94,7 +133,7 @@
                                 <th>자녀 주민등록번호</th>
                                 <td>
                                     <c:set var="childRrn" value="${confirmDTO.childResiRegiNumber}" />
-                                    ${fn:substring(childRrn, 0, 6)}-${fn:substring(childRrn, 6, 7)}******
+                                    ${fn:substring(childRrn, 0, 6)}-${fn:substring(childRrn, 6, 12)}
                                 </td>
                             </tr>
                             <tr>
@@ -168,9 +207,22 @@
         </div>
 
         <div class="button-container" style="text-align:center; margin-top:30px;">
-		    <button type="button" id="approveBtn" class="btn btn-success">지급</button>
-		    <button type="button" id="rejectBtn" class="btn btn-danger">부지급</button>
-		    <a href="${pageContext.request.contextPath}/admin/confirm" class="btn btn-secondary">목록으로</a>
+        	<c:choose>
+
+		        <c:when test="${confirmDTO.statusCode == 'ST_50' or confirmDTO.statusCode == 'ST_60'}">
+		            <a href="${pageContext.request.contextPath}/admin/confirm" class="btn btn-secondary">목록으로</a>
+		        </c:when>
+
+		        <c:otherwise>
+		            <div style="margin-bottom:15px;">
+		                <label><input type="radio" name="judgeOption" value="approve">지급</label>
+		                <label style="margin-left:15px;"><input type="radio" name="judgeOption" value="reject">부지급</label>
+		            </div>
+		            <button type="button" id="confirmBtn" class="btn btn-success">확인</button>
+		            <button type="button" id="cancelBtn" class="btn btn-secondary" style="margin-top:10px;">취소</button>
+		            <a href="${pageContext.request.contextPath}/admin/confirm" class="btn btn-secondary">목록으로</a>
+		        </c:otherwise>
+    		</c:choose>
 		</div>
 		
 		<div id="rejectForm" style="display:none; margin-top:20px; border:1px solid #ccc; padding:15px; border-radius:8px;">
@@ -180,6 +232,10 @@
 		        <label><input type="radio" name="reasonCode" value="RJ_20"> 관련서류 미제출</label><br>
 		        <label><input type="radio" name="reasonCode" value="RJ_30"> 신청시기 미도래</label><br>
 		        <label><input type="radio" name="reasonCode" value="RJ_40"> 근속기간 미충족</label><br>
+		        <label><input type="radio" name="reasonCode" value="RJ_50"> 자녀 연령 기준 초과</label><br>
+		        <label><input type="radio" name="reasonCode" value="RJ_60"> 휴직 가능 기간 초과</label><br>
+		        <label><input type="radio" name="reasonCode" value="RJ_70"> 제출서류 정보 불일치</label><br>
+		        <label><input type="radio" name="reasonCode" value="RJ_80"> 신청서 작성 내용 미비</label><br>
 		        <label><input type="radio" name="reasonCode" value="RJ_99"> 기타</label>
 		    </div>
 		
@@ -188,8 +244,6 @@
 		        <input type="text" id="rejectComment" class="form-control" placeholder="상세 사유를 입력하세요" style="width:80%;">
 		    </div>
 		
-		    <button type="button" id="rejectConfirmBtn" class="btn btn-warning" style="margin-top:10px;">확인</button>
-		    <button type="button" id="rejectCancelBtn" class="btn btn-secondary" style="margin-top:10px;">취소</button>
 		</div>
 		
 		<input type="hidden" id="confirmNumber" value="${confirmDTO.confirmNumber}" />
@@ -198,123 +252,98 @@
 <script>
 	document.addEventListener("DOMContentLoaded", function() {
 	
-	    const approveBtn = document.getElementById("approveBtn");
-	    const rejectBtn = document.getElementById("rejectBtn");
+	    const confirmBtn = document.getElementById("confirmBtn");
 	    const rejectForm = document.getElementById("rejectForm");
-	    const rejectConfirmBtn = document.getElementById("rejectConfirmBtn");
-	    const rejectCancelBtn = document.getElementById("rejectCancelBtn");
+	    const cancelBtn = document.getElementById("cancelBtn");
 	    const confirmNumber = document.getElementById("confirmNumber").value;
+	    const rejectComment = document.getElementById("rejectComment");
 
 	    console.log("✅ 페이지 로드 완료");
 	    console.log("confirmNumber:", confirmNumber);
-	
-	    // ✅ 지급 버튼 클릭
-	    approveBtn.addEventListener("click", function() {
-	        console.log("🔵 지급 버튼 클릭됨");
-	        
-	        if(!confirm("지급 확정하시겠습니까?")) {
-	            console.log("❌ 사용자가 취소함");
-	            return;
-	        }
-
-	        console.log("📤 서버로 요청 전송 중...");
-	        console.log("URL:", "${pageContext.request.contextPath}/admin/judge/approve");
-	        console.log("요청 데이터:", { confirmNumber: confirmNumber });
-	
-	        fetch("${pageContext.request.contextPath}/admin/judge/approve", {
-	            method: "POST",
-	            headers: { "Content-Type": "application/json" },
-	            body: JSON.stringify({ confirmNumber: confirmNumber })
-	        })
-	        .then(res => {
-	            console.log("📥 서버 응답 받음 - Status:", res.status);
-	            return res.json();
-	        })
-	        .then(data => {
-	            console.log("📦 응답 데이터:", data);
-	            alert(data.message);
-	            if(data.success) {
-	                console.log("✅ 성공! 리다이렉트:", data.redirectUrl);
-	                location.href = data.redirectUrl;
+	    
+	    // 지급 / 부지급 선택 시 즉시 반응
+	    document.querySelectorAll('input[name="judgeOption"]').forEach(radio => {
+	        radio.addEventListener('change', function() {
+	            if (this.value === 'reject') {
+	                // 부지급 선택 시 폼 표시
+	                rejectForm.style.display = "block";
+	                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 	            } else {
-	                console.error("❌ 처리 실패:", data.message);
+	                // 지급 선택 시 폼 숨김
+	                rejectForm.style.display = "none";
 	            }
-	        })
-	        .catch(err => {
-	            console.error("💥 에러 발생:", err);
-	            alert("지급 처리 중 오류가 발생했습니다.");
 	        });
 	    });
-	
-	    // ✅ 부지급 버튼 클릭
-	    rejectBtn.addEventListener("click", function() {
-	        console.log("🔴 부지급 버튼 클릭됨");
-	        rejectForm.style.display = "block";
-	        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-	    });
-	
-	    // ✅ 부지급 확인 버튼
-	    rejectConfirmBtn.addEventListener("click", function() {
-	        console.log("🟡 부지급 확인 버튼 클릭됨");
-	        
-	        const selectedReason = document.querySelector('input[name="reasonCode"]:checked');
-	        const comment = document.getElementById("rejectComment").value.trim();
 
-	        console.log("선택된 반려 사유:", selectedReason ? selectedReason.value : "없음");
-	        console.log("상세 사유:", comment);
-	
-	        if(!selectedReason) {
-	            alert("부지급 사유를 선택해주세요.");
-	            return;
-	        }
-	
-	        if(selectedReason.value === "RJ_99" && comment === "") {
-	            alert("기타를 선택한 경우 상세 사유를 입력해야 합니다.");
-	            return;
-	        }
-	
-	        if(!confirm("부지급 처리하시겠습니까?")) {
-	            console.log("❌ 사용자가 취소함");
+	    // 확인 버튼 클릭 이벤트
+	    confirmBtn.addEventListener("click", function() {
+	        const selectedOption = document.querySelector('input[name="judgeOption"]:checked');
+
+	        if (!selectedOption) {
+	            alert("지급 또는 부지급을 선택해주세요.");
 	            return;
 	        }
 
-	        console.log("📤 서버로 요청 전송 중...");
-	        const requestData = {
-	            confirmNumber: confirmNumber,
-	            rejectionReasonCode: selectedReason.value,
-	            rejectComment: comment
-	        };
-	        console.log("요청 데이터:", requestData);
-	
-	        fetch("${pageContext.request.contextPath}/admin/judge/reject", {
-	            method: "POST",
-	            headers: { "Content-Type": "application/json" },
-	            body: JSON.stringify(requestData)
-	        })
-	        .then(res => {
-	            console.log("📥 서버 응답 받음 - Status:", res.status);
-	            return res.json();
-	        })
-	        .then(data => {
-	            console.log("📦 응답 데이터:", data);
-	            alert(data.message);
-	            if(data.success) {
-	                console.log("✅ 성공! 리다이렉트:", data.redirectUrl);
-	                location.href = data.redirectUrl;
-	            } else {
-	                console.error("❌ 처리 실패:", data.message);
+	        const optionValue = selectedOption.value;
+
+	        // 지급 처리
+	        if (optionValue === "approve") {
+	            if (!confirm("지급 확정하시겠습니까?")) return;
+
+	            fetch("${pageContext.request.contextPath}/admin/judge/approve", {
+	                method: "POST",
+	                headers: { "Content-Type": "application/json" },
+	                body: JSON.stringify({ confirmNumber: confirmNumber })
+	            })
+	            .then(res => res.json())
+	            .then(data => {
+	                alert(data.message);
+	                if (data.success) location.href = data.redirectUrl;
+	            })
+	            .catch(err => {
+	                console.error(err);
+	                alert("지급 처리 중 오류가 발생했습니다.");
+	            });
+	        }
+
+	        // 부지급 처리
+	        else if (optionValue === "reject") {
+	            const selectedReason = document.querySelector('input[name="reasonCode"]:checked');
+	            const comment = rejectComment.value.trim();
+
+	            if (!selectedReason) {
+	                alert("부지급 사유를 선택해주세요.");
+	                return;
 	            }
-	        })
-	        .catch(err => {
-	            console.error("💥 에러 발생:", err);
-	            alert("부지급 처리 중 오류가 발생했습니다.");
-	        });
-	    });
-	
-	    // ✅ 부지급 취소 버튼
-	    rejectCancelBtn.addEventListener("click", function() {
-	        console.log("⬜ 부지급 취소됨");
-	        rejectForm.style.display = "none";
+
+	            if (selectedReason.value === "RJ_99" && comment === "") {
+	                alert("기타를 선택한 경우 상세 사유를 입력해야 합니다.");
+	                return;
+	            }
+
+	            if (!confirm("부지급 처리하시겠습니까?")) return;
+
+	            const requestData = {
+	                confirmNumber: confirmNumber,
+	                rejectionReasonCode: selectedReason.value,
+	                rejectComment: comment
+	            };
+
+	            fetch("${pageContext.request.contextPath}/admin/judge/reject", {
+	                method: "POST",
+	                headers: { "Content-Type": "application/json" },
+	                body: JSON.stringify(requestData)
+	            })
+	            .then(res => res.json())
+	            .then(data => {
+	                alert(data.message);
+	                if (data.success) location.href = data.redirectUrl;
+	            })
+	            .catch(err => {
+	                console.error(err);
+	                alert("부지급 처리 중 오류가 발생했습니다.");
+	            });
+	        }
 	    });
 	});
 </script>

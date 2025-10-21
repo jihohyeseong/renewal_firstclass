@@ -13,5 +13,6 @@ public interface AdminApprovalDAO {
     int updateAdminJudge(ConfirmApplyDTO confirmApplyDTO);
     // 처리 여부
     int isProcessed(@Param("confirmNumber") Long confirmNumber);
-    
+    // 심사중으로 업데이트
+    void updateStatusCode(Long confirmNumber);
 }

@@ -217,7 +217,7 @@
             text-align: left;
         }
         .data-table th, .data-table td {
-            padding: 1rem;
+            padding: 1rem 0.5rem;
             vertical-align: middle;
             border-bottom: 1px solid #dee2e6;
         }
@@ -425,12 +425,12 @@
                                                 <c:when test="${app.statusName == '대기'}">
                                                     <span class="badge badge-wait">${app.statusName}</span>
                                                 </c:when>
-                                                <c:when test="${app.statusCode == 'ST50' and empty app.rejectionReasonCode}">
+                                                <c:when test="${app.statusCode == 'ST_50' and empty app.rejectionReasonCode}">
                                                     <span class="badge badge-approved">승인</span>
                                                 </c:when>
-                                                <c:when test="${app.statusCode == 'ST_50' and not empty app.rejectionReasonCode}">
-                                                    <span class="badge badge-rejected">반려</span>
-                                                </c:when>
+                                                <c:when test="${app.statusCode == 'ST_60' and not empty app.rejectionReasonCode }">
+                                                	<span class="badge badge-rejected">반려</span>
+                                                </c:when>
                                                 <c:otherwise>
                                                     <span class="badge badge-rejected">기타</span>
                                                 </c:otherwise>

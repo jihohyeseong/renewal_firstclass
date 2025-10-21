@@ -44,7 +44,7 @@ public class AdminConfirmListService {
         counts.put("total", adminConfirmListDAO.selectTotalCount(null, null, null));
 
         // 대기 건수 ='제출'(ST_20) + '심사중'(ST_30)
-        List<String> pendingStatusCodes = Arrays.asList("ST_20", "ST_30");
+        List<String> pendingStatusCodes = Arrays.asList("ST_20", "ST_30", "ST_40");
         counts.put("pending", adminConfirmListDAO.selectStatusCountIn(pendingStatusCodes));
         
         // 승인/반려
