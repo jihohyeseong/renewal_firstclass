@@ -9,17 +9,17 @@
             </if>
             <if test="status != null and status != ''">
                 <choose>
-	                <when test="status == 'PENDING' or status == 'ST_20'">
+	                <when test="status == 'PENDING' or status == 'ST_20' or status == 'ST_30' or status == 'ST_40'">
 	                    AND p.status_code IN ('ST_20', 'ST_30', 'ST_40')
 	                </when>
 	                <when test="status == 'APPROVED'">
 	                    AND p.status_code = 'ST_50' AND p.payment_result = 'Y'
 	                </when>
 	                <when test="status == 'REJECTED'">
-	                    AND p.status_code = 'ST_50' AND p.payment_result = 'N'
+	                    AND p.status_code = 'ST_60' AND p.payment_result = 'N'
 	                </when>
-	                <when test="status == 'ST_50'">
-	                    AND p.status_code = 'ST_50'
+	                <when test="status == 'ST_50' or status == 'ST_60'">
+	                    AND p.status_code IN ('ST_50', 'ST_60')
 	                </when>
             	</choose>
             </if>
@@ -28,7 +28,7 @@
             </if>
             AND p.delt_at = 'N'
             AND p.status_code != 'ST_10'
-            AND p.status_code != 'ST_60'
+            AND p.status_code != 'ST_70'
         </where>
     </sql>
 

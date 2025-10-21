@@ -11,25 +11,75 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/global.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/comp.css">
+<style>
+
+  /* ===== 표 전용(초록 테마와 조화) ===== */
+  .page-title { font-size: 22px; font-weight: 800; margin: 0 0 18px; }
+
+  .sheet-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    overflow: hidden;          /* radius 유지 */
+  }
+  .sheet-table th, .sheet-table td {
+    border: 1px solid var(--border-color);
+    padding: 12px 14px;
+    font-size: 14px;
+    vertical-align: middle;
+  }
+  .sheet-head {
+    background: var(--light-gray-color);
+    color: var(--dark-gray-color);
+    font-weight: 700;
+    text-align: left;
+  }
+  .w160 { width: 160px; }
+  .center { text-align: center; }
+  .num { text-align: right; padding-right: 16px; }
+
+  /* “월별 지급 내역” 안쪽 표 */
+  .month-table { width: 100%; border-collapse: collapse; }
+  .month-table th, .month-table td {
+    border: 1px solid var(--border-color);
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+  .month-table thead th {
+    background: var(--light-gray-color);
+    font-weight: 700;
+    text-align: center;
+  }
+
+  /* 하단 버튼 영역 */
+  .detail-actions { margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end; }
+  
+</style>
 </head>
 <body>
-    <%@ include file="adminheader.jsp" %>
+<%@ include file="adminheader.jsp" %>
 
-    <main class="main-container">
-    	<div class="info-table-container">
-            <h2 class="section-title">처리상태(상태바)</h2>
-            <table class="info-table">
-                <tbody>
+<main class="main-container">
+  <div class="content-wrapper">
+    <div class="content-header" style="margin-bottom:24px;">
+        <h2 class="page-title">육아휴직 확인서 상세</h2>
+        <div></div>
+    </div>
+    
+		<!-- 하나의 “카드” 안에 들어가는 표 -->
+	    <table class="sheet-table">
+	      <colgroup>
+	        <col class="w160"><col><col class="w160"><col>
+	      </colgroup>
+	      
+			<!-- 접수 정보 -->
+            <tr><th class="sheet-head" colspan="4">접수 정보</th></tr>
                     <tr>
-                        <th>확인서 번호</th>
-                        <td><c:out value="${confirmDTO.confirmNumber}" /></td>
-                    </tr>
-                    <tr>
-                        <th>제출일</th>
-                        <td><fmt:formatDate value="${confirmDTO.applyDt}" pattern="yyyy-MM-dd" /></td>
-                    </tr>
-                    <tr>
+                        <th>확인서 번호</th><td><c:out value="${confirmDTO.confirmNumber}" /></td>
                         <th>처리 상태</th>
                         <td>
                              <c:choose>
@@ -40,34 +90,11 @@
                             </c:choose>
                         </td>
                     </tr>
-                </tbody>
-            </table>
-        </div>
-        <h1>육아휴직 확인서 상세 정보</h1>
-
-        <div class="info-table-container">
-            <h2 class="section-title">접수 정보</h2>
-            <table class="info-table">
-                <tbody>
-                    <tr>
-                        <th>확인서 번호</th>
-                        <td><c:out value="${confirmDTO.confirmNumber}" /></td>
-                    </tr>
                     <tr>
                         <th>제출일</th>
-                        <td><fmt:formatDate value="${confirmDTO.applyDt}" pattern="yyyy-MM-dd" /></td>
+                        <td colspan="3"><fmt:formatDate value="${confirmDTO.applyDt}" pattern="yyyy-MM-dd" /></td>
                     </tr>
-                    <tr>
-                        <th>처리 상태</th>
-                        <td>
-                             <c:choose>
-                                <c:when test="${confirmDTO.statusCode == 'ST_20'}"><span class="status-badge status-pending">검토중</span></c:when>
-                                <c:when test="${confirmDTO.statusCode == 'ST_50'}"><span class="status-badge status-approved">승인</span></c:when>
-                                <c:when test="${confirmDTO.statusCode == 'ST_60'}"><span class="status-badge status-rejected">반려</span></c:when>
-                                <c:otherwise><c:out value="${confirmDTO.statusCode}" /></c:otherwise>
-                            </c:choose>
-                        </td>
-                    </tr>
+                   	 <!-- 회사 정보 -->
                     <tr>
 					    <th>기업명</th>
 					    <td>${userDTO.name}</td>
@@ -80,95 +107,69 @@
 					    <th>전화번호</th>
 					    <td>${userDTO.phoneNumber}</td>
 					</tr>
-                    
-                </tbody>
-            </table>
-        </div>
 
-        <div class="info-table-container">
-            <h2 class="section-title">근로자 정보</h2>
-            <table class="info-table">
-                <tbody>
+			<!-- 근로자 정보 -->
+            <tr><th class="sheet-head" colspan="4">근로자 정보</th></tr>
                     <tr>
-                        <th>성명</th>
-                        <td><c:out value="${confirmDTO.name}" /></td>
-                    </tr>
-                    <tr>
+                        <th>성명</th><td><c:out value="${confirmDTO.name}" /></td>
                         <th>주민등록번호</th>
                         <td>
                             <c:set var="rrnDigits" value="${fn:replace(confirmDTO.registrationNumber, '-', '')}" />
                             ${fn:substring(rrnDigits,0,6)}-${fn:substring(rrnDigits,6,12)}
                         </td>
                     </tr>
+                   
                     <tr>
                         <th>육아휴직 기간</th>
-                        <td>
+                        <td colspan="3">
                             <fmt:formatDate value="${confirmDTO.startDate}" pattern="yyyy.MM.dd" /> ~ 
                             <fmt:formatDate value="${confirmDTO.endDate}" pattern="yyyy.MM.dd" />
                         </td>
                     </tr>
                     <tr>
-                        <th>주당 소정근로시간</th>
-                        <td><c:out value="${confirmDTO.weeklyHours}" /> 시간</td>
-                    </tr>
-                    <tr>
+                        <th>주당 소정근로시간</th><td><c:out value="${confirmDTO.weeklyHours}" /> 시간</td>
                         <th>통상임금 (월)</th>
                         <td><fmt:formatNumber value="${confirmDTO.regularWage}" type="currency" currencySymbol="₩ " /></td>
                     </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="info-table-container">
-            <h2 class="section-title">대상 자녀 정보</h2>
-            <table class="info-table">
+    		<!-- 자녀 정보 -->
+        	<tr><th class="sheet-head" colspan="4">대상 자녀 정보</th></tr>
                  <c:choose>
                     <c:when test="${not empty confirmDTO.childName}">
                         <tbody>
                             <tr>
-                                <th>자녀 이름</th>
-                                <td><c:out value="${confirmDTO.childName}" /></td>
+                                <th>자녀 이름</th><td><c:out value="${confirmDTO.childName}" /></td>
+                                <th>출생일</th>
+                                <td><fmt:formatDate value="${confirmDTO.childBirthDate}" pattern="yyyy.MM.dd" /></td>
                             </tr>
                             <tr>
                                 <th>자녀 주민등록번호</th>
-                                <td>
+                                <td colspan="3">
                                     <c:set var="childRrn" value="${confirmDTO.childResiRegiNumber}" />
                                     ${fn:substring(childRrn, 0, 6)}-${fn:substring(childRrn, 6, 12)}
                                 </td>
                             </tr>
-                            <tr>
-                                <th>출생일</th>
-                                <td><fmt:formatDate value="${confirmDTO.childBirthDate}" pattern="yyyy.MM.dd" /></td>
-                            </tr>
-                        </tbody>
                     </c:when>
                     <c:otherwise>
-                        <tbody>
-                             <tr>
-                                <th>자녀 정보</th>
-                                <td>출산 예정</td>
-                            </tr>
-                            <tr>
-                                <th>출산 예정일</th>
-                                <td><fmt:formatDate value="${confirmDTO.childBirthDate}" pattern="yyyy.MM.dd" /></td>
-                            </tr>
-                        </tbody>
+                             <tr><th>자녀 정보</th><td colspan="3">출산 예정</td></tr>
+                            <tr><th>출산 예정일</th><td colspan="3"><fmt:formatDate value="${confirmDTO.childBirthDate}" pattern="yyyy.MM.dd" /></td></tr>
                     </c:otherwise>
                 </c:choose>
-            </table>
-        </div>
-
-        <div class="info-table-container">
-            <h2 class="section-title">월별 지급 내역</h2>
-            <table class="info-table">
-                <thead>
-                    <tr style="background-color: var(--light-gray-color);">
-                        <th style="width: 80px; text-align:center;">회차</th>
-                        <th style="width: auto; text-align:center;">기간</th>
-                        <th style="width: 180px; text-align:center;">사업장 지급액</th>
-                    </tr>
-                </thead>
-                <tbody>
+ 		<!-- 월별 지급 내역 -->
+   		<tr><th class="sheet-head" colspan="4">월별 지급 내역</th></tr>
+   		<tr>
+   			<td colspan="4" style="padding:0;">
+          		<table class="month-table">
+		            <colgroup>
+		              <col style="width:90px"><col><col style="width:180px"><col style="width:180px">
+		            </colgroup>
+            	<thead>
+	            	<tr>
+	                     <th>회차</th>
+	                     <th>기간</th>
+	                     <th>사업장 지급액</th>
+	                </tr>
+        		</thead>
+        		<tbody>
                     <c:forEach var="term" items="${termList}" varStatus="status">
                         <tr>
                             <td style="text-align:center;"><c:out value="${status.count}" />개월차</td>
@@ -188,7 +189,9 @@
                     </c:if>
                 </tbody>
             </table>
-        </div>
+            </td>
+          </tr>
+        </table>
 
         <div class="info-table-container">
             <h2 class="section-title">확인서 작성자 정보</h2>
@@ -218,33 +221,36 @@
 		                <label><input type="radio" name="judgeOption" value="approve">지급</label>
 		                <label style="margin-left:15px;"><input type="radio" name="judgeOption" value="reject">부지급</label>
 		            </div>
-		            <button type="button" id="confirmBtn" class="btn btn-success">확인</button>
-		            <button type="button" id="cancelBtn" class="btn btn-secondary" style="margin-top:10px;">취소</button>
-		            <a href="${pageContext.request.contextPath}/admin/confirm" class="btn btn-secondary">목록으로</a>
+		            
+		            <div id="rejectForm" style="display:none; margin-top:20px; border:1px solid #ccc; padding:15px; border-radius:8px;">
+					    <h3>부지급 사유 선택</h3>
+					    <div>
+					        <label><input type="radio" name="reasonCode" value="RJ_10"> 계좌정보 불일치</label><br>
+					        <label><input type="radio" name="reasonCode" value="RJ_20"> 관련서류 미제출</label><br>
+					        <label><input type="radio" name="reasonCode" value="RJ_30"> 신청시기 미도래</label><br>
+					        <label><input type="radio" name="reasonCode" value="RJ_40"> 근속기간 미충족</label><br>
+					        <label><input type="radio" name="reasonCode" value="RJ_50"> 자녀 연령 기준 초과</label><br>
+					        <label><input type="radio" name="reasonCode" value="RJ_60"> 휴직 가능 기간 초과</label><br>
+					        <label><input type="radio" name="reasonCode" value="RJ_70"> 제출서류 정보 불일치</label><br>
+					        <label><input type="radio" name="reasonCode" value="RJ_80"> 신청서 작성 내용 미비</label><br>
+					        <label><input type="radio" name="reasonCode" value="RJ_99"> 기타</label>
+					    </div> 
+					
+					    <div style="margin-top:10px;">
+					        <label>상세 사유:</label><br>
+					        <input type="text" id="rejectComment" class="form-control" placeholder="상세 사유를 입력하세요" style="width:80%;">
+					    </div>
+		
+					</div>
+					
+		            <button type="button" id="confirmBtn" class="btn btn-primary">확인</button>
+		            <button type="button" id="cancelBtn" class="btn btn-secondary" style="margin-top:10px;">취소</button><br>
+		            
+		            <a href="${pageContext.request.contextPath}/admin/confirm" class="btn btn-secondary">목록</a>
 		        </c:otherwise>
     		</c:choose>
 		</div>
-		
-		<div id="rejectForm" style="display:none; margin-top:20px; border:1px solid #ccc; padding:15px; border-radius:8px;">
-		    <h3>부지급 사유 선택</h3>
-		    <div>
-		        <label><input type="radio" name="reasonCode" value="RJ_10"> 계좌정보 불일치</label><br>
-		        <label><input type="radio" name="reasonCode" value="RJ_20"> 관련서류 미제출</label><br>
-		        <label><input type="radio" name="reasonCode" value="RJ_30"> 신청시기 미도래</label><br>
-		        <label><input type="radio" name="reasonCode" value="RJ_40"> 근속기간 미충족</label><br>
-		        <label><input type="radio" name="reasonCode" value="RJ_50"> 자녀 연령 기준 초과</label><br>
-		        <label><input type="radio" name="reasonCode" value="RJ_60"> 휴직 가능 기간 초과</label><br>
-		        <label><input type="radio" name="reasonCode" value="RJ_70"> 제출서류 정보 불일치</label><br>
-		        <label><input type="radio" name="reasonCode" value="RJ_80"> 신청서 작성 내용 미비</label><br>
-		        <label><input type="radio" name="reasonCode" value="RJ_99"> 기타</label>
-		    </div>
-		
-		    <div style="margin-top:10px;">
-		        <label>상세 사유:</label><br>
-		        <input type="text" id="rejectComment" class="form-control" placeholder="상세 사유를 입력하세요" style="width:80%;">
-		    </div>
-		
-		</div>
+	</div>
 		
 		<input type="hidden" id="confirmNumber" value="${confirmDTO.confirmNumber}" />
     </main>
