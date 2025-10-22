@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.example.renewal_firstclass.domain.ApplicationDTO;
 import com.example.renewal_firstclass.domain.SimpleConfirmVO;
@@ -17,4 +18,6 @@ public interface UserApplyDAO {
 	List<SimpleConfirmVO> selectSimpleConfirmList(Map<String, String> params);
 
 	ApplicationDTO getApplicationDTO(Long confirmNumber);
+
+	void insertApply(@Param("userId")Long userId, @Param("dto")ApplicationDTO applicationDTO);
 }

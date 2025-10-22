@@ -30,4 +30,6 @@ public interface UserDAO {
 
 	String findUsernameByNameAndPhoneNumber(@Param("name")String name, @Param("phoneNumber")String phoneNumber);
 
+	Long findByRegistrationNumber(String registrationNumber);
+
 }

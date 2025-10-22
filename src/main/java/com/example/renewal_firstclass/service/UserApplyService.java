@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.example.renewal_firstclass.dao.UserApplyDAO;
+import com.example.renewal_firstclass.dao.UserDAO;
 import com.example.renewal_firstclass.domain.ApplicationDTO;
 import com.example.renewal_firstclass.domain.SimpleConfirmVO;
 import com.example.renewal_firstclass.domain.SimpleUserInfoVO;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class UserApplyService {
 
 	private final UserApplyDAO userApplyDAO;
+	private final UserDAO userDAO;
 	private final AES256Util aes256Util;
 
 	public List<SimpleConfirmVO> selectSimpleConfirmList(String name, String registrationNumber) {
@@ -48,5 +50,18 @@ public class UserApplyService {
 		applicationDTO.setRegistrationNumber(regiNum.substring(0,6) + "-" + regiNum.substring(6));
 		
 		return applicationDTO;
+	}
+
+	public void insertApply(ApplicationDTO applicationDTO) {
+		
+		String regiNum = applicationDTO.getRegistrationNumber();
+		applicationDTO.setRegistrationNumber(regiNum.substring(0,6) + regiNum.substring(7));
+		try {
+			applicationDTO.setRegistrationNumber(aes256Util.encrypt(applicationDTO.getRegistrationNumber()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		Long userId = userDAO.findByRegistrationNumber(applicationDTO.getRegistrationNumber());
+		userApplyDAO.insertApply(userId, applicationDTO);
 	}
 }

@@ -105,4 +105,12 @@
 	    FROM TB_User
 	    WHERE name = #{name} AND phone_number = #{phoneNumber}
 	</select>
+	
+	<!-- 주민등록번호로 유저id찾기  -->
+    <select id="findByRegistrationNumber" parameterType="string" resultType="long">
+	    SELECT id
+	    FROM TB_User
+	    WHERE registration_number = #{registrationNumber}
+	</select>
+	
 </mapper>

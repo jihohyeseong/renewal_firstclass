@@ -108,4 +108,25 @@
         WHERE
             a.confirm_number = #{confirmNumber}
     </select>
+    <insert id="insertApply">
+    	INSERT INTO TB_PARENTAL_LEAVE_APPLICATION(
+    		bank_code,
+    		account_number,
+    		status_code,
+    		submitted_dt,
+    		confirm_number,
+    		user_id,
+    		gov_info_agree,
+    		center_id
+    	) VALUES(
+    		#{dto.bankCode},
+    		#{dto.accountNumber},
+    		'ST_20',
+    		sysdate,
+    		#{dto.confirmNumber},
+    		#{userId},
+    		#{dto.govInfoAgree},
+    		#{dto.centerId}
+    	)
+    </insert>
 </mapper>

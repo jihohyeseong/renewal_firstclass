@@ -234,7 +234,8 @@
         
             <h1>육아휴직 급여 신청</h1>
 
-            <form action="${pageContext.request.contextPath}/apply" method="post">
+            <form action="${pageContext.request.contextPath}/user/apply" method="post">
+            <input type="hidden" name="confirmNumber" value="${confirmNumber}">
             <sec:csrfInput/>
                 <div class="form-section">
                     <h2>신청인 정보</h2>
@@ -245,7 +246,7 @@
                     <div class="form-group">
                         <label class="field-title">주민등록번호</label>
                         <div class="input-field">
-                            <input type="text" value="${applicationDTO.registrationNumber}" name="registrationNumber" disabled>
+                            <input type="text" value="${applicationDTO.registrationNumber}" name="registrationNumber" readonly>
                         </div>
                     </div>
                     <div class="form-group">
@@ -274,7 +275,7 @@
                     <div class="form-group">
                         <label class="field-title">사업장 이름</label>
                         <div class="input-field">
-                            <input type="text" value="${applicationDTO.companyName}" readonly>
+                            <input type="text" value="${applicationDTO.companyName}" disabled>
                         </div>
                     </div>
                     <div class="form-group">
@@ -323,35 +324,53 @@
                         </div>
                     </div>
                     
-                    <div class="dynamic-form-row" style="background-color: transparent; border-bottom: 2px solid var(--border-color); font-weight: 500; margin-bottom: 0;">
-                        <div class="date-range-display">
-                            <span>신청기간</span>
-                        </div>
-                        <div class="payment-input-field" style="margin-left:auto;">
-                            <span>사업장 지급액(원)</span>
-                        </div>
-                    </div>
+<div class="dynamic-form-row" style="background-color: transparent; border-bottom: 2px solid var(--border-color); font-weight: 500; margin-bottom: 0;">
+    <div class="date-range-display">
+        <span>신청기간</span>
+    </div>
+    <div class="payment-input-field">
+        <span>정부지급액(원)</span>
+    </div>
+    <div class="payment-input-field" style="margin-left:auto;">
+        <span>사업장 지급액(원)</span>
+    </div>
+</div>
 
-                    <div id="dynamic-forms-container" class="dynamic-form-container">
-                        <c:forEach var="term" items="${applicationDTO.list}" varStatus="status">
-                            <div class="dynamic-form-row">
-                                <div class="date-range-display">
-                                    <div>
-                                        <fmt:formatDate value="${term.startMonthDate}" pattern="yyyy.MM.dd" />
-                                        ~
-                                        <fmt:formatDate value="${term.endMonthDate}" pattern="yyyy.MM.dd" />
-                                    </div>
-                                </div>
-                                <div class="payment-input-field" style="margin-left:auto;">
-                                    <input type="text" 
-                                        name="monthly_payment_${status.count}" 
-                                        value="${term.companyPayment}" 
-                                        placeholder="해당 기간의 사업장 지급액(원) 입력" 
-                                        autocomplete="off" disabled>
-                                </div>
-                            </div>
-                        </c:forEach>
-                    </div>
+<div id="dynamic-forms-container" class="dynamic-form-container">
+    <c:forEach var="term" items="${applicationDTO.list}" varStatus="status">
+    
+        <fmt:formatNumber value="${term.govPayment}" pattern="#,##0" var="formattedGovPayment" />
+        <fmt:formatNumber value="${term.companyPayment}" pattern="#,##0" var="formattedCompanyPayment" />
+
+        <div class="dynamic-form-row">
+            <div class="date-range-display">
+                <div>
+                    <fmt:formatDate value="${term.startMonthDate}" pattern="yyyy.MM.dd" />
+                    ~
+                    <fmt:formatDate value="${term.endMonthDate}" pattern="yyyy.MM.dd" />
+                </div>
+            </div>
+
+            <div class="payment-input-field">
+                <input type="text" 
+                       name="gov_payment_${status.count}" 
+                       value="${formattedGovPayment}" 
+                       placeholder="해당 기간의 정부지급액(원) 입력" 
+                       autocomplete="off" 
+                       disabled
+                       style="text-align: right;"> </div>
+
+            <div class="payment-input-field" style="margin-left:auto;">
+                <input type="text" 
+                       name="monthly_payment_${status.count}" 
+                       value="${formattedCompanyPayment}" 
+                       placeholder="해당 기간의 사업장 지급액(원) 입력" 
+                       autocomplete="off" 
+                       disabled
+                       style="text-align: right;"> </div>
+        </div>
+    </c:forEach>
+</div>
                 </div>
 
                 <div class="form-group">

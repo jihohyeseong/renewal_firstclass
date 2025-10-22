@@ -47,7 +47,18 @@ public class UserApplyController {
 		
 		ApplicationDTO applicationDTO = userApplyService.getApplicationDTO(confirmNumber);
 		model.addAttribute("applicationDTO", applicationDTO);
+		model.addAttribute("confirmNumber", confirmNumber);
+		
 		return "user/application";
+	}
+	
+	@PostMapping("/user/apply")
+	public String applyUserApplication(ApplicationDTO applicationDTO, Model model) {
+		
+		userApplyService.insertApply(applicationDTO);
+		model.addAttribute("applicationDTO", applicationDTO);
+		
+		return "user/complete";
 	}
 
 }
