@@ -210,8 +210,8 @@
 		
 		  <!-- Step 1: 제출 -->
 		  <div class="stepper-item 
-		       <c:if test='${confirmDTO.statusCode == "ST_30" or confirmDTO.statusCode == "ST_50" or confirmDTO.statusCode == "ST_60"}'>completed</c:if>
-		       <c:if test='${confirmDTO.statusCode == "ST_20"}'>current</c:if>">
+		       <c:if test='${confirmDTO.statusCode == "ST_20" or confirmDTO.statusCode == "ST_30" or confirmDTO.statusCode == "ST_50" or confirmDTO.statusCode == "ST_60"}'>completed</c:if>
+		       <c:if test='${confirmDTO.statusCode == "ST_10"}'>current</c:if>">
 		    <div class="step-counter">1</div>
 		    <div class="step-name">제출</div>
 		  </div>
@@ -219,7 +219,7 @@
 		  <!-- Step 2: 심사중 -->
 		  <div class="stepper-item 
 		       <c:if test='${confirmDTO.statusCode == "ST_50" or confirmDTO.statusCode == "ST_60"}'>completed</c:if>
-		       <c:if test='${confirmDTO.statusCode == "ST_30"}'>current</c:if>">
+		       <c:if test='${confirmDTO.statusCode == "ST_20" or confirmDTO.statusCode == "ST_30"}'>current</c:if>">
 		    <div class="step-counter">2</div>
 		    <div class="step-name">심사중</div>
 		  </div>
@@ -446,7 +446,7 @@
 
 	    switch ("${confirmDTO.statusCode}") {
 	      case "ST_20":
-	        progressWidth = 0;
+	        progressWidth = 43;
 	        break;
 	      case "ST_30":
 	        progressWidth = 43;
