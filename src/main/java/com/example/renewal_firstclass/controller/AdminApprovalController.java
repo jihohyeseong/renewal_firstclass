@@ -3,6 +3,8 @@ package com.example.renewal_firstclass.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -13,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -48,14 +49,14 @@ public class AdminApprovalController {
 	// 관리자 지급 (승인)
     @PostMapping("admin/judge/approve")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> adminApprove(@RequestBody AdminJudgeDTO judgeDTO){
+    public ResponseEntity<Map<String, Object>> adminApprove(@RequestBody AdminJudgeDTO judgeDTO, HttpServletRequest request){
     	
     	Map<String, Object> response = new HashMap<>();
     	UserDTO userDTO = currentUserOrNull();
         if (userDTO.getId() == null) { 
         	response.put("success", false);
 			response.put("message", "로그인 해주세요.");
-			response.put("redirectUrl", "/login");
+			response.put("redirectUrl", request.getContextPath()+"/login");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
 
@@ -64,12 +65,12 @@ public class AdminApprovalController {
     	if (updateSuccess) {
 			response.put("success", true);
             response.put("message", "지급 처리(승인)가 완료되었습니다."); // 메시지 추가
-			response.put("redirectUrl", "/admin/confirm");
+			response.put("redirectUrl", request.getContextPath()+"/admin/confirm");
 		}	
 		else {
 			response.put("success", false);
             response.put("message", "처리 실패: 이미 처리되었거나 데이터베이스 오류가 발생했습니다.");
-            response.put("redirectUrl", "/admin/confirm"); 
+            response.put("redirectUrl", request.getContextPath()+"/admin/confirm"); 
 		}
     	
 		return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -78,14 +79,14 @@ public class AdminApprovalController {
     // 관리자 부지급 (반려)
     @PostMapping("admin/judge/reject")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> adminReject(@RequestBody AdminJudgeDTO judgeDTO){
+    public ResponseEntity<Map<String, Object>> adminReject(@RequestBody AdminJudgeDTO judgeDTO, HttpServletRequest request){
     	
     	Map<String, Object> response = new HashMap<>();
     	UserDTO userDTO = currentUserOrNull();
         if (userDTO.getId() == null) { 
         	response.put("success", false);
 			response.put("message", "로그인 해주세요.");
-			response.put("redirectUrl", "/login");
+			response.put("redirectUrl", request.getContextPath()+"/login");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
 
@@ -94,7 +95,7 @@ public class AdminApprovalController {
     	if (updateSuccess) {
 			response.put("success", true);
             response.put("message", "부지급 처리(반려)가 완료되었습니다.");
-			response.put("redirectUrl", "/admin/confirm");
+			response.put("redirectUrl", request.getContextPath()+"/admin/confirm");
 		}	
 		else {
 			response.put("success", false);
