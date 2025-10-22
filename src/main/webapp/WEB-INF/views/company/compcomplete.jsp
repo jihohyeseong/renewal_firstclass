@@ -191,7 +191,7 @@ h2.section-title{
 	</div>
 	                   
 	<div class="button-container">
-		<a href="/firstclass/main" class="btn btn-primary">목록으로 이동</a> 
+		<a href="/renewal_firstclass/comp/main" class="btn btn-primary">목록으로 이동</a> 
 		<a href="${pageContext.request.contextPath}/comp/detail?confirmNumber=${confirmDTO.confirmNumber}"
 			class="btn btn-secondary">신청 내용 상세 보기</a>
 	</div>
