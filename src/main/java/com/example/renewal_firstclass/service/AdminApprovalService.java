@@ -26,8 +26,7 @@ public class AdminApprovalService {
     private final AES256Util aes256Util;
     // 신청 상세 조회
     public ConfirmApplyDTO getConfirmDetail(Long confirmNumber) {
-        log.info("=== Get Confirm Detail ===");
-        log.info("confirmNumber: {}", confirmNumber);
+   
         ConfirmApplyDTO dto = confirmApplyDAO.selectByConfirmNumber(confirmNumber);
         if (dto == null) return null;
 
@@ -51,16 +50,11 @@ public class AdminApprovalService {
 
     // 승인 처리
     public boolean adminApprove(AdminJudgeDTO judgeDTO, Long userId) {
-        log.info("=== Admin Approve Request ===");
-        log.info("confirmNumber: {}", judgeDTO.getConfirmNumber());
-        log.info("userId: {}", userId);
-
+    
         // 1. 이미 처리된 신청인지 확인
         int processedCount = adminApprovalDAO.isProcessed(judgeDTO.getConfirmNumber());
-        log.info("isProcessed count: {}", processedCount);
         
         if (processedCount > 0) {
-            log.warn("Application {} is already processed.", judgeDTO.getConfirmNumber());
             return false;
         }
 
@@ -70,7 +64,6 @@ public class AdminApprovalService {
             log.error("Application {} not found in database!", judgeDTO.getConfirmNumber());
             return false;
         }
-        log.info("Current status: {}", currentDto.getStatusCode());
 
         // 3. 승인 처리
         ConfirmApplyDTO updateDto = ConfirmApplyDTO.builder()
@@ -80,15 +73,10 @@ public class AdminApprovalService {
                 .rejectionReasonCode(null) 
                 .rejectComment(null)       
                 .build();
-
-        log.info("Executing update with: confirmNumber={}, processorId={}, statusCode=ST_50", 
-                 updateDto.getConfirmNumber(), updateDto.getProcessorId());
         
         int result = adminApprovalDAO.updateAdminJudge(updateDto);
-        log.info("Update result: {} rows affected", result);
         
         if (result > 0) {
-            log.info("Application {} approved successfully.", judgeDTO.getConfirmNumber());
             return true;
         } else {
             log.error("Failed to approve application {} - No rows updated!", judgeDTO.getConfirmNumber());
@@ -98,10 +86,6 @@ public class AdminApprovalService {
 
     // 반려 처리
     public boolean adminReject(AdminJudgeDTO judgeDTO, Long userId) {
-        log.info("=== Admin Reject Request ===");
-        log.info("confirmNumber: {}", judgeDTO.getConfirmNumber());
-        log.info("userId: {}", userId);
-        log.info("rejectionReasonCode: {}", judgeDTO.getRejectionReasonCode());
 
         // 1. 필수값 체크
         if (judgeDTO.getRejectionReasonCode() == null || judgeDTO.getRejectionReasonCode().isEmpty()) {
@@ -111,7 +95,6 @@ public class AdminApprovalService {
         
         // 2. 이미 처리된 신청인지 확인
         int processedCount = adminApprovalDAO.isProcessed(judgeDTO.getConfirmNumber());
-        log.info("isProcessed count: {}", processedCount);
         
         if (processedCount > 0) {
             log.warn("Application {} is already processed.", judgeDTO.getConfirmNumber());
@@ -124,7 +107,6 @@ public class AdminApprovalService {
             log.error("Application {} not found in database!", judgeDTO.getConfirmNumber());
             return false;
         }
-        log.info("Current status: {}", currentDto.getStatusCode());
         
         // 4. 반려 처리
         ConfirmApplyDTO updateDto = ConfirmApplyDTO.builder()
@@ -135,14 +117,9 @@ public class AdminApprovalService {
                 .rejectComment(judgeDTO.getRejectComment())
                 .build();
         
-        log.info("Executing update with: confirmNumber={}, processorId={}, statusCode=ST_60, reasonCode={}", 
-                 updateDto.getConfirmNumber(), updateDto.getProcessorId(), updateDto.getRejectionReasonCode());
-        
         int result = adminApprovalDAO.updateAdminJudge(updateDto);
-        log.info("Update result: {} rows affected", result);
         
         if (result > 0) {
-            log.info(" Application {} rejected successfully.", judgeDTO.getConfirmNumber());
             return true;
         } else {
             log.error("Failed to reject application {} - No rows updated!", judgeDTO.getConfirmNumber());

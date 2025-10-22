@@ -151,31 +151,27 @@
 	   /* ===== 버튼 영역 수정 ===== */
 	  .button-container {
 	    text-align: center;
-	    margin-top: 30px;
+	    margin-top: 20px;
 	    padding-bottom: 20px;
 	  }
 	
-	  .judge-actions {
-	    display: flex;
+	  .judge-actions .btn {
 	    justify-content: center;
 	    gap: 12px;
 	    margin-bottom: 25px; /* 목록 버튼과 간격 증가 */
+	    padding: 6px 14px;
 	  }
-	
+	  
 	  .btn-primary, .btn-secondary {
 	    padding: 6px 14px; /* 패딩 축소 */
 	    font-size: 14px;
 	  }
 	
-	  .btn-secondary {
-	    margin-top: 14px; /* 목록 버튼 위쪽 여백 */
-	  }
-
-	
 	  /* ===== 부지급 사유 영역 ===== */
 	  #rejectForm {
 	    display: none;
 	    margin-top: 20px;
+	    margin-bottom: 20px;
 	    border: 1px solid #ccc;
 	    padding: 12px;
 	    border-radius: 8px;
@@ -373,23 +369,16 @@
             </table>
             </td>
           </tr>
-        </table>
-
-        <div class="info-table-container">
-            <h2 class="section-title">확인서 작성자 정보</h2>
-            <table class="info-table">
-                <tbody>
+          <!-- 담당자 정보 -->
+            <tr><th class="sheet-head" colspan="4">확인서 담당자 정보</th></tr>
                     <tr>
-                        <th>담당자 이름</th>
-                        <td><c:out value="${confirmDTO.responseName}" /></td>
-                    </tr>
-                    <tr>
+                        <th>담당자 이름</th><td><c:out value="${confirmDTO.responseName}" /></td>
                         <th>담당자 연락처</th>
-                        <td><c:out value="${confirmDTO.responsePhoneNumber}" /></td>
+                        <td>
+                            <c:out value="${confirmDTO.responsePhoneNumber}" />
+                        </td>
                     </tr>
-                </tbody>
-            </table>
-        </div>
+        </table>
 
         <div class="button-container">
         	<c:choose> 
@@ -460,11 +449,11 @@
 	        progressWidth = 0;
 	        break;
 	      case "ST_30":
-	        progressWidth = 45;
+	        progressWidth = 43;
 	        break;
 	      case "ST_50":
 	      case "ST_60":
-	        progressWidth = 90;
+	        progressWidth = 85;
 	        break;
 	      default:
 	        progressWidth = 0;
