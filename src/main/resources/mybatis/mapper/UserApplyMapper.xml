@@ -108,12 +108,11 @@
         WHERE
             a.confirm_number = #{confirmNumber}
     </select>
-    <insert id="insertApply">
+    <insert id="insertApply" useGeneratedKeys="true" keyProperty="dto.applicationNumber" keyColumn="application_number">
     	INSERT INTO TB_PARENTAL_LEAVE_APPLICATION(
     		bank_code,
     		account_number,
     		status_code,
-    		submitted_dt,
     		confirm_number,
     		user_id,
     		gov_info_agree,
@@ -121,12 +120,178 @@
     	) VALUES(
     		#{dto.bankCode},
     		#{dto.accountNumber},
-    		'ST_20',
-    		sysdate,
+    		'ST_10',
     		#{dto.confirmNumber},
     		#{userId},
     		#{dto.govInfoAgree},
     		#{dto.centerId}
     	)
     </insert>
+    <select id="findApplyAndCenter" resultType="com.example.renewal_firstclass.domain.UserApplyCompleteVO">
+        SELECT
+            A.application_number    AS applicationNumber,
+            TO_CHAR(A.submitted_dt, 'YYYY-MM-DD') AS submittedDt,
+            C.center_name           AS centerName,
+            C.center_URL            AS centerUrl,
+            C.center_zip_code       AS centerZipCode,
+            C.center_address_base   AS centerAddressBase,
+            C.center_address_detail AS centerAddressDetail,
+            C.center_phone_number   AS centerPhoneNumber
+        FROM
+            TB_PARENTAL_LEAVE_APPLICATION A
+        JOIN
+            TB_CENTER C ON A.center_id = C.center_id
+        WHERE
+            A.application_number = #{applicationNumber}
+            AND A.center_id = #{centerId}
+    </select>
+    <select id="findApplyByUsername" parameterType="string" resultType="com.example.renewal_firstclass.domain.ApplyListDTO">
+    	SELECT
+    		application_number,
+    		TO_CHAR(submitted_dt, 'YYYY-MM-DD') AS submittedDt,
+    		status_code,
+    		u.name
+    	FROM TB_PARENTAL_LEAVE_APPLICATION p
+    	JOIN
+    		TB_USER u ON p.user_id = u.id
+    	WHERE
+    		u.username = #{username} AND p.delt_at = 'N'
+    </select>
+    
+    <!-- 육아휴직 상세페이지 -->
+	<resultMap id="applicationDetailResultMap" type="com.example.renewal_firstclass.domain.ApplicationDetailDTO">
+        <id property="applicationNumber" column="application_number"/>
+        <result property="statusCode" column="status_code"/>
+        <result property="bankCode" column="bank_code"/>
+        <result property="accountNumber" column="account_number"/>
+        <result property="govInfoAgree" column="gov_info_agree"/>
+
+        <result property="name" column="user_name"/>
+        <result property="registrationNumber" column="user_registration_number"/>
+        <result property="zipNumber" column="user_zip_number"/>
+        <result property="addressBase" column="user_address_base"/>
+        <result property="addressDetail" column="user_address_detail"/>
+        <result property="phoneNumber" column="user_phone_number"/>
+        
+        <result property="companyName" column="company_name"/>
+        <result property="buisinessRegiNumber" column="company_buisiness_regi_number"/>
+        <result property="companyZipNumber" column="company_zip_number"/>
+        <result property="companyAddressBase" column="company_address_base"/>
+        <result property="companyAddressDetail" column="company_address_detail"/>
+
+        <result property="startDate" column="start_date"/>
+        <result property="endDate" column="end_date"/>
+        <result property="regularWage" column="regular_wage"/>
+        <result property="weeklyHours" column="weekly_hours"/>
+        <result property="childName" column="child_name"/>
+        <result property="childBirthDate" column="child_birth_date"/>
+        <result property="childResiRegiNumber" column="child_resi_regi_number"/>
+
+        <result property="centerId" column="center_id"/>
+        <result property="centerName" column="center_name"/>
+        <result property="centerUrl" column="center_URL"/>
+        <result property="centerZipCode" column="center_zip_code"/>
+        <result property="centerAddressBase" column="center_address_base"/>
+        <result property="centerAddressDetail" column="center_address_detail"/>
+        <result property="centerPhoneNumber" column="center_phone_number"/>
+
+        <collection property="list" ofType="com.example.renewal_firstclass.domain.TermAmountDTO">
+            <id property="termId" column="term_id"/>
+            <result property="companyPayment" column="company_payment"/>
+            <result property="govPayment" column="gov_payment"/>
+            <result property="paymentDate" column="payment_date"/>
+            <result property="startMonthDate" column="start_month_date"/>
+            <result property="endMonthDate" column="end_month_date"/>
+            <result property="confirmNumber" column="term_confirm_number"/>
+        </collection>
+    </resultMap>
+
+    <select id="findApplicationDetailByApplicationNumber" resultMap="applicationDetailResultMap" parameterType="long">
+        SELECT
+            A.application_number,
+            A.status_code,
+            A.bank_code,
+            A.account_number,
+            A.gov_info_agree,
+            
+            U_APP.name AS user_name,
+            U_APP.registration_number AS user_registration_number,
+            U_APP.zip_number AS user_zip_number,
+            U_APP.address_base AS user_address_base,
+            U_APP.address_detail AS user_address_detail,
+            U_APP.phone_number AS user_phone_number,
+            
+            -- (수정됨) : 기업 정보 (C.user_id 기준)
+            U_CORP.name AS company_name,
+            U_CORP.buisiness_regi_number AS company_buisiness_regi_number,
+            U_CORP.zip_number AS company_zip_number,
+            U_CORP.address_base AS company_address_base,
+            U_CORP.address_detail AS company_address_detail,
+            
+            C.start_date,
+            C.end_date,
+            C.regular_wage,
+            C.weekly_hours,
+            C.child_name,
+            C.child_birth_date,
+            C.child_resi_regi_number,
+            
+            CN.center_id,
+            CN.center_name,
+            CN.center_URL,
+            CN.center_zip_code,
+            CN.center_address_base,
+            CN.center_address_detail,
+            CN.center_phone_number,
+            
+            T.term_id,
+            T.company_payment,
+            T.gov_payment,
+            T.payment_date,
+            T.start_month_date,
+            T.end_month_date,
+            T.confirm_number AS term_confirm_number
+            
+        FROM 
+            TB_PARENTAL_LEAVE_APPLICATION A
+            
+            -- 2. 신청자 정보 조인 (A.user_id)
+            INNER JOIN TB_USER U_APP 
+                ON A.user_id = U_APP.id
+                
+            -- 3. 확인서 정보 조인
+            INNER JOIN TB_CONFIRM_APPLICATION C
+                ON A.confirm_number = C.confirm_number
+                
+            -- 4. 센터 정보 조인
+            INNER JOIN TB_CENTER CN
+                ON A.center_id = CN.center_id
+                
+            -- (수정됨) : 기업 정보 조인 (C.user_id 기준)
+            INNER JOIN TB_USER U_CORP
+                ON C.user_id = U_CORP.id
+            
+            -- 5. 월별 급여 정보 조인
+            LEFT JOIN TB_TERM_AMOUNT T
+                ON A.confirm_number = T.confirm_number
+                
+        WHERE
+            -- 1. 파라미터 필터링
+            A.application_number = #{applicationNumber}
+    </select>
+    <update id="updateApplication" parameterType="long">
+    	UPDATE TB_PARENTAL_LEAVE_APPLICATION
+    	SET status_code = 'ST_20', submitted_dt = sysdate
+    	WHERE application_number = #{applicationNumber}
+    </update>
+    <update id="deleteApplication" parameterType="long">
+    	UPDATE TB_PARENTAL_LEAVE_APPLICATION
+    	SET delt_at = 'Y'
+    	WHERE application_number = #{applicationNumber}
+    </update>
+    <update id="cancelApplication" parameterType="long">
+    	UPDATE TB_PARENTAL_LEAVE_APPLICATION
+    	SET status_code = 'ST_10', submitted_dt = null
+    	WHERE application_number = #{applicationNumber}
+    </update>
 </mapper>

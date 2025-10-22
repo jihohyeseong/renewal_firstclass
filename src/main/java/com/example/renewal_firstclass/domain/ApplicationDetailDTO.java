@@ -1,6 +1,5 @@
 package com.example.renewal_firstclass.domain;
 
-
 import java.sql.Date;
 import java.util.List;
 
@@ -11,10 +10,10 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class ApplicationDTO {
+public class ApplicationDetailDTO {
 
 	private Long applicationNumber;
-	private Long confirmNumber;
+	private String statusCode;
 	private String name;
 	private String registrationNumber;
 	private String zipNumber;
@@ -37,5 +36,11 @@ public class ApplicationDTO {
 	private String bankCode;
 	private String accountNumber;
 	private Long centerId;
+	private String centerName;
+	private String centerUrl;
+	private String centerZipCode;
+	private String centerAddressBase;
+	private String centerAddressDetail;
+	private String centerPhoneNumber;
 	private String govInfoAgree;
 }

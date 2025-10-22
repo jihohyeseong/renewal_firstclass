@@ -84,7 +84,7 @@
     input:focus, select:focus {
       border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(63, 88, 212, 0.15); outline: none;
     }
-    input[readonly], input.readonly-like { background-color: var(--light-gray-color); cursor: not-allowed; }
+    input[readonly], input.readonly-like, input:disabled { background-color: var(--light-gray-color); cursor: not-allowed; }
     
     .btn {
       display: inline-block; padding: 10px 20px; font-size: 15px; font-weight: 500;
@@ -168,7 +168,7 @@
         border-radius: 12px;
         box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         width: 90%;
-        max-width: 800px;
+        max-width: 1000px; /* [수정] 모달 너비 확장 */
         max-height: 80vh;
         display: flex;
         flex-direction: column;
@@ -221,6 +221,46 @@
         padding: 6px 12px;
         font-size: 14px;
     }
+
+    /* [추가] 센터 선택 영역 강조 스타일 */
+    .center-display-box {
+        background-color: var(--white-color);
+        border: 2px dashed var(--border-color); /* 선택 전: 점선 */
+        padding: 20px;
+        min-height: 100px;
+        transition: all 0.3s ease;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    /* 선택 전: 플레이스홀더 텍스트 */
+    .center-display-box:not(.filled)::before {
+        content: '센터 찾기 버튼을 클릭하여 관할 센터를 선택하세요.';
+        font-style: italic;
+        color: var(--gray-color);
+        font-size: 15px;
+    }
+    
+    /* 선택 전: 내부 p 태그 숨김 */
+    .center-display-box:not(.filled) p {
+        display: none;
+    }
+    
+    /* 선택 후: 스타일 변경 */
+    .center-display-box.filled {
+        background-color: var(--primary-light-color); /* 선택 후: 파란 배경 */
+        border-style: solid;
+        border-color: #d1d9ff;
+        text-align: left; 
+        display: block; /* Flex 속성 해제 */
+    }
+
+    /* 선택 후: 내부 p 태그 보임 */
+    .center-display-box.filled p {
+        display: block; 
+    }
 </style>
 </head>
 <body>
@@ -241,7 +281,7 @@
                     <h2>신청인 정보</h2>
                     <div class="form-group">
                         <label class="field-title">이름</label>
-                        <div class="input-field"><input type="text" value="${applicationDTO.name}" name="name" disabled></div>
+                        <div class="input-field"><input type="text" value="${applicationDTO.name}" name="name" readonly></div>
                     </div>
                     <div class="form-group">
                         <label class="field-title">주민등록번호</label>
@@ -282,7 +322,7 @@
                         <label class="field-title">사업장 등록번호</label>
                         <div class="input-field">
                             <input type="text" id="businessRegiNumber"
-                                value="${applicationDTO.buisinessRegiNumber}" inputmode="numeric" autocomplete="off" disabled/>
+                                   value="${applicationDTO.buisinessRegiNumber}" inputmode="numeric" autocomplete="off" disabled/>
                             </div>
                     </div>
                     <div class="form-group">
@@ -290,12 +330,12 @@
                         <div class="input-field">
                             <div class="addr-row">
                                 <input type="text" id="biz-postcode"
-                                    placeholder="우편번호" value="${applicationDTO.companyZipNumber}"
-                                    disabled>
+                                       placeholder="우편번호" value="${applicationDTO.companyZipNumber}"
+                                       disabled>
                             </div>
                             <input type="text" id="biz-base"
-                                placeholder="기본주소" value="${applicationDTO.companyAddressBase}"
-                                readonly style="margin-top: 8px;" disabled> 
+                                   placeholder="기본주소" value="${applicationDTO.companyAddressBase}"
+                                   readonly style="margin-top: 8px;" disabled> 
                             <input type="text" id="biz-detail" value="${applicationDTO.companyAddressDetail}" disabled>
                         </div>
                     </div>
@@ -317,9 +357,9 @@
                         <div class="form-group">
                             <label class="field-title" for="end-date">② 육아휴직 종료일</label>
                             <div class="input-field"
-                                style="display: flex; align-items: center; gap: 10px;">
+                                 style="display: flex; align-items: center; gap: 10px;">
                                 <input type="date" id="end-date" value="${applicationDTO.endDate}" disabled
-                                    style="width: auto; flex-grow: 1;">
+                                       style="width: auto; flex-grow: 1;">
                             </div>
                         </div>
                     </div>
@@ -408,15 +448,15 @@
                             <label class="field-title" for="child-rrn-a">자녀 주민등록번호</label>
                             <div class="form-group">
                                 <div class="input-field"
-                                    style="display: flex; align-items: center; gap: 10px;">
+                                     style="display: flex; align-items: center; gap: 10px;">
                                     <input type="text" id="child-rrn-a" maxlength="6"
-                                        placeholder="생년월일 6자리" value="${fn:substring(applicationDTO.childResiRegiNumber, 0, 6)}" disabled> 
+                                           placeholder="생년월일 6자리" value="${fn:substring(applicationDTO.childResiRegiNumber, 0, 6)}" disabled> 
                                     <span class="hyphen">-</span> 
                                     <input type="text" id="child-rrn-b" maxlength="7"
-                                        placeholder="뒤 7자리" value="${fn:substring(applicationDTO.childResiRegiNumber, 6, 13)}" disabled>
+                                           placeholder="뒤 7자리" value="${fn:substring(applicationDTO.childResiRegiNumber, 6, 13)}" disabled>
                                 </div>
                                 <input type="hidden" name="childResiRegiNumber"
-                                    id="child-rrn-hidden">
+                                       id="child-rrn-hidden">
                             </div>
                         </div>
                     </div>
@@ -435,7 +475,7 @@
                         <label class="field-title">계좌번호</label>
                         <div class="input-field">
                             <input type="text" id="accountNumber" name="accountNumber"
-                                inputmode="numeric" autocomplete="off" placeholder="'-' 없이 숫자만" />
+                                   inputmode="numeric" autocomplete="off" placeholder="'-' 없이 숫자만" />
                         </div>
                     </div>
                     <div class="form-section">
@@ -445,10 +485,12 @@
                             <div class="input-field radio-group">
                                 <input type="radio" id="center-work" name="center" value="work" checked disabled>
                                 <label for="center-work">사업장 주소</label>
-                                <button type="button" id="find-center-btn" class="btn btn-secondary" style="margin-left: 10px;">센터 찾기</button>
+                                <!-- [수정] 버튼 강조 -->
+                                <button type="button" id="find-center-btn" class="btn btn-primary" style="margin-left: 10px;">센터 찾기</button>
                             </div>
                         </div>
-                        <div class="info-box">
+                        <!-- [수정] 클래스 추가 및 구조 변경 -->
+                        <div class="info-box center-display-box">
                             <p><strong>관할센터:</strong> <span id="center-name-display"></span></p>
                             <p><strong>대표전화:</strong> <span id="center-phone-display"></span></p>
                             <p><strong>주소:</strong> <span id="center-address-display"></span></p>
@@ -487,7 +529,7 @@
                         </div>
                     </div>
                     <div class="checkbox-group"
-                        style="justify-content: center; margin-top:  20px;">
+                         style="justify-content: center; margin-top:  20px;">
                         <input type="checkbox" id="agree-notice" name="agreeNotice">
                         <label for="agree-notice">위 안내사항을 모두 확인했으며, 신청서 내용에 거짓이 없음을
                             확인합니다.</label>
@@ -495,8 +537,8 @@
                 </div>
 
                 <div class="submit-button-container" style="display:flex; gap:10px; justify-content:center;">
-                    <button type="submit" name="action" value="register" class="btn submit-button" style="background:#6c757d; border-color:#6c757d;">임시저장</button>
-                    <button type="submit" name="action" value="submit"    class="btn submit-button">신청서 제출하기</button>
+                    <a href="${pageContext.request.contextPath}/user/main" class="btn submit-button" style="background:#6c757d; border-color:#6c757d;">목록으로 돌아가기</a>
+                    <button type="submit" name="action" value="submit"    class="btn submit-button">신청서 저장</button>
                 </div>
             </form>
             
@@ -638,136 +680,12 @@ document.addEventListener('DOMContentLoaded', function () {
   
   
   // ─────────────────────────────────────
-  // 검증용 유틸 함수
-  // ─────────────────────────────────────
-  function countUnits(startStr, endStr) {
-    if (!startStr || !endStr) return 0;
-    const start = new Date(startStr + 'T00:00:00');
-    const end   = new Date(endStr   + 'T00:00:00');
-    if (isNaN(start) || isNaN(end) || start > end) return 0;
-
-    function plusMonthsClamp(date, months) {
-      const y = date.getFullYear(), m = date.getMonth(), d = date.getDate();
-      const targetM = m + months, targetY = y + Math.floor(targetM / 12);
-      const normM = ((targetM % 12) + 12) % 12;
-      const last = new Date(targetY, normM + 1, 0).getDate();
-      const day = Math.min(d, last);
-      return new Date(targetY, normM, day);
-    }
-    function endOfUnit(start) {
-      const originalDay = start.getDate();
-      const nextSame = plusMonthsClamp(start, 1);
-      const lastOfNext = new Date(nextSame.getFullYear(), nextSame.getMonth()+1, 0).getDate();
-      const clamped = originalDay > lastOfNext;
-      const e = new Date(nextSame.getTime());
-      if (!clamped) e.setDate(e.getDate()-1);
-      return e;
-    }
-
-    let cnt = 0;
-    let cur = start;
-    while (cur <= end) {
-      let e = endOfUnit(cur);
-      if (e > end) e = end;
-      cnt++;
-      cur = new Date(e.getTime()); cur.setDate(cur.getDate()+1);
-      if (cnt > 13) break;
-    }
-    return cnt;
-  }
-
-  function getPeriodEndDate(originalStart, periodNumber) {
-    let nextPeriodStart = new Date(
-        originalStart.getFullYear(),
-        originalStart.getMonth() + periodNumber,
-        originalStart.getDate()
-    );
-    if (nextPeriodStart.getDate() !== originalStart.getDate()) {
-        nextPeriodStart = new Date(
-            originalStart.getFullYear(),
-            originalStart.getMonth() + periodNumber + 1,
-            1
-        );
-    }
-    nextPeriodStart.setDate(nextPeriodStart.getDate() - 1);
-    return nextPeriodStart;
-  }
-
-  function isAllFilled() {
-    if (!form) return false;
-
-    // 공통 필드들
-    const startDate = document.getElementById('start-date')?.value?.trim();
-    const endDate   = document.getElementById('end-date')?.value?.trim();
-
-    const businessAgree = form.querySelector('input[name="businessAgree"]:checked')?.value;
-    const businessName  = form.querySelector('input[value="${applicationDTO.companyName}"]')?.value?.trim(); // readonly
-    const businessRegi  = document.getElementById('businessRegiNumber')?.value?.trim(); // readonly
-    const bizZip        = document.getElementById('biz-postcode')?.value?.trim(); // readonly
-    const bizBase       = document.getElementById('biz-base')?.value?.trim(); // readonly
-    const bizDetail     = document.getElementById('biz-detail')?.value?.trim(); // readonly
-
-    const regularWage   = onlyDigits(document.getElementById('regularWage')?.value || ''); // readonly
-    const weeklyHours   = form.querySelector('input[name="weeklyHours"]')?.value?.trim(); // readonly
-
-    const bankCode      = document.getElementById('bankCode')?.value;
-    const accountNumber = form.querySelector('input[name="accountNumber"]')?.value?.trim();
-
-    const govAgree      = form.querySelector('input[name="govInfoAgree"]:checked')?.value;
-
-    // 자녀
-    const birthDate     = document.getElementById('birth-date')?.value?.trim();
-
-    // 단위기간/회사지급
-    const noPayment     = document.getElementById('no-payment')?.checked;
-    const unitCount     = countUnits(startDate, endDate);
-    const payInputs     = Array.from(document.querySelectorAll('input[name^="monthly_payment_"]'));
-
-    // 날짜/기간
-    if (!startDate || !endDate) return false;
-    if (new Date(startDate) > new Date(endDate)) return false;
-    
-    const firstPeriodEndDate = getPeriodEndDate(new Date(startDate + 'T00:00:00'), 1);
-    if (new Date(endDate + 'T00:00:00') < firstPeriodEndDate) return false; // 최소 1개월
-    if (unitCount > 12) return false; // 최대 12개월
-
-    // 사업장 정보 (Readonly지만 값 존재 여부 확인)
-    if (!businessAgree) return false;
-    if (!businessName || !businessRegi || !bizZip || !bizBase || !bizDetail) return false;
-
-    // 금액/시간 (Readonly지만 값 존재 여부 확인)
-    if (!regularWage || Number(regularWage) <= 0) return false;
-    if (!weeklyHours || Number(weeklyHours) <= 0) return false;
-
-    // 자녀 정보
-    if (!birthDate) return false;
-
-    // 계좌/동의
-    if (!bankCode || !accountNumber) return false;
-    if (!govAgree) return false;
-
-    // 단위기간/회사지급액 입력 확인
-    if (unitCount === 0) return false;
-    if (!noPayment) {
-      if (payInputs.length !== unitCount) return false;
-      for (const inp of payInputs) {
-        const v = onlyDigits(inp.value || '');
-        if (v === '') return false; // 빈 값 체크
-        if (Number(v) < 0) return false;
-      }
-    }
-
-    return true;
-  }
-
-  // ─────────────────────────────────────
   // 모든 변수 선언을 이 안에서 한 번만 합니다.
   // ─────────────────────────────────────
   
   const form = document.querySelector('form[action$="/apply"]');
   const submitBtn = document.querySelector('button[name="action"][value="submit"]');
   const agreeChk = document.getElementById('agree-notice');
-  const draftBtn  = document.querySelector('button[name="action"][value="register"]');
 
   // ─────────────────────────────────────
   // 입력 필드 바인딩(숫자/서식)
@@ -787,7 +705,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Readonly지만, 혹시 모를 값 포맷팅을 위해 로직은 남겨둡니다.
     const raw = onlyDigits(brnEl.value).slice(0, 10);
     let pretty = raw;
-    if (raw.length > 5)       pretty = raw.slice(0,3) + '-' + raw.slice(3,5) + '-' + raw.slice(5);
+    if (raw.length > 5)         pretty = raw.slice(0,3) + '-' + raw.slice(3,5) + '-' + raw.slice(5);
     else if (raw.length > 3) pretty = raw.slice(0,3) + '-' + raw.slice(3);
     brnEl.value = pretty;
   }
@@ -823,6 +741,23 @@ document.addEventListener('DOMContentLoaded', function () {
       var m = String(date.getMonth() + 1).padStart(2, '0');
       var d = String(date.getDate()).padStart(2, '0');
       return y + '.' + m + '.' + d;
+    }
+    
+    function getPeriodEndDate(originalStart, periodNumber) {
+        let nextPeriodStart = new Date(
+            originalStart.getFullYear(),
+            originalStart.getMonth() + periodNumber,
+            originalStart.getDate()
+        );
+        if (nextPeriodStart.getDate() !== originalStart.getDate()) {
+            nextPeriodStart = new Date(
+                originalStart.getFullYear(),
+                originalStart.getMonth() + periodNumber + 1,
+                1
+            );
+        }
+        nextPeriodStart.setDate(nextPeriodStart.getDate() - 1);
+        return nextPeriodStart;
     }
 
     if (generateBtn) {
@@ -959,23 +894,9 @@ document.addEventListener('DOMContentLoaded', function () {
   fillRrnFromBirth();
 
   // ─────────────────────────────────────
-  // 제출 버튼 활성화/토글
+  // 제출 버튼 활성화
   // ─────────────────────────────────────
-  if (draftBtn) draftBtn.disabled = false;
-  if (submitBtn) submitBtn.disabled = true;
-
-  function refreshSubmitState() {
-    const ok = isAllFilled();
-    const agree = !!(agreeChk && agreeChk.checked);
-    if (submitBtn) submitBtn.disabled = !(ok && agree);
-  }
-  
-  if (form) {
-      ['input','change'].forEach(evt=> form.addEventListener(evt, refreshSubmitState));
-  }
-  if (agreeChk) {
-      agreeChk.addEventListener('change', refreshSubmitState);
-  }
+  if (submitBtn) submitBtn.disabled = false;
   
   // ─────────────────────────────────────
   // JSTL로 미리 로드된 항목들에 콤마 서식 적용
@@ -985,7 +906,52 @@ document.addEventListener('DOMContentLoaded', function () {
       allowDigitsOnlyAndCommasDisplay(inp, 19);
   });
   
-  refreshSubmitState(); // 초기 상태 검사
+  // ─────────────────────────────────────
+  // [추가] 폼 유효성 검사 함수
+  // ─────────────────────────────────────
+  function validateAndFocus() {
+    // 1. 은행 선택 확인
+    const bankCode = document.getElementById('bankCode');
+    if (!bankCode.value) {
+        alert('급여를 입금받을 은행을 선택해주세요.');
+        bankCode.focus();
+        return false;
+    }
+
+    // 2. 계좌번호 입력 확인
+    const accountNumber = document.getElementById('accountNumber');
+    if (!accountNumber.value.trim()) {
+        alert('계좌번호를 입력해주세요.');
+        accountNumber.focus();
+        return false;
+    }
+
+    // 3. 접수 센터 선택 확인
+    const centerId = document.getElementById('centerId');
+    if (!centerId.value) {
+        alert('접수할 고용센터를 선택해주세요.');
+        document.getElementById('find-center-btn').focus();
+        return false;
+    }
+
+    // 4. 행정정보 공동이용 동의 확인
+    const govInfoAgree = document.querySelector('input[name="govInfoAgree"]:checked');
+    if (!govInfoAgree) {
+        alert('행정정보 공동이용 동의 여부를 선택해주세요.');
+        document.getElementById('gov-yes').focus();
+        return false;
+    }
+
+    // 5. 부정수급 안내 확인
+    const agreeNotice = document.getElementById('agree-notice');
+    if (!agreeNotice.checked) {
+        alert('부정수급 안내 확인에 동의해주세요.');
+        agreeNotice.focus();
+        return false;
+    }
+
+    return true; // 모든 검사 통과
+  }
 
   // ─────────────────────────────────────
   // 폼 제출 시 최종 처리
@@ -993,6 +959,14 @@ document.addEventListener('DOMContentLoaded', function () {
   if (form) {
     form.addEventListener('submit', function(e) {
       const action = (e.submitter && e.submitter.name === 'action') ? e.submitter.value : null;
+
+      // [수정] 유효성 검사 로직을 가장 먼저 실행
+      if (action === 'submit') {
+          if (!validateAndFocus()) {
+              e.preventDefault(); // 유효성 검사 실패 시 폼 제출 중단
+              return;
+          }
+      }
 
       // 자녀 주민번호 합치기
       if (rrnHidden) {
@@ -1006,20 +980,6 @@ document.addEventListener('DOMContentLoaded', function () {
           rrnHidden.name  = 'childResiRegiNumber';
         } else {
           rrnHidden.removeAttribute('name');
-        }
-      }
-
-      // 최종 유효성 검사 (임시저장 제외)
-      if (action !== 'register') {
-        if (!isAllFilled()) { 
-            e.preventDefault(); 
-            alert('모든 필수 값을 올바르게 입력해야 제출할 수 있습니다.'); 
-            return; 
-        }
-        if (!(agreeChk && agreeChk.checked)) { 
-            e.preventDefault(); 
-            alert('안내사항에 동의해야 제출할 수 있습니다.'); 
-            return; 
         }
       }
       
@@ -1083,41 +1043,39 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   if (findCenterBtn) {
-	  findCenterBtn.addEventListener('click', function() {
-	    $.getJSON('${pageContext.request.contextPath}/center/list', function(list) {
-	      centerListBody.innerHTML = ''; // 기존 목록 초기화
+    findCenterBtn.addEventListener('click', function() {
+      $.getJSON('${pageContext.request.contextPath}/center/list', function(list) {
+        centerListBody.innerHTML = ''; // 기존 목록 초기화
 
-	      if (list && list.length > 0) {
-	        list.forEach(center => {
-	          const row = document.createElement('tr');
-	          // 백틱 대신 + 연산자 사용
-	          const fullAddress = '[' + center.centerZipCode + '] ' + center.centerAddressBase + ' ' + (center.centerAddressDetail || '');
+        if (list && list.length > 0) {
+          list.forEach(center => {
+            const row = document.createElement('tr');
+            const fullAddress = '[' + center.centerZipCode + '] ' + center.centerAddressBase + ' ' + (center.centerAddressDetail || '');
 
-	          // 백틱 대신 + 연산자 사용 (가독성을 위해 여러 줄로 나눔)
-	          row.innerHTML = '<td>' + center.centerName + '</td>' +
-	            '<td>' + fullAddress + '</td>' +
-	            '<td>' + center.centerPhoneNumber + '</td>' +
-	            '<td>' +
-	            '<button type="button" class="btn btn-primary btn-select-center">선택</button>' +
-	            '</td>';
+            row.innerHTML = '<td>' + center.centerName + '</td>' +
+              '<td>' + fullAddress + '</td>' +
+              '<td>' + center.centerPhoneNumber + '</td>' +
+              '<td>' +
+              '<button type="button" class="btn btn-primary btn-select-center">선택</button>' +
+              '</td>';
 
-	          const selectBtn = row.querySelector('.btn-select-center');
-	          selectBtn.dataset.centerId = center.centerId;
-	          selectBtn.dataset.centerName = center.centerName;
-	          selectBtn.dataset.centerPhone = center.centerPhoneNumber;
-	          selectBtn.dataset.centerAddress = fullAddress;
+            const selectBtn = row.querySelector('.btn-select-center');
+            selectBtn.dataset.centerId = center.centerId;
+            selectBtn.dataset.centerName = center.centerName;
+            selectBtn.dataset.centerPhone = center.centerPhoneNumber;
+            selectBtn.dataset.centerAddress = fullAddress;
 
-	          centerListBody.appendChild(row);
-	        });
-	      } else {
-	        centerListBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">검색된 센터 정보가 없습니다.</td></tr>';
-	      }
-	      openModal();
-	    }).fail(function() {
-	      alert('센터 목록을 불러오는 데 실패했습니다.');
-	    });
-	  });
-	}
+            centerListBody.appendChild(row);
+          });
+        } else {
+          centerListBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">검색된 센터 정보가 없습니다.</td></tr>';
+        }
+        openModal();
+      }).fail(function() {
+        alert('센터 목록을 불러오는 데 실패했습니다.');
+      });
+    });
+    }
 
   if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
   if (centerModal) {
@@ -1139,6 +1097,9 @@ document.addEventListener('DOMContentLoaded', function () {
             if (centerAddressEl) centerAddressEl.textContent = data.centerAddress;
             if (centerIdInput) centerIdInput.value = data.centerId;
             
+            // [수정] 선택 시 .filled 클래스를 추가하여 CSS 스타일을 변경
+            document.querySelector('.center-display-box')?.classList.add('filled');
+            
             closeModal();
         }
     });
@@ -1149,4 +1110,3 @@ document.addEventListener('DOMContentLoaded', function () {
 
 </body>
 </html>
-

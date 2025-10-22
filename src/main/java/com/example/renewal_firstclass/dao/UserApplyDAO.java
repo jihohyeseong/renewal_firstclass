@@ -7,8 +7,11 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.example.renewal_firstclass.domain.ApplicationDTO;
+import com.example.renewal_firstclass.domain.ApplicationDetailDTO;
+import com.example.renewal_firstclass.domain.ApplyListDTO;
 import com.example.renewal_firstclass.domain.SimpleConfirmVO;
 import com.example.renewal_firstclass.domain.SimpleUserInfoVO;
+import com.example.renewal_firstclass.domain.UserApplyCompleteVO;
 
 @Mapper
 public interface UserApplyDAO {
@@ -20,4 +23,16 @@ public interface UserApplyDAO {
 	ApplicationDTO getApplicationDTO(Long confirmNumber);
 
 	void insertApply(@Param("userId")Long userId, @Param("dto")ApplicationDTO applicationDTO);
+
+	UserApplyCompleteVO findApplyAndCenter(@Param("applicationNumber")Long applicationNumber, @Param("centerId")Long centerId);
+
+	List<ApplyListDTO> findApplyByUsername(String username);
+	
+	ApplicationDetailDTO findApplicationDetailByApplicationNumber(Long applicationNumber);
+
+	void updateApplication(Long applicationNumber);
+
+	void deleteApplication(Long applicationNumber);
+
+	void cancelApplication(Long applicationNumber);
 }

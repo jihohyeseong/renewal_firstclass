@@ -285,7 +285,7 @@
         </div>
 
         <c:choose>
-            <c:when test="${empty confirmList}">
+            <c:when test="${empty list}">
                 <div class="empty-state-box">
                     <h3>아직 신청 내역이 없으시네요.</h3>
                     <p>소중한 자녀를 위한 첫걸음, 지금 바로 시작해보세요.</p>
@@ -303,10 +303,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="app" items="${confirmList}">
+                        <c:forEach var="app" items="${list}">
                             <tr>
-                                <td>${app.confirmNumber}</td>
-                                <td>${not empty app.applyDt ? app.applyDt : '-'}</td>
+                                <td>${app.applicationNumber}</td>
+                                <td>${not empty app.submittedDt ? app.submittedDt : '-'}</td>
                                 <td>${app.name}</td>
                                 
                                 <td class="status-cell"> 
@@ -325,7 +325,7 @@
                                 </td>
     
                                 <td class="actions">
-                                    <a href="${pageContext.request.contextPath}/comp/detail?confirmNumber=${app.confirmNumber}" class="btn btn-secondary">
+                                    <a href="${pageContext.request.contextPath}/user/detail/${app.applicationNumber}" class="btn btn-secondary">
                                         상세보기</a>
                                 </td>
                             </tr>
