@@ -418,7 +418,7 @@
                                 <c:forEach var="app" items="${applicationList}">
                                     <tr>
                                         <td>${app.applicationNumber}</td>
-                                        <td>${app.name}</td>
+                                        <td>${app.applicantName}</td>
                                         <td>${app.submittedDate}</td>
                                         <td>
                                             <c:choose>
@@ -434,7 +434,7 @@
                                             </c:choose>
                                         </td>
                                         <td>
-                                            <a href="${pageContext.request.contextPath}/apply/detail?appNo=${app.applicationNumber}" class="table-btn btn-secondary">상세보기</a>
+                                            <a href="${pageContext.request.contextPath}/admin/user/detail/?appNo=${app.applicationNumber}" class="table-btn btn-secondary">상세보기</a>
                                         </td>
                                     </tr>
                                 </c:forEach>

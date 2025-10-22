@@ -14,13 +14,12 @@ import com.example.renewal_firstclass.service.AdminListService;
 import lombok.RequiredArgsConstructor;
 
 @Controller
-@RequestMapping("/admin")
 @RequiredArgsConstructor
 public class AdminListController {
 
     private final AdminListService adminListService; 
 
-    @GetMapping("/applications")
+/*    @GetMapping("/admin/user/apply")
     public String showApplicationList(@RequestParam(value= "page", defaultValue="1") int page,
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "status", required = false) String status,
@@ -44,4 +43,6 @@ public class AdminListController {
 
         return "admin/adminlist";
     }
+    */
+    
 }

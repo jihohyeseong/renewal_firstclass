@@ -12,4 +12,5 @@ public interface CodeDAO {
 	List<CodeDTO> findAllRejectCode();
 
 	List<CodeDTO> findAllBankCode();
+	
 }
