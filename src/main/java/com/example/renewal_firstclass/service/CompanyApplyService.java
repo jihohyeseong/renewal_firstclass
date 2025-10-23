@@ -29,11 +29,11 @@ public class CompanyApplyService {
     private final AES256Util aes256Util;
 
 
-    /** 신규 저장(ST_10) + (필요 시) 단위기간: 삭제→계산→삽입 */
+    /*신규 저장 */
     @Transactional
     public Long createConfirm(ConfirmApplyDTO dto,
     		List<Long> monthlyCompanyPay) {
-        // 0) 암호화
+        // 암호화
         try {
             if (notBlank(dto.getRegistrationNumber()))
                 dto.setRegistrationNumber(aes256Util.encrypt(dto.getRegistrationNumber()));
@@ -43,14 +43,14 @@ public class CompanyApplyService {
             throw new IllegalStateException("개인정보 암호화 오류", e);
         }
 
-        // 1) 확인서 저장 (ST_10)
+        // 확인서 저장
         dto.setStatusCode("ST_10");
         int rows = confirmApplyDAO.insertConfirmApplication(dto);
         if (rows != 1 || dto.getConfirmNumber() == null) {
             throw new IllegalStateException("확인서 저장 실패");
         }
 
-        // 2) 단위기간: 값이 충분할 때만 처리
+        // 단위기간
         LocalDate s = dto.getStartDate() == null ? null : dto.getStartDate().toLocalDate();
         LocalDate e = dto.getEndDate()   == null ? null : dto.getEndDate().toLocalDate();
         Long wage   = dto.getRegularWage();
@@ -64,7 +64,7 @@ public class CompanyApplyService {
         return dto.getConfirmNumber();
     }
 
-    /** 상세보기에서 제출: ST_10 → ST_20 & apply_dt = SYSDATE */
+    /** 상세보기에서 제출*/
     @Transactional
     public void submitConfirm(Long confirmNumber, Long userId) {
         int rows = confirmApplyDAO.submitConfirm(confirmNumber, userId);
@@ -115,7 +115,7 @@ public class CompanyApplyService {
 	? monthlyCap
 	: ((long) Math.floor((monthlyCap * (double) daysInTerm / daysInFull) / 10)) * 10;
 	
-	// 정부지급액 계산:
+	// 정부지급액 계산
 	long gov = Math.min(proratedCap, Math.max(0L, regularWage - companyPay));
 	gov = (gov / 10L) * 10L;
 	
@@ -134,7 +134,7 @@ public class CompanyApplyService {
 	return list;
 	}
 
-    /** 3) 계산된 리스트 저장(confirmId만 주입하여 일괄 INSERT) */
+    /** 계산된 리스트 저장*/
     @Transactional
     public void saveTerms(Long confirmNumber, List<TermAmountDTO> terms) {
         if (confirmNumber == null || terms == null || terms.isEmpty()) return;
@@ -148,7 +148,7 @@ public class CompanyApplyService {
     private static boolean notBlank(String s) { return s != null && !s.trim().isEmpty(); }
     private static long nz(Long v) { return v == null ? 0L : v; }
 
-    
+    /*상세페이지용*/
     @Transactional(readOnly = true)
     public ConfirmApplyDTO findByConfirmNumber(Long confirmNumber) {
         if (confirmNumber == null) return null;
@@ -175,7 +175,7 @@ public class CompanyApplyService {
     }
     
     
-    /*메인페이지 + 페이징처리용*/
+    /*메인페이지 페이징처리용*/
     public List<ConfirmListDTO> getListByUser(Long userId, int page, int size) {
         int offset = (page - 1) * size;
         return confirmApplyDAO.selectByUserId(userId, offset, size);
@@ -185,7 +185,37 @@ public class CompanyApplyService {
         return confirmApplyDAO.countByUser(userId);
     }  
     
-    
+    @Transactional
+    public Long updateConfirm (ConfirmApplyDTO dto, List<Long> monthlyCompanyPay) {
+    	
+    	 try {
+             if (notBlank(dto.getRegistrationNumber()))
+                 dto.setRegistrationNumber(aes256Util.encrypt(dto.getRegistrationNumber()));
+             if (notBlank(dto.getChildResiRegiNumber()))
+                 dto.setChildResiRegiNumber(aes256Util.encrypt(dto.getChildResiRegiNumber()));
+         } catch (Exception e) {
+             throw new IllegalStateException("개인정보 암호화 오류", e);
+         }
+
+         // 확인서 다시저장
+         int rows = confirmApplyDAO.updateConfirm(dto);
+         if (rows != 1 || dto.getConfirmNumber() == null) {
+             throw new IllegalStateException("확인서 저장 실패");
+         }
+
+         // 단위기간
+         LocalDate s = dto.getStartDate() == null ? null : dto.getStartDate().toLocalDate();
+         LocalDate e = dto.getEndDate()   == null ? null : dto.getEndDate().toLocalDate();
+         Long wage   = dto.getRegularWage();
+
+         if (s != null && e != null && wage != null && !e.isBefore(s)) {
+             deleteTerms(dto.getConfirmNumber());
+             List<TermAmountDTO> terms = calculateTerms(s, e, wage, monthlyCompanyPay);
+             saveTerms(dto.getConfirmNumber(), terms);
+         }
+
+         return dto.getConfirmNumber();
+    }
     
 
     

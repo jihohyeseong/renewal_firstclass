@@ -90,7 +90,7 @@ public class AdminUserApprovalController {
     
 
  // =========================
- // AJAX: 지급(2차 심사: ST_40)
+ // 지급(2차 심사: ST_40)
  // =========================
  @PostMapping("/admin/user/approve")
  @ResponseBody
@@ -121,7 +121,7 @@ public class AdminUserApprovalController {
  }
 
  // =========================
- // AJAX: 부지급 확정
+ // 부지급 확정
  // =========================
  @PostMapping("/admin/user/reject")
  @ResponseBody

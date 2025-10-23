@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -212,5 +213,68 @@ public class CompanyApplyController {
             return "redirect:/comp/main";
         }
     }
+    
+    @GetMapping("/comp/update")
+    public String compUpdate(@RequestParam("confirmNumber") Long confirmNumber,
+                             @AuthenticationPrincipal CustomUserDetails me,
+                             Model model,
+                             RedirectAttributes ra) {
+        if (me == null) {
+            ra.addFlashAttribute("error", "로그인이 필요합니다.");
+            return "redirect:/login";
+        }
+
+        try {
+            ConfirmApplyDTO confirmDTO = companyApplyService.findByConfirmNumber(confirmNumber);
+            ConfirmApplyDTO dto = companyApplyService.findByConfirmNumber(confirmNumber);
+            if (confirmDTO == null) {
+                ra.addFlashAttribute("error", "확인서를 찾을 수 없습니다.");
+                return "redirect:/comp/main";
+            }
+            model.addAttribute("termList", dto.getTermAmounts()); 
+            model.addAttribute("confirmDTO", confirmDTO);
+            return "company/compupdate";
+
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "내용 조회 중 오류 발생: " + e.getMessage());
+            return "redirect:/comp/main";
+        }
+    }
+    
+    
+    @PostMapping("/comp/update")
+    public String compUpdateSave(@RequestParam("confirmNumber") Long confirmNumber,
+                                 @ModelAttribute ConfirmApplyDTO dto,
+                                 @RequestParam(value="monthlyCompanyPay", required=false) List<String> monthlyCompanyPayRaw,
+                                 RedirectAttributes ra) {
+        UserDTO me = currentUserOrNull();
+        if (me == null) {
+            ra.addFlashAttribute("error", "로그인이 필요합니다.");
+            return "redirect:/login";
+        }
+
+        dto.setConfirmNumber(confirmNumber);
+        dto.setUserId(me.getId());
+
+        List<Long> monthlyCompanyPay = null;
+        if (monthlyCompanyPayRaw != null) {
+            monthlyCompanyPay = monthlyCompanyPayRaw.stream()
+                .filter(s -> s != null && !s.trim().isEmpty())
+                .map(s -> s.replaceAll("[^\\d]", ""))
+                .filter(s -> !s.isEmpty())
+                .map(Long::valueOf)
+                .collect(java.util.stream.Collectors.toList());
+        }
+
+        try {
+            companyApplyService.updateConfirm(dto, monthlyCompanyPay);
+            ra.addFlashAttribute("success", "수정되었습니다.");
+            return "redirect:/comp/detail?confirmNumber=" + confirmNumber;
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "수정 중 오류: " + e.getMessage());
+            return "redirect:/comp/detail?confirmNumber=" + confirmNumber;
+        }
+    }
+
 
 }
