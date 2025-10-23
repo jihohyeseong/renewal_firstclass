@@ -13,6 +13,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/global.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/comp.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 <style>
 	  /* ===== 진행 상태 카드 (Step Progress Bar) ===== */
 	  .progress-card {
@@ -21,6 +23,7 @@
 	    border-radius: 14px;
 	    padding: 20px;
 	    margin-bottom: 24px;
+	    box-shadow: var(--shadow-lg);
 	  }
 	
 	  /* ===== 진행 상태 바 개선 ===== */
@@ -107,7 +110,72 @@
 	  transform: translateY(-50%);
 	  transition: width 0.4s ease;
 	}
-  
+	
+	/* ===== 반려 사유 카드 개선 ===== */
+	.reject-result {
+	    background: #fff;
+	    border: 1px solid #e9ecef;
+	    border-radius: 12px;
+	    padding: 24px;
+	    margin-bottom: 24px;
+	    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+	}
+	
+	.reject-result .title-section {
+	    display: flex;
+	    align-items: center;
+	    gap: 12px;
+	    margin-bottom: 20px;
+	    padding-bottom: 16px;
+	    border-bottom: 2px solid #f8f9fa;
+	}
+	
+	.reject-result .title-section i {
+	    font-size: 24px;
+	    color: #ff6b6b;
+	}
+	
+	.reject-result .title-section h3 {
+	    margin: 0;
+	    font-size: 18px;
+	    font-weight: 700;
+	    color: #333;
+	}
+	.reject-result .title-section .reason-inline {
+	    display: inline-block;
+	    padding: 6px 16px;
+	    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+	    color: #fff;
+	    border-radius: 20px;
+	    font-weight: 700;
+	    font-size: 14px;
+	    margin-left: 25px;
+	}
+	
+	.reject-result .info-grid {
+	    display: grid;
+	    gap: 16px;
+	}
+	
+	.reject-result .info-item {
+	    display: flex;
+	    gap: 12px;
+	}
+	
+	.reject-result .info-item .label {
+	    min-width: 100px;
+	    font-weight: 600;
+	    color: #666;
+	    font-size: 14px;
+	}
+	
+	.reject-result .info-item .value {
+	    flex: 1;
+	    color: #333;
+	    font-size: 14px;
+	}
+
+    
 	  /* ===== 표 전용(초록 테마와 조화) ===== */
 	  .page-title { font-size: 22px; font-weight: 800; margin: 0 0 18px; }
 	
@@ -241,7 +309,37 @@
 		  </div>
 		</div>
 	</div>
+	
+	<!-- 반려 사유 안내 박스 -->
+<c:if test="${confirmDTO.statusCode == 'ST_60'}">
+    <div class="reject-result">
+        <div class="title-section">
+            <i class="fa-solid fa-circle-xmark"></i>
+            <h3>반려</h3>
+            <span class="reason-inline">
+                <c:choose>
+                    <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_10'}">계좌정보 불일치</c:when>
+                    <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_20'}">필요 서류 미제출</c:when>
+                    <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_30'}">신청시기 미도래</c:when>
+                    <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_40'}">근속기간 미충족</c:when>
+                    <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_50'}">자녀 연령 기준 초과</c:when>
+                    <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_60'}">휴직 가능 기간 초과</c:when>
+                    <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_70'}">제출서류 정보 불일치</c:when>
+                    <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_80'}">신청서 작성 내용 미비</c:when>
+                    <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_99'}">기타</c:when>
+                </c:choose>
+            </span>
+        </div>
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="label">상세 사유</div>
+                <div class="value">${confirmDTO.rejectComment}</div>
+            </div>
+        </div>
+    </div>
+</c:if>
 
+	
   <div class="content-wrapper">
     <div class="content-header" style="margin-bottom:24px;">
     
@@ -460,7 +558,7 @@
 	    }
 
 	    progressLine.style.width = progressWidth + "%";
-
+	    
 	    // 지급 / 부지급 선택 시 즉시 반응
 	    document.querySelectorAll('input[name="judgeOption"]').forEach(radio => {
 	        radio.addEventListener('change', function() {
