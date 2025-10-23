@@ -21,4 +21,7 @@ public interface ConfirmApplyDAO {
             @Param("size") int size);
 
     int countByUser(Long userId);
+    
+    int recallConfirm(@Param("confirmNumber") Long confirmNumber,
+            @Param("userId") Long userId);
 }

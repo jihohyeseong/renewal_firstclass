@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -35,6 +34,7 @@ public class CompanyApplyController {
 
     private final CompanyApplyService companyApplyService;
     private final UserService userService;
+
     
     /* 메인 */
     @GetMapping("/comp/main")
@@ -72,7 +72,9 @@ public class CompanyApplyController {
         CustomUserDetails ud = (CustomUserDetails) auth.getPrincipal();
         return userService.findByUsername(ud.getUsername());
     }
-    /* 작성 화면 — 로그인 필수 */
+    
+    
+    /* 작성 화면  */
     @GetMapping("/comp/apply")
     public String compApply(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -274,6 +276,25 @@ public class CompanyApplyController {
             ra.addFlashAttribute("error", "수정 중 오류: " + e.getMessage());
             return "redirect:/comp/detail?confirmNumber=" + confirmNumber;
         }
+    }
+    
+    @PostMapping("/comp/recall")
+    public String recall(@RequestParam Long confirmNumber,
+                         RedirectAttributes ra) {
+    	
+        UserDTO me = currentUserOrNull();
+        if (me == null) {
+            ra.addFlashAttribute("error", "로그인이 필요합니다.");
+            return "redirect:/login";
+        }
+
+        try {
+            companyApplyService.recallConfirm(confirmNumber, me.getId());
+            ra.addFlashAttribute("success","회수되었습니다.");
+        } catch (Exception e) {
+            ra.addFlashAttribute("error","회수 실패: " + e.getMessage());
+        }
+        return "redirect:/comp/detail?confirmNumber=" + confirmNumber;
     }
 
 

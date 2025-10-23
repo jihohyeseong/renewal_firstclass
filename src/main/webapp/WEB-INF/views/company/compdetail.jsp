@@ -8,7 +8,6 @@
 <meta charset="UTF-8" />
 <title>육아휴직 확인서 상세</title>
 
-<!-- 네 전역(global) / 공통(초록 테마, 레이아웃, 버튼) CSS가 이미 들어가 있다고 가정 -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/global.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/comp.css">
 
@@ -78,12 +77,24 @@
       <tr><th class="sheet-head" colspan="4">접수 정보</th></tr>
       <tr>
         <th>확인서 번호</th><td>${confirmDTO.confirmNumber}</td>
-        <th>처리 상태</th><td>${confirmDTO.statusCode}</td>
+        <th>처리 상태</th><td>${confirmDTO.statusName}</td>
       </tr>
       <tr>
         <th>제출일</th>
         <td colspan="3"><fmt:formatDate value="${confirmDTO.applyDt}" pattern="yyyy-MM-dd"/></td>
       </tr>
+      
+      <c:if test="${confirmDTO.statusCode == 'ST_60'}">
+  <tr>
+    <th>반려 사유</th>
+    <td colspan="3" style="white-space:pre-wrap;">
+        카테고리: <c:out value="${confirmDTO.rejectReasonName}"/><br/>
+      <c:if test="${not empty confirmDTO.rejectComment}">
+        상세사유: <c:out value="${confirmDTO.rejectComment}"/>
+      </c:if>
+    </td>
+  </tr>
+</c:if>
 
       <!-- 근로자 정보 -->
       <tr><th class="sheet-head" colspan="4">근로자 정보</th></tr>
@@ -91,8 +102,8 @@
         <th>성명</th><td>${confirmDTO.name}</td>
         <th>주민등록번호</th>
         <td>
-          <c:set var="rrn" value="${fn:replace(confirmDTO.registrationNumber,'-','')}"/>
-          ${fn:substring(rrn,0,6)}-${fn:substring(rrn,6,7)}******
+          <c:set var="rrn"/>
+          ${fn:substring(confirmDTO.registrationNumber,0,6)}-${fn:substring(confirmDTO.registrationNumber,6,13)}
         </td>
       </tr>
       <tr>
@@ -119,7 +130,7 @@
             <th>주민등록번호</th>
             <td colspan="3">
               <c:set var="crrn" value="${confirmDTO.childResiRegiNumber}"/>
-              ${fn:substring(crrn,0,6)}-${fn:substring(crrn,6,7)}******
+              ${fn:substring(crrn,0,6)}-${fn:substring(crrn,6,13)}
             </td>
           </tr>
         </c:when>
@@ -164,17 +175,58 @@
           </table>
         </td>
       </tr>
+      
+      <tr><th class="sheet-head" colspan="4">접수 처리 센터 정보</th></tr>
+<c:choose>
+  <c:when test="${not empty confirmDTO.centerName 
+                 or not empty confirmDTO.centerAddressBase 
+                 or not empty confirmDTO.centerPhoneNumber}">
+    <tr>
+      <th>관할센터</th>
+      <td>
+        <c:out value="${confirmDTO.centerName}"/>
+        <c:if test="${not empty confirmDTO.centerURL}">
+          <a href="${fn:escapeXml(confirmDTO.centerURL)}"
+             target="_blank" rel="noopener" class="detail-btn">자세히 보기</a>
+        </c:if>
+      </td>
+      <th>대표전화</th>
+      <td><c:out value="${confirmDTO.centerPhoneNumber}"/></td>
+    </tr>
+    <tr>
+      <th>주소</th>
+      <td colspan="3"><c:out value="${confirmDTO.centerAddressBase}"/></td>
+    </tr>
+  </c:when>
+  <c:otherwise>
+    <tr>
+      <td colspan="4" class="center" style="color:var(--gray-color);">
+        센터 정보가 없습니다.
+      </td>
+    </tr>
+  </c:otherwise>
+</c:choose>
+
+      
     </table>
 
     <div class="detail-actions">
       <a href="${pageContext.request.contextPath}/comp/main" class="btn btn-secondary">목록</a>
-      <c:if test="${confirmDTO.statusCode == 'ST_10'||confirmDTO.statusCode == 'ST_30'}">
+      <c:if test="${confirmDTO.statusCode == 'ST_10'}">
         <a href="${pageContext.request.contextPath}/comp/update?confirmNumber=${confirmDTO.confirmNumber}" class="btn btn-secondary">내용 수정</a>
         <form method="post" action="${pageContext.request.contextPath}/comp/submit" style="display:inline;">
           <input type="hidden" name="confirmNumber" value="${confirmDTO.confirmNumber}" />
           <button type="submit" class="btn btn-primary"
-            onclick="return confirm('제출 후에는 수정이 제한될 수 있습니다. 제출할까요?');">최종 제출</button>
+            onclick="return confirm('제출 후 처리가 완료되면 수정이 불가합니다. 제출할까요?');">최종 제출</button>
         </form>
+      </c:if>
+      <c:if test="${confirmDTO.statusCode == 'ST_20' or confirmDTO.statusCode == 'ST_30'}">
+      <form method="post" action="${pageContext.request.contextPath}/comp/recall" style="display:inline;">
+		  <input type="hidden" name="confirmNumber" value="${confirmDTO.confirmNumber}" />
+		  <button type="submit" class="btn btn-secondary"
+		          onclick="return confirm('신청을 회수하시겠습니까?');">신청 취소</button>
+		</form>
+        <h5>제출 후 처리가 완료되기 전까지 회수가 가능합니다.</h5>
       </c:if>
     </div>
   </div>

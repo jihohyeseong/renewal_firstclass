@@ -1,100 +1,116 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
 
+<script
+	src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/comp.css">
 <style>
-    .form-section {
-        margin-bottom: 50px;
-        padding-bottom: 30px;
-        border-bottom: 1px solid var(--border-color);
-    }
-    .form-section:last-child {
-        border-bottom: none;
-        margin-bottom: 0;
-        padding-bottom: 0;
-    }
-    .form-group {
-        display: grid;
-        grid-template-columns: 200px 1fr;
-        align-items: flex-start;
-        gap: 20px;
-        margin-bottom: 20px;
-    }
-    .field-title {
-        font-weight: 500;
-        padding-top: 10px;
-        color: var(--dark-gray-color);
-    }
-    .input-field input[type="text"],
-    .input-field input[type="date"],
-    .input-field input[type="number"],
-    .input-field input[type="password"],
-    .input-field select {
-        width: 100%;
-        padding: 10px 14px;
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        transition: border-color .2s ease;
-    }
-    .input-field input:focus, .input-field select:focus {
-        outline: none;
-        border-color: var(--primary-color);
-    }
-    .submit-button-container {
-        display: flex;
-        justify-content: center;
-        padding-top: 40px;
-    }
-    /* 단위기간 동적 생성 관련 스타일 */
-    .dynamic-form-container {
-        margin-top: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-    .dynamic-form-row {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        padding: 10px;
-        border-radius: 8px;
-        background-color: var(--light-gray-color);
-    }
-    .date-range-display {
-        font-weight: 500;
-        flex-basis: 250px; /* 고정 너비 */
-        text-align: center;
-    }
-    .payment-input-field {
-        flex-grow: 1;
-    }
-    .payment-input-field input.readonly-like {
-        background-color: #e9ecef;
-        color: #888;
-    }
-    
+.form-section {
+	margin-bottom: 50px;
+	padding-bottom: 30px;
+	border-bottom: 1px solid var(--border-color);
+}
+
+.form-section:last-child {
+	border-bottom: none;
+	margin-bottom: 0;
+	padding-bottom: 0;
+}
+
+.form-group {
+	display: grid;
+	grid-template-columns: 200px 1fr;
+	align-items: flex-start;
+	gap: 20px;
+	margin-bottom: 20px;
+}
+
+.field-title {
+	font-weight: 500;
+	padding-top: 10px;
+	color: var(--dark-gray-color);
+}
+
+.input-field input[type="text"], .input-field input[type="date"],
+	.input-field input[type="number"], .input-field input[type="password"],
+	.input-field select {
+	width: 100%;
+	padding: 10px 14px;
+	border: 1px solid var(--border-color);
+	border-radius: 8px;
+	transition: border-color .2s ease;
+}
+
+.input-field input:focus, .input-field select:focus {
+	outline: none;
+	border-color: var(--primary-color);
+}
+
+.submit-button-container {
+	display: flex;
+	justify-content: center;
+	padding-top: 40px;
+}
+/* 단위기간 동적 생성 관련 스타일 */
+.dynamic-form-container {
+	margin-top: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+.dynamic-form-row {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+	padding: 10px;
+	border-radius: 8px;
+	background-color: var(--light-gray-color);
+}
+
+.date-range-display {
+	font-weight: 500;
+	flex-basis: 250px; /* 고정 너비 */
+	text-align: center;
+}
+
+.payment-input-field {
+	flex-grow: 1;
+}
+
+.payment-input-field input.readonly-like {
+	background-color: #e9ecef;
+	color: #888;
+}
 </style>
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/resources/css/comp.css">
-	
-<%@ include file="compheader.jsp" %>
+  <title>육아휴직 확인서 제출</title>
+</head>
+<body>
+
+<%@ include file="compheader.jsp"%>
 
 <c:if test="${not empty error}">
-  <div class="alert alert-danger">${error}</div>
+	<div class="alert alert-danger">${error}</div>
 </c:if>
 <c:if test="${not empty errors}">
-  <div class="alert alert-warning">
-    <ul>
-      <c:forEach var="e" items="${errors}">
-        <li>${e.key} : ${e.value}</li>
-      </c:forEach>
-    </ul>
-  </div>
+	<div class="alert alert-warning">
+		<ul>
+			<c:forEach var="e" items="${errors}">
+				<li>${e.key}: ${e.value}</li>
+			</c:forEach>
+		</ul>
+	</div>
 </c:if>
 <c:if test="${not empty message}">
-  <div class="alert alert-success">${message}</div>
+	<div class="alert alert-success">${message}</div>
 </c:if>
 
 <main class="main-container">
@@ -103,20 +119,21 @@
 		<h2>육아휴직 확인서 제출</h2>
 	</div>
 
-	<form id="confirm-form" action="${pageContext.request.contextPath}/comp/apply/save"
+	<form id="confirm-form"
+		action="${pageContext.request.contextPath}/comp/apply/save"
 		method="post">
 		<sec:csrfInput />
 
 		<%-- =======================
-                 1. 근로자 정보
+                 근로자 정보
             ======================== --%>
 		<div class="form-section">
-			<h3>1. 근로자 정보</h3>
+			<h3>근로자 정보</h3>
 			<div class="form-group">
 				<label class="field-title" for="employee-name">근로자 성명</label>
 				<div class="input-field">
 					<input type="text" id="employee-name" name="name"
-						placeholder="육아휴직 대상 근로자 성명" >
+						placeholder="육아휴직 대상 근로자 성명">
 				</div>
 			</div>
 			<div class="form-group">
@@ -124,26 +141,26 @@
 				<div class="input-field"
 					style="display: flex; align-items: center; gap: 10px;">
 					<input type="text" id="employee-rrn-a" maxlength="6"
-						placeholder="앞 6자리" style="flex: 1;" > <span>-</span>
-					<input type="password" id="employee-rrn-b" maxlength="7"
-						placeholder="뒤 7자리" style="flex: 1;" > <input
+						placeholder="앞 6자리" style="flex: 1;"> <span>-</span> <input
+						type="password" id="employee-rrn-b" maxlength="7"
+						placeholder="뒤 7자리" style="flex: 1;"> <input
 						type="hidden" name="registrationNumber" id="employee-rrn-hidden">
 				</div>
 			</div>
 		</div>
 
 		<%-- =======================
-                 2. 육아휴직 및 지급액 정보
+                 육아휴직 및 지급액 정보
             ======================== --%>
 		<div class="form-section">
-			<h3>2. 육아휴직 및 지급액 정보</h3>
+			<h3>육아휴직 및 지급액 정보</h3>
 			<div class="form-group">
 				<label class="field-title" for="start-date">육아휴직 기간</label>
 				<div class="input-field"
 					style="display: flex; align-items: center; gap: 10px;">
-					<input type="date" id="start-date" name="startDate" 
+					<input type="date" id="start-date" name="startDate"
 						style="flex: 1;"> <span>~</span> <input type="date"
-						id="end-date" name="endDate"  style="flex: 1;">
+						id="end-date" name="endDate" style="flex: 1;">
 				</div>
 			</div>
 
@@ -170,119 +187,112 @@
 				<label class="field-title" for="weeklyHours">주당 소정근로시간</label>
 				<div class="input-field">
 					<input type="number" id="weeklyHours" name="weeklyHours"
-						placeholder="예: 40" >
+						placeholder="예: 40">
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="field-title" for="regularWage">통상임금 (월)</label>
 				<div class="input-field">
 					<input type="text" id="regularWage" name="regularWage"
-						placeholder="숫자만 입력" autocomplete="off" >
+						placeholder="숫자만 입력" autocomplete="off">
 				</div>
 			</div>
 		</div>
 
 		<%-- =======================
-                 3. 대상 자녀 정보
+                 대상 자녀 정보
             ======================== --%>
 		<div class="form-section">
-			<h3>3. 대상 자녀 정보</h3>
+			<h3>대상 자녀 정보</h3>
+
+			<!-- 서버로 넘길 출산(예정)일 hidden -->
 			<input type="hidden" name="childBirthDate" id="childBirthDateHidden">
+
 			<div class="form-group">
-				<label class="field-title">자녀 출생여부</label>
+				<label class="field-title" for="child-date">출산(예정)일 <span
+					style="color: #ef4444;">*</span></label>
 				<div class="input-field">
-					<input type="radio" name="birthType" value="born" id="bt-born">
-					<label for="bt-born" style="margin-right: 20px;">출생</label>
-					<input type="radio" name="birthType" value="expected"
-						id="bt-expected"><label for="bt-expected">출산예정</label>
+					<input type="date" id="child-date" required> <small
+						style="color: #666; display: block; margin-top: 8px;"> ※
+						출산 전일시 출산(예정)일만 입력해주세요. </small>
 				</div>
 			</div>
-			<div id="born-fields" style="display: none;">
+
+			<div id="born-fields">
 				<div class="form-group">
-					<label class="field-title" for="child-name">자녀 이름</label>
+					<label class="field-title" for="child-name">자녀 이름 <span
+						style="color: #888;">(선택)</span></label>
 					<div class="input-field">
 						<input type="text" id="child-name" name="childName"
-							placeholder="자녀의 이름을 입력하세요">
+							placeholder="미기재 가능">
 					</div>
 				</div>
+
 				<div class="form-group">
-					<label class="field-title" for="birth-date">출생일</label>
-					<div class="input-field">
-						<input type="date" id="birth-date">
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="field-title" for="child-rrn-a">자녀 주민등록번호</label>
+					<label class="field-title" for="child-rrn-a">자녀 주민등록번호 <span
+						style="color: #888;">(선택)</span></label>
 					<div class="input-field"
 						style="display: flex; align-items: center; gap: 10px;">
 						<input type="text" id="child-rrn-a" maxlength="6"
-							placeholder="생년월일 6자리"><span>-</span> <input
+							placeholder="앞 6자리"> <span>-</span> <input
 							type="password" id="child-rrn-b" maxlength="7"
 							placeholder="뒤 7자리"> <input type="hidden"
 							name="childResiRegiNumber" id="child-rrn-hidden">
 					</div>
 				</div>
 			</div>
-			<div id="expected-fields" style="display: none;">
-				<div class="form-group">
-					<label class="field-title" for="expected-date">출산예정일</label>
-					<div class="input-field">
-						<input type="date" id="expected-date"> <small
-							style="color: #666; display: block; margin-top: 8px;">※
-							오늘 이후 날짜만 선택 가능</small>
-					</div>
-				</div>
-			</div>
 		</div>
-		
 		<!-- =======================
-    	 0. 센터 선택 (고정 1개)
+    	 센터 선택 
 		======================== -->
 		<div class="form-section">
-			<h3>0. 처리 센터 선택</h3>
+			<h3>처리 센터 선택</h3>
 
-			<div class="form-group">
-				<label class="field-title">고용복지플러스센터</label>
-				<div class="input-field">
-					<label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer;">
-						<input type="radio" name="centerId" value="1"  checked>
-						<div style="border: 1px solid var(- -border-color); border-radius: 8px; padding: 12px; flex: 1;">
-							<div style="font-weight: 600; margin-bottom: 6px;">서울고용복지플러스센터</div>
-							<div style="color: #555; line-height: 1.6;">
-								<div>주소: 서울특별시 중구 삼일대로 363</div>
-								<div>상세: 장교빌딩 2층~5층, 10층</div>
-								<div>우편번호: 04520</div>
-								<div>전화: 02-2022-6000</div> 
-								<div>
-									홈페이지: <a href="https://www.work.go.kr/seoul/main.do"
-										target="_blank" rel="noopener">
-										https://www.work.go.kr/seoul/main.do </a>
-								</div>
-							</div>
-						</div></
-					</label>
+			<div class="form-section">
+				<h2>접수 센터 선택</h2>
+				<div class="form-group">
+					<label class="field-title">접수센터 기준</label>
+					<div class="input-field radio-group">
+						<input type="radio" id="center-work" name="center" value="work"
+							checked disabled> <label for="center-work">사업장 주소</label>
+						<button type="button" id="find-center-btn" class="btn btn-primary"
+							style="margin-left: 10px;">센터 찾기</button>
+					</div>
 				</div>
+				<div class="info-box center-display-box">
+					<p>
+						<strong>관할센터:</strong> <span id="center-name-display"></span>
+					</p>
+					<p>
+						<strong>대표전화:</strong> <span id="center-phone-display"></span>
+					</p>
+					<p>
+						<strong>주소:</strong> <span id="center-address-display"></span>
+					</p>
+				</div>
+				<input type="hidden" name="centerId" id="centerId" value="">
 			</div>
 		</div>
 
 
-		<%-- =======================
-                 4. 확인서 작성자 정보
-            ======================== --%>
+		<!-- =======================
+                 확인서 작성자 정보
+            ======================== -->
+
 		<div class="form-section">
-			<h3>4. 확인서 작성자 정보</h3>
+			<h3>확인서 작성자 정보</h3>
 			<div class="form-group">
 				<label class="field-title" for="response-name">담당자 이름</label>
 				<div class="input-field">
 					<input type="text" id="response-name" name="responseName"
-						placeholder="확인서 작성 담당자 이름" >
+						placeholder="확인서 작성 담당자 이름">
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="field-title" for="response-phone">담당자 전화번호</label>
 				<div class="input-field">
 					<input type="text" id="response-phone" name="responsePhoneNumber"
-						placeholder="'-' 없이 숫자만 입력" >
+						placeholder="'-' 없이 숫자만 입력">
 				</div>
 			</div>
 		</div>
@@ -294,9 +304,11 @@
 </div>
 </main>
 
-    <footer class="footer">
-        <p>&copy; 2025 육아휴직 서비스. All Rights Reserved.</p>
-    </footer>
+<%@ include file="/WEB-INF/views/conponent/centerModal.jsp"%>
+
+<footer class="footer">
+	<p>&copy; 2025 육아휴직 서비스. All Rights Reserved.</p>
+</footer>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -461,63 +473,18 @@ document.addEventListener('DOMContentLoaded', function () {
    if (noPaymentChk) noPaymentChk.addEventListener('change', applyNoPaymentState);
 
 
-
-    // ─────────────────────────────────────
-    // 자녀정보(출생/예정) 처리
-    // ─────────────────────────────────────
-    const hidden = document.getElementById('childBirthDateHidden'), bornWrap = document.getElementById('born-fields'), expWrap = document.getElementById('expected-fields'), birth = document.getElementById('birth-date'), exp = document.getElementById('expected-date');
-    if (exp) { const today = new Date(); exp.min = today.toISOString().split("T")[0]; }
-    function setHiddenFrom(el) { if(hidden && el) hidden.value = el.value || ''; }
-    function updateChildView() {
-        const isBorn = document.getElementById('bt-born').checked;
-        bornWrap.style.display = isBorn ? '' : 'none';
-        expWrap.style.display = isBorn ? 'none' : '';
-/*         document.getElementById('child-name').required = isBorn;
-        birth.required = isBorn;
-        exp.required = !isBorn; */
-        setHiddenFrom(isBorn ? birth : exp);
-    }
-    document.querySelectorAll('input[name="birthType"]').forEach(r => r.addEventListener('change', updateChildView));
-    if(birth) birth.addEventListener('change', () => setHiddenFrom(birth));
-    if(exp) exp.addEventListener('change', () => setHiddenFrom(exp));
-    updateChildView();
-
-
     /* ================================
-       (추가) 출생일 입력 시 자녀 주민번호 앞자리 자동 채움
+       출생일 입력 시 
     ================================== */
-    (function wireChildRrnAutofill(){
-      const rBorn   = document.getElementById('bt-born');
-      const birth   = document.getElementById('birth-date');
-      const rrnA    = document.getElementById('child-rrn-a');
-      const rrnB    = document.getElementById('child-rrn-b');
-      const hidden  = document.getElementById('childBirthDateHidden');
-
-      function setHiddenFrom(el){ if (hidden && el) hidden.value = el.value || ''; }
-
-      function fillFromBirthIfEmpty(){
-        if (!rBorn || !birth || !rrnA) return;
-        if (!rBorn.checked) return;           // 출생 선택 아닐 때 패스
-        if (!birth.value)  return;            // 출생일이 비어있으면 패스
-        const aEmpty = !rrnA.value || rrnA.value.trim()==='';
-        const bEmpty = !rrnB || !rrnB.value || rrnB.value.trim()==='';
-        if (!(aEmpty && bEmpty)) {            // 이미 입력된 값 있으면 건너뜀
-          setHiddenFrom(birth);
-          return;
-        }
-        const parts = birth.value.split('-'); // YYYY-MM-DD
-        if (parts.length !== 3) return;
-        rrnA.value = (parts[0].slice(-2) + parts[1] + parts[2]).slice(0,6); // YYMMDD
-        if (rrnA.value.length === 6 && rrnB) rrnB.focus();
-        setHiddenFrom(birth);
-      }
-
-      document.querySelectorAll('input[name="birthType"]').forEach(r => {
-        r.addEventListener('change', fillFromBirthIfEmpty);
-      });
-
-      if (birth) birth.addEventListener('change', fillFromBirthIfEmpty);
-    })();
+   (function syncChildDateHidden(){
+	   const dateEl = document.getElementById('child-date');
+	   const hidden = document.getElementById('childBirthDateHidden');
+	   function sync(){ if (hidden) hidden.value = dateEl?.value || ''; }
+	   if (dateEl){
+	     dateEl.addEventListener('change', sync);
+	     sync(); // 초기 1회
+	   }
+	 })();
     /* ================================
     저장 버튼 클릭 시 유효성 검사 + 누락 항목 모아 alert
  ================================== */
@@ -533,14 +500,8 @@ document.addEventListener('DOMContentLoaded', function () {
    const empName     = document.getElementById('employee-name');
    const empA        = document.getElementById('employee-rrn-a');
    const empB        = document.getElementById('employee-rrn-b');
-
-   const rBorn       = document.getElementById('bt-born');
-   const rExp        = document.getElementById('bt-expected');
-   const childName   = document.getElementById('child-name');
-   const birth       = document.getElementById('birth-date');
-   const expected    = document.getElementById('expected-date');
-
-   const centerRadios= Array.from(document.querySelectorAll('input[name="centerId"]'));
+   
+   const childDate   = document.getElementById('child-date');
 
    const noPayChk    = document.getElementById('no-payment');
    const formsBox    = document.getElementById('dynamic-forms-container');
@@ -584,9 +545,9 @@ document.addEventListener('DOMContentLoaded', function () {
    }
 
    form.addEventListener('submit', function(e){
-     const missing = [];      // 입력 안한 항목들
-     const invalid = [];      // 형식/규칙 위반 항목들
-     let firstBadEl = null;   // 첫 오류 포커스용
+     const missing = [];
+     const invalid = [];
+     let firstBadEl = null;
 
      function need(el, label){
        if (!el) return;
@@ -609,15 +570,17 @@ document.addEventListener('DOMContentLoaded', function () {
        if (!firstBadEl && el) firstBadEl = el;
      }
 
-     // 1) 기본 필수
+     // 기본 필수
      need(empName, '근로자 성명');
      need(startDateEl, '육아휴직 시작일');
      need(endDateEl,   '육아휴직 종료일');
      need(weeklyEl,    '주당 소정근로시간');
      need(wageEl,      '통상임금(월)');
-     const centerChecked = needRadio(centerRadios, '처리 센터 선택');
+     
+     const centerIdVal = document.getElementById('centerId')?.value?.trim();
+     if (!centerIdVal) missing.push('처리 센터 선택');
 
-     // 2) 근로자 주민번호(둘 다 필수)
+     // 근로자 주민번호
      if (!empA || onlyDigits(empA.value).length !== 6){
        missing.push('근로자 주민등록번호(앞 6자리)');
        if (!firstBadEl && empA) firstBadEl = empA;
@@ -627,42 +590,23 @@ document.addEventListener('DOMContentLoaded', function () {
        if (!firstBadEl && empB) firstBadEl = empB;
      }
 
-     // 3) 기간 규칙: 1~12개월
+     // 기간 규칙: 1~12개월
      const unitCount = countUnits(startDateEl?.value, endDateEl?.value);
      if (unitCount === 0){
-       // 이미 시작/종료일이 missing이면 위에서 처리됨. 입력은 했지만 범위가 이상한 경우만 invalid로 표기
        if (startDateEl?.value && endDateEl?.value) markInvalid(startDateEl, '육아휴직 기간(시작/종료일 확인)');
      } else if (unitCount > 12){
        markInvalid(endDateEl, '육아휴직 기간(최대 12개월)');
      }
 
-     // 4) 숫자 규칙
+     // 숫자 규칙
      const wage   = Number(onlyDigits(wageEl?.value));
      const weekly = Number(onlyDigits(weeklyEl?.value));
      if (wageEl && !(wage > 0))   markInvalid(wageEl, '통상임금(월) 1원 이상');
      if (weeklyEl && !(weekly > 0)) markInvalid(weeklyEl, '주당 소정근로시간 1시간 이상');
 
-     // 5) 자녀(출생/예정)
-     const bornChecked = rBorn && rBorn.checked;
-     const expChecked  = rExp  && rExp.checked;
-     if (!bornChecked && !expChecked){
-       missing.push('자녀 출생여부 선택');
-       if (!firstBadEl && rBorn) firstBadEl = rBorn;
-     } else if (bornChecked){
-       need(childName, '자녀 이름');
-       need(birth,     '자녀 출생일');
-       // 자녀 주민번호는 선택 입력이지만, 한쪽만 입력했거나 자리 수가 어긋나면 invalid로 안내
-       const ca = onlyDigits(document.getElementById('child-rrn-a')?.value);
-       const cb = onlyDigits(document.getElementById('child-rrn-b')?.value);
-       const filledSome = (ca?.length||0) + (cb?.length||0) > 0;
-       if (filledSome && !(ca.length===6 && cb.length===7)){
-         markInvalid(document.getElementById('child-rrn-a'), '자녀 주민등록번호(앞 6/뒤 7 자리 확인)');
-       }
-     } else if (expChecked){
-       need(expected, '출산예정일');
-     }
-
-     // 6) 단위기간별 지급액 (무지급 미체크 시, 생성된 칸 = 단위기간 수 & 모두 입력)
+     // 자녀(출생/예정)
+     need(childDate, '출산(예정)일');
+     // 단위기간별 지급액 
      if (unitCount > 0 && (!noPayChk || !noPayChk.checked)){
        const pays = Array.from(formsBox.querySelectorAll('input[name="monthlyCompanyPay"]'));
        if (pays.length !== unitCount){
@@ -683,7 +627,6 @@ document.addEventListener('DOMContentLoaded', function () {
      if (missing.length || invalid.length){
        e.preventDefault();
 
-       // 메시지 구성: 누락 → 규칙위반 순서
        let msg = '모든 값을 입력해야 저장할 수 있습니다.';
        if (missing.length){
          const uniqMissing = [...new Set(missing)];
@@ -712,7 +655,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('confirm-form');
     if (form) {
         form.addEventListener('submit', function(e) {
-          // 콤마 제거 대상: 통상임금 + 월별 지급액들
           document.querySelectorAll('#regularWage, input[name^="monthlyCompanyPay"]').forEach(el => {
             el.value = (el.value || '').replace(/[^\d]/g, '');
           });
@@ -728,10 +670,114 @@ document.addEventListener('DOMContentLoaded', function () {
           const b = (document.getElementById('child-rrn-b').value || '').replace(/[^\d]/g,'');
           childRrnHidden.value = (a.length === 6 && b.length === 7) ? (a + b) : '';
 
-          // childBirthDate 비어있으면 name 제거 (빈 문자열 Date 바인딩 방지)
           const hidden = document.getElementById('childBirthDateHidden');
           if (hidden && !hidden.value) hidden.removeAttribute('name');
         });
       }
+    // ─────────────────────────────────────
+    // 엔터 막기
+    // ─────────────────────────────────────
+    if (form) {
+        form.addEventListener('keydown', function (e) {
+          if (e.key !== 'Enter') return;
+
+          const el   = e.target;
+          const tag  = el.tagName.toLowerCase();
+          const type = (el.type || '').toLowerCase();
+
+          const isTextArea = tag === 'textarea';
+          const isButton   = tag === 'button' || (tag === 'input' && (type === 'submit' || type === 'button'));
+          const allowAttr  = el.closest('[data-allow-enter="true"]');
+
+          if (!isTextArea && !isButton && !allowAttr) {
+            e.preventDefault();
+          }
+        });
+      }
+    // ─────────────────────────────────────
+    // 센터 찾기 모달 처리
+    // ─────────────────────────────────────
+    const findCenterBtn = document.getElementById('find-center-btn');
+    const centerModal = document.getElementById('center-modal');
+    const closeModalBtn = centerModal.querySelector('.close-modal-btn');
+    const centerListBody = document.getElementById('center-list-body');
+
+    const centerNameEl = document.getElementById('center-name-display');
+    const centerPhoneEl = document.getElementById('center-phone-display');
+    const centerAddressEl = document.getElementById('center-address-display');
+    const centerIdInput = document.getElementById('centerId');
+
+    function openModal() {
+      if (centerModal) centerModal.style.display = 'flex';
+    }
+    function closeModal() {
+      if (centerModal) centerModal.style.display = 'none';
+    }
+
+    if (findCenterBtn) {
+      findCenterBtn.addEventListener('click', function() {
+        $.getJSON('${pageContext.request.contextPath}/center/list', function(list) {
+          centerListBody.innerHTML = '';
+
+          if (list && list.length > 0) {
+            list.forEach(center => {
+              const row = document.createElement('tr');
+              const fullAddress = '[' + center.centerZipCode + '] ' + center.centerAddressBase + ' ' + (center.centerAddressDetail || '');
+
+              row.innerHTML = '<td>' + center.centerName + '</td>' +
+                '<td>' + fullAddress + '</td>' +
+                '<td>' + center.centerPhoneNumber + '</td>' +
+                '<td>' +
+                '<button type="button" class="btn btn-primary btn-select-center">선택</button>' +
+                '</td>';
+
+              const selectBtn = row.querySelector('.btn-select-center');
+              selectBtn.dataset.centerId = center.centerId;
+              selectBtn.dataset.centerName = center.centerName;
+              selectBtn.dataset.centerPhone = center.centerPhoneNumber;
+              selectBtn.dataset.centerAddress = fullAddress;
+
+              centerListBody.appendChild(row);
+            });
+          } else {
+            centerListBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">검색된 센터 정보가 없습니다.</td></tr>';
+          }
+          openModal();
+        }).fail(function() {
+          alert('센터 목록을 불러오는 데 실패했습니다.');
+        });
+      });
+      }
+
+    if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+    if (centerModal) {
+      centerModal.addEventListener('click', function(e) {
+          if (e.target === centerModal) {
+              closeModal();
+          }
+      });
+    }
+
+    if (centerListBody) {
+      centerListBody.addEventListener('click', function(e) {
+          if (e.target.classList.contains('btn-select-center')) {
+              const btn = e.target;
+              const data = btn.dataset;
+
+              if (centerNameEl) centerNameEl.textContent = data.centerName;
+              if (centerPhoneEl) centerPhoneEl.textContent = data.centerPhone;
+              if (centerAddressEl) centerAddressEl.textContent = data.centerAddress;
+              if (centerIdInput) centerIdInput.value = data.centerId;
+              
+              document.querySelector('.center-display-box')?.classList.add('filled');
+              
+              closeModal();
+          }
+      });
+    }
+    
 });
 </script>
+
+</body>
+</html>

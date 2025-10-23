@@ -217,6 +217,9 @@ public class CompanyApplyService {
          return dto.getConfirmNumber();
     }
     
-
+    
+    public int recallConfirm(Long confirmNumber, Long userId) {
+        return confirmApplyDAO.recallConfirm(confirmNumber, userId);
+    }  
     
 }

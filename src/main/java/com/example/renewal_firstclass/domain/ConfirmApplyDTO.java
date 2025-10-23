@@ -39,10 +39,12 @@ public class ConfirmApplyDTO {
 
     // 반려 관련
     private String rejectionReasonCode;     // 반려사유 코드 
-    private String rejectComment;           // 상세 반려 사유 (CLOB)
+    private String rejectComment;           // 상세 반려 사유
+    private String rejectReasonName;
 
     // 상태/참조
     private String statusCode;              // 처리상태
+    private String statusName;
     private Long processorId;               // 관리자 유저 id
     private Long centerId;                  // 센터 id
     private Long userId;                    // 신청하는 기업(유저) id

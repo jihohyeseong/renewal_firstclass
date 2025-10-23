@@ -126,5 +126,14 @@
     SELECT COUNT(*) FROM TB_CONFIRM_APPLICATION WHERE user_id = #{userId}
 </select>
 
+  <update id="recallConfirm">
+    UPDATE TB_CONFIRM_APPLICATION
+       SET status_code = 'ST_10',
+           apply_dt    = NULL
+     WHERE confirm_number  = #{confirmNumber}
+       AND user_id     = #{userId}
+       AND (status_code='ST_20' OR status_code='ST_30')
+       AND NVL(delt_at, 'N') = 'N'
+  </update>
 
 </mapper>
