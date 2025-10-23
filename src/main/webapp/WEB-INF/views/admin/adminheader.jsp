@@ -36,7 +36,18 @@
     <nav>
     	<ul class="header-nav">
     		<li><a class="nav-link ${fn:contains(currentURI, '/confirm') ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/confirm">확인서 보기</a></li>
-    		<li><a class="nav-link ${fn:contains(currentURI, '/applications') ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/applications">신청서 보기</a></li>
+    		<li><a class="nav-link ${fn:contains(currentURI, '/apply') ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/user/apply">신청서 보기</a></li>
+    		<li>
+    			<c:choose>
+				    <c:when test="${not empty adminCheck && adminCheck.centerPosition eq 'leader'}">
+				        <a class="nav-link" href="${pageContext.request.contextPath}/admin/superior">2차 신청서 보기</a>
+				    </c:when>
+				    <c:otherwise>
+				        <a class="nav-link" href="#" onclick="alert('권한이 없습니다.'); return false;">2차 신청서 보기</a>
+				    </c:otherwise>
+				</c:choose>
+
+    		</li>
     		<li><a class="nav-link" href="${pageContext.request.contextPath}/main">추가지급</a></li>
     	</ul>
         <sec:authorize access="isAnonymous()">

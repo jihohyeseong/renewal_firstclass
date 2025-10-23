@@ -28,6 +28,7 @@ public class AdminUserApprovalDTO {
     private String govInfoAgree;
     private Long userId;
     private Long processorId;
+    private Long superiorId;
 
     // TB_CONFIRM_APPLICATION
     private Date startDate;
