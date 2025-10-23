@@ -13,6 +13,7 @@ import lombok.ToString;
 public class ApplicationDetailDTO {
 
 	private Long applicationNumber;
+	private Long confirmNumber;
 	private String statusCode;
 	private String name;
 	private String registrationNumber;
@@ -34,6 +35,7 @@ public class ApplicationDetailDTO {
 	private Date childBirthDate;
 	private String childResiRegiNumber;
 	private String bankCode;
+	private String bankName;
 	private String accountNumber;
 	private Long centerId;
 	private String centerName;

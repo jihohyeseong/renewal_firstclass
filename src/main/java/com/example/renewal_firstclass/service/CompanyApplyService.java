@@ -122,7 +122,7 @@ public class CompanyApplyService {
 	TermAmountDTO t = TermAmountDTO.builder()
 	.startMonthDate(Date.valueOf(curStart))
 	.endMonthDate(Date.valueOf(actualEnd))
-	.paymentDate(Date.valueOf(actualEnd.plusMonths(1).withDayOfMonth(1)))
+	.paymentDate(Date.valueOf(actualEnd.plusDays(1)))
 	.companyPayment(companyPay)
 	.govPayment(gov)
 	.build();

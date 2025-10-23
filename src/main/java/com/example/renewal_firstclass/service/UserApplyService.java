@@ -107,4 +107,10 @@ public class UserApplyService {
 		
 		userApplyDAO.cancelApplication(applicationNumber);
 	}
+
+	public void updateApplication(ApplicationDTO applicationDTO) {
+		
+		userApplyDAO.updateApplicationDetail(applicationDTO);
+	}
+
 }

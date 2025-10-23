@@ -35,4 +35,6 @@ public interface UserApplyDAO {
 	void deleteApplication(Long applicationNumber);
 
 	void cancelApplication(Long applicationNumber);
+
+	void updateApplicationDetail(ApplicationDTO applicationDTO);
 }

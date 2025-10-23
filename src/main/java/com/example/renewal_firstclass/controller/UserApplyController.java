@@ -98,6 +98,28 @@ public class UserApplyController {
 		return "redirect:/user/main";
 	}
 	
+	// 육아휴직 등록 수정페이지 이동
+	@GetMapping("/user/application/update/{applicationNumber}")
+	public String updateApplicationPage(@PathVariable Long applicationNumber, Model model) {
+		
+		ApplicationDetailDTO applicationDetailDTO = userApplyService.getApplicationDetail(applicationNumber);
+		Long confirmNumber = applicationDetailDTO.getConfirmNumber();
+		ApplicationDTO applicationDTO = userApplyService.getApplicationDTO(confirmNumber);
+		model.addAttribute("applicationDTO", applicationDTO);
+		model.addAttribute("applicationDetailDTO", applicationDetailDTO);
+		
+		return "user/application";
+	}
+	
+	// 육아휴직 등록 수정
+	@PostMapping("/user/update")
+	public String updateApplication(ApplicationDTO applicationDTO) {
+		
+		userApplyService.updateApplication(applicationDTO);
+		
+		return "redirect:/user/main";
+	}
+	
 	// 육아휴직 제출 완료페이지
 	@GetMapping("/user/complete")
 	public String completePage() {

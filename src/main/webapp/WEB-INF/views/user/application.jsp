@@ -7,40 +7,49 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>육아휴직 급여 신청</title>
+<%-- [수정] applicationDetailDTO 존재 여부에 따라 타이틀 변경 --%>
+<c:choose>
+    <c:when test="${not empty applicationDetailDTO}">
+        <title>육아휴직 급여 신청 수정</title>
+    </c:when>
+    <c:otherwise>
+        <title>육아휴직 급여 신청</title>
+    </c:otherwise>
+</c:choose>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/global.css">
 <style>
+    /* ... (Your existing CSS styles remain unchanged) ... */
     :root {
-      --primary-color: #3f58d4;
-      --primary-light-color: #f0f2ff;
-      --white-color: #ffffff;
-      --light-gray-color: #f8f9fa;
-      --gray-color: #868e96;
-      --dark-gray-color: #343a40;
-      --border-color: #dee2e6;
-      --success-color: #28a745;
-      --warning-bg-color: #fff3cd;
-      --warning-border-color: #ffeeba;
-      --warning-text-color: #856404;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-      --shadow-md: 0 4px 8px rgba(0,0,0,0.07);
+     --primary-color: #3f58d4;
+     --primary-light-color: #f0f2ff;
+     --white-color: #ffffff;
+     --light-gray-color: #f8f9fa;
+     --gray-color: #868e96;
+     --dark-gray-color: #343a40;
+     --border-color: #dee2e6;
+     --success-color: #28a745;
+     --warning-bg-color: #fff3cd;
+     --warning-border-color: #ffeeba;
+     --warning-text-color: #856404;
+     --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+     --shadow-md: 0 4px 8px rgba(0,0,0,0.07);
     }
 
     /* 기본 스타일 */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { height: 100%; }
     body {
-      display: flex; flex-direction: column; min-height: 100vh;
-      font-family: 'Noto Sans KR', sans-serif; background-color: var(--light-gray-color);
-      color: var(--dark-gray-color);
+     display: flex; flex-direction: column; min-height: 100vh;
+     font-family: 'Noto Sans KR', sans-serif; background-color: var(--light-gray-color);
+     color: var(--dark-gray-color);
     }
     a { text-decoration: none; color: inherit; }
     
     .header, .footer {
-      background-color: var(--white-color); padding: 15px 40px; border-bottom: 1px solid var(--border-color); box-shadow: var(--shadow-sm);
+     background-color: var(--white-color); padding: 15px 40px; border-bottom: 1px solid var(--border-color); box-shadow: var(--shadow-sm);
     }
     .footer { border-top: 1px solid var(--border-color); border-bottom: none; text-align: center; padding: 20px 0; }
     .header { display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
@@ -48,14 +57,14 @@
     .header .welcome-msg { font-size: 16px; }
 
     .main-container {
-      flex-grow: 1;
-      width: 100%;
-      max-width: 1100px !important; 
-      margin: 20px auto !important; 
-      padding: 0 20px !important;
-      background: none !important; /* 강제로 배경 제거 */
-      box-shadow: none !important; /* 강제로 그림자 제거 */
-      border: none !important;
+     flex-grow: 1;
+     width: 100%;
+     max-width: 1100px !important; 
+     margin: 20px auto !important; 
+     padding: 0 20px !important;
+     background: none !important; /* 강제로 배경 제거 */
+     box-shadow: none !important; /* 강제로 그림자 제거 */
+     border: none !important;
     }
 
     .content-wrapper {
@@ -68,8 +77,8 @@
 
     h1 { text-align: center; margin-bottom: 30px; font-size: 28px; }
     h2 {
-      color: var(--primary-color); border-bottom: 2px solid var(--primary-light-color);
-      padding-bottom: 10px; margin-bottom: 25px; font-size: 20px;
+     color: var(--primary-color); border-bottom: 2px solid var(--primary-light-color);
+     padding-bottom: 10px; margin-bottom: 25px; font-size: 20px;
     }
 
     .form-section { margin-bottom: 40px; }
@@ -78,18 +87,18 @@
     .form-group .input-field { flex-grow: 1; }
     
     input[type="text"], input[type="date"], input[type="number"],input[type="password"], select {
-      width: 100%; padding: 10px; border: 1px solid var(--border-color);
-      border-radius: 6px; transition: all 0.2s ease-in-out;
+     width: 100%; padding: 10px; border: 1px solid var(--border-color);
+     border-radius: 6px; transition: all 0.2s ease-in-out;
     }
     input:focus, select:focus {
-      border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(63, 88, 212, 0.15); outline: none;
+     border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(63, 88, 212, 0.15); outline: none;
     }
     input[readonly], input.readonly-like, input:disabled { background-color: var(--light-gray-color); cursor: not-allowed; }
     
     .btn {
-      display: inline-block; padding: 10px 20px; font-size: 15px; font-weight: 500;
-      border-radius: 8px; border: 1px solid var(--border-color); cursor: pointer;
-      transition: all 0.2s ease-in-out; text-align: center;
+     display: inline-block; padding: 10px 20px; font-size: 15px; font-weight: 500;
+     border-radius: 8px; border: 1px solid var(--border-color); cursor: pointer;
+     transition: all 0.2s ease-in-out; text-align: center;
     }
     .btn-primary { background-color: var(--primary-color); color: var(--white-color); border-color: var(--primary-color); }
     .btn-primary:hover { background-color: #364ab1; box-shadow: var(--shadow-md); transform: translateY(-2px); }
@@ -99,16 +108,16 @@
     .btn-logout:hover { background-color: #555; }
 
     .submit-button {
-      padding: 12px 30px;
-      font-size: 1.1em;
-      background-color: var(--primary-color);
-      border-color: var(--primary-color);
-      color: white;
+     padding: 12px 30px;
+     font-size: 1.1em;
+     background-color: var(--primary-color);
+     border-color: var(--primary-color);
+     color: white;
     }
     .submit-button:hover {
-      background-color: #364ab1;
-      border-color: #364ab1;
-      transform: translateY(-2px);
+     background-color: #364ab1;
+     border-color: #364ab1;
+     transform: translateY(-2px);
     }
     .submit-button-container { text-align: center; margin-top: 30px; }
     
@@ -116,15 +125,15 @@
     .radio-group input[type="radio"], .checkbox-group input[type="checkbox"] { margin-right: -10px; }
     
     .info-box {
-      background-color: var(--primary-light-color); border: 1px solid #d1d9ff; padding: 15px;
-      margin-top: 10px; border-radius: 6px; font-size: 14px;
+     background-color: var(--primary-light-color); border: 1px solid #d1d9ff; padding: 15px;
+     margin-top: 10px; border-radius: 6px; font-size: 14px;
     }
     .info-box p { margin: 5px 0; }
 
     .notice-box {
-      border: 1px solid var(--warning-border-color); background-color: var(--warning-bg-color);
-      color: var(--warning-text-color); padding: 20px; margin-top: 20px;
-      border-radius: 8px; display: flex; align-items: flex-start;
+     border: 1px solid var(--warning-border-color); background-color: var(--warning-bg-color);
+     color: var(--warning-text-color); padding: 20px; margin-top: 20px;
+     border-radius: 8px; display: flex; align-items: flex-start;
     }
     .notice-icon { font-size: 1.8em; margin-right: 15px; margin-top: -2px; }
     .notice-box h3 { margin: 0 0 8px 0; }
@@ -132,19 +141,19 @@
     #period-input-section { display: block; }
     .dynamic-form-container { margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 10px; }
     .dynamic-form-row {
-      display: flex; align-items: center; gap: 15px; padding: 10px;
-      border-radius: 6px; margin-bottom: 10px;
+     display: flex; align-items: center; gap: 15px; padding: 10px;
+     border-radius: 6px; margin-bottom: 10px;
     }
     .dynamic-form-row:nth-child(odd) { background-color: var(--primary-light-color); }
     .date-range-display { font-weight: 500; flex-basis: 300px; flex-shrink: 0; text-align: center; }
     .payment-input-field{
-      flex-grow: 1;
-      display: flex;
-      justify-content: flex-end;
+     flex-grow: 1;
+     display: flex;
+     justify-content: flex-end;
     }
     
     button[name="action"][value="submit"]:disabled {
-      opacity: .6; cursor: not-allowed;
+     opacity: .6; cursor: not-allowed;
     }
     
     .error {color: red; font-size: 14px;}
@@ -272,10 +281,27 @@
     <main class="main-container">
         <div class="content-wrapper"> 
         
-            <h1>육아휴직 급여 신청</h1>
+            <%-- [수정] applicationDetailDTO 존재 여부에 따라 타이틀 변경 --%>
+            <c:choose>
+                <c:when test="${not empty applicationDetailDTO}">
+                    <h1>육아휴직 급여 신청 수정</h1>
+                </c:when>
+                <c:otherwise>
+                    <h1>육아휴직 급여 신청</h1>
+                </c:otherwise>
+            </c:choose>
 
-            <form action="${pageContext.request.contextPath}/user/apply" method="post">
-            <input type="hidden" name="confirmNumber" value="${confirmNumber}">
+            <%-- [수정] 1. 폼 action 및 hidden input을 DTO 존재 여부에 따라 분기 --%>
+            <c:choose>
+                <c:when test="${not empty applicationDetailDTO}">
+                    <form action="${pageContext.request.contextPath}/user/update" method="post">
+                    <input type="hidden" name="applicationNumber" value="${applicationDetailDTO.applicationNumber}">
+                </c:when>
+                <c:otherwise>
+                    <form action="${pageContext.request.contextPath}/user/apply" method="post">
+                    <input type="hidden" name="confirmNumber" value="${confirmNumber}">
+                </c:otherwise>
+            </c:choose>
             <sec:csrfInput/>
                 <div class="form-section">
                     <h2>신청인 정보</h2>
@@ -466,7 +492,9 @@
                     <div class="form-group">
                         <label class="field-title">은행</label>
                         <div class="input-field">
-                            <select name="bankCode" id="bankCode" data-selected="${applicationDTO.bankCode}">
+                            <%-- [수정] 2. data-selected 값을 DTO 존재 여부에 따라 분기 --%>
+                            <select name="bankCode" id="bankCode"
+                                    data-selected="${not empty applicationDetailDTO ? applicationDetailDTO.bankCode : applicationDTO.bankCode}">
                                 <option value="" selected disabled>은행 선택</option>
                             </select>
                         </div>
@@ -474,8 +502,10 @@
                     <div class="form-group">
                         <label class="field-title">계좌번호</label>
                         <div class="input-field">
+                            <%-- [수정] 2. 계좌번호 value 값 설정 --%>
                             <input type="text" id="accountNumber" name="accountNumber"
-                                   inputmode="numeric" autocomplete="off" placeholder="'-' 없이 숫자만" />
+                                   inputmode="numeric" autocomplete="off" placeholder="'-' 없이 숫자만"
+                                   value="${applicationDetailDTO.accountNumber}" />
                         </div>
                     </div>
                     <div class="form-section">
@@ -485,17 +515,17 @@
                             <div class="input-field radio-group">
                                 <input type="radio" id="center-work" name="center" value="work" checked disabled>
                                 <label for="center-work">사업장 주소</label>
-                                <!-- [수정] 버튼 강조 -->
                                 <button type="button" id="find-center-btn" class="btn btn-primary" style="margin-left: 10px;">센터 찾기</button>
                             </div>
                         </div>
-                        <!-- [수정] 클래스 추가 및 구조 변경 -->
-                        <div class="info-box center-display-box">
-                            <p><strong>관할센터:</strong> <span id="center-name-display"></span></p>
-                            <p><strong>대표전화:</strong> <span id="center-phone-display"></span></p>
-                            <p><strong>주소:</strong> <span id="center-address-display"></span></p>
+                        <%-- [수정] 2. 센터 정보 DTO 값으로 pre-fill 및 'filled' 클래스 추가 --%>
+                        <div class="info-box center-display-box ${not empty applicationDetailDTO ? 'filled' : ''}">
+                            <p><strong>관할센터:</strong> <span id="center-name-display">${applicationDetailDTO.centerName}</span></p>
+                            <p><strong>대표전화:</strong> <span id="center-phone-display">${applicationDetailDTO.centerPhoneNumber}</span></p>
+                            <p><strong>주소:</strong> <span id="center-address-display">[${applicationDetailDTO.centerZipCode}] ${applicationDetailDTO.centerAddressBase} ${applicationDetailDTO.centerAddressDetail}</span></p>
                         </div>
-                        <input type="hidden" name="centerId" id="centerId">
+                        <%-- [수정] 2. 센터 ID hidden input 값 설정 --%>
+                        <input type="hidden" name="centerId" id="centerId" value="${applicationDetailDTO.centerId}">
                     </div>
                     <div class="form-section">
                     <h2>행정정보 공동이용 동의서</h2>
@@ -510,9 +540,10 @@
                         신청인&nbsp;:&nbsp;${applicationDTO.name}
                         </label>
                         <div class="radio-group" style="justify-content:flex-end; gap:24px;">
-                            <input type="radio" id="gov-yes" name="govInfoAgree" value="Y">
+                            <%-- [수정] 2. 행정정보 동의 DTO 값으로 checked 설정 --%>
+                            <input type="radio" id="gov-yes" name="govInfoAgree" value="Y" ${applicationDetailDTO.govInfoAgree == 'Y' ? 'checked' : ''}>
                             <label for="gov-yes">동의합니다.</label>
-                            <input type="radio" id="gov-no" name="govInfoAgree" value="N">
+                            <input type="radio" id="gov-no" name="govInfoAgree" value="N" ${applicationDetailDTO.govInfoAgree == 'N' ? 'checked' : ''}>
                             <label for="gov-no">동의하지 않습니다.</label>
                         </div>
                     </div>
@@ -538,7 +569,16 @@
 
                 <div class="submit-button-container" style="display:flex; gap:10px; justify-content:center;">
                     <a href="${pageContext.request.contextPath}/user/main" class="btn submit-button" style="background:#6c757d; border-color:#6c757d;">목록으로 돌아가기</a>
-                    <button type="submit" name="action" value="submit"    class="btn submit-button">신청서 저장</button>
+                    
+                    <%-- [수정] 1. DTO 존재 여부에 따라 버튼 텍스트 및 value 변경 --%>
+                    <c:choose>
+                        <c:when test="${not empty applicationDetailDTO}">
+                            <button type="submit" name="action" value="update" class="btn submit-button" onclick="alert('신청서가 수정되었습니다');">신청서 수정</button>
+                        </c:when>
+                        <c:otherwise>
+                            <button type="submit" name="action" value="submit" class="btn submit-button" onclick="alert('신청서가 저장되었습니다');">신청서 저장</button>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
             </form>
             
@@ -594,7 +634,7 @@ function execDaumPostcode(prefix) {
 // ─────────────────────────────────────
 $(function () {
   const $sel = $('#bankCode');
-  const selected = $sel.data('selected');
+  const selected = $sel.data('selected'); // This will now correctly pick up the value from applicationDetailDTO if it exists
 
   $.getJSON('${pageContext.request.contextPath}/code/bank', function (list) {
     $sel.find('option:not([value=""])').remove();
@@ -683,8 +723,8 @@ document.addEventListener('DOMContentLoaded', function () {
   // 모든 변수 선언을 이 안에서 한 번만 합니다.
   // ─────────────────────────────────────
   
-  const form = document.querySelector('form[action$="/apply"]');
-  const submitBtn = document.querySelector('button[name="action"][value="submit"]');
+  const form = document.querySelector('form'); // [수정] 폼 선택자 단순화
+  const submitBtn = document.querySelector('button[name="action"][value="submit"], button[name="action"][value="update"]'); // [수정] 수정 버튼도 포함
   const agreeChk = document.getElementById('agree-notice');
 
   // ─────────────────────────────────────
@@ -695,9 +735,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const accEl = document.getElementById('accountNumber');
   if (accEl) {
+    // [수정] allowDigitsOnlyAndCommasDisplay가 아닌 onlyDigits 사용
     accEl.addEventListener('input', function(){
       this.value = onlyDigits(this.value).slice(0, 14);
     });
+    // [추가] JSTL로 값이 미리 설정된 경우를 대비해 초기 포맷팅 (콤마는 필요 없으므로 생략)
+    accEl.value = onlyDigits(accEl.value).slice(0, 14);
   }
 
   const brnEl = document.getElementById('businessRegiNumber');
@@ -705,7 +748,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Readonly지만, 혹시 모를 값 포맷팅을 위해 로직은 남겨둡니다.
     const raw = onlyDigits(brnEl.value).slice(0, 10);
     let pretty = raw;
-    if (raw.length > 5)         pretty = raw.slice(0,3) + '-' + raw.slice(3,5) + '-' + raw.slice(5);
+    if (raw.length > 5)          pretty = raw.slice(0,3) + '-' + raw.slice(3,5) + '-' + raw.slice(5);
     else if (raw.length > 3) pretty = raw.slice(0,3) + '-' + raw.slice(3);
     brnEl.value = pretty;
   }
@@ -906,6 +949,11 @@ document.addEventListener('DOMContentLoaded', function () {
       allowDigitsOnlyAndCommasDisplay(inp, 19);
   });
   
+  const preloadedGovPayments = document.querySelectorAll('#dynamic-forms-container input[name^="gov_payment_"]');
+    preloadedGovPayments.forEach(inp => {
+        allowDigitsOnlyAndCommasDisplay(inp, 19);
+  });
+
   // ─────────────────────────────────────
   // [추가] 폼 유효성 검사 함수
   // ─────────────────────────────────────
@@ -960,30 +1008,35 @@ document.addEventListener('DOMContentLoaded', function () {
     form.addEventListener('submit', function(e) {
       const action = (e.submitter && e.submitter.name === 'action') ? e.submitter.value : null;
 
-      // [수정] 유효성 검사 로직을 가장 먼저 실행
-      if (action === 'submit') {
+      // [수정] 유효성 검사 로직을 가장 먼저 실행 (submit 또는 update 시)
+      if (action === 'submit' || action === 'update') {
           if (!validateAndFocus()) {
               e.preventDefault(); // 유효성 검사 실패 시 폼 제출 중단
               return;
           }
       }
 
-      // 자녀 주민번호 합치기
+      // 자녀 주민번호 합치기 (disabled 상태이므로 값이 전송되지 않음, hidden으로 처리)
       if (rrnHidden) {
         const a = onlyDigits(rrnAEl ? rrnAEl.value : '');
         const b = onlyDigits(rrnBEl ? rrnBEl.value : '');
         if (a.length === 6 && b.length === 7) {
           rrnHidden.value = a + b;
           rrnHidden.name  = 'childResiRegiNumber';
-        } else if (typeof ORIGINAL_RRN !== 'undefined' && ORIGINAL_RRN) {
-          rrnHidden.value = ORIGINAL_RRN;
-          rrnHidden.name  = 'childResiRegiNumber';
         } else {
-          rrnHidden.removeAttribute('name');
+           // DTO에 있던 원래 값(applicationDTO.childResiRegiNumber)을 hidden input에 넣어줘야 함.
+           // 이 JSP는 applicationDTO만 사용하므로 해당 값을 사용합니다.
+           const originalRRN = "${applicationDTO.childResiRegiNumber}";
+           if(originalRRN && originalRRN.length === 13) {
+                rrnHidden.value = originalRRN;
+                rrnHidden.name  = 'childResiRegiNumber';
+           } else {
+                rrnHidden.removeAttribute('name');
+           }
         }
       }
       
-      // 전송 직전 콤마 제거 및 disabled 해제
+      // 전송 직전 콤마 제거 및 disabled 해제 (disabled된 필드는 전송되지 않으므로)
       if (wageEl) {
         wageEl.disabled = false; // 전송을 위해 disabled 해제
         wageEl.value = onlyDigits(wageEl.value);
@@ -993,11 +1046,33 @@ document.addEventListener('DOMContentLoaded', function () {
           weeklyEl.value = onlyDigits(weeklyEl.value).slice(0,5);
       }
       
-      if (brnEl) brnEl.value = onlyDigits(brnEl.value).slice(0,10);
+      if (brnEl) {
+        brnEl.disabled = false;
+        brnEl.value = onlyDigits(brnEl.value).slice(0,10);
+      }
       if (accEl) accEl.value = onlyDigits(accEl.value).slice(0,14);
       
+      // disabled된 다른 DTO 필드들도 해제
+      document.querySelector('input[name="name"]')?.removeAttribute('disabled');
+      document.querySelector('input[name="registrationNumber"]')?.removeAttribute('disabled');
+      document.querySelector('input[name="childName"]')?.removeAttribute('disabled');
+      document.getElementById('start-date')?.removeAttribute('disabled');
+      document.getElementById('end-date')?.removeAttribute('disabled');
+      document.getElementById('birth-date')?.removeAttribute('disabled');
+      document.getElementById('child-rrn-a')?.removeAttribute('disabled');
+      document.getElementById('child-rrn-b')?.removeAttribute('disabled');
+
+      // 월별 지급액(disabled)도 모두 해제 및 콤마 제거
       const payInputs = form.querySelectorAll('input[name^="monthly_payment_"]');
-      payInputs.forEach(inp => { inp.value = onlyDigits(inp.value); });
+      payInputs.forEach(inp => { 
+        inp.disabled = false;
+        inp.value = onlyDigits(inp.value); 
+      });
+      const govPayInputs = form.querySelectorAll('input[name^="gov_payment_"]');
+      govPayInputs.forEach(inp => { 
+        inp.disabled = false;
+        inp.value = onlyDigits(inp.value); 
+      });
     });
   }
   
@@ -1103,6 +1178,33 @@ document.addEventListener('DOMContentLoaded', function () {
             closeModal();
         }
     });
+  }
+
+  // [추가] 폼 제출 시 disabled 필드를 활성화하는 로직 보강
+  // (기존 로직은 submitter에 의존하는데, 일부 브라우저 호환성 문제나 Enter 키 제출 시
+  // submitter가 null일 수 있으므로, submit 이벤트 리스너를 보강합니다.)
+  if (form) {
+      form.addEventListener('submit', function(e) {
+          // e.preventDefault()가 호출되지 않았을 때 (즉, 유효성 검사를 통과했을 때)
+          if (!e.defaultPrevented) {
+              
+              // 모든 disabled 필드를 찾아 활성화
+              const disabledElements = form.querySelectorAll('input:disabled, select:disabled, textarea:disabled');
+              disabledElements.forEach(el => {
+                  el.disabled = false;
+              });
+
+              // 콤마 제거 로직 (이미 위에서 처리했지만, 안전장치로 한 번 더)
+              if (wageEl) wageEl.value = onlyDigits(wageEl.value);
+              if (weeklyEl) weeklyEl.value = onlyDigits(weeklyEl.value);
+              if (brnEl) brnEl.value = onlyDigits(brnEl.value);
+              if (accEl) accEl.value = onlyDigits(accEl.value);
+              
+              form.querySelectorAll('input[name^="monthly_payment_"], input[name^="gov_payment_"]').forEach(inp => { 
+                inp.value = onlyDigits(inp.value); 
+              });
+          }
+      }, true); // 캡처링 단계에서 실행하여 다른 리스너보다 먼저 실행될 수 있도록 함
   }
 
 }); // <-- DOMContentLoaded 래퍼 종료

@@ -316,7 +316,9 @@
                                             <c:when test="${stCode == 'ST_10'}">등록</c:when>
                                             <c:when test="${stCode == 'ST_20'}">제출</c:when>
                                             <c:when test="${stCode == 'ST_30'}">심사중</c:when>
-                                            <c:when test="${stCode == 'ST_50'}">심사완료</c:when>
+                                            <c:when test="${stCode == 'ST_40'}">심사중</c:when>
+                                            <c:when test="${stCode == 'ST_50'}">승인</c:when>
+                                            <c:when test="${stCode == 'ST_60'}">반려</c:when>
                                             <c:otherwise>대기</c:otherwise> <%-- 예외 처리 (기본값) --%>
                                         </c:choose>
                                     </c:set>

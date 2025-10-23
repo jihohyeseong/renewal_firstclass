@@ -286,7 +286,7 @@ h2{
 				<tbody>
 					<tr>
 						<th>은행</th>
-						<td><c:out value="${dto.bankCode}" /></td>
+						<td><c:out value="${dto.bankName}" /></td>
 						<th>계좌번호</th>
 						<td><c:out value="${dto.accountNumber}" /></td>
 					</tr>
@@ -342,7 +342,7 @@ h2{
 				<div class="button-container spread-out">
 					<div class="button-group-left">
 						<a href="${pageContext.request.contextPath}/user/main" class="btn bottom-btn btn-secondary">목록으로 돌아가기</a>
-						<a href="${pageContext.request.contextPath}/apply/edit?appNo=${dto.applicationNumber}"
+						<a href="${pageContext.request.contextPath}/user/application/update/${dto.applicationNumber}"
 						   class="btn bottom-btn btn-primary">신청 내용 수정</a>
 						<form id="submitForm" action="${pageContext.request.contextPath}/user/submit/${dto.applicationNumber}" method="post" style="display: inline;">
 							<sec:csrfInput/>

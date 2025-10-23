@@ -179,6 +179,7 @@
         <result property="companyAddressBase" column="company_address_base"/>
         <result property="companyAddressDetail" column="company_address_detail"/>
 
+        <result property="confirmNumber" column="confirm_number"/>
         <result property="startDate" column="start_date"/>
         <result property="endDate" column="end_date"/>
         <result property="regularWage" column="regular_wage"/>
@@ -186,6 +187,7 @@
         <result property="childName" column="child_name"/>
         <result property="childBirthDate" column="child_birth_date"/>
         <result property="childResiRegiNumber" column="child_resi_regi_number"/>
+        <result property="bankName" column="name"/>
 
         <result property="centerId" column="center_id"/>
         <result property="centerName" column="center_name"/>
@@ -221,13 +223,13 @@
             U_APP.address_detail AS user_address_detail,
             U_APP.phone_number AS user_phone_number,
             
-            -- (수정됨) : 기업 정보 (C.user_id 기준)
             U_CORP.name AS company_name,
             U_CORP.buisiness_regi_number AS company_buisiness_regi_number,
             U_CORP.zip_number AS company_zip_number,
             U_CORP.address_base AS company_address_base,
             U_CORP.address_detail AS company_address_detail,
             
+            C.confirm_number,
             C.start_date,
             C.end_date,
             C.regular_wage,
@@ -235,6 +237,7 @@
             C.child_name,
             C.child_birth_date,
             C.child_resi_regi_number,
+            CO.name,
             
             CN.center_id,
             CN.center_name,
@@ -270,6 +273,9 @@
             -- (수정됨) : 기업 정보 조인 (C.user_id 기준)
             INNER JOIN TB_USER U_CORP
                 ON C.user_id = U_CORP.id
+                
+            INNER JOIN TB_CODE CO
+            	ON A.bank_code = CO.code
             
             -- 5. 월별 급여 정보 조인
             LEFT JOIN TB_TERM_AMOUNT T
@@ -292,6 +298,15 @@
     <update id="cancelApplication" parameterType="long">
     	UPDATE TB_PARENTAL_LEAVE_APPLICATION
     	SET status_code = 'ST_10', submitted_dt = null
+    	WHERE application_number = #{applicationNumber}
+    </update>
+    <update id="updateApplicationDetail" parameterType="com.example.renewal_firstclass.domain.ApplicationDTO">
+    	UPDATE TB_PARENTAL_LEAVE_APPLICATION
+    	SET
+    		bank_code = #{bankCode},
+    		account_number = #{accountNumber},
+    		center_id = #{centerId},
+    		gov_info_agree = #{govInfoAgree}
     	WHERE application_number = #{applicationNumber}
     </update>
 </mapper>
