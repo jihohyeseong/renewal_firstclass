@@ -387,7 +387,8 @@ function confirmAction(formId, message) {
     }
 }
 
-// $(document).ready(function() {
+// 1. $(document).ready의 주석을 제거합니다.
+$(document).ready(function() {
 	
 	// JSTL을 사용해 dto 객체가 비어있지 않은 경우에만(즉, 유효한 applicationNumber가 있을 때만)
 	// 권한 확인 AJAX 요청을 실행합니다.
@@ -405,7 +406,7 @@ function confirmAction(formId, message) {
 			type: "GET",
 			url: contextPath + "/user/check/detail/" + applicationNumber,
 			headers: {
-				'X-CSRF-TOKEN': csrfToken  // GET 요청이라도 Spring Security 설정에 따라 필요할 수 있으므로 전송
+				'X-CSRF-TOKEN': csrfToken  // GET 요청이라도 Spring Security 설정에 따라 필요할 수 있으므로 전송
 			},
 			dataType: "json",
 			success: function(response) {
@@ -427,7 +428,7 @@ function confirmAction(formId, message) {
 		});
 		
 	</c:if>
-});
+}); // 2. 이제 이 닫는 괄호가 1번과 짝을 이룹니다.
 </script>
 </body>
 </html>
