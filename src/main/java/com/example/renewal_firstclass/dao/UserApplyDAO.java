@@ -37,4 +37,9 @@ public interface UserApplyDAO {
 	void cancelApplication(Long applicationNumber);
 
 	void updateApplicationDetail(ApplicationDTO applicationDTO);
+
+	String selectUsernameByConfirmNumber(Long confirmNumber);
+
+	String selectUsernameByApplicationNumber(Long applicationNumber);
+
 }

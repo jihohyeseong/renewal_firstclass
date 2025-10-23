@@ -35,7 +35,7 @@
    .main-container {
      flex-grow: 1;
      width: 100%;
-     max-width: 900px;
+     max-width: 1060px;
      margin: 40px auto;
      padding: 40px 50px;
      background-color: var(--white-color);
