@@ -622,6 +622,53 @@ $(function () {
   });
 });
 
+$(function () {
+    // JSTL 변수를 JavaScript 변수로 가져옵니다.
+    const confirmNumber = "${confirmNumber}";
+    // DTO 존재 여부로 '수정' 페이지인지 '신규' 페이지인지 확인
+    const isUpdatePage = ${not empty applicationDetailDTO}; 
+    const contextPath = "${pageContext.request.contextPath}";
+    
+    // Spring Security Taglib에서 CSRF 토큰 정보를 가져옵니다.
+    const csrfToken = "${_csrf.token}";
+    const csrfHeaderName = "${_csrf.headerName}";
+    
+    // AJAX 요청에 포함할 헤더 객체를 생성합니다.
+    const headers = {};
+    if (csrfHeaderName && csrfToken) {
+        // CSRF 헤더가 존재할 경우에만 추가
+        // (참고: GET 요청은 기본적으로 CSRF 보호 대상이 아니지만,
+        //  서버 설정에 따라 필요할 수 있으므로 안전하게 포함합니다.)
+        headers[csrfHeaderName] = csrfToken;
+    }
+
+    // '신규' 신청 페이지일 때만 (즉, 수정 페이지가 아니고 confirmNumber가 있을 때) 권한 확인
+    if (!isUpdatePage && confirmNumber) {
+        
+        $.ajax({
+            type: "GET",
+            url: `${pageContext.request.contextPath}/user/check/${confirmNumber}`, // API 엔드포인트
+            headers: headers,       // CSRF 헤더
+            dataType: "json",       // 서버 응답 타입
+            success: function(response) {
+                // HTTP 요청은 성공했으나, API 비즈니스 로직 상 실패
+                if (response.success === false) {
+                    // 서버가 지정한 URL로 리다이렉트
+                    window.location.href = contextPath + (response.redirectUrl || "/user/main");
+                }
+                // response.success === true 이면,
+                // 권한이 확인되었으므로 아무것도 하지 않고 페이지 로드를 계속합니다.
+            },
+            error: function(xhr, status, error) {
+                // 401(미인증), 403(권한없음), 404(못찾음), 500(서버에러) 등
+                // HTTP 요청 자체가 실패한 경우
+                console.error("Authentication check failed:", status, error);
+                alert("페이지 접근 권한 확인 중 오류가 발생했습니다. 메인 페이지로 이동합니다.");
+                window.location.href = contextPath + "/user/main";
+            }
+        });
+    }
+});
 
 // ─────────────────────────────────────
 // 페이지 로드 후 실행되는 메인 스크립트

@@ -382,10 +382,53 @@ h2{
 
 <script>
 function confirmAction(formId, message) {
-    if (confirm(message)) {
-        document.getElementById(formId).submit();
-    }
+    if (confirm(message)) {
+        document.getElementById(formId).submit();
+    }
 }
+
+// 1. $(document).ready의 주석을 제거합니다.
+$(document).ready(function() {
+	
+	// JSTL을 사용해 dto 객체가 비어있지 않은 경우에만(즉, 유효한 applicationNumber가 있을 때만)
+	// 권한 확인 AJAX 요청을 실행합니다.
+	<c:if test="${not empty dto}">
+	
+		const applicationNumber = "${dto.applicationNumber}";
+		const contextPath = "${pageContext.request.contextPath}";
+		
+		// 페이지 내의 Spring Security <sec:csrfInput/> 태그가 생성한
+		// CSRF 토큰 input의 value를 찾습니다.
+		// (페이지에 'submitForm' 또는 'deleteForm' 등이 이미 존재하므로 토큰을 찾을 수 있습니다.)
+		const csrfToken = $("input[name='_csrf']").val();
+
+		$.ajax({
+			type: "GET",
+			url: contextPath + "/user/check/detail/" + applicationNumber,
+			headers: {
+				'X-CSRF-TOKEN': csrfToken  // GET 요청이라도 Spring Security 설정에 따라 필요할 수 있으므로 전송
+			},
+			dataType: "json",
+			success: function(response) {
+				// 컨트롤러에서 success: false 를 반환한 경우 (권한 없음)
+				if (!response.success) {
+					alert(response.message);
+					window.location.href = contextPath + response.redirectUrl;
+				}
+				// success: true 인 경우 (권한 있음)
+				// 아무 동작도 하지 않고 페이지를 그대로 보여줍니다.
+			},
+			error: function(xhr, status, error) {
+				// 500 에러 등 AJAX 호출 자체에 실패한 경우
+				console.error("AJAX Error:", status, error);
+				alert("페이지 권한 확인 중 오류가 발생했습니다. 메인 페이지로 이동합니다.");
+				// 에러 발생 시 안전하게 메인 페이지로 리다이렉트
+				window.location.href = contextPath + "/user/main";
+			}
+		});
+		
+	</c:if>
+}); // 2. 이제 이 닫는 괄호가 1번과 짝을 이룹니다.
 </script>
 </body>
 </html>

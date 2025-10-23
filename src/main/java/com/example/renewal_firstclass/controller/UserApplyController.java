@@ -1,14 +1,19 @@
 package com.example.renewal_firstclass.controller;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.renewal_firstclass.domain.ApplicationDTO;
@@ -135,6 +140,46 @@ public class UserApplyController {
 		model.addAttribute("dto", applicationDetailDTO);
 		
 		return "user/applicationDetail";
+	}
+	
+	// 신청서 AJAX 본인검증
+	@GetMapping("/user/check/{confirmNumber}")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> userCheck(@PathVariable Long confirmNumber, Principal principal){
+		
+		Map<String, Object> response = new HashMap<>();
+		boolean hasAuth = userApplyService.userCheck(confirmNumber, principal.getName());
+		if (hasAuth) {
+			response.put("success", true);
+		} 
+		else {
+			response.put("success", false);
+			response.put("message", "권한이 없습니다.");
+			response.put("redirectUrl", "/user/main");
+		}
+    	
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+		
+	}
+	
+	// 상세보기 AJAX 본인검증
+	@GetMapping("/user/check/detail/{applicationNumber}")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> userDetailCheck(@PathVariable Long applicationNumber, Principal principal){
+		
+		Map<String, Object> response = new HashMap<>();
+		boolean hasAuth = userApplyService.userDetailCheck(applicationNumber, principal.getName());
+		if (hasAuth) {
+			response.put("success", true);
+		} 
+		else {
+			response.put("success", false);
+			response.put("message", "권한이 없습니다.");
+			response.put("redirectUrl", "/user/main");
+		}
+    	
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+		
 	}
 
 }

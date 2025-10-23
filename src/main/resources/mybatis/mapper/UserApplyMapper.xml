@@ -283,7 +283,7 @@
                 
         WHERE
             -- 1. 파라미터 필터링
-            A.application_number = #{applicationNumber}
+            A.application_number = #{applicationNumber} AND A.delt_at = 'N'
     </select>
     <update id="updateApplication" parameterType="long">
     	UPDATE TB_PARENTAL_LEAVE_APPLICATION
@@ -309,4 +309,26 @@
     		gov_info_agree = #{govInfoAgree}
     	WHERE application_number = #{applicationNumber}
     </update>
+    
+    <select id="selectUsernameByConfirmNumber" parameterType="long" resultType="string">
+        SELECT
+            T_USER.username
+        FROM
+            TB_CONFIRM_APPLICATION T_APP
+        INNER JOIN
+            TB_USER T_USER ON T_APP.registration_number = T_USER.registration_number
+        WHERE
+            T_APP.confirm_number = #{confirmNumber} AND T_APP.delt_at = 'N'
+    </select>
+    
+    <select id="selectUsernameByApplicationNumber" parameterType="long" resultType="string">
+        SELECT
+            T_USER.username
+        FROM
+            TB_PARENTAL_LEAVE_APPLICATION T_APP
+        INNER JOIN
+            TB_USER T_USER ON T_APP.user_id = T_USER.id
+        WHERE
+            T_APP.application_number = #{applicationNumber} AND T_APP.delt_at = 'N'
+    </select>
 </mapper>

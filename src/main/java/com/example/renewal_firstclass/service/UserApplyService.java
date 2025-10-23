@@ -78,11 +78,13 @@ public class UserApplyService {
 		
 		ApplicationDetailDTO dto = userApplyDAO.findApplicationDetailByApplicationNumber(applicationNumber);
 		
-		try {
-			dto.setRegistrationNumber(aes256Util.decrypt(dto.getRegistrationNumber()));
-			dto.setChildResiRegiNumber(aes256Util.decrypt(dto.getChildResiRegiNumber()));
-		} catch (Exception e) {
-			e.printStackTrace();
+		if(dto != null) {
+			try {
+				dto.setRegistrationNumber(aes256Util.decrypt(dto.getRegistrationNumber()));
+				dto.setChildResiRegiNumber(aes256Util.decrypt(dto.getChildResiRegiNumber()));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		
 		return dto;
@@ -111,6 +113,24 @@ public class UserApplyService {
 	public void updateApplication(ApplicationDTO applicationDTO) {
 		
 		userApplyDAO.updateApplicationDetail(applicationDTO);
+	}
+
+	public boolean userCheck(Long confirmNumber, String name) {
+		
+		String username = userApplyDAO.selectUsernameByConfirmNumber(confirmNumber);
+		if(username == null)
+			return false;
+		
+		return username.equals(name) ? true : false;
+	}
+
+	public boolean userDetailCheck(Long applicationNumber, String name) {
+		
+		String username = userApplyDAO.selectUsernameByApplicationNumber(applicationNumber);
+		if(username == null)
+			return false;
+		
+		return username.equals(name) ? true : false;
 	}
 
 }
