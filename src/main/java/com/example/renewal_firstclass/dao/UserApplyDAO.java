@@ -42,4 +42,6 @@ public interface UserApplyDAO {
 
 	String selectUsernameByApplicationNumber(Long applicationNumber);
 
+	void updateConfirmApply(ApplicationDTO applicationDTO);
+
 }

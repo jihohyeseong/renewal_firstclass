@@ -68,11 +68,11 @@
     }
 
     .content-wrapper {
-        background-color: var(--white-color);
-        border-radius: 12px;
-        box-shadow: var(--shadow-md);
-        padding: 40px; 
-        margin: 0 auto; 
+         background-color: var(--white-color);
+         border-radius: 12px;
+         box-shadow: var(--shadow-md);
+         padding: 40px; 
+         margin: 0 auto; 
     }
 
     h1 { text-align: center; margin-bottom: 30px; font-size: 28px; }
@@ -152,7 +152,8 @@
      justify-content: flex-end;
     }
     
-    button[name="action"][value="submit"]:disabled {
+    button[name="action"][value="submit"]:disabled,
+    button[name="action"][value="update"]:disabled {
      opacity: .6; cursor: not-allowed;
     }
     
@@ -160,115 +161,115 @@
 
     /* Modal Styles */
     .modal-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.6);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
+         position: fixed;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+         background-color: rgba(0, 0, 0, 0.6);
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         z-index: 1000;
     }
     .modal-content {
-        background-color: #fff;
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        width: 90%;
-        max-width: 1000px; /* [수정] 모달 너비 확장 */
-        max-height: 80vh;
-        display: flex;
-        flex-direction: column;
+         background-color: #fff;
+         padding: 25px;
+         border-radius: 12px;
+         box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+         width: 90%;
+         max-width: 1000px; /* [수정] 모달 너비 확장 */
+         max-height: 80vh;
+         display: flex;
+         flex-direction: column;
     }
     .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid var(--border-color);
-        padding-bottom: 15px;
-        margin-bottom: 20px;
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+         border-bottom: 1px solid var(--border-color);
+         padding-bottom: 15px;
+         margin-bottom: 20px;
     }
     .modal-header h2 {
-        margin: 0;
-        font-size: 22px;
-        color: var(--dark-gray-color);
-        border: none;
+         margin: 0;
+         font-size: 22px;
+         color: var(--dark-gray-color);
+         border: none;
     }
     .close-modal-btn {
-        background: none;
-        border: none;
-        font-size: 28px;
-        cursor: pointer;
-        color: var(--gray-color);
-        line-height: 1;
+         background: none;
+         border: none;
+         font-size: 28px;
+         cursor: pointer;
+         color: var(--gray-color);
+         line-height: 1;
     }
     .modal-body {
-        overflow-y: auto;
+         overflow-y: auto;
     }
     .center-table {
-        width: 100%;
-        border-collapse: collapse;
+         width: 100%;
+         border-collapse: collapse;
     }
     .center-table th, .center-table td {
-        border: 1px solid var(--border-color);
-        padding: 12px;
-        text-align: left;
+         border: 1px solid var(--border-color);
+         padding: 12px;
+         text-align: left;
     }
     .center-table th {
-        background-color: var(--light-gray-color);
-        font-weight: 500;
+         background-color: var(--light-gray-color);
+         font-weight: 500;
     }
     .center-table tr:nth-child(even) {
-        background-color: #fcfcfd;
+         background-color: #fcfcfd;
     }
     .center-table td {
-        vertical-align: middle;
+         vertical-align: middle;
     }
     .center-table .btn-select-center {
-        padding: 6px 12px;
-        font-size: 14px;
+         padding: 6px 12px;
+         font-size: 14px;
     }
 
     /* [추가] 센터 선택 영역 강조 스타일 */
     .center-display-box {
-        background-color: var(--white-color);
-        border: 2px dashed var(--border-color); /* 선택 전: 점선 */
-        padding: 20px;
-        min-height: 100px;
-        transition: all 0.3s ease;
-        text-align: center;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+         background-color: var(--white-color);
+         border: 2px dashed var(--border-color); /* 선택 전: 점선 */
+         padding: 20px;
+         min-height: 100px;
+         transition: all 0.3s ease;
+         text-align: center;
+         display: flex;
+         justify-content: center;
+         align-items: center;
     }
     
     /* 선택 전: 플레이스홀더 텍스트 */
     .center-display-box:not(.filled)::before {
-        content: '센터 찾기 버튼을 클릭하여 관할 센터를 선택하세요.';
-        font-style: italic;
-        color: var(--gray-color);
-        font-size: 15px;
+         content: '센터 찾기 버튼을 클릭하여 관할 센터를 선택하세요.';
+         font-style: italic;
+         color: var(--gray-color);
+         font-size: 15px;
     }
     
     /* 선택 전: 내부 p 태그 숨김 */
     .center-display-box:not(.filled) p {
-        display: none;
+         display: none; 
     }
     
     /* 선택 후: 스타일 변경 */
     .center-display-box.filled {
-        background-color: var(--primary-light-color); /* 선택 후: 파란 배경 */
-        border-style: solid;
-        border-color: #d1d9ff;
-        text-align: left; 
-        display: block; /* Flex 속성 해제 */
+         background-color: var(--primary-light-color); /* 선택 후: 파란 배경 */
+         border-style: solid;
+         border-color: #d1d9ff;
+         text-align: left; 
+         display: block; /* Flex 속성 해제 */
     }
 
     /* 선택 후: 내부 p 태그 보임 */
     .center-display-box.filled p {
-        display: block; 
+         display: block; 
     }
 </style>
 </head>
@@ -291,14 +292,15 @@
                 </c:otherwise>
             </c:choose>
 
-            <%-- [수정] 1. 폼 action 및 hidden input을 DTO 존재 여부에 따라 분기 --%>
+            <%-- [★★ 수정 ★★] 1. 폼에 id="main-form" 추가 (양쪽 모두) --%>
             <c:choose>
                 <c:when test="${not empty applicationDetailDTO}">
-                    <form action="${pageContext.request.contextPath}/user/update" method="post">
+                    <form id="main-form" action="${pageContext.request.contextPath}/user/update" method="post">
                     <input type="hidden" name="applicationNumber" value="${applicationDetailDTO.applicationNumber}">
+                    <input type="hidden" name="confirmNumber" value="${applicationDetailDTO.confirmNumber}">
                 </c:when>
                 <c:otherwise>
-                    <form action="${pageContext.request.contextPath}/user/apply" method="post">
+                    <form id="main-form" action="${pageContext.request.contextPath}/user/apply" method="post">
                     <input type="hidden" name="confirmNumber" value="${confirmNumber}">
                 </c:otherwise>
             </c:choose>
@@ -461,13 +463,13 @@
                         <div class="form-group">
                             <label class="field-title" for="child-name">자녀 이름</label>
                             <div class="input-field">
-                                <input type="text" id="child-name" name="childName" value="${applicationDTO.childName}" disabled>
+                                <input type="text" id="child-name" name="childName" value="${applicationDTO.childName}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="field-title" for="birth-date">출생일</label>
                             <div class="input-field">
-                                <input type="date" id="birth-date" value="${applicationDTO.childBirthDate}" disabled>
+                                <input type="date" id="birth-date" name="childBirthDate" value="${applicationDTO.childBirthDate}">
                             </div>
                         </div>
                         <div class="form-group">
@@ -476,13 +478,12 @@
                                 <div class="input-field"
                                      style="display: flex; align-items: center; gap: 10px;">
                                     <input type="text" id="child-rrn-a" maxlength="6"
-                                           placeholder="생년월일 6자리" value="${fn:substring(applicationDTO.childResiRegiNumber, 0, 6)}" disabled> 
+                                           placeholder="생년월일 6자리" value="${fn:substring(applicationDTO.childResiRegiNumber, 0, 6)}"> 
                                     <span class="hyphen">-</span> 
                                     <input type="text" id="child-rrn-b" maxlength="7"
-                                           placeholder="뒤 7자리" value="${fn:substring(applicationDTO.childResiRegiNumber, 6, 13)}" disabled>
+                                           placeholder="뒤 7자리" value="${fn:substring(applicationDTO.childResiRegiNumber, 6, 13)}">
                                 </div>
-                                <input type="hidden" name="childResiRegiNumber"
-                                       id="child-rrn-hidden">
+                                <input type="hidden" name="childResiRegiNumber" id="child-rrn-hidden">
                             </div>
                         </div>
                     </div>
@@ -528,25 +529,25 @@
                         <input type="hidden" name="centerId" id="centerId" value="${applicationDetailDTO.centerId}">
                     </div>
                     <div class="form-section">
-                    <h2>행정정보 공동이용 동의서</h2>
-                    
-                    <div class="info-box">
-                        본인은 이 건 업무처리와 관련하여 담당 공무원이 「전자정부법」 제36조제1항에 따른 행정정보의 공동이용을 통하여 ‘담당
-                        공무원 확인사항’을 확인하는 것에 동의합니다.<br>
-                        * 동의하지 않는 경우에는 신청(고)인이 직접 관련 서류를 제출하여야 합니다.
-                    </div>
-                    <div style="display:flex; flex-direction:column; align-items:flex-end; text-align:right; margin-top:16px;">
-                        <label class="field-title" style="width:auto; margin-bottom:12px;">
-                        신청인&nbsp;:&nbsp;${applicationDTO.name}
-                        </label>
-                        <div class="radio-group" style="justify-content:flex-end; gap:24px;">
-                            <%-- [수정] 2. 행정정보 동의 DTO 값으로 checked 설정 --%>
-                            <input type="radio" id="gov-yes" name="govInfoAgree" value="Y" ${applicationDetailDTO.govInfoAgree == 'Y' ? 'checked' : ''}>
-                            <label for="gov-yes">동의합니다.</label>
-                            <input type="radio" id="gov-no" name="govInfoAgree" value="N" ${applicationDetailDTO.govInfoAgree == 'N' ? 'checked' : ''}>
-                            <label for="gov-no">동의하지 않습니다.</label>
+                        <h2>행정정보 공동이용 동의서</h2>
+                        
+                        <div class="info-box">
+                            본인은 이 건 업무처리와 관련하여 담당 공무원이 「전자정부법」 제36조제1항에 따른 행정정보의 공동이용을 통하여 ‘담당
+                            공무원 확인사항’을 확인하는 것에 동의합니다.<br>
+                            * 동의하지 않는 경우에는 신청(고)인이 직접 관련 서류를 제출하여야 합니다.
                         </div>
-                    </div>
+                        <div style="display:flex; flex-direction:column; align-items:flex-end; text-align:right; margin-top:16px;">
+                            <label class="field-title" style="width:auto; margin-bottom:12px;">
+                            신청인&nbsp;:&nbsp;${applicationDTO.name}
+                            </label>
+                            <div class="radio-group" style="justify-content:flex-end; gap:24px;">
+                                <%-- [수정] 2. 행정정보 동의 DTO 값으로 checked 설정 --%>
+                                <input type="radio" id="gov-yes" name="govInfoAgree" value="Y" ${applicationDetailDTO.govInfoAgree == 'Y' ? 'checked' : ''}>
+                                <label for="gov-yes">동의합니다.</label>
+                                <input type="radio" id="gov-no" name="govInfoAgree" value="N" ${applicationDetailDTO.govInfoAgree == 'N' ? 'checked' : ''}>
+                                <label for="gov-no">동의하지 않습니다.</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -570,13 +571,13 @@
                 <div class="submit-button-container" style="display:flex; gap:10px; justify-content:center;">
                     <a href="${pageContext.request.contextPath}/user/main" class="btn submit-button" style="background:#6c757d; border-color:#6c757d;">목록으로 돌아가기</a>
                     
-                    <%-- [수정] 1. DTO 존재 여부에 따라 버튼 텍스트 및 value 변경 --%>
+                    <%-- [★★ 수정 ★★] 1. 버튼 type을 "submit"으로 복원 (id 제거) --%>
                     <c:choose>
                         <c:when test="${not empty applicationDetailDTO}">
-                            <button type="submit" name="action" value="update" class="btn submit-button" onclick="alert('신청서가 수정되었습니다');">신청서 수정</button>
+                            <button type="submit" name="action" value="update" class="btn submit-button">신청서 수정</button>
                         </c:when>
                         <c:otherwise>
-                            <button type="submit" name="action" value="submit" class="btn submit-button" onclick="alert('신청서가 저장되었습니다');">신청서 저장</button>
+                            <button type="submit" name="action" value="submit" class="btn submit-button">신청서 저장</button>
                         </c:otherwise>
                     </c:choose>
                 </div>
@@ -622,46 +623,27 @@ $(function () {
   });
 });
 
+// [★★ 수정 ★★] GET 방식의 AJAX 호출에서 CSRF 헤더 전송 로직 제거
 $(function () {
     // JSTL 변수를 JavaScript 변수로 가져옵니다.
     const confirmNumber = "${confirmNumber}";
-    // DTO 존재 여부로 '수정' 페이지인지 '신규' 페이지인지 확인
     const isUpdatePage = ${not empty applicationDetailDTO}; 
     const contextPath = "${pageContext.request.contextPath}";
     
-    // Spring Security Taglib에서 CSRF 토큰 정보를 가져옵니다.
-    const csrfToken = "${_csrf.token}";
-    const csrfHeaderName = "${_csrf.headerName}";
-    
-    // AJAX 요청에 포함할 헤더 객체를 생성합니다.
-    const headers = {};
-    if (csrfHeaderName && csrfToken) {
-        // CSRF 헤더가 존재할 경우에만 추가
-        // (참고: GET 요청은 기본적으로 CSRF 보호 대상이 아니지만,
-        //  서버 설정에 따라 필요할 수 있으므로 안전하게 포함합니다.)
-        headers[csrfHeaderName] = csrfToken;
-    }
-
     // '신규' 신청 페이지일 때만 (즉, 수정 페이지가 아니고 confirmNumber가 있을 때) 권한 확인
     if (!isUpdatePage && confirmNumber) {
         
         $.ajax({
             type: "GET",
             url: `${pageContext.request.contextPath}/user/check/${confirmNumber}`, // API 엔드포인트
-            headers: headers,       // CSRF 헤더
+            // headers: headers, // CSRF 헤더 전송 제거
             dataType: "json",       // 서버 응답 타입
             success: function(response) {
-                // HTTP 요청은 성공했으나, API 비즈니스 로직 상 실패
                 if (response.success === false) {
-                    // 서버가 지정한 URL로 리다이렉트
                     window.location.href = contextPath + (response.redirectUrl || "/user/main");
                 }
-                // response.success === true 이면,
-                // 권한이 확인되었으므로 아무것도 하지 않고 페이지 로드를 계속합니다.
             },
             error: function(xhr, status, error) {
-                // 401(미인증), 403(권한없음), 404(못찾음), 500(서버에러) 등
-                // HTTP 요청 자체가 실패한 경우
                 console.error("Authentication check failed:", status, error);
                 alert("페이지 접근 권한 확인 중 오류가 발생했습니다. 메인 페이지로 이동합니다.");
                 window.location.href = contextPath + "/user/main";
@@ -669,6 +651,7 @@ $(function () {
         });
     }
 });
+
 
 // ─────────────────────────────────────
 // 페이지 로드 후 실행되는 메인 스크립트
@@ -749,9 +732,10 @@ document.addEventListener('DOMContentLoaded', function () {
   // 모든 변수 선언을 이 안에서 한 번만 합니다.
   // ─────────────────────────────────────
   
-  const form = document.querySelector('form'); // [수정] 폼 선택자 단순화
-  const submitBtn = document.querySelector('button[name="action"][value="submit"], button[name="action"][value="update"]'); // [수정] 수정 버튼도 포함
+  // [★★ 수정 ★★] id="main-form"으로 폼을 선택
+  const form = document.getElementById('main-form'); 
   const agreeChk = document.getElementById('agree-notice');
+  const submitButton = document.querySelector('button[name="action"][value="submit"], button[name="action"][value="update"]');
 
   // ─────────────────────────────────────
   // 입력 필드 바인딩(숫자/서식)
@@ -761,20 +745,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const accEl = document.getElementById('accountNumber');
   if (accEl) {
-    // [수정] allowDigitsOnlyAndCommasDisplay가 아닌 onlyDigits 사용
     accEl.addEventListener('input', function(){
       this.value = onlyDigits(this.value).slice(0, 14);
     });
-    // [추가] JSTL로 값이 미리 설정된 경우를 대비해 초기 포맷팅 (콤마는 필요 없으므로 생략)
     accEl.value = onlyDigits(accEl.value).slice(0, 14);
   }
 
   const brnEl = document.getElementById('businessRegiNumber');
   if (brnEl) {
-    // Readonly지만, 혹시 모를 값 포맷팅을 위해 로직은 남겨둡니다.
     const raw = onlyDigits(brnEl.value).slice(0, 10);
     let pretty = raw;
-    if (raw.length > 5)          pretty = raw.slice(0,3) + '-' + raw.slice(3,5) + '-' + raw.slice(5);
+    if (raw.length > 5)         pretty = raw.slice(0,3) + '-' + raw.slice(3,5) + '-' + raw.slice(5);
     else if (raw.length > 3) pretty = raw.slice(0,3) + '-' + raw.slice(3);
     brnEl.value = pretty;
   }
@@ -835,33 +816,33 @@ document.addEventListener('DOMContentLoaded', function () {
               alert('육아휴직 시작일과 종료일을 모두 선택해주세요.');
               return;
           }
-    
+  
           const originalStartDate = new Date(startDateInput.value + 'T00:00:00');
           const finalEndDate = new Date(endDateInput.value + 'T00:00:00');
-    
+  
           if (originalStartDate > finalEndDate) {
               alert('종료일은 시작일보다 빠를 수 없습니다.');
               return;
           }
-    
+  
           const firstPeriodEndDate = getPeriodEndDate(originalStartDate, 1);
           if (finalEndDate < firstPeriodEndDate) {
               alert('신청 기간은 최소 1개월 이상이어야 합니다.');
               return;
           }
-    
+  
           const units = countUnits(startDateInput.value, endDateInput.value);
           if (units > 12) {
               alert('최대 12개월까지만 신청 가능합니다. 종료일을 조정해주세요.');
               return;
           }
-    
+  
           formsContainer.innerHTML = '';
           if (noPaymentWrapper) noPaymentWrapper.style.display = 'none';
-    
+  
           let currentPeriodStart = new Date(originalStartDate);
           let monthIdx = 1;
-    
+  
           while (currentPeriodStart <= finalEndDate && monthIdx <= 12) {
               const theoreticalEndDate = getPeriodEndDate(originalStartDate, monthIdx);
               let actualPeriodEnd = new Date(theoreticalEndDate);
@@ -870,7 +851,7 @@ document.addEventListener('DOMContentLoaded', function () {
               }
               
               if (currentPeriodStart > actualPeriodEnd) break;
-    
+  
               const rangeText = formatDate(currentPeriodStart) + ' ~ ' + formatDate(actualPeriodEnd);
               var row = document.createElement('div');
               row.className = 'dynamic-form-row';
@@ -884,12 +865,12 @@ document.addEventListener('DOMContentLoaded', function () {
               
               // 새로 생성된 입력 필드에 콤마 서식 적용
               allowDigitsOnlyAndCommasDisplay(row.querySelector('input[name^="monthly_payment_"]'), 19);
-    
+  
               currentPeriodStart = new Date(actualPeriodEnd);
               currentPeriodStart.setDate(currentPeriodStart.getDate() + 1);
               monthIdx++;
           }
-    
+  
           if (noPaymentWrapper) {
               noPaymentWrapper.style.display = 'flex';
               applyNoPaymentState();
@@ -965,7 +946,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // ─────────────────────────────────────
   // 제출 버튼 활성화
   // ─────────────────────────────────────
-  if (submitBtn) submitBtn.disabled = false;
+  if (submitButton) submitButton.disabled = false;
   
   // ─────────────────────────────────────
   // JSTL로 미리 로드된 항목들에 콤마 서식 적용
@@ -981,18 +962,52 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // ─────────────────────────────────────
-  // [추가] 폼 유효성 검사 함수
+  // [★★ 수정 ★★] 폼 유효성 검사 함수 (bankCode.value === "" 명시적 체크)
   // ─────────────────────────────────────
   function validateAndFocus() {
-    // 1. 은행 선택 확인
+    
+    // 1. 자녀 이름
+    const childName = document.getElementById('child-name');
+    if (!childName.value.trim()) {
+        alert('자녀 이름을 입력해주세요.');
+        childName.focus();
+        return false;
+    }
+
+    // 2. 자녀 출생일
+    const birthDate = document.getElementById('birth-date');
+    if (!birthDate.value) {
+        alert('자녀의 출생일을 선택해주세요.');
+        birthDate.focus();
+        return false;
+    }
+    
+    // 3. 자녀 주민등록번호 (앞)
+    const childRrnA = document.getElementById('child-rrn-a');
+    if (!childRrnA.value.trim() || childRrnA.value.trim().length !== 6) {
+        alert('자녀의 주민등록번호 앞 6자리를 정확히 입력해주세요.');
+        childRrnA.focus();
+        return false;
+    }
+
+    // 4. 자녀 주민등록번호 (뒤)
+    const childRrnB = document.getElementById('child-rrn-b');
+    if (!childRrnB.value.trim() || childRrnB.value.trim().length !== 7) {
+        alert('자녀의 주민등록번호 뒤 7자리를 정확히 입력해주세요.');
+        childRrnB.focus();
+        return false;
+    }
+    
+    // 5. 은행 선택 확인
     const bankCode = document.getElementById('bankCode');
-    if (!bankCode.value) {
+    // [★★ 수정 ★★] 비어있는 값("")을 명시적으로 체크
+    if (!bankCode.value || bankCode.value === "") { 
         alert('급여를 입금받을 은행을 선택해주세요.');
         bankCode.focus();
         return false;
     }
 
-    // 2. 계좌번호 입력 확인
+    // 6. 계좌번호 입력 확인
     const accountNumber = document.getElementById('accountNumber');
     if (!accountNumber.value.trim()) {
         alert('계좌번호를 입력해주세요.');
@@ -1000,7 +1015,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return false;
     }
 
-    // 3. 접수 센터 선택 확인
+    // 7. 접수 센터 선택 확인
     const centerId = document.getElementById('centerId');
     if (!centerId.value) {
         alert('접수할 고용센터를 선택해주세요.');
@@ -1008,7 +1023,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return false;
     }
 
-    // 4. 행정정보 공동이용 동의 확인
+    // 8. 행정정보 공동이용 동의 확인
     const govInfoAgree = document.querySelector('input[name="govInfoAgree"]:checked');
     if (!govInfoAgree) {
         alert('행정정보 공동이용 동의 여부를 선택해주세요.');
@@ -1016,7 +1031,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return false;
     }
 
-    // 5. 부정수급 안내 확인
+    // 9. 부정수급 안내 확인
     const agreeNotice = document.getElementById('agree-notice');
     if (!agreeNotice.checked) {
         alert('부정수급 안내 확인에 동의해주세요.');
@@ -1028,21 +1043,39 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // ─────────────────────────────────────
-  // 폼 제출 시 최종 처리
+  // [★★ 수정 ★★] 폼 제출 이벤트를 버튼 클릭 이벤트가 아닌 'submit' 이벤트로 변경
   // ─────────────────────────────────────
   if (form) {
     form.addEventListener('submit', function(e) {
-      const action = (e.submitter && e.submitter.name === 'action') ? e.submitter.value : null;
-
-      // [수정] 유효성 검사 로직을 가장 먼저 실행 (submit 또는 update 시)
-      if (action === 'submit' || action === 'update') {
-          if (!validateAndFocus()) {
-              e.preventDefault(); // 유효성 검사 실패 시 폼 제출 중단
-              return;
-          }
+      
+      // 1. 유효성 검사를 실행합니다.
+      if (!validateAndFocus()) {
+          // [!!중요!!] 검사 실패 시, 'preventDefault()'를 호출하여 폼 전송을 차단합니다.
+          e.preventDefault(); 
+          return; 
       }
-
-      // 자녀 주민번호 합치기 (disabled 상태이므로 값이 전송되지 않음, hidden으로 처리)
+  
+      // 2. 유효성 검사를 통과했습니다.
+      // 'preventDefault()'가 호출되지 않았으므로 폼은 정상적으로 제출됩니다.
+      // 제출되기 직전에 'disabled'된 필드를 활성화하고 콤마를 제거합니다.
+      
+      // 모든 disabled 필드를 찾아 활성화
+      const disabledElements = form.querySelectorAll('input:disabled, select:disabled, textarea:disabled');
+      disabledElements.forEach(el => {
+          el.disabled = false;
+      });
+      
+      // 콤마 제거 로직
+      if (wageEl) wageEl.value = onlyDigits(wageEl.value);
+      if (weeklyEl) weeklyEl.value = onlyDigits(weeklyEl.value);
+      if (brnEl) brnEl.value = onlyDigits(brnEl.value);
+      if (accEl) accEl.value = onlyDigits(accEl.value);
+      
+      form.querySelectorAll('input[name^="monthly_payment_"], input[name^="gov_payment_"]').forEach(inp => { 
+        inp.value = onlyDigits(inp.value); 
+      });
+      
+      // 자녀 주민번호 합치기
       if (rrnHidden) {
         const a = onlyDigits(rrnAEl ? rrnAEl.value : '');
         const b = onlyDigits(rrnBEl ? rrnBEl.value : '');
@@ -1050,55 +1083,26 @@ document.addEventListener('DOMContentLoaded', function () {
           rrnHidden.value = a + b;
           rrnHidden.name  = 'childResiRegiNumber';
         } else {
-           // DTO에 있던 원래 값(applicationDTO.childResiRegiNumber)을 hidden input에 넣어줘야 함.
-           // 이 JSP는 applicationDTO만 사용하므로 해당 값을 사용합니다.
            const originalRRN = "${applicationDTO.childResiRegiNumber}";
            if(originalRRN && originalRRN.length === 13) {
-                rrnHidden.value = originalRRN;
-                rrnHidden.name  = 'childResiRegiNumber';
+               rrnHidden.value = originalRRN;
+               rrnHidden.name  = 'childResiRegiNumber';
            } else {
-                rrnHidden.removeAttribute('name');
+               rrnHidden.removeAttribute('name');
            }
         }
       }
-      
-      // 전송 직전 콤마 제거 및 disabled 해제 (disabled된 필드는 전송되지 않으므로)
-      if (wageEl) {
-        wageEl.disabled = false; // 전송을 위해 disabled 해제
-        wageEl.value = onlyDigits(wageEl.value);
+  
+      // 3. (선택적) 성공 알림을 띄웁니다.
+      // e.submitter를 확인하여 어떤 버튼이 눌렸는지 확인
+      const action = (e.submitter && e.submitter.name === 'action') ? e.submitter.value : null;
+      if (action === 'submit') {
+          alert('신청서가 저장되었습니다');
+      } else if (action === 'update') {
+          alert('신청서가 수정되었습니다');
       }
-      if (weeklyEl) {
-          weeklyEl.disabled = false; // 전송을 위해 disabled 해제
-          weeklyEl.value = onlyDigits(weeklyEl.value).slice(0,5);
-      }
-      
-      if (brnEl) {
-        brnEl.disabled = false;
-        brnEl.value = onlyDigits(brnEl.value).slice(0,10);
-      }
-      if (accEl) accEl.value = onlyDigits(accEl.value).slice(0,14);
-      
-      // disabled된 다른 DTO 필드들도 해제
-      document.querySelector('input[name="name"]')?.removeAttribute('disabled');
-      document.querySelector('input[name="registrationNumber"]')?.removeAttribute('disabled');
-      document.querySelector('input[name="childName"]')?.removeAttribute('disabled');
-      document.getElementById('start-date')?.removeAttribute('disabled');
-      document.getElementById('end-date')?.removeAttribute('disabled');
-      document.getElementById('birth-date')?.removeAttribute('disabled');
-      document.getElementById('child-rrn-a')?.removeAttribute('disabled');
-      document.getElementById('child-rrn-b')?.removeAttribute('disabled');
-
-      // 월별 지급액(disabled)도 모두 해제 및 콤마 제거
-      const payInputs = form.querySelectorAll('input[name^="monthly_payment_"]');
-      payInputs.forEach(inp => { 
-        inp.disabled = false;
-        inp.value = onlyDigits(inp.value); 
-      });
-      const govPayInputs = form.querySelectorAll('input[name^="gov_payment_"]');
-      govPayInputs.forEach(inp => { 
-        inp.disabled = false;
-        inp.value = onlyDigits(inp.value); 
-      });
+  
+      // 4. 리스너가 종료되면 폼은 정상적으로 제출됩니다. (수동 form.submit() 호출 안 함)
     });
   }
   
@@ -1114,6 +1118,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const type = (el.type || '').toLowerCase();
 
       const isTextArea = tag === 'textarea';
+      // [★★ 수정 ★★] type="submit"으로 복원
       const isButton   = tag === 'button' || (tag === 'input' && (type === 'submit' || type === 'button'));
       const allowAttr  = el.closest('[data-allow-enter="true"]');
 
@@ -1204,33 +1209,6 @@ document.addEventListener('DOMContentLoaded', function () {
             closeModal();
         }
     });
-  }
-
-  // [추가] 폼 제출 시 disabled 필드를 활성화하는 로직 보강
-  // (기존 로직은 submitter에 의존하는데, 일부 브라우저 호환성 문제나 Enter 키 제출 시
-  // submitter가 null일 수 있으므로, submit 이벤트 리스너를 보강합니다.)
-  if (form) {
-      form.addEventListener('submit', function(e) {
-          // e.preventDefault()가 호출되지 않았을 때 (즉, 유효성 검사를 통과했을 때)
-          if (!e.defaultPrevented) {
-              
-              // 모든 disabled 필드를 찾아 활성화
-              const disabledElements = form.querySelectorAll('input:disabled, select:disabled, textarea:disabled');
-              disabledElements.forEach(el => {
-                  el.disabled = false;
-              });
-
-              // 콤마 제거 로직 (이미 위에서 처리했지만, 안전장치로 한 번 더)
-              if (wageEl) wageEl.value = onlyDigits(wageEl.value);
-              if (weeklyEl) weeklyEl.value = onlyDigits(weeklyEl.value);
-              if (brnEl) brnEl.value = onlyDigits(brnEl.value);
-              if (accEl) accEl.value = onlyDigits(accEl.value);
-              
-              form.querySelectorAll('input[name^="monthly_payment_"], input[name^="gov_payment_"]').forEach(inp => { 
-                inp.value = onlyDigits(inp.value); 
-              });
-          }
-      }, true); // 캡처링 단계에서 실행하여 다른 리스너보다 먼저 실행될 수 있도록 함
   }
 
 }); // <-- DOMContentLoaded 래퍼 종료

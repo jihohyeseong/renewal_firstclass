@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
 
 import com.example.renewal_firstclass.dao.UserApplyDAO;
@@ -55,16 +57,20 @@ public class UserApplyService {
 		return applicationDTO;
 	}
 
+	@Transactional
 	public void insertApply(ApplicationDTO applicationDTO) {
 		
 		String regiNum = applicationDTO.getRegistrationNumber();
 		applicationDTO.setRegistrationNumber(regiNum.substring(0,6) + regiNum.substring(7));
 		try {
 			applicationDTO.setRegistrationNumber(aes256Util.encrypt(applicationDTO.getRegistrationNumber()));
+			applicationDTO.setChildResiRegiNumber(aes256Util.encrypt(applicationDTO.getChildResiRegiNumber()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		Long userId = userDAO.findByRegistrationNumber(applicationDTO.getRegistrationNumber());
+		
+		userApplyDAO.updateConfirmApply(applicationDTO);
 		userApplyDAO.insertApply(userId, applicationDTO);
 	}
 
@@ -110,8 +116,15 @@ public class UserApplyService {
 		userApplyDAO.cancelApplication(applicationNumber);
 	}
 
+	@Transactional
 	public void updateApplication(ApplicationDTO applicationDTO) {
 		
+		try {
+			applicationDTO.setChildResiRegiNumber(aes256Util.encrypt(applicationDTO.getChildResiRegiNumber()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		userApplyDAO.updateConfirmApply(applicationDTO);
 		userApplyDAO.updateApplicationDetail(applicationDTO);
 	}
 

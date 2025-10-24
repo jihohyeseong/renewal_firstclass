@@ -127,6 +127,15 @@
     		#{dto.centerId}
     	)
     </insert>
+    <update id="updateConfirmApply" parameterType="com.example.renewal_firstclass.domain.ApplicationDTO">
+    	UPDATE TB_CONFIRM_APPLICATION
+    	SET
+    		child_name = #{childName},
+    		child_birth_date = #{childBirthDate},
+    		child_resi_regi_number = #{childResiRegiNumber}
+    	WHERE
+    		confirm_number = #{confirmNumber}
+    </update>
     <select id="findApplyAndCenter" resultType="com.example.renewal_firstclass.domain.UserApplyCompleteVO">
         SELECT
             A.application_number    AS applicationNumber,
