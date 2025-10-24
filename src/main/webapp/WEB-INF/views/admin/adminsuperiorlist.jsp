@@ -322,7 +322,7 @@
             <h2 class="page-title">관리자 신청서 목록</h2>
 
             <div class="stat-cards-container">
-                <a href="${pageContext.request.contextPath}/admin/applications">
+                <a href="${pageContext.request.contextPath}/admin/superior">
 	                <div class="stat-card ${empty status ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
@@ -333,7 +333,7 @@
 	                </div>
                 </a>
 
-                <a href="${pageContext.request.contextPath}/admin/applications?status=PENDING">
+                <a href="${pageContext.request.contextPath}/admin/superior?status=PENDING">
 	                <div class="stat-card ${status == 'PENDING' ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
@@ -344,7 +344,7 @@
 	                </div>
 	            </a>
 
-                <a href="${pageContext.request.contextPath}/admin/applications?status=APPROVED">
+                <a href="${pageContext.request.contextPath}/admin/superior?status=APPROVED">
 	                <div class="stat-card ${status == 'APPROVED' ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
@@ -355,7 +355,7 @@
 	                </div>
                 </a>
                 
-                <a href="${pageContext.request.contextPath}/admin/applications?status=REJECTED">
+                <a href="${pageContext.request.contextPath}/admin/superior?status=REJECTED">
 	                <div class="stat-card ${status == 'REJECTED' ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
@@ -373,7 +373,7 @@
                     <button class="table-btn btn-refresh" id="btnReset"><i class="bi bi-arrow-clockwise"></i></button>
                 </div>
 
-                <form id="searchForm" action="${pageContext.request.contextPath}/admin/applications" method="get" class="table-filters">
+                <form id="searchForm" action="${pageContext.request.contextPath}/admin/superior" method="get" class="table-filters">
                     
                     <div class="search-box">
                         <input type="text" name="keyword" placeholder="신청자 이름 또는 신청번호로 검색..." value="${keyword}">
@@ -434,7 +434,7 @@
                                             </c:choose>
                                         </td>
                                         <td>
-                                            <a href="${pageContext.request.contextPath}/admin/user/detail/?appNo=${app.applicationNumber}" class="table-btn btn-secondary">상세보기</a>
+                                            <a href="${pageContext.request.contextPath}/admin/superior/detail/?appNo=${app.applicationNumber}" class="table-btn btn-secondary">상세보기</a>
                                         </td>
                                     </tr>
                                 </c:forEach>
@@ -449,18 +449,18 @@
                 </table>
                 <div class="pagination">
 				    <c:if test="${pageDTO.startPage > 1}">
-				        <a href="${pageContext.request.contextPath}/admin/applications?page=${pageDTO.startPage - 1}&keyword=${keyword}&status=${status}&date=${date}">&laquo;</a>
+				        <a href="${pageContext.request.contextPath}/admin/superior?page=${pageDTO.startPage - 1}&keyword=${keyword}&status=${status}&date=${date}">&laquo;</a>
 				    </c:if>
 				
 				    <c:forEach begin="${pageDTO.paginationStart}" end="${pageDTO.paginationEnd}" var="p">
-				        <a href="${pageContext.request.contextPath}/admin/applications?page=${p}&keyword=${keyword}&status=${status}&date=${date}" 
+				        <a href="${pageContext.request.contextPath}/admin/superior?page=${p}&keyword=${keyword}&status=${status}&date=${date}" 
 				           class="${p == pageDTO.pageNum ? 'active' : ''}">
 				            ${p}
 				        </a>
 				    </c:forEach>
 				
 				    <c:if test="${pageDTO.endPage > pageDTO.paginationEnd}">
-				        <a href="${pageContext.request.contextPath}/admin/applications?page=${pageDTO.paginationEnd + 1}&keyword=${keyword}&status=${status}&date=${date}">&raquo;</a>
+				        <a href="${pageContext.request.contextPath}/admin/superior?page=${pageDTO.paginationEnd + 1}&keyword=${keyword}&status=${status}&date=${date}">&raquo;</a>
 				    </c:if>
 				</div>
             </div>

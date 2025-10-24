@@ -24,7 +24,7 @@ public interface AdminUserApprovalDAO {
     //상세페이지
     AdminUserApprovalDTO selectAppDetailByAppNo(@Param("applicationNumber") long applicationNumber);
     List<TermAmountDTO> selectByConfirmId(@Param("confirmNumber") long confirmNumber);
-
+    
 
     /** 관리자 상세 진입 시 심사중상태로*/
     int whenOpenChangeState(@Param("applicationNumber") long applicationNumber);

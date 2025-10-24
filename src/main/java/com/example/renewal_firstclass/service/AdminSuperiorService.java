@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import com.example.renewal_firstclass.dao.AdminSuperiorDAO;
-import com.example.renewal_firstclass.dao.AdminUserApprovalDAO;
 import com.example.renewal_firstclass.dao.CodeDAO;
 import com.example.renewal_firstclass.dao.TermAmountDAO;
 import com.example.renewal_firstclass.domain.AdminUserApprovalDTO;
@@ -26,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AdminSuperiorService {
 
-    private final AdminUserApprovalDAO adminUserApprovalDAO;
     private final TermAmountDAO termAmountDAO;
     private final CodeDAO codeDAO;
     private final AdminSuperiorDAO adminSuperiorDAO;
@@ -44,7 +42,7 @@ public class AdminSuperiorService {
         Map<String, Object> result = new HashMap<>();
         
         // 검색 조건에 맞는 게시물 조회
-        int totalCnt = adminUserApprovalDAO.selectTotalCount(keyword, status, date);
+        int totalCnt = adminSuperiorDAO.selectTotalCount(keyword, status, date);
         pageDTO.setTotalCnt(totalCnt); // PageDTO에 총 개수 설정 -> 페이징 계산 완료
         
         // DTO로 묶어서 전달
@@ -54,21 +52,21 @@ public class AdminSuperiorService {
         search.setDate(date);
         search.setPageDTO(pageDTO);
 
-        List<AdminUserApprovalDTO> applicationList = adminUserApprovalDAO.selectApplicationList(search);
+        List<AdminUserApprovalDTO> applicationList = adminSuperiorDAO.selectApplicationList(search);
 
         // 상태별 건수 조회
         Map<String, Integer> counts = new HashMap<>();
         
         // 전체 신청 건수
-        counts.put("total", adminUserApprovalDAO.selectTotalCount(null, null, null));
+        counts.put("total", adminSuperiorDAO.selectTotalCount(null, null, null));
 
-        // 대기 건수 ='제출'(ST_20) + '심사중'(ST_30) + '2차 심사중'(ST_40)
-        List<String> pendingStatusCodes = Arrays.asList("ST_20", "ST_30", "ST_40");
-        counts.put("pending", adminUserApprovalDAO.selectStatusCountIn(pendingStatusCodes));
+        // 대기 건수 = '2차 심사중'(ST_40)
+        List<String> pendingStatusCodes = Arrays.asList("ST_40");
+        counts.put("pending", adminSuperiorDAO.selectStatusCountIn(pendingStatusCodes));
         
         // 승인/반려
-        counts.put("approved", adminUserApprovalDAO.selectStatusCount("ST_50", "Y"));
-        counts.put("rejected", adminUserApprovalDAO.selectStatusCount("ST_50", "N")); 
+        counts.put("approved", adminSuperiorDAO.selectStatusCount("ST_50", "Y"));
+        counts.put("rejected", adminSuperiorDAO.selectStatusCount("ST_60", "N")); 
         
         //결과 반환
         result.put("list", applicationList);
@@ -81,10 +79,10 @@ public class AdminSuperiorService {
     @Transactional
     public void userApplyDetail(long applicationNumber, Model model) {
         // 진입 시 검토중 전환 
-        adminUserApprovalDAO.whenOpenChangeState(applicationNumber);
+        adminSuperiorDAO.whenOpenChangeState(applicationNumber);
 
         // 상세 조회
-        AdminUserApprovalDTO appDTO = adminUserApprovalDAO.selectAppDetailByAppNo(applicationNumber);
+        AdminUserApprovalDTO appDTO = adminSuperiorDAO.selectAppDetailByAppNo(applicationNumber);
         if (appDTO == null) {
             model.addAttribute("error", "존재하지 않는 신청입니다.");
             return;
@@ -97,10 +95,10 @@ public class AdminSuperiorService {
         model.addAttribute("terms", terms);
     }
     
-    /**1차 지급 확정*/
+    /**최종 지급 확정*/
     @Transactional
-    public void approveLevel1ToSecondReview(long applicationNumber, Long processorId) {
-        int updated = adminUserApprovalDAO.approveApplicationLevel1(applicationNumber, processorId);
+    public void approveLevel2ToSecondReview(long applicationNumber, long superiorId) {
+        int updated = adminSuperiorDAO.approveApplicationLevel2(applicationNumber, superiorId);
         if (updated == 0) {
             // 상태 조건 불일치 등으로 갱신 실패
             throw new IllegalStateException("지급 확정 처리가 불가능한 상태이거나 이미 처리되었습니다.");
@@ -109,8 +107,8 @@ public class AdminSuperiorService {
 
     /**부지급 확정*/
     @Transactional
-    public void rejectApplication(long applicationNumber, String rejectionReasonCode, String rejectComment, Long processorId) {
-        int updated = adminUserApprovalDAO.rejectApplication(applicationNumber, rejectionReasonCode, rejectComment, processorId);
+    public void rejectApplication(long applicationNumber, String rejectionReasonCode, String rejectComment, long superiorId) {
+        int updated = adminSuperiorDAO.rejectApplication(applicationNumber, rejectionReasonCode, rejectComment, superiorId);
         if (updated == 0) {
             throw new IllegalStateException("부지급 처리가 불가능한 상태이거나 이미 처리되었습니다.");
         }
@@ -123,7 +121,7 @@ public class AdminSuperiorService {
     
 //    @Transactional(readOnly = true)
 //    public void userApplyDetail(long applicationNumber, Model model) {
-//        AdminUserApprovalDTO appDTO = adminUserApprovalDAO.selectAppDetailByAppNo(applicationNumber);
+//        adminSuperiorDTO appDTO = adminSuperiorDAO.selectAppDetailByAppNo(applicationNumber);
 //        if (appDTO == null) {
 //            model.addAttribute("error", "존재하지 않는 신청입니다.");
 //            return;

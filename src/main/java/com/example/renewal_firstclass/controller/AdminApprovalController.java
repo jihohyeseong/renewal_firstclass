@@ -46,7 +46,7 @@ public class AdminApprovalController {
         return userService.findByUsername(ud.getUsername());
     }
 
-	// 관리자 지급 (승인)
+	// 관리자 접수(승인)
     @PostMapping("admin/judge/approve")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> adminApprove(@RequestBody AdminJudgeDTO judgeDTO, HttpServletRequest request){
@@ -64,7 +64,7 @@ public class AdminApprovalController {
     	
     	if (updateSuccess) {
 			response.put("success", true);
-            response.put("message", "지급 처리(승인)가 완료되었습니다."); // 메시지 추가
+            response.put("message", "접수 처리(승인)가 완료되었습니다."); 
 			response.put("redirectUrl", request.getContextPath()+"/admin/confirm");
 		}	
 		else {
@@ -76,7 +76,7 @@ public class AdminApprovalController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     
-    // 관리자 부지급 (반려)
+    // 관리자 반려
     @PostMapping("admin/judge/reject")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> adminReject(@RequestBody AdminJudgeDTO judgeDTO, HttpServletRequest request){
@@ -94,12 +94,11 @@ public class AdminApprovalController {
     	
     	if (updateSuccess) {
 			response.put("success", true);
-            response.put("message", "부지급 처리(반려)가 완료되었습니다.");
+            response.put("message", "반려 처리가 완료되었습니다.");
 			response.put("redirectUrl", request.getContextPath()+"/admin/confirm");
 		}	
 		else {
 			response.put("success", false);
-            // Service에서 필수값(반려 사유) 누락 또는 이미 처리된 경우
 			response.put("message", "처리 실패: 거절 사유가 누락되었거나 이미 처리된 신청서입니다.");
 		}
     	
@@ -142,7 +141,7 @@ public class AdminApprovalController {
             // 제출 상태일 경우 심사중으로 변경
             if ("ST_20".equals(dto.getStatusCode())) {
             	adminApprovalService.updateStatusCode(confirmNumber);
-                dto.setStatusCode("ST_30"); // DTO에도 반영
+                dto.setStatusCode("ST_30"); 
             }
             model.addAttribute("termList", dto.getTermAmounts()); 
             model.addAttribute("confirmDTO", confirmDTO);

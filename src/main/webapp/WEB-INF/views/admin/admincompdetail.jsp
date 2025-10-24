@@ -487,12 +487,12 @@
 
 		        <c:otherwise>
 		            <div style="margin-bottom:15px;">
-		                <label><input type="radio" name="judgeOption" value="approve">지급</label>
-		                <label style="margin-left:15px;"><input type="radio" name="judgeOption" value="reject">부지급</label>
+		                <label><input type="radio" name="judgeOption" value="approve">접수</label>
+		                <label style="margin-left:15px;"><input type="radio" name="judgeOption" value="reject">반려</label>
 		            </div>
 		            
 		            <div id="rejectForm">
-					    <h3>부지급 사유 선택</h3>
+					    <h3>반려 사유 선택</h3>
 					    <div>
 					        <label><input type="radio" name="reasonCode" value="RJ_10"> 계좌정보 불일치</label><br>
 					        <label><input type="radio" name="reasonCode" value="RJ_20"> 관련서류 미제출</label><br>
@@ -578,7 +578,7 @@
 	        const selectedOption = document.querySelector('input[name="judgeOption"]:checked');
 
 	        if (!selectedOption) {
-	            alert("지급 또는 부지급을 선택해주세요.");
+	            alert("접수 또는 반려를 선택해주세요.");
 	            return;
 	        }
 
@@ -586,7 +586,7 @@
 
 	        // 지급 처리
 	        if (optionValue === "approve") {
-	            if (!confirm("지급 확정하시겠습니까?")) return;
+	            if (!confirm("접수 처리하시겠습니까?")) return;
 
 	            fetch("${pageContext.request.contextPath}/admin/judge/approve", {
 	                method: "POST",
@@ -600,7 +600,7 @@
 	            })
 	            .catch(err => {
 	                console.error(err);
-	                alert("지급 처리 중 오류가 발생했습니다.");
+	                alert("접수 처리 중 오류가 발생했습니다.");
 	            });
 	        }
 
@@ -610,7 +610,7 @@
 	            const comment = rejectComment.value.trim();
 
 	            if (!selectedReason) {
-	                alert("부지급 사유를 선택해주세요.");
+	                alert("반려 사유를 선택해주세요.");
 	                return;
 	            }
 
@@ -619,7 +619,7 @@
 	                return;
 	            }
 
-	            if (!confirm("부지급 처리하시겠습니까?")) return;
+	            if (!confirm("반려 처리하시겠습니까?")) return;
 
 	            const requestData = {
 	                confirmNumber: confirmNumber,
@@ -639,7 +639,7 @@
 	            })
 	            .catch(err => {
 	                console.error(err);
-	                alert("부지급 처리 중 오류가 발생했습니다.");
+	                alert("반려 처리 중 오류가 발생했습니다.");
 	            });
 	        }
 	    });

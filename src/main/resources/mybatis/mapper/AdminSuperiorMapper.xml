@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.renewal_firstclass.dao.AdminSuperiorDAO">
+
+    <sql id="searchCondition">
+        <where>
+            <if test="keyword != null and keyword != ''">
+                (u.name LIKE '%' || #{keyword} || '%' OR p.application_number LIKE '%' || #{keyword} || '%')
+            </if>
+            <if test="status != null and status != ''">
+                <choose>
+	                <when test="status == 'PENDING'">
+	                    AND p.status_code = 'ST_40'
+	                </when>
+	                <when test="status == 'APPROVED'">
+	                    AND p.status_code = 'ST_50' AND p.payment_result = 'Y'
+	                </when>
+	                <when test="status == 'REJECTED'">
+	                    AND p.status_code = 'ST_60' AND p.payment_result = 'N'
+	                </when>
+	                <when test="status == 'ST_50' or status == 'ST_60'">
+	                    AND p.status_code IN ('ST_50', 'ST_60')
+	                </when>
+            	</choose>
+            </if>
+            <if test="date != null and date != ''">
+            	AND TO_CHAR(p.submitted_dt, 'YYYY-MM-DD') = #{date}
+            </if>
+            AND p.delt_at = 'N'
+            AND p.status_code != 'ST_10'
+            AND p.status_code != 'ST_70'
+        </where>
+    </sql>
+
+    <select id="selectApplicationList" resultType="com.example.renewal_firstclass.domain.AdminUserApprovalDTO">
+        SELECT
+            p.application_number AS applicationNumber,
+            p.user_id AS userId,
+            u.name AS name,
+            p.status_code AS statusCode,
+            TO_CHAR(p.submitted_dt, 'YYYY-MM-DD') AS submittedDate,
+            p.payment_result AS paymentResult,
+            CASE
+                WHEN p.status_code = 'ST_40' THEN '대기'
+                WHEN p.status_code = 'ST_50' THEN '승인'
+                WHEN p.status_code = 'ST_60' THEN '반려'
+                ELSE '기타'
+            END AS statusName
+        FROM
+            TB_PARENTAL_LEAVE_APPLICATION p
+        JOIN
+            TB_User u ON p.user_id = u.id
+        <include refid="searchCondition"/>
+        ORDER BY
+            p.application_number DESC
+        OFFSET #{pageDTO.startList} ROWS FETCH NEXT #{pageDTO.listSize} ROWS ONLY
+    </select>
+
+    <select id="selectTotalCount" resultType="int">
+        SELECT 
+            COUNT(*)
+        FROM 
+            TB_PARENTAL_LEAVE_APPLICATION p
+        JOIN
+            TB_User u ON p.user_id = u.id
+        <include refid="searchCondition"/>
+    </select>
+
+    <select id="selectStatusCount" resultType="int">
+        SELECT COUNT(*)
+        FROM TB_PARENTAL_LEAVE_APPLICATION
+        WHERE status_code = #{statusCode}
+          AND delt_at = 'N'
+          AND payment_result = #{paymentResult}
+    </select>
+	
+	<select id="selectStatusCountIn" resultType="int">
+        SELECT COUNT(*)
+        FROM TB_PARENTAL_LEAVE_APPLICATION
+        WHERE status_code IN
+        <foreach item="item" index="index" collection="codes" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND delt_at = 'N'
+    </select>
+    
+<select id="selectAppDetailByAppNo"
+        resultType="com.example.renewal_firstclass.domain.AdminUserApprovalDTO">
+  SELECT
+    /* ===== 신청서(PLA) ===== */
+    p.application_number,
+    p.status_code,
+    st_app.name                  AS statusName,
+    p.bank_code,
+    bank.name                    AS bankName,
+    p.account_number,
+    p.payment_result,
+    p.payment,
+    p.submitted_dt,
+    p.examine_dt,
+    p.rejection_reason_code,
+    rj.name                      AS rejectionReasonName,
+    p.reject_comment,
+    p.gov_info_agree,
+    p.center_id,
+    p.confirm_number,
+    p.user_id,                   -- 신청자 ID
+    p.processor_id,
+    p.superior_id,
+
+    /* ===== 확인서(CA) ===== */
+    c.start_date,
+    c.end_date,
+    c.weekly_hours,
+    c.regular_wage,
+    c.child_name,
+    c.child_resi_regi_number,
+    c.child_birth_date,
+    c.registration_number        AS applicantResiRegiNumber, -- 근로자 주민번호(확인서에 저장됨)
+    c.name                       AS applicantNameFromCA,     -- 근로자 이름(확인서에 저장)
+    c.response_name,
+    c.response_phone_number,
+    c.user_id        AS corpUserId,   -- 회사계정 ID (참고용 필요시)
+    c.center_id      AS corpCenterId, -- 회사의 소속 센터 (필요시)
+
+    /* ===== 신청자(USER, from PLA.user_id) ===== */
+    au.name                      AS applicantName,           -- 신청자 이름(사용자 테이블)
+    au.phone_number              AS applicantPhoneNumber,
+
+    /* ===== 회사(USER, from CA.user_id) ===== */
+    cu.name                      AS businessName,            -- 회사명
+    cu.zip_number                  AS businessZipNumber,
+    cu.address_base              AS businessAddrBase,
+    cu.address_detail            AS businessAddrDetail,
+    cu.buisiness_regi_number     AS businessRegiNumber,
+
+    /* ===== 처리자(USER) ===== */
+    pu_proc.name                      AS processorName,
+    pu_sup.name					      AS superiorName
+
+  FROM TB_PARENTAL_LEAVE_APPLICATION p
+  JOIN TB_CONFIRM_APPLICATION c ON c.confirm_number = p.confirm_number
+
+  /* 신청자(근로자) */
+  JOIN TB_USER au ON au.id = p.user_id
+
+  /* 처리자(관리자) */
+  LEFT JOIN TB_USER pu_proc ON pu_proc.id = p.processor_id
+  
+  /* 처리자(상위 관리자) */
+  LEFT JOIN TB_USER pu_sup ON pu_sup.id = p.superior_id
+
+  /* 회사(사업장) — 확인서의 user_id */
+  LEFT JOIN TB_USER cu ON cu.id = c.user_id
+
+  /* 코드 */
+  LEFT JOIN TB_CODE bank   ON bank.code = p.bank_code
+  LEFT JOIN TB_CODE st_app ON st_app.code = p.status_code
+  LEFT JOIN TB_CODE rj     ON rj.code   = p.rejection_reason_code
+
+  WHERE p.application_number = #{applicationNumber}
+    AND NVL(p.delt_at, 'N') = 'N'
+</select>
+
+<!-- 지급 확정 -->
+<update id="approveApplicationLevel2">
+  UPDATE TB_PARENTAL_LEAVE_APPLICATION
+     SET status_code = 'ST_50',
+         superior_id = #{superiorId},
+         payment_result = 'Y'
+   WHERE application_number = #{applicationNumber}
+     AND NVL(delt_at, 'N') = 'N'
+     AND status_code != 'ST_10'
+</update>
+
+<!-- 부지급 확정 -->
+<update id="rejectApplication">
+  UPDATE TB_PARENTAL_LEAVE_APPLICATION
+     SET payment_result = 'N',
+         rejection_reason_code = #{rejectionReasonCode},
+         reject_comment = #{rejectComment},
+         examine_dt = SYSDATE,
+         superior_id = #{superiorId},
+         status_code = 'ST_60'
+   WHERE application_number = #{applicationNumber}
+     AND NVL(delt_at,'N') = 'N'
+     AND status_code != 'ST_10'
+</update>
+
+<!-- 관리자가 상세 페이지 진입 시: ST_30(심사중) -> ST_40(2차 심사중)-->
+<update id="whenOpenChangeState">
+  UPDATE TB_PARENTAL_LEAVE_APPLICATION
+     SET status_code  = 'ST_40'
+   WHERE application_number = #{applicationNumber}
+     AND NVL(delt_at,'N') = 'N'
+     AND status_code = 'ST_30'
+</update>   
+    
+    
+    
+    
+</mapper>
