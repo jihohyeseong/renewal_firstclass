@@ -104,7 +104,67 @@
             TB_USER u2 ON a.user_id = u2.id
         -- 3. Term Amount 정보 조인 (LEFT JOIN 필수)
         LEFT JOIN
-            TB_TERM_AMOUNT t ON a.confirm_number = t.confirm_number
+            TB_TERM_AMOUNT t ON a.confirm_number = t.confirm_number AND <![CDATA[ t.payment_date < SYSDATE ]]> AND t.application_number is null
+        WHERE
+            a.confirm_number = #{confirmNumber}
+    </select>
+    <select id="getApplicationDTO2" resultMap="applicationSingleQueryResultMap">
+        SELECT
+            -- 4. Application 정보
+            a.confirm_number AS app_confirm_number,
+            a.start_date AS app_start_date,
+            a.end_date AS app_end_date,
+            a.regular_wage AS app_regular_wage,
+            a.weekly_hours AS app_weekly_hours,
+            a.child_name AS app_child_name,
+            a.child_birth_date AS app_child_birth_date,
+            a.child_resi_regi_number AS app_child_resi_regi_num,
+            
+            -- 1. 신청자 정보 (TB_USER as u1)
+            u1.name AS user_name,
+            u1.registration_number AS user_reg_num,
+            u1.zip_number AS user_zip_number,
+            u1.address_base AS user_address_base,
+            u1.address_detail AS user_address_detail,
+            u1.phone_number AS user_phone_number,
+            
+            -- 2. 회사 정보 (TB_USER as u2)
+            u2.name AS comp_name,
+            u2.buisiness_regi_number AS comp_busi_reg_num,
+            u2.zip_number AS comp_zip_number,
+            u2.address_base AS comp_address_base,
+            u2.address_detail AS comp_address_detail,
+            
+            -- 3. Term Amount 정보
+            t.term_id,
+            t.payment_date,
+            t.company_payment,
+            t.gov_payment,
+            t.start_month_date,
+            t.end_month_date,
+            t.confirm_number AS term_confirm_number
+        FROM
+            TB_CONFIRM_APPLICATION a
+        -- 1. 신청자 정보 조인
+        JOIN
+            TB_USER u1 ON a.registration_number = u1.registration_number
+        -- 2. 회사 정보 조인
+        JOIN
+            TB_USER u2 ON a.user_id = u2.id
+        -- 3. Term Amount 정보 조인 (LEFT JOIN 필수)
+        LEFT JOIN
+            TB_TERM_AMOUNT t ON a.confirm_number = t.confirm_number 
+            AND (
+                -- 기존 조건
+                (<![CDATA[ t.payment_date < SYSDATE ]]> AND t.application_number is null)
+                
+                <if test="termIdList != null and !termIdList.isEmpty()">
+                    OR t.term_id IN
+                    <foreach item="item" collection="termIdList" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </if>
+            )
         WHERE
             a.confirm_number = #{confirmNumber}
     </select>
@@ -288,7 +348,7 @@
             
             -- 5. 월별 급여 정보 조인
             LEFT JOIN TB_TERM_AMOUNT T
-                ON A.confirm_number = T.confirm_number
+                ON A.confirm_number = T.confirm_number AND T.application_number = #{applicationNumber}
                 
         WHERE
             -- 1. 파라미터 필터링
@@ -340,4 +400,19 @@
         WHERE
             T_APP.application_number = #{applicationNumber} AND T_APP.delt_at = 'N'
     </select>
+    
+    <update id="updateTermApply">
+        UPDATE TB_TERM_AMOUNT
+        SET application_number = #{applicationNumber}
+        WHERE term_id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    
+    <update id="updateTermApplyBefore">
+        UPDATE TB_TERM_AMOUNT
+        SET application_number = null
+        WHERE confirm_number = #{confirmNumber}
+    </update>
 </mapper>

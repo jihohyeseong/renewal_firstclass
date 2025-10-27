@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>육아휴직 서비스 - 신청할 휴직 선택</title>
+    <title>육아휴직 서비스 - 신청할 휴직급여 선택</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -313,7 +313,7 @@
         <form id="applyForm" action="${pageContext.request.contextPath}/user/application">
         
             <div class="content-header">
-                <h2>신청할 휴직 내역 선택</h2>
+                <h2>신청할 육아휴직 급여 선택</h2>
             </div>
             
             <input type="hidden" id="selectedConfirmNumber" value="">

@@ -1,5 +1,6 @@
 package com.example.renewal_firstclass.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import com.example.renewal_firstclass.domain.ApplicationDetailDTO;
 import com.example.renewal_firstclass.domain.ApplyListDTO;
 import com.example.renewal_firstclass.domain.SimpleConfirmVO;
 import com.example.renewal_firstclass.domain.SimpleUserInfoVO;
+import com.example.renewal_firstclass.domain.TermAmountDTO;
 import com.example.renewal_firstclass.domain.UserApplyCompleteVO;
 import com.example.renewal_firstclass.util.AES256Util;
 
@@ -59,6 +61,24 @@ public class UserApplyService {
 		
 		return applicationDTO;
 	}
+	
+	public ApplicationDTO getApplicationDTO2(Long confirmNumber, List<Long> termIdList) {
+		
+		ApplicationDTO applicationDTO = userApplyDAO.getApplicationDTO2(confirmNumber, termIdList);
+		if(applicationDTO == null) {
+			return null;
+		}
+		try {
+			applicationDTO.setRegistrationNumber(aes256Util.decrypt(applicationDTO.getRegistrationNumber()));
+			applicationDTO.setChildResiRegiNumber(aes256Util.decrypt(applicationDTO.getChildResiRegiNumber()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		String regiNum = applicationDTO.getRegistrationNumber();
+		applicationDTO.setRegistrationNumber(regiNum.substring(0,6) + "-" + regiNum.substring(6));
+		
+		return applicationDTO;
+	}
 
 	@Transactional
 	public void insertApply(ApplicationDTO applicationDTO) {
@@ -72,9 +92,14 @@ public class UserApplyService {
 			e.printStackTrace();
 		}
 		Long userId = userDAO.findByRegistrationNumber(applicationDTO.getRegistrationNumber());
+		List<Long> ids = new ArrayList<>();
+		for(TermAmountDTO dto : applicationDTO.getList()) {
+			ids.add(dto.getTermId());
+		}
 		
 		userApplyDAO.updateConfirmApply(applicationDTO);
 		userApplyDAO.insertApply(userId, applicationDTO);
+		userApplyDAO.updateTermApply(ids, applicationDTO.getApplicationNumber());
 	}
 
 	public List<ApplyListDTO> getApplyList(String username) {
@@ -127,8 +152,14 @@ public class UserApplyService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		List<Long> ids = new ArrayList<>();
+		for(TermAmountDTO dto : applicationDTO.getList()) {
+			ids.add(dto.getTermId());
+		}
 		userApplyDAO.updateConfirmApply(applicationDTO);
 		userApplyDAO.updateApplicationDetail(applicationDTO);
+		userApplyDAO.updateTermApplyBefore(applicationDTO.getConfirmNumber());
+		userApplyDAO.updateTermApply(ids, applicationDTO.getApplicationNumber());
 	}
 
 	public boolean userCheck(Long confirmNumber, String name) {

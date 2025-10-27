@@ -21,6 +21,8 @@ public interface UserApplyDAO {
 	List<SimpleConfirmVO> selectSimpleConfirmList(Map<String, String> params);
 
 	ApplicationDTO getApplicationDTO(Long confirmNumber);
+	
+	ApplicationDTO getApplicationDTO2(@Param("confirmNumber")Long confirmNumber, @Param("termIdList")List<Long> termIdList);
 
 	void insertApply(@Param("userId")Long userId, @Param("dto")ApplicationDTO applicationDTO);
 
@@ -43,5 +45,9 @@ public interface UserApplyDAO {
 	String selectUsernameByApplicationNumber(Long applicationNumber);
 
 	void updateConfirmApply(ApplicationDTO applicationDTO);
+
+	void updateTermApply(@Param("ids")List<Long> ids, @Param("applicationNumber")Long applicationNumber);
+
+	void updateTermApplyBefore(Long confirmNumber);
 
 }

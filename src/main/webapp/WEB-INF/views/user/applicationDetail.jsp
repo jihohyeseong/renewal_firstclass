@@ -230,24 +230,43 @@ h2{
 			<table class="info-table">
 				<thead>
 					<tr>
-						<th style="text-align:center;">회차</th>
-						<th style="text-align:center;">기간</th>
+						<th style="text-align:center;">시작일</th>
+						<th style="text-align:center;">종료일</th>
 						<th style="text-align:center;">사업장 지급액</th>
 						<th style="text-align:center;">정부 지급액</th>
-						<th style="text-align:center;">신청가능일</th>
+						<th style="text-align:center;">총 지급액</th>
 					</tr>
 				</thead>
 				<tbody>
+					<%-- 1. 합계 계산을 위한 변수 초기화 --%>
+					<c:set var="totalAmount" value="${0}" />
+					
 					<c:forEach var="item" items="${dto.list}" varStatus="status">
 						<tr>
-							<td style="text-align:center;">${status.count}개월차</td>
-							<td style="text-align:center;"><fmt:formatDate value="${item.startMonthDate}" pattern="yyyy.MM.dd"/> ~ <fmt:formatDate value="${item.endMonthDate}" pattern="yyyy.MM.dd"/></td>
-							<td style="text-align:right;"><fmt:formatNumber value="${item.companyPayment}" type="currency" currencySymbol="₩ " /></td>
-							<td style="text-align:right;"><fmt:formatNumber value="${item.govPayment}" type="currency" currencySymbol="₩ " /></td>
-							<td style="text-align:center;"><fmt:formatDate value="${item.paymentDate}" pattern="yyyy.MM.dd"/></td>
+							<td style="text-align:center;"><fmt:formatDate value="${item.startMonthDate}" pattern="yyyy.MM.dd"/></td>
+							<td style="text-align:center;"><fmt:formatDate value="${item.endMonthDate}" pattern="yyyy.MM.dd"/></td>
+							<td style="text-align:center;"><fmt:formatNumber value="${item.companyPayment}" type="number" pattern="#,###" />원</td>
+							<td style="text-align:center;"><fmt:formatNumber value="${item.govPayment}" type="number" pattern="#,###" />원</td>
+							<td style="text-align:center;"><fmt:formatNumber value="${item.companyPayment + item.govPayment}" type="number" pattern="#,###" />원</td>
 						</tr>
+						<%-- 2. 루프를 돌면서 총 지급액을 합계 변수에 누적 --%>
+						<c:set var="totalAmount" value="${totalAmount + item.companyPayment + item.govPayment}" />
 					</c:forEach>
 	
+					<%-- 3. [추가] 리스트가 비어있지 않을 때만 합계 행 표시 --%>
+					<c:if test="${not empty dto.list}">
+						<tr style="background-color: var(--light-gray-color);">
+							<td colspan="2" style="text-align:center;"><fmt:formatDate value="${dto.list[0].startMonthDate}" pattern="yyyy.MM.dd" /> - <fmt:formatDate value="${dto.list[fn:length(dto.list) - 1].endMonthDate}" pattern="yyyy.MM.dd" /></td>
+							<td colspan="2" style="text-align: center; font-weight: 700; color: var(--dark-gray-color);">
+								합계 신청금액
+							</td>
+							<td style="text-align: center; font-weight: 700; font-size: 1.05em; color: var(--primary-color);">
+								<fmt:formatNumber value="${totalAmount}" type="number" pattern="#,###" />원
+							</td>
+						</tr>
+					</c:if>
+
+					<%-- 기존 '내역 없음' 메시지 --%>
 					<c:if test="${empty dto.list}">
 						<tr>
 							<td colspan="5" style="text-align: center; color: #888;">단위기간 내역이 없습니다.</td>
@@ -342,8 +361,18 @@ h2{
 				<div class="button-container spread-out">
 					<div class="button-group-left">
 						<a href="${pageContext.request.contextPath}/user/main" class="btn bottom-btn btn-secondary">목록으로 돌아가기</a>
-						<a href="${pageContext.request.contextPath}/user/application/update/${dto.applicationNumber}"
-						   class="btn bottom-btn btn-primary">신청 내용 수정</a>
+						<form action="${pageContext.request.contextPath}/user/application/update/${dto.applicationNumber}" method="post" style="display: inline;">
+						    <%-- CSRF 토큰 추가 --%>
+						    <sec:csrfInput/>
+						    
+						    <%-- termId 리스트를 hidden input으로 추가 --%>
+						    <c:forEach var="item" items="${dto.list}">
+						        <input type="hidden" name="termId" value="${item.termId}" />
+						    </c:forEach>
+						    
+						    <%-- 버튼은 <a> 태그와 동일한 스타일을 적용 --%>
+						    <button type="submit" class="btn bottom-btn btn-primary">신청 내용 수정</button>
+						</form>
 						<form id="submitForm" action="${pageContext.request.contextPath}/user/submit/${dto.applicationNumber}" method="post" style="display: inline;">
 							<sec:csrfInput/>
 							<button type="button" onclick="confirmAction('submitForm', '최종 제출 후에는 수정할 수 없습니다. 제출하시겠습니까?')" class="btn bottom-btn btn-primary">최종 제출</button>
