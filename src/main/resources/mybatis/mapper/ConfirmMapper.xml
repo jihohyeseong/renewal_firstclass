@@ -94,7 +94,6 @@
     ca.rejection_reason_code,
     rc.name                   AS rejectReasonName
 
-
   FROM TB_CONFIRM_APPLICATION ca
   LEFT JOIN TB_CODE   sc  ON sc.code  = ca.status_code
   LEFT JOIN TB_CENTER ctr ON ctr.center_id = ca.center_id
@@ -103,8 +102,6 @@
   WHERE ca.confirm_number = #{confirmNumber}
     AND NVL(ca.delt_at, 'N') = 'N'
 </select>
-
-
 
 <select id="selectByUserId"
         resultType="com.example.renewal_firstclass.domain.ConfirmListDTO">
@@ -118,12 +115,21 @@
   LEFT JOIN TB_CODE c
     ON ca.status_code = c.code
   WHERE ca.user_id = #{userId}
-  ORDER BY ca.apply_dt DESC
+  ORDER BY
+    CASE ca.status_code
+      WHEN 'ST_10' THEN 1
+      WHEN 'ST_20' THEN 2
+      WHEN 'ST_30' THEN 3
+      WHEN 'ST_50' THEN 4
+      WHEN 'ST_60' THEN 5
+      ELSE 6
+    END,
+    ca.confirm_number DESC
   OFFSET #{offset} ROWS FETCH NEXT #{size} ROWS ONLY
 </select>
 
 <select id="countByUser" parameterType="long" resultType="int">
-    SELECT COUNT(*) FROM TB_CONFIRM_APPLICATION WHERE user_id = #{userId}
+   SELECT COUNT(*) FROM TB_CONFIRM_APPLICATION WHERE user_id = #{userId}
 </select>
 
   <update id="recallConfirm">

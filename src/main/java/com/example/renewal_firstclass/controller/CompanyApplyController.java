@@ -56,6 +56,7 @@ public class CompanyApplyController {
         if (totalPages > 0 && page > totalPages) page = totalPages;
 
         model.addAttribute("confirmList", companyApplyService.getListByUser(user.getId(), page, size));
+        model.addAttribute("userDTO",user);
         model.addAttribute("page", page);
         model.addAttribute("size", size);
         model.addAttribute("total", total);

@@ -297,7 +297,7 @@
 
     <div class="content-wrapper">
         <div class="content-header">
-            <h2><sec:authentication property="principal.username" /> 님의 신청 내역</h2>
+            <h2>${userDTO.name}님의 신청 내역</h2>
             <a href="${pageContext.request.contextPath}/comp/apply" class="btn btn-primary">새로 신청하기</a>
         </div>
 
