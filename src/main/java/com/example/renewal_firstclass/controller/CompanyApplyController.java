@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.renewal_firstclass.domain.ConfirmApplyDTO;
+import com.example.renewal_firstclass.domain.ConfirmListDTO;
 import com.example.renewal_firstclass.domain.CustomUserDetails; // 프로젝트 경로 맞게
 import com.example.renewal_firstclass.domain.UserDTO;
 import com.example.renewal_firstclass.service.CompanyApplyService;
@@ -36,7 +37,7 @@ public class CompanyApplyController {
     private final UserService userService;
 
     
-    /* 메인 */
+/*     메인 
     @GetMapping("/comp/main")
     public String main(@RequestParam(defaultValue = "1") int page,
                        @RequestParam(defaultValue = "10") int size,
@@ -63,7 +64,41 @@ public class CompanyApplyController {
         model.addAttribute("totalPages", totalPages);
 
         return "company/compmain";
+    }*/
+    
+    /* 메인 */
+    @GetMapping("/comp/main")
+    public String main(@RequestParam(defaultValue = "ALL") String status,
+                       @RequestParam(defaultValue = "1") int page,
+                       @RequestParam(defaultValue = "10") int size,
+                       Model model) {
+
+        UserDTO user = currentUserOrNull();
+        if (user == null || user.getId() == null) {
+            return "redirect:/login";
+        }
+
+        int total = companyApplyService.countConfirmList(user.getId(), status);
+
+        int totalPages = (int)Math.ceil((double) total / Math.max(1, size));
+        if (page < 1) page = 1;
+        if (totalPages > 0 && page > totalPages) page = totalPages;
+
+        List<ConfirmListDTO> list = companyApplyService.getConfirmList(user.getId(), status, page, size);
+
+        model.addAttribute("confirmList", list);
+        model.addAttribute("userDTO", user);
+        model.addAttribute("status", status);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
+        model.addAttribute("total", total);
+        model.addAttribute("totalPages", totalPages);
+
+        return "company/compmain";
     }
+
+
+    
 
     private UserDTO currentUserOrNull() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

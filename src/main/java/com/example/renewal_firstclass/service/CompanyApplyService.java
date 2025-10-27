@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.renewal_firstclass.dao.ConfirmApplyDAO;
 import com.example.renewal_firstclass.dao.TermAmountDAO;
-import com.example.renewal_firstclass.dao.UserDAO;
 import com.example.renewal_firstclass.domain.ConfirmApplyDTO;
 import com.example.renewal_firstclass.domain.ConfirmListDTO;
 import com.example.renewal_firstclass.domain.TermAmountDTO;
@@ -25,7 +24,6 @@ public class CompanyApplyService {
 
     private final ConfirmApplyDAO confirmApplyDAO;
     private final TermAmountDAO termAmountDAO;
-    private final UserDAO userDAO;
     private final AES256Util aes256Util;
 
 
@@ -222,4 +220,14 @@ public class CompanyApplyService {
         return confirmApplyDAO.recallConfirm(confirmNumber, userId);
     }  
     
+    public List<ConfirmListDTO> getConfirmList(Long userId, String statusCode, int page, int size) {
+        int offset = Math.max(0, page - 1) * size;
+        return confirmApplyDAO.selectConfirmList(userId, statusCode, offset, size);
+    }
+    
+    public int countConfirmList(Long userId, String statusCode) {
+    	return confirmApplyDAO.countConfirmList(userId, statusCode);
+    }
+
+
 }

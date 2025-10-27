@@ -63,6 +63,9 @@
         font-size: 24px;
         font-weight: 700;
     }
+    .content-header-right {
+ 	 display:flex; align-items:center; gap:8px; /* 필터와 버튼 간격 */
+	}
 
     /* --- 버튼 (comp.css 오버라이드) --- */
     .btn {
@@ -276,6 +279,18 @@
 .page-size-form{ display:inline-flex; align-items:center; gap:6px; }
 .page-size-form select{ height:32px; border:1px solid var(--border-color); border-radius:8px; padding:0 8px; }
 
+.status-select{
+  height: 40px;
+  padding: 0 14px;
+  font-size: 15px;
+  line-height: 40px;
+  min-width: 200px;
+  border: 1.5px solid var(--border-color);
+  border-radius: 10px;
+  background: #fff;
+  outline: none;
+}
+
 </style>
 </head>
 <body>
@@ -295,20 +310,38 @@
         </ul>
     </div>
 
-    <div class="content-wrapper">
-        <div class="content-header">
-            <h2>${userDTO.name}님의 신청 내역</h2>
-            <a href="${pageContext.request.contextPath}/comp/apply" class="btn btn-primary">새로 신청하기</a>
-        </div>
+	<div class="content-wrapper">
+		<div class="content-header">
+			<h2>${userDTO.name}님의신청 내역</h2>
 
-        <c:choose>
-            <c:when test="${empty confirmList}">
-                <div class="empty-state-box">
-                    <h3>아직 신청 내역이 없으시네요.</h3>
-                    <p>소중한 자녀를 위한 첫걸음, 지금 바로 시작해보세요.</p>
-                </div>
-            </c:when>
-            <c:otherwise>
+			<div class="content-header-right">
+				<form id="statusForm" class="status-form" method="get"
+					action="${pageContext.request.contextPath}/comp/main">
+					<label for="status" class="sr-only">상태 선택</label> <select
+						id="status" name="status" onchange="this.form.submit()" class="status-select">
+						<option value="ALL" ${status=='ALL'  ? 'selected' : ''}>전체</option>
+						<option value="ST_10" ${status=='ST_10' ? 'selected' : ''}>등록(임시저장)</option>
+						<option value="ST_20" ${status=='ST_20' ? 'selected' : ''}>제출</option>
+						<option value="ST_30" ${status=='ST_30' ? 'selected' : ''}>심사중</option>
+						<option value="ST_50" ${status=='ST_50' ? 'selected' : ''}>승인완료</option>
+						<option value="ST_60" ${status=='ST_60' ? 'selected' : ''}>반려처리</option>
+					</select> <input type="hidden" name="page" value="1" /> <input type="hidden"
+						name="size" value="${size}" />
+				</form>
+
+				<a href="${pageContext.request.contextPath}/comp/apply"
+					class="btn btn-primary">새로 신청하기</a>
+			</div>
+		</div>
+
+		<c:choose>
+			<c:when test="${empty confirmList}">
+				<div class="empty-state-box">
+					<h3>아직 신청 내역이 없으시네요.</h3>
+					<p>소중한 자녀를 위한 첫걸음, 지금 바로 시작해보세요.</p>
+				</div>
+			</c:when>
+			<c:otherwise>
 				<table class="list-table">
 					<colgroup>
 						<col style="width: 18%;">
@@ -362,8 +395,7 @@
 
 							<!-- 처음/이전 -->
 							<li class="page-item ${page == 1 ? 'disabled' : ''}"><a
-								class="page-link" href="${pageUrl}?page=1&size=${size}">«</a>
-							</li>
+								class="page-link" href="${pageUrl}?page=1&size=${size}">«</a></li>
 							<li class="page-item ${page == 1 ? 'disabled' : ''}"><a
 								class="page-link" href="${pageUrl}?page=${page-1}&size=${size}">‹
 									이전</a></li>
@@ -390,9 +422,9 @@
 				</c:if>
 
 			</c:otherwise>
-        </c:choose>
-    </div>
-</main>
+		</c:choose>
+	</div>
+	</main>
 
 <footer class="footer">
     <p>&copy; 2025 육아휴직 서비스. All Rights Reserved.</p>

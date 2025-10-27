@@ -232,33 +232,80 @@
         
         
             /* 센터 모달 ----------------------------------*/
-.modal-overlay{
+/* ===== Center Modal (global & consistent) ===== */
+#center-modal.modal-overlay{
   position: fixed;
-  inset: 0;                 /* top:0; right:0; bottom:0; left:0; */
-  display: none;            /* 기본은 숨김 */
-  align-items: center;      /* 가운데 정렬 */
+  inset: 0;
+  display: none;                 /* openModal()에서 flex로 변경 */
+  align-items: center;
   justify-content: center;
-  background: rgba(0,0,0,.45);
-  z-index: 9999;            /* 최상단으로 */
+  background: rgba(0,0,0,.6);
+  z-index: 1000;
 }
+
+/* 스코프 리셋 */
+#center-modal *, #center-modal *::before, #center-modal *::after { box-sizing: border-box; }
 
 /* 모달 박스 */
-.modal-content{
-  background: #fff;
-  width: min(920px, 92vw);
-  max-height: 80vh;
-  overflow: auto;
-  border-radius: 12px;
-  box-shadow: 0 20px 60px rgba(0,0,0,.25);
+#center-modal .modal-content{
+  background:#fff;
+  width:min(1000px, 90vw);
+  max-height:80vh;
+  padding:24px 28px !important;
+  border-radius:12px;
+  box-shadow:0 5px 15px rgba(0,0,0,.3);
+  display:flex;
+  flex-direction:column;
 }
 
-/* 헤더/닫기버튼 예시(선택) */
-.modal-header{
-  display:flex; align-items:center; justify-content:space-between;
-  padding:14px 18px; border-bottom:1px solid #e5e7eb;
+/* 헤더 (상단 간격 고정) */
+#center-modal .modal-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid var(--border-color, #dee2e6);
+  padding-bottom:16px !important;
+  margin-bottom:20px !important;
 }
-.close-modal-btn{
-  border:0; background:transparent; font-size:24px; cursor:pointer;
+
+/* 전역 h2 스타일 완전 차단 → 우리가 원하는 값만 */
+#center-modal .modal-header h2{
+  all: unset;
+  display:block;
+  font-weight:700;
+  font-size:22px;
+  line-height:1.4;
+  color:var(--dark-gray-color, #343a40);
 }
-.center-table{ width:100%; border-collapse:collapse; }
-.center-table th, .center-table td{ padding:12px 14px; border-bottom:1px solid #eee; }
+
+/* 닫기 버튼 */
+#center-modal .close-modal-btn{
+  background:none; border:0; cursor:pointer;
+  font-size:28px; line-height:1;
+  color:var(--gray-color, #868e96);
+}
+
+/* 내용 스크롤 */
+#center-modal .modal-body{ overflow-y:auto; }
+
+/* 테이블 */
+#center-modal .center-table{ width:100%; border-collapse:collapse; }
+#center-modal .center-table th,
+#center-modal .center-table td{
+  border:1px solid var(--border-color, #dee2e6);
+  padding:12px 14px;
+  text-align:left;
+  vertical-align:middle;
+}
+#center-modal .center-table th{
+  background:var(--light-gray-color, #f8f9fa);
+  font-weight:500;
+}
+#center-modal .center-table tr:nth-child(even){ background:#fcfcfd; }
+
+/* 선택 버튼(필요 시) */
+#center-modal .btn-select-center{
+  padding:6px 12px;
+  font-size:14px;
+
+}

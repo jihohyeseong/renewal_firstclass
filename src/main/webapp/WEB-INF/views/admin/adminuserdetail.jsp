@@ -466,54 +466,50 @@ textarea.form-control { resize: vertical; }
 <!-- 자녀 정보 -->
 <div class="info-table-container">
   <h2 class="section-title">자녀 정보 (육아 대상)</h2>
+
+  <!-- 원본 데이터 표시 테이블 -->
   <table class="info-table table-4col">
     <tbody>
-      <c:choose>
-        <c:when test="${empty appDTO.childName and empty appDTO.childResiRegiNumber}">
-          <tr>
-            <th>출산예정일</th>
-            <td colspan="3">
-              <c:choose>
-                <c:when test="${empty appDTO.childBirthDate}">
-                  <span class="highlight-warning">미입력</span>
-                </c:when>
-                <c:otherwise>
-                  <fmt:formatDate value="${appDTO.childBirthDate}" pattern="yyyy.MM.dd" />
-                </c:otherwise>
-              </c:choose>
-            </td>
-          </tr>
-        </c:when>
-        <c:otherwise>
-          <tr>
-            <th>자녀 이름</th>
-            <td>
-              <c:if test="${empty appDTO.childName}"><span class="highlight-warning">미입력</span></c:if>
-              <c:if test="${not empty appDTO.childName}"><c:out value="${appDTO.childName}" /></c:if>
-            </td>
-            <th>출산일</th>
-            <td>
-              <c:if test="${empty appDTO.childBirthDate}"><span class="highlight-warning">미입력</span></c:if>
-              <c:if test="${not empty appDTO.childBirthDate}">
-                <fmt:formatDate value="${appDTO.childBirthDate}" pattern="yyyy.MM.dd" />
-              </c:if>
-            </td>
-          </tr>
-          <tr>
-            <th>주민등록번호</th>
-            <td colspan="3">
-              <c:if test="${empty appDTO.childResiRegiNumber}">
-                <span class="highlight-warning">미입력</span>
-              </c:if>
-              <c:if test="${not empty appDTO.childResiRegiNumber}">
-                <c:out value="${fn:substring(appDTO.childResiRegiNumber, 0, 6)}-${fn:substring(appDTO.childResiRegiNumber, 6, 7)}" />******
-              </c:if>
-            </td>
-          </tr>
-        </c:otherwise>
-      </c:choose>
+      <tr>
+        <th>자녀 이름</th>
+        <td><c:out value="${appDTO.childName}" /></td>
+        <th>출산(예정)일</th>
+        <td>
+          <fmt:formatDate value="${appDTO.childBirthDate}" pattern="yyyy.MM.dd" />
+        </td>
+      </tr>
+      <tr>
+        <th>주민등록번호</th>
+        <td colspan="3">
+          <c:if test="${not empty appDTO.childResiRegiNumber}">
+            ${fn:substring(appDTO.childResiRegiNumber, 0, 6)}-${fn:substring(appDTO.childResiRegiNumber, 6, 7)}******
+          </c:if>
+        </td>
+      </tr>
     </tbody>
   </table>
+
+  <!-- ↓ 수정용 테이블 (upd_ 컬럼용 인풋칸) -->
+  <table class="info-table table-4col" style="margin-top:10px;">
+  <tbody>
+    <tr>
+      <th style="background-color:#b0baec !important;">자녀 이름</th>
+      <td >
+        <input type="text" name="upd_child_name" class="form-control" placeholder="자녀 이름 수정" />
+      </td>
+      <th style="background-color:#b0baec !important;">출산(예정)일</th>
+      <td >
+        <input type="date" name="upd_child_birth_date" class="form-control" />
+      </td>
+    </tr>
+    <tr>
+      <th style="background-color:#b0baec !important;">주민등록번호</th>
+      <td colspan="3">
+        <input type="text" name="upd_child_resi_regi_number" class="form-control" maxlength="13" placeholder="숫자만 입력 (예: 0101011234567)" />
+      </td>
+    </tr>
+  </tbody>
+</table>
 </div>
 
 <!-- 계좌정보 -->
