@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.renewal_firstclass.domain.AdminJudgeDTO;
+import com.example.renewal_firstclass.domain.ApplicationDTO;
 import com.example.renewal_firstclass.domain.ConfirmApplyDTO;
 import com.example.renewal_firstclass.domain.CustomUserDetails;
 import com.example.renewal_firstclass.domain.UserDTO;
@@ -153,4 +154,14 @@ public class AdminApprovalController {
     		return "redirect:/admin/confirm";
     	}
     }
+    // 육아휴직 등록 수정
+ 	@PostMapping("/admin/judge/update")
+ 	public String updateApplication(ConfirmApplyDTO dto, Model model) {
+ 		
+ 		adminApprovalService.updateConfirmEdit(dto);
+ 		
+ 		model.addAttribute("confirmDTO", dto);
+ 		return "redirect:/admin/admincompdetail";
+ 	}
+
 }

@@ -55,4 +55,21 @@
 		SET status_code = 'ST_30'
 		WHERE confirm_number = #{confirmNumber}
 	</update>
+	
+	<!-- 수정사항 업데이트 -->
+	<update id="updateConfirmEdit">
+    UPDATE TB_CONFIRM_APPLICATION
+    <set>
+        <if test="updStartDate != null">upd_start_date = #{updStartDate},</if>
+        <if test="updEndDate != null">upd_end_date = #{updEndDate},</if>
+        <if test="updWeeklyHours != null">upd_weekly_hours = #{updWeeklyHours},</if>
+        <if test="updRegularWage != null">upd_regular_wage = #{updRegularWage},</if>
+        <if test="updChildName != null">upd_child_name = #{updChildName},</if>
+        <if test="updChildResiRegiNumber != null">upd_child_resi_regi_number = #{updChildResiRegiNumber},</if>
+        <if test="updChildBirthDate != null">upd_child_birth_date = #{updChildBirthDate},</if>
+        processor_id = #{userId}
+    </set>
+    WHERE confirm_number = #{dto.confirmNumber}
+</update>
+
 </mapper>

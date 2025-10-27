@@ -136,4 +136,10 @@ public class AdminApprovalService {
  		
  		adminApprovalDAO.updateStatusCode(confirmNumber);
  	}
+ 	// 수정 업데이트
+ 	public boolean updateConfirmEdit(ConfirmApplyDTO dto) {
+
+ 		int result = adminApprovalDAO.updateConfirmEdit(dto);
+ 		return result > 0;
+ 	}
 }

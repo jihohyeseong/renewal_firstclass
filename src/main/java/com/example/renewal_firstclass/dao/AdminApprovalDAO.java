@@ -3,6 +3,7 @@ package com.example.renewal_firstclass.dao;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.example.renewal_firstclass.domain.ApplicationDTO;
 import com.example.renewal_firstclass.domain.ConfirmApplyDTO;
 
 @Mapper
@@ -15,4 +16,6 @@ public interface AdminApprovalDAO {
     int isProcessed(@Param("confirmNumber") Long confirmNumber);
     // 심사중으로 업데이트
     void updateStatusCode(Long confirmNumber);
+    // UPD 컬럼 업데이트
+    int updateConfirmEdit(ConfirmApplyDTO confirmApplyDTO);
 }
