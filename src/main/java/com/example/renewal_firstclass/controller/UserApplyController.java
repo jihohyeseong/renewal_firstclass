@@ -68,8 +68,12 @@ public class UserApplyController {
 	
 	// 육아휴직 급여 저장
 	@PostMapping("/user/apply")
-	public String applyUserApplication(ApplicationDTO applicationDTO, RedirectAttributes redirectAttributes) {
+	public String applyUserApplication(ApplicationDTO applicationDTO, RedirectAttributes redirectAttributes, Model model) {
 		
+		if(applicationDTO.getBankCode() == null || applicationDTO.getAccountNumber() == null || applicationDTO.getCenterId() == null || applicationDTO.getGovInfoAgree() == null) {
+			model.addAttribute("applicationDTO", applicationDTO);
+			return "user/application";
+		}
 		userApplyService.insertApply(applicationDTO);
 		
 		return "redirect:/user/main";
@@ -118,8 +122,12 @@ public class UserApplyController {
 	
 	// 육아휴직 등록 수정
 	@PostMapping("/user/update")
-	public String updateApplication(ApplicationDTO applicationDTO) {
+	public String updateApplication(ApplicationDTO applicationDTO, Model model) {
 		
+		if(applicationDTO.getBankCode() == null || applicationDTO.getAccountNumber() == null || applicationDTO.getCenterId() == null || applicationDTO.getGovInfoAgree() == null) {
+			model.addAttribute("applicationDTO", applicationDTO);
+			return "user/application";
+		}
 		userApplyService.updateApplication(applicationDTO);
 		
 		return "redirect:/user/main";

@@ -45,6 +45,9 @@ public class UserApplyService {
 	public ApplicationDTO getApplicationDTO(Long confirmNumber) {
 		
 		ApplicationDTO applicationDTO = userApplyDAO.getApplicationDTO(confirmNumber);
+		if(applicationDTO == null) {
+			return null;
+		}
 		try {
 			applicationDTO.setRegistrationNumber(aes256Util.decrypt(applicationDTO.getRegistrationNumber()));
 			applicationDTO.setChildResiRegiNumber(aes256Util.decrypt(applicationDTO.getChildResiRegiNumber()));

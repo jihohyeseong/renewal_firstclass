@@ -32,10 +32,12 @@ public class UserService {
 	public UserDTO findById(Long userId) {
 		
 		UserDTO user = userDAO.findById(userId);
-		try {
-			user.setRegistrationNumber(aes256Util.decrypt(user.getRegistrationNumber()));
-		} catch (Exception e) {
-			e.printStackTrace();
+		if(user.getRegistrationNumber() != null) {
+			try {
+				user.setRegistrationNumber(aes256Util.decrypt(user.getRegistrationNumber()));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
         return user;
 	}
