@@ -48,6 +48,6 @@ public interface UserApplyDAO {
 
 	void updateTermApply(@Param("ids")List<Long> ids, @Param("applicationNumber")Long applicationNumber);
 
-	void updateTermApplyBefore(Long confirmNumber);
+	void updateTermApplyBefore(@Param("termIdList")List<Long> termIdList);
 
 }

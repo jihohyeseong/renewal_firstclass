@@ -274,6 +274,23 @@
                       <form id="main-form" action="${pageContext.request.contextPath}/user/update" method="post">
                       <input type="hidden" name="applicationNumber" value="${applicationDetailDTO.applicationNumber}">
                       <input type="hidden" name="confirmNumber" value="${applicationDetailDTO.confirmNumber}">
+					<c:if test="${not empty termIdList}">
+					    <%-- 1. joinedTermIdList 라는 변수를 빈 문자열로 생성 --%>
+					    <c:set var="joinedTermIdList" value="" />
+					    
+					    <%-- 2. termIdList를 반복하면서, 
+					             varStatus(status)를 이용해 마지막 항목이 아닐 때만 콤마(,)를 붙임 --%>
+					    <c:forEach var="termId" items="${termIdList}" varStatus="status">
+					        <c:set var="joinedTermIdList" value="${joinedTermIdList}${termId}" />
+					        <c:if test="${not status.last}">
+					            <c:set var="joinedTermIdList" value="${joinedTermIdList}," />
+					        </c:if>
+					    </c:forEach>
+					    
+					    <%-- 3.
+					         위에서 완성된 문자열(예: "55,56,57,58")을 hidden input의 값으로 사용 --%>
+					    <input type="hidden" name="termIdList" value="${joinedTermIdList}">
+					</c:if>
                  </c:when>
                  <c:otherwise>
                       <form id="main-form" action="${pageContext.request.contextPath}/user/apply" method="post">
