@@ -54,6 +54,9 @@
 
   /* 하단 버튼 영역 */
   .detail-actions { margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end; }
+  
+   .vtop { vertical-align: top; }
+  .reject-head { font-weight:600; font-size:1.05em; margin-bottom:6px; }
 </style>
 </head>
 <body>
@@ -79,24 +82,27 @@
         <th>확인서 번호</th><td>${confirmDTO.confirmNumber}</td>
         <th>처리 상태</th><td>${confirmDTO.statusName}</td>
       </tr>
-      <tr>
-        <th>제출일</th>
-        <td colspan="3"><fmt:formatDate value="${confirmDTO.applyDt}" pattern="yyyy-MM-dd"/></td>
-      </tr>
-      
-      <c:if test="${confirmDTO.statusCode == 'ST_60'}">
-  <tr>
-    <th>반려 사유</th>
-    <td colspan="3" style="white-space:pre-wrap;">
-        카테고리: <c:out value="${confirmDTO.rejectReasonName}"/><br/>
-      <c:if test="${not empty confirmDTO.rejectComment}">
-        상세사유: <c:out value="${confirmDTO.rejectComment}"/>
-      </c:if>
-    </td>
-  </tr>
-</c:if>
+			<tr>
+				<th>제출일</th>
+				<td colspan="3"><fmt:formatDate value="${confirmDTO.applyDt}"
+						pattern="yyyy-MM-dd" /></td>
+			</tr>
 
-      <!-- 근로자 정보 -->
+			<c:if test="${confirmDTO.statusCode == 'ST_60'}">
+			  <tr>
+			    <th>반려 사유</th>
+			    <td colspan="3" style="vertical-align:top; padding:10px 14px; line-height:1.4;">
+			      <div style="font-weight:600; font-size:1.05em; margin-bottom:4px;">
+			        <c:out value="${confirmDTO.rejectReasonName}" />
+			      </div>
+			      <c:if test="${not empty confirmDTO.rejectComment}">
+			        <div style="color:#444;">상세사유: <c:out value="${confirmDTO.rejectComment}" /></div>
+			      </c:if>
+			    </td>
+			  </tr>
+			</c:if>
+
+			<!-- 근로자 정보 -->
       <tr><th class="sheet-head" colspan="4">근로자 정보</th></tr>
       <tr>
         <th>성명</th><td>${confirmDTO.name}</td>

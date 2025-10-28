@@ -90,6 +90,7 @@
   .dynamic-form-row:nth-child(odd){ background:var(--primary-light-color,#f0f2ff); }
   .date-range-display{ font-weight:500; flex-basis:300px; flex-shrink:0; text-align:center; }
   .payment-input-field{ flex:1; display:flex; justify-content:flex-end; }
+
 </style>
 
   <title>육아휴직 확인서 제출</title>
@@ -150,20 +151,19 @@
         <div class="form-group">
           <label class="field-title" for="child-date">출산(예정)일</label>
           <div class="input-field">
-            <input type="date" id="child-date" required>
+            <input type="date" id="child-date" min="1900-01-01" max="2200-12-31">
             <small style="color:#666; display:block; margin-top:8px;">※ 출산 전일시 출산(예정)일만 입력해주세요.</small>
           </div>
         </div>
 
         <div id="born-fields">
           <div class="form-group">
-            <label class="field-title" for="child-name">자녀 이름 <span style="color:#888;">(선택)</span></label>
-            <div class="input-field"><input type="text" id="child-name" name="childName" placeholder="미기재 가능"></div>
+            <label class="field-title" for="child-name">자녀 이름 </label>
+            <div class="input-field"><input type="text" id="child-name" name="childName"></div>
           </div>
           <div class="form-group">
   <label class="field-title" for="child-rrn-a">
-    자녀 주민등록번호 <span style="color:#888;">(선택)</span>
-  </label>
+    자녀 주민등록번호 </label>
 
  <div class="input-field"
      style="display:flex; align-items:center; gap:12px; flex-wrap:nowrap; width:100%;">
@@ -202,9 +202,9 @@
         <div class="form-group">
           <label class="field-title" for="start-date">육아휴직 기간</label>
           <div class="input-field" style="display:flex; align-items:center; gap:10px;">
-            <input type="date" id="start-date" name="startDate" style="flex:1;">
+            <input type="date" id="start-date" name="startDate" style="flex:1;" min="1900-01-01" max="2200-12-31">
             <span>~</span>
-            <input type="date" id="end-date" name="endDate" style="flex:1;">
+            <input type="date" id="end-date" name="endDate" style="flex:1;" min="1900-01-01" max="2200-12-31">
           </div>
         </div>
 
@@ -272,7 +272,7 @@
         <h2>확인서 작성자 정보</h2>
         <div class="form-group">
           <label class="field-title" for="response-name">담당자 이름</label>
-          <div class="input-field"><input type="text" id="response-name" name="responseName" placeholder="확인서 작성 담당자 이름"></div>
+          <div class="input-field"><input type="text" id="response-name" name="responseName"></div>
         </div>
         <div class="form-group">
           <label class="field-title" for="response-phone">담당자 전화번호</label>
@@ -320,6 +320,18 @@ document.addEventListener('DOMContentLoaded', function () {
         weeklyEl.value = (weeklyEl.value || '').replace(/[^\d]/g, '').slice(0, 3); 
       });
     }
+    
+    function limitYearTo4(el){
+    	  if (!el) return;
+    	  el.addEventListener('input', function(){
+    	    this.value = this.value
+    	      .replace(/^(\d{4})\d+(-.*)?$/, (m, y, rest) => y + (rest || ''))
+
+    	  });
+    	}
+    	['child-date','start-date','end-date']
+    	  .forEach(id => limitYearTo4(document.getElementById(id)));
+
 
     allowDigitsAndCommas(document.getElementById('regularWage'), 19);
     bindDigitsOnly(document.getElementById('weeklyHours'));
@@ -583,46 +595,54 @@ document.addEventListener('DOMContentLoaded', function () {
 	  }
 
 	  // generate 버튼 누르기 전에 규칙 위반 차단
-	  function guardBeforeGenerate() {
-	    const isPregnant = !!chkPregnant?.checked;
-	    const childDate  = parseDate(childDateEl?.value);
-	    const startDate  = parseDate(startDateInput?.value);
-	    const endDate    = parseDate(endDateInput?.value);
+	  // (기존) applyPregnancyRules() 안의 guardBeforeGenerate() 전체를 아래로 교체
+		function guardBeforeGenerate() {
+		  const isPregnant = !!chkPregnant?.checked;
+		  const childDate  = parseDate(childDateEl?.value);
+		  const startDate  = parseDate(startDateInput?.value);
+		  const endDate    = parseDate(endDateInput?.value);
+		
+		  if (!startDate || !endDate) {
+		    alert('육아휴직 시작일과 종료일을 먼저 선택해 주세요.');
+		    return false;
+		  }
+		  if (!childDate) {
+		    alert('출산(예정)일을 먼저 입력해 주세요.');
+		    return false;
+		  }
+		
+		  if (isPregnant) {
+		    if (endDate >= childDate) {
+		      alert('임신 중 육아휴직은 출산(예정)일 전날까지만 가능합니다.');
+		      return false;
+		    }
+		    if (startDate >= childDate) {
+		      alert('임신 중 육아휴직은 출산(예정)일 이전에만 시작할 수 있습니다.');
+		      return false;
+		    }
+		  } else {
+		    // 출산 후: 자녀 이름 + 주민번호(6/7) 필수
+		    const nameVal = (childNameEl?.value || '').trim();
+		    const a = (rrnA?.value || '').replace(/[^\d]/g,'');
+		    const b = (rrnB?.value || '').replace(/[^\d]/g,'');
+		    if (!nameVal) {
+		      alert('출산 후 신청 시 자녀 이름을 입력해야 합니다.');
+		      childNameEl?.focus();
+		      return false;
+		    }
+		    if (!(a.length === 6 && b.length === 7)) {
+		      alert('출산 후 신청 시 자녀 주민등록번호(앞 6자리/뒤 7자리)를 반드시 입력해야 합니다.');
+		      (a.length !== 6 ? rrnA : rrnB)?.focus();
+		      return false;
+		    }
+		    if (startDate < childDate) {
+		      alert('출산 후 육아휴직은 출산(예정)일 이후로만 시작할 수 있습니다.');
+		      return false;
+		    }
+		  }
+		  return true;
+		}
 
-	    if (!startDate || !endDate) {
-	      alert('육아휴직 시작일과 종료일을 먼저 선택해 주세요.');
-	      return false;
-	    }
-	    if (!childDate) {
-	      alert('출산(예정)일을 먼저 입력해 주세요.');
-	      return false;
-	    }
-	    if (isPregnant) {
-	      if (endDate >= childDate) {
-	        alert('임신 중 육아휴직은 출산(예정)일 전날까지만 가능합니다.');
-	        return false;
-	      }
-	      if (startDate >= childDate) {
-	        alert('임신 중 육아휴직은 출산(예정)일 이전에만 시작할 수 있습니다.');
-	        return false;
-	      }
-	    } else {
-	      if (startDate < childDate) {
-	        alert('출산 후 육아휴직은 출산(예정)일 이후로만 시작할 수 있습니다.');
-	        return false;
-	      }
-	      // 자녀정보(주민번호) 또는 미발급 체크 필수
-	      const a = (rrnA?.value || '').replace(/[^\d]/g,'');
-	      const b = (rrnB?.value || '').replace(/[^\d]/g,'');
-	      const hasRRN = a.length === 6 && b.length === 7;
-	      const noRRN  = !!chkNoRRN?.checked;
-	      if (!hasRRN && !noRRN) {
-	        alert('출산 후 신청 시 자녀 주민등록번호를 입력하거나, "해외자녀… 미발급"을 체크해야 합니다.');
-	        return false;
-	      }
-	    }
-	    return true;
-	  }
 
 	  // generate 버튼 가드 추가(한 번만 래핑)
 	  if (generateBtn && !generateBtn.dataset.guardApplied) {
@@ -641,46 +661,6 @@ document.addEventListener('DOMContentLoaded', function () {
 	      if (typeof origHandler === 'function') origHandler.call(this, e);
 	    }, true);
 	    generateBtn.dataset.guardApplied = '1';
-	  }
-
-	  // 제출 시 최종 검증(기존 검증에 추가 보강)
-	  const formEl = document.getElementById('confirm-form');
-	  if (formEl) {
-	    formEl.addEventListener('submit', function(e){
-	      const isPregnant = !!chkPregnant?.checked;
-	      const childDate  = parseDate(childDateEl?.value);
-	      const startDate  = parseDate(startDateInput?.value);
-	      const endDate    = parseDate(endDateInput?.value);
-
-	      if (!childDate) {
-	        e.preventDefault();
-	        alert('출산(예정)일을 입력해 주세요.');
-	        return;
-	      }
-
-	      if (isPregnant) {
-	        if (!startDate || !endDate || startDate >= childDate || endDate >= childDate) {
-	          e.preventDefault();
-	          alert('임신 중 육아휴직은 출산(예정)일 이전 기간으로만 제출할 수 있습니다.');
-	          return;
-	        }
-	      } else {
-	        if (!startDate || startDate < childDate) {
-	          e.preventDefault();
-	          alert('출산 후 육아휴직은 출산(예정)일 이후로만 시작할 수 있습니다.');
-	          return;
-	        }
-	        const a = (rrnA?.value || '').replace(/[^\d]/g,'');
-	        const b = (rrnB?.value || '').replace(/[^\d]/g,'');
-	        const hasRRN = a.length === 6 && b.length === 7;
-	        const noRRN  = !!chkNoRRN?.checked;
-	        if (!hasRRN && !noRRN) {
-	          e.preventDefault();
-	          alert('자녀 주민등록번호를 입력하거나 "해외자녀… 미발급"을 체크해야 합니다.');
-	          return;
-	        }
-	      }
-	    });
 	  }
 
 	  // 이벤트 바인딩: 상태 바뀔 때마다 규칙 즉시 반영
@@ -762,169 +742,101 @@ document.addEventListener('DOMContentLoaded', function () {
 	     sync(); // 초기 1회
 	   }
 	 })();
-    /* ================================
-    저장 버튼 클릭 시 유효성 검사 + 누락 항목 모아 alert
- ================================== */
- (function wireSubmitValidation(){
-   const form        = document.getElementById('confirm-form');
-   if (!form) return;
+   /* ================================
+   저장 버튼 클릭 시 - 누락 항목만 검사
+================================ */
+(function wireSubmitValidation(){
+  const form = document.getElementById('confirm-form');
+  if (!form) return;
 
-   const startDateEl = document.getElementById('start-date');
-   const endDateEl   = document.getElementById('end-date');
-   const wageEl      = document.getElementById('regularWage');
-   const weeklyEl    = document.getElementById('weeklyHours');
+  const onlyDigits = s => (s || '').replace(/[^\d]/g, '');
 
-   const empName     = document.getElementById('employee-name');
-   const empA        = document.getElementById('employee-rrn-a');
-   const empB        = document.getElementById('employee-rrn-b');
-   
-   const childDate   = document.getElementById('child-date');
+  form.addEventListener('submit', function(e){
+    const missing = [];
+    let firstBadEl = null;
 
-   const noPayChk    = document.getElementById('no-payment');
-   const formsBox    = document.getElementById('dynamic-forms-container');
+    // 간단 필수체크 함수
+    function need(el, label){
+      if (!el) return;
+      const v = (el.value||'').trim();
+      if (!v){
+        missing.push(label);
+        if (!firstBadEl) firstBadEl = el;
+      }
+    }
 
-   function onlyDigits(s){ return (s||'').replace(/[^\d]/g,''); }
+    // 필드 목록
+    const empName   = document.getElementById('employee-name');
+    const empA      = document.getElementById('employee-rrn-a');
+    const empB      = document.getElementById('employee-rrn-b');
+    const startDate = document.getElementById('start-date');
+    const endDate   = document.getElementById('end-date');
+    const weeklyEl  = document.getElementById('weeklyHours');
+    const wageEl    = document.getElementById('regularWage');
+    const childDate = document.getElementById('child-date');
+    const respName  = document.getElementById('response-name');
+    const centerId  = document.getElementById('centerId');
 
-   // 단위기간(월) 개수 계산 (윤달/말일 보정 포함)
-   function countUnits(startStr, endStr) {
-     if (!startStr || !endStr) return 0;
-     const start = new Date(startStr + 'T00:00:00');
-     const end   = new Date(endStr   + 'T00:00:00');
-     if (isNaN(start) || isNaN(end) || start > end) return 0;
+    // === 기본 필수항목 ===
+    need(empName,   '근로자 성명');
+    need(startDate, '육아휴직 시작일');
+    need(endDate,   '육아휴직 종료일');
+    need(weeklyEl,  '월 소정근로시간');
+    need(wageEl,    '통상임금(월)');
+    need(childDate, '출산(예정)일');
+    need(respName,  '담당자 이름');
 
-     function plusMonthsClamp(date, months) {
-       const y = date.getFullYear(), m = date.getMonth(), d = date.getDate();
-       const targetM = m + months, targetY = y + Math.floor(targetM / 12);
-       const normM = ((targetM % 12) + 12) % 12;
-       const last = new Date(targetY, normM + 1, 0).getDate();
-       const day = Math.min(d, last);
-       return new Date(targetY, normM, day);
-     }
-     function endOfUnit(start) {
-       const originalDay = start.getDate();
-       const nextSame = plusMonthsClamp(start, 1);
-       const lastOfNext = new Date(nextSame.getFullYear(), nextSame.getMonth()+1, 0).getDate();
-       const clamped = originalDay > lastOfNext;
-       const e = new Date(nextSame.getTime());
-       if (!clamped) e.setDate(e.getDate()-1);
-       return e;
-     }
+    if (!centerId || !centerId.value.trim()) {
+      missing.push('처리 센터 선택');
+    }
 
-     let cnt = 0, cur = start;
-     while (cur <= end) {
-       let e = endOfUnit(cur);
-       if (e > end) e = end;
-       cnt++;
-       cur = new Date(e.getTime()); cur.setDate(cur.getDate()+1);
-       if (cnt > 13) break;
-     }
-     return cnt;
-   }
+    // 근로자 주민번호(6+7자리)
+    if (!empA || onlyDigits(empA.value).length !== 6) {
+      missing.push('근로자 주민등록번호(앞 6자리)');
+      if (!firstBadEl) firstBadEl = empA;
+    }
+    if (!empB || onlyDigits(empB.value).length !== 7) {
+      missing.push('근로자 주민등록번호(뒤 7자리)');
+      if (!firstBadEl) firstBadEl = empB;
+    }
 
-   form.addEventListener('submit', function(e){
-     const missing = [];
-     const invalid = [];
-     let firstBadEl = null;
+    // 출산 후일 경우 자녀 이름 + 주민번호 or 미발급 체크
+    const isPregnant = !!document.getElementById('pregnant-leave')?.checked;
+    if (!isPregnant) {
+      const nameEl = document.getElementById('child-name');
+      const rrnA   = document.getElementById('child-rrn-a');
+      const rrnB   = document.getElementById('child-rrn-b');
+      const noRRN  = !!document.getElementById('no-rrn-foreign')?.checked;
 
-     function need(el, label){
-       if (!el) return;
-       const v = (el.value||'').trim();
-       if (!v){
-         missing.push(label);
-         if (!firstBadEl) firstBadEl = el;
-       }
-     }
-     function needRadio(radios, label){
-       const checked = radios.some(r=>r.checked);
-       if (!checked){
-         missing.push(label);
-         if (!firstBadEl && radios[0]) firstBadEl = radios[0];
-       }
-       return checked;
-     }
-     function markInvalid(el, label){
-       invalid.push(label);
-       if (!firstBadEl && el) firstBadEl = el;
-     }
+      const nameVal = (nameEl?.value || '').trim();
+      const a = onlyDigits(rrnA?.value);
+      const b = onlyDigits(rrnB?.value);
 
-     // 기본 필수
-     need(empName, '근로자 성명');
-     need(startDateEl, '육아휴직 시작일');
-     need(endDateEl,   '육아휴직 종료일');
-     need(weeklyEl,    '주당 소정근로시간');
-     need(wageEl,      '통상임금(월)');
-     
-     const centerIdVal = document.getElementById('centerId')?.value?.trim();
-     if (!centerIdVal) missing.push('처리 센터 선택');
+      if (!nameVal) {
+        missing.push('자녀 이름');
+        if (!firstBadEl) firstBadEl = nameEl;
+      }
+      if (!noRRN && !(a.length === 6 && b.length === 7)) {
+        missing.push('자녀 주민등록번호');
+        if (!firstBadEl) firstBadEl = rrnA || rrnB;
+      }
+    }
 
-     // 근로자 주민번호
-     if (!empA || onlyDigits(empA.value).length !== 6){
-       missing.push('근로자 주민등록번호(앞 6자리)');
-       if (!firstBadEl && empA) firstBadEl = empA;
-     }
-     if (!empB || onlyDigits(empB.value).length !== 7){
-       missing.push('근로자 주민등록번호(뒤 7자리)');
-       if (!firstBadEl && empB) firstBadEl = empB;
-     }
+    // === 결과 처리 ===
+    if (missing.length){
+      e.preventDefault();
+      const uniq = [...new Set(missing)];
+      alert('모든 필수 항목을 입력해야 저장할 수 있습니다.\n\n누락 항목:\n- ' + uniq.join('\n- '));
 
-     // 기간 규칙: 1~12개월
-     const unitCount = countUnits(startDateEl?.value, endDateEl?.value);
-     if (unitCount === 0){
-       if (startDateEl?.value && endDateEl?.value) markInvalid(startDateEl, '육아휴직 기간(시작/종료일 확인)');
-     } else if (unitCount > 12){
-       markInvalid(endDateEl, '육아휴직 기간(최대 12개월)');
-     }
-
-     // 숫자 규칙
-     const wage   = Number(onlyDigits(wageEl?.value));
-     const weekly = Number(onlyDigits(weeklyEl?.value));
-     if (wageEl && !(wage > 0))   markInvalid(wageEl, '통상임금(월) 1원 이상');
-     if (weeklyEl && !(weekly > 0)) markInvalid(weeklyEl, '주당 소정근로시간 1시간 이상');
-
-     // 자녀(출생/예정)
-     need(childDate, '출산(예정)일');
-     // 단위기간별 지급액 
-     if (unitCount > 0 && (!noPayChk || !noPayChk.checked)){
-       const pays = Array.from(formsBox.querySelectorAll('input[name="monthlyCompanyPay"]'));
-       if (pays.length !== unitCount){
-         invalid.push('단위기간 나누기(버튼 클릭으로 월별 칸 생성)');
-         if (!firstBadEl && document.getElementById('generate-forms-btn')) {
-           firstBadEl = document.getElementById('generate-forms-btn');
-         }
-       } else {
-         for (const inp of pays){
-           const v = onlyDigits(inp.value);
-           if (!v.length){ missing.push('월별 사업장 지급액'); if (!firstBadEl) firstBadEl = inp; break; }
-           if (Number(v) < 0){ markInvalid(inp, '월별 사업장 지급액(0 이상)'); break; }
-         }
-       }
-     }
-
-     // 결과 처리
-     if (missing.length || invalid.length){
-       e.preventDefault();
-
-       let msg = '모든 값을 입력해야 저장할 수 있습니다.';
-       if (missing.length){
-         const uniqMissing = [...new Set(missing)];
-         msg += '\n\n누락 항목: ' + uniqMissing.join(', ');
-       }
-       if (invalid.length){
-         const uniqInvalid = [...new Set(invalid)];
-         msg += '\n\n다음 항목을 다시 확인해 주세요: ' + uniqInvalid.join(', ');
-       }
-       alert(msg);
-
-       // 첫 오류 위치로 스크롤 + 포커스
-       if (firstBadEl && typeof firstBadEl.focus === 'function'){
-         firstBadEl.scrollIntoView({behavior:'smooth', block:'center'});
-         setTimeout(()=> firstBadEl.focus(), 200);
-       }
-       return;
-     }
-   });
- })();
-
+      // 첫 누락 항목으로 스크롤 & 포커스
+      if (firstBadEl && typeof firstBadEl.focus === 'function') {
+        firstBadEl.scrollIntoView({behavior:'smooth', block:'center'});
+        setTimeout(()=> firstBadEl.focus(), 200);
+      }
+      return;
+    }
+  });
+})();
     
     // ─────────────────────────────────────
     // 제출 전 데이터 정리
