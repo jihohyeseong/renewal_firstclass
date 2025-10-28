@@ -91,9 +91,10 @@ public class UserApplyController {
 	
 	// 임시저장중 삭제
 	@PostMapping("/user/delete/{applicationNumber}")
-	public String deleteApplication(@PathVariable Long applicationNumber) {
+	public String deleteApplication(@PathVariable Long applicationNumber, 
+									@RequestParam(value = "termId", required = false) List<Long> termIdList) {
 		
-		userApplyService.deleteApply(applicationNumber);
+		userApplyService.deleteApply(applicationNumber, termIdList);
 		
 		return "redirect:/user/main";
 	}
@@ -110,7 +111,7 @@ public class UserApplyController {
 	// 육아휴직 등록 수정페이지 이동
 	@PostMapping("/user/application/update/{applicationNumber}")
 	public String updateApplicationPage(@PathVariable Long applicationNumber,
-										@RequestParam("termId") List<Long> termIdList, 
+										@RequestParam(value = "termId", required = false) List<Long> termIdList, 
 										Model model) {
 		
 		ApplicationDetailDTO applicationDetailDTO = userApplyService.getApplicationDetail(applicationNumber);
@@ -125,13 +126,15 @@ public class UserApplyController {
 	
 	// 육아휴직 등록 수정
 	@PostMapping("/user/update")
-	public String updateApplication(ApplicationDTO applicationDTO, Model model) {
-		
+	public String updateApplication(ApplicationDTO applicationDTO, 
+									@RequestParam(value = "termIdList", required = false) List<Long> termIdList, 
+									Model model) {
+
 		if(applicationDTO.getBankCode() == null || applicationDTO.getAccountNumber() == null || applicationDTO.getCenterId() == null || applicationDTO.getGovInfoAgree() == null) {
 			model.addAttribute("applicationDTO", applicationDTO);
 			return "user/application";
 		}
-		userApplyService.updateApplication(applicationDTO);
+		userApplyService.updateApplication(applicationDTO, termIdList);
 		
 		return "redirect:/user/main";
 	}

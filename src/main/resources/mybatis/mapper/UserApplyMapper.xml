@@ -410,9 +410,12 @@
         </foreach>
     </update>
     
-    <update id="updateTermApplyBefore">
-        UPDATE TB_TERM_AMOUNT
-        SET application_number = null
-        WHERE confirm_number = #{confirmNumber}
-    </update>
+	<update id="updateTermApplyBefore">
+	    UPDATE TB_TERM_AMOUNT
+	    SET application_number = null
+	    WHERE term_id IN
+	    <foreach collection="termIdList" item="id" open="(" separator="," close=")">
+	        #{id}
+	    </foreach>
+	</update>
 </mapper>

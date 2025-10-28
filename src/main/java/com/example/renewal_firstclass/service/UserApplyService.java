@@ -134,8 +134,9 @@ public class UserApplyService {
 		return vo;
 	}
 
-	public void deleteApply(Long applicationNumber) {
+	public void deleteApply(Long applicationNumber, List<Long> termIdList) {
 		
+		userApplyDAO.updateTermApplyBefore(termIdList);
 		userApplyDAO.deleteApplication(applicationNumber);
 	}
 
@@ -145,7 +146,7 @@ public class UserApplyService {
 	}
 
 	@Transactional
-	public void updateApplication(ApplicationDTO applicationDTO) {
+	public void updateApplication(ApplicationDTO applicationDTO, List<Long> termIdList) {
 		
 		try {
 			applicationDTO.setChildResiRegiNumber(aes256Util.encrypt(applicationDTO.getChildResiRegiNumber()));
@@ -158,7 +159,7 @@ public class UserApplyService {
 		}
 		userApplyDAO.updateConfirmApply(applicationDTO);
 		userApplyDAO.updateApplicationDetail(applicationDTO);
-		userApplyDAO.updateTermApplyBefore(applicationDTO.getConfirmNumber());
+		userApplyDAO.updateTermApplyBefore(termIdList);
 		userApplyDAO.updateTermApply(ids, applicationDTO.getApplicationNumber());
 	}
 

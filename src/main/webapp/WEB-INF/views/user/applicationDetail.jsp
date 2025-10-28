@@ -380,6 +380,9 @@ h2{
 					</div>
 					<form id="deleteForm" action="${pageContext.request.contextPath}/user/delete/${dto.applicationNumber}" method="post" style="display: inline;">
 						<sec:csrfInput/>
+						<c:forEach var="item" items="${dto.list}">
+						        <input type="hidden" name="termId" value="${item.termId}" />
+						</c:forEach>
 						<button type="button" onclick="confirmAction('deleteForm', '정말로 삭제하시겠습니까?')" class="btn bottom-btn btn-danger">삭제</button>
 					</form>
 				</div>
