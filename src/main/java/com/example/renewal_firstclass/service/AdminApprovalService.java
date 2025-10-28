@@ -24,6 +24,7 @@ public class AdminApprovalService {
     private final ConfirmApplyDAO confirmApplyDAO;
     private final TermAmountDAO termAmountDAO;
     private final AES256Util aes256Util;
+    
     // 신청 상세 조회
     public ConfirmApplyDTO getConfirmDetail(Long confirmNumber) {
    
@@ -47,6 +48,31 @@ public class AdminApprovalService {
         
         return dto;
     }
+    
+    // 수정값 상세 조회
+    public ConfirmApplyDTO getConfirmDetailWithUpdates(Long confirmNumber) {
+   
+        ConfirmApplyDTO dto = adminApprovalDAO.selectByConfirmNumberWithUpdates(confirmNumber);
+        if (dto == null) return null;
+
+        try {
+            if (dto.getRegistrationNumber() != null && !dto.getRegistrationNumber().trim().isEmpty()) {
+                dto.setRegistrationNumber(aes256Util.decrypt(dto.getRegistrationNumber()));
+            }
+        } catch (Exception ignore) {}
+
+        try {
+            if (dto.getChildResiRegiNumber() != null && !dto.getChildResiRegiNumber().trim().isEmpty()) {
+                dto.setChildResiRegiNumber(aes256Util.decrypt(dto.getChildResiRegiNumber()));
+            }
+        } catch (Exception ignore) {}
+        
+        List<TermAmountDTO> terms = termAmountDAO.selectByConfirmId(confirmNumber);
+        dto.setTermAmounts(terms);
+        
+        return dto;
+    }
+
 
     // 승인 처리
     public boolean adminApprove(AdminJudgeDTO judgeDTO, Long userId) {
@@ -137,7 +163,7 @@ public class AdminApprovalService {
  		adminApprovalDAO.updateStatusCode(confirmNumber);
  	}
  	// 수정 업데이트
- 	public boolean updateConfirmEdit(ConfirmApplyDTO dto) {
+ 	public boolean updateConfirm(ConfirmApplyDTO dto) {
 
  		int result = adminApprovalDAO.updateConfirmEdit(dto);
  		return result > 0;

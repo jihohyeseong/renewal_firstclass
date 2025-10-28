@@ -7,14 +7,15 @@
       <foreach collection="list" item="t">
         INSERT INTO TB_TERM_AMOUNT (
           payment_date, company_payment, gov_payment,
-          start_month_date, end_month_date, confirm_number
+          start_month_date, end_month_date, confirm_number, update_at
         ) VALUES (
           #{t.paymentDate,    jdbcType=DATE},
           #{t.companyPayment},
           #{t.govPayment},
           #{t.startMonthDate, jdbcType=DATE},
           #{t.endMonthDate,   jdbcType=DATE},
-          #{t.confirmNumber}
+          #{t.confirmNumber},
+          'N'
         );
       </foreach>
     END;

@@ -18,4 +18,8 @@ public interface AdminApprovalDAO {
     void updateStatusCode(Long confirmNumber);
     // UPD 컬럼 업데이트
     int updateConfirmEdit(ConfirmApplyDTO confirmApplyDTO);
+    // 수정된 값 포함하여 조회
+    ConfirmApplyDTO selectByConfirmNumberWithUpdates(@Param("confirmNumber") Long confirmNumber);
+    // upd 컬럼 null 체크
+    int checkUpdColumnsExist(@Param("confirmNumber") Long confirmNumber);
 }

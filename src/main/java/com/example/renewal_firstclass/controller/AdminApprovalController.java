@@ -127,7 +127,7 @@ public class AdminApprovalController {
     public String adminCompDetailView(@PathVariable("confirmNumber") Long confirmNumber, Model model,
     		RedirectAttributes ra) {
     	try {
-    		ConfirmApplyDTO confirmDTO = adminApprovalService.getConfirmDetail(confirmNumber);
+    		ConfirmApplyDTO confirmDTO = adminApprovalService.getConfirmDetailWithUpdates(confirmNumber);
     		ConfirmApplyDTO dto = companyApplyService.findByConfirmNumber(confirmNumber);
             if (confirmDTO == null) {
                 ra.addFlashAttribute("error", "확인서를 찾을 수 없습니다.");
@@ -155,13 +155,40 @@ public class AdminApprovalController {
     	}
     }
     // 육아휴직 등록 수정
- 	@PostMapping("/admin/judge/update")
- 	public String updateApplication(ConfirmApplyDTO dto, Model model) {
- 		
- 		adminApprovalService.updateConfirmEdit(dto);
- 		
- 		model.addAttribute("confirmDTO", dto);
- 		return "redirect:/admin/admincompdetail";
- 	}
+    @PostMapping("/admin/judge/update")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> updateApplication(
+            @RequestBody ConfirmApplyDTO dto, 
+            HttpServletRequest request) {
+        
+        Map<String, Object> response = new HashMap<>();
+        
+        UserDTO userDTO = currentUserOrNull();
+        if (userDTO == null || userDTO.getId() == null) { 
+            response.put("success", false);
+            response.put("message", "로그인 해주세요.");
+            response.put("redirectUrl", request.getContextPath() + "/login");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+        
+        // processorId 설정
+        dto.setProcessorId(userDTO.getId());
+        
+        boolean updateSuccess = adminApprovalService.updateConfirm(dto);
+        
+        if (updateSuccess) {
+            response.put("success", true);
+            response.put("message", "수정사항이 저장되었습니다.");
+            
+            // 수정된 데이터를 다시 조회하여 반환
+            ConfirmApplyDTO updatedDto = adminApprovalService.getConfirmDetailWithUpdates(dto.getConfirmNumber());
+            response.put("data", updatedDto);
+        } else {
+            response.put("success", false);
+            response.put("message", "수정 실패: 이미 처리되었거나 수정할 수 있는 상태가 아닙니다.");
+        }
+        
+        return ResponseEntity.ok(response);
+    }
 
 }

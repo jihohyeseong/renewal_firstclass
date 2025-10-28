@@ -58,4 +58,7 @@ public class ConfirmApplyDTO {
     private String centerAddressDetail;
     
     private List<TermAmountDTO> termAmounts;
+    
+    //수정용 단위기간 저장 데이터
+    private List<TermAmountDTO> updatedTermAmounts;
 }

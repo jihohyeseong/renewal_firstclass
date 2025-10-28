@@ -428,7 +428,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <th>주당 소정근로시간</th><td><c:out value="${confirmDTO.weeklyHours}" /> 시간</td>
+                        <th>월 소정근로시간</th><td><c:out value="${confirmDTO.weeklyHours}" /> 시간</td>
                         <th>통상임금 (월)</th>
                         <td><fmt:formatNumber value="${confirmDTO.regularWage}" type="currency" currencySymbol="₩ " /></td>
                     </tr>
@@ -502,135 +502,177 @@
         </table>
 		
 		<!-- ===== 확인서 수정 폼 ===== -->
-		<h3 style="margin-top:40px; margin-bottom:15px;">확인서 수정</h3>
-		
-		<form id="updateForm">
-		  <table class="sheet-table">
-		    <colgroup>
-		      <col class="w160"><col><col class="w160"><col>
-		    </colgroup>
-		    
-		    <!-- 접수 정보 (읽기 전용) -->
-		    <tr><th class="sheet-head" colspan="4">접수 정보 (조회)</th></tr>
-		    <tr>
-		      <th>확인서 번호</th>
-		      <td><input type="text" value="${confirmDTO.confirmNumber}" readonly class="form-control" style="width: 80%;"></td>
-		      <th>처리 상태</th>
-		      <td>
-		        <c:choose>
-		          <c:when test="${confirmDTO.statusCode == 'ST_20'}"><span class="status-badge status-pending">심사중</span></c:when>
-		          <c:when test="${confirmDTO.statusCode == 'ST_30'}"><span class="status-badge status-pending">심사중</span></c:when>
-		          <c:when test="${confirmDTO.statusCode == 'ST_50'}"><span class="status-badge status-approved">승인</span></c:when>
-		          <c:when test="${confirmDTO.statusCode == 'ST_60'}"><span class="status-badge status-rejected">반려</span></c:when>
-		          <c:otherwise><c:out value="${confirmDTO.statusCode}" /></c:otherwise>
-		        </c:choose>
-		      </td>
-		    </tr>
-		    <tr>
-		      <th>제출일</th>
-		      <td colspan="3">
-		        <input type="text" value="<fmt:formatDate value="${confirmDTO.applyDt}" pattern="yyyy-MM-dd" />" readonly class="form-control" style="width: 40%;">
-		      </td>
-		    </tr>
-		
-		    <!-- 회사 정보 (읽기 전용) -->
-		    <tr><th class="sheet-head" colspan="4">회사 정보 (조회)</th></tr>
-		    <tr>
-		      <th>기업명</th>
-		      <td colspan="3"><input type="text" value="${userDTO.name}" readonly class="form-control" style="width: 60%;"></td>
-		    </tr>
-		    <tr>
-		      <th>주소</th>
-		      <td colspan="3"><input type="text" value="${userDTO.addressBase} ${userDTO.addressDetail}" readonly class="form-control" style="width: 100%;"></td>
-		    </tr>
-		    <tr>
-		      <th>전화번호</th>
-		      <td colspan="3"><input type="text" value="${userDTO.phoneNumber}" readonly class="form-control" style="width: 40%;"></td>
-		    </tr>
-		
-		    <!-- 근로자 정보 (일부 읽기 전용, 일부 수정 가능) -->
-		    <tr><th class="sheet-head" colspan="4">근로자 정보</th></tr>
-		    <tr>
-		      <th>성명</th>
-		      <td><input type="text" value="${confirmDTO.name}" readonly class="form-control" style="width: 80%;"></td>
-		      <th>주민등록번호</th>
-		      <td>
-		        <c:set var="rrnDigits" value="${fn:replace(confirmDTO.registrationNumber, '-', '')}" />
-		        <input type="text" value="${fn:substring(rrnDigits,0,6)}-${fn:substring(rrnDigits,6,12)}" readonly class="form-control" style="width: 80%;">
-		      </td>
-		    </tr>
-		    
-		    <!-- 수정 가능: 육아휴직 기간 -->
-		    <tr>
-		      <th>육아휴직 시작일 <i class="fa fa-edit"></i></th>
-		      <td>
-		        <input type="date" name="updStartDate" value="<fmt:formatDate value="${confirmDTO.startDate}" pattern="yyyy-MM-dd" />" class="form-control" style="width: 80%;">
-		      </td>
-		      <th>육아휴직 종료일 <i class="fa fa-edit"></i></th>
-		      <td>
-		        <input type="date" name="updEndDate" value="<fmt:formatDate value="${confirmDTO.endDate}" pattern="yyyy-MM-dd" />" class="form-control" style="width: 80%;">
-		      </td>
-		    </tr>
-		    
-		    <!-- 수정 가능: 주당 소정근로시간, 통상임금 -->
-		    <tr>
-		      <th>월 소정근로시간 <i class="fa fa-edit"></i></th>
-		      <td><input type="number" name="updWeeklyHours" value="${confirmDTO.weeklyHours}" class="form-control" style="width: 60%;"> 시간</td>
-		      <th>통상임금 (월) <i class="fa fa-edit"></i></th>
-		      <td><input type="number" name="updRegularWage" value="${confirmDTO.regularWage}" class="form-control" style="width: 60%;"> 원</td>
-		    </tr>
-		
-		    <!-- 수정 가능: 자녀 정보 -->
-		    <tr><th class="sheet-head" colspan="4">대상 자녀 정보 <i class="fa fa-edit"></i></th></tr>
-		    <c:choose>
-		      <c:when test="${not empty confirmDTO.childName}">
-		        <tr>
-		          <th>자녀 이름</th>
-		          <td><input type="text" name="updChildName" value="${confirmDTO.childName}" class="form-control" style="width: 80%;"></td>
-		          <th>출생일</th>
-		          <td><input type="date" name="updChildBirthDate" value="<fmt:formatDate value="${confirmDTO.childBirthDate}" pattern="yyyy-MM-dd" />" class="form-control" style="width: 80%;"></td>
-		        </tr>
-		        <tr>
-		          <th>자녀 주민등록번호</th>
-		          <td colspan="3">
-		            <c:set var="childRrn" value="${confirmDTO.childResiRegiNumber}" />
-		            <input type="text" name="updChildResiRegiNumber" value="${fn:substring(childRrn, 0, 6)}-${fn:substring(childRrn, 6, 12)}" class="form-control" style="width: 40%;">
-		          </td>
-		        </tr>
-		      </c:when>
-		      <c:otherwise>
-		        <tr>
-		          <th>자녀 이름</th>
-		          <td><input type="text" name="updChildName" value="" placeholder="출산 후 입력" class="form-control" style="width: 80%;"></td>
-		          <th>출산 예정일</th>
-		          <td><input type="date" name="updChildBirthDate" value="<fmt:formatDate value="${confirmDTO.childBirthDate}" pattern="yyyy-MM-dd" />" class="form-control" style="width: 80%;"></td>
-		        </tr>
-		        <tr>
-		          <th>자녀 주민등록번호</th>
-		          <td colspan="3">
-		            <input type="text" name="updChildResiRegiNumber" value="" placeholder="출산 후 입력 (예: 000000-0000000)" class="form-control" style="width: 40%;">
-		          </td>
-		        </tr>
-		      </c:otherwise>
-		    </c:choose>
-		
-		    <!-- 담당자 정보 (읽기 전용) -->
-		    <tr><th class="sheet-head" colspan="4">확인서 담당자 정보 (조회)</th></tr>
-		    <tr>
-		      <th>담당자 이름</th>
-		      <td><input type="text" value="${confirmDTO.responseName}" readonly class="form-control" style="width: 80%;"></td>
-		      <th>담당자 연락처</th>
-		      <td><input type="text" value="${confirmDTO.responsePhoneNumber}" readonly class="form-control" style="width: 80%;"></td>
-		    </tr>
-		  </table>
-		
-		  <div class="button-container">
-		    <button type="button" id="updateBtn" class="btn btn-primary" style="margin-right:10px;">수정 저장</button>
-		  </div>
-		
-		  <input type="hidden" name="confirmNumber" value="${confirmDTO.confirmNumber}">
-		</form>
-		
+		<c:if test="${confirmDTO.statusCode == 'ST_30'}">
+			<h3 style="margin-top:40px; margin-bottom:15px;">확인서 수정</h3>
+			
+			<form id="updateForm">
+			  <table class="sheet-table">
+			    <colgroup>
+			      <col class="w160"><col><col class="w160"><col>
+			    </colgroup>
+			    
+			    <!-- 접수 정보 (읽기 전용) -->
+			    <tr><th class="sheet-head" colspan="4">접수 정보 (조회)</th></tr>
+			    <tr>
+			      <th>확인서 번호</th>
+			      <td><input type="text" value="${confirmDTO.confirmNumber}" readonly class="form-control" style="width: 80%;"></td>
+			      <th>처리 상태</th>
+			      <td>
+			        <c:choose>
+			          <c:when test="${confirmDTO.statusCode == 'ST_20'}"><span class="status-badge status-pending">제출</span></c:when>
+			          <c:when test="${confirmDTO.statusCode == 'ST_30'}"><span class="status-badge status-pending">심사중</span></c:when>
+			          <c:when test="${confirmDTO.statusCode == 'ST_50'}"><span class="status-badge status-approved">승인</span></c:when>
+			          <c:when test="${confirmDTO.statusCode == 'ST_60'}"><span class="status-badge status-rejected">반려</span></c:when>
+			          <c:otherwise><c:out value="${confirmDTO.statusCode}" /></c:otherwise>
+			        </c:choose>
+			      </td>
+			    </tr>
+			    <tr>
+			      <th>제출일</th>
+			      <td colspan="3">
+			        <input type="text" value="<fmt:formatDate value="${confirmDTO.applyDt}" pattern="yyyy-MM-dd" />" readonly class="form-control" style="width: 40%;">
+			      </td>
+			    </tr>
+			
+			    <!-- 회사 정보 (읽기 전용) -->
+			    <tr><th class="sheet-head" colspan="4">회사 정보 (조회)</th></tr>
+			    <tr>
+			      <th>기업명</th>
+			      <td colspan="3"><input type="text" value="${userDTO.name}" readonly class="form-control" style="width: 60%;"></td>
+			    </tr>
+			    <tr>
+			      <th>주소</th>
+			      <td colspan="3"><input type="text" value="${userDTO.addressBase} ${userDTO.addressDetail}" readonly class="form-control" style="width: 100%;"></td>
+			    </tr>
+			    <tr>
+			      <th>전화번호</th>
+			      <td colspan="3"><input type="text" value="${userDTO.phoneNumber}" readonly class="form-control" style="width: 40%;"></td>
+			    </tr>
+			
+			    <!-- 근로자 정보 -->
+			    <tr><th class="sheet-head" colspan="4">근로자 정보</th></tr>
+			    <tr>
+			      <th>성명</th>
+			      <td><input type="text" value="${confirmDTO.name}" readonly class="form-control" style="width: 80%;"></td>
+			      <th>주민등록번호</th>
+			      <td>
+			        <c:set var="rrnDigits" value="${fn:replace(confirmDTO.registrationNumber, '-', '')}" />
+			        <input type="text" value="${fn:substring(rrnDigits,0,6)}-${fn:substring(rrnDigits,6,12)}" readonly class="form-control" style="width: 80%;">
+			      </td>
+			    </tr>
+			    
+			    <!-- 수정 가능: 육아휴직 기간 -->
+			    <tr>
+			      <th>육아휴직 시작일 <i class="fa fa-edit" style="color:#007bff;"></i></th>
+			      <td>
+			        <input type="date" name="updStartDate" 
+			               value="<fmt:formatDate value="${confirmDTO.startDate}" pattern="yyyy-MM-dd" />" 
+			               class="form-control" style="width: 80%;">
+			      </td>
+			      <th>육아휴직 종료일 <i class="fa fa-edit" style="color:#007bff;"></i></th>
+			      <td>
+			        <input type="date" name="updEndDate" 
+			               value="<fmt:formatDate value="${confirmDTO.endDate}" pattern="yyyy-MM-dd" />" 
+			               class="form-control" style="width: 80%;">
+			      </td>
+			    </tr>
+			    
+			    <!-- 수정 가능: 월 소정근로시간, 통상임금 -->
+			    <tr>
+			      <th>월 소정근로시간 <i class="fa fa-edit" style="color:#007bff;"></i></th>
+			      <td>
+			        <input type="number" name="updWeeklyHours" 
+			               value="${confirmDTO.weeklyHours}" 
+			               class="form-control" style="width: 60%;"> 시간
+			      </td>
+			      <th>통상임금 (월) <i class="fa fa-edit" style="color:#007bff;"></i></th>
+			      <td>
+			        <input type="number" name="updRegularWage" 
+			               value="${confirmDTO.regularWage}" 
+			               class="form-control" style="width: 60%;"> 원
+			      </td>
+			    </tr>
+			
+			    <!-- 수정 가능: 자녀 정보 -->
+			    <tr><th class="sheet-head" colspan="4">대상 자녀 정보 <i class="fa fa-edit" style="color:#007bff;"></i></th></tr>
+			    <c:choose>
+			      <c:when test="${not empty confirmDTO.childName}">
+			        <tr>
+			          <th>자녀 이름</th>
+			          <td>
+			            <input type="text" name="updChildName" 
+			                   value="${confirmDTO.childName}" 
+			                   class="form-control" style="width: 80%;">
+			          </td>
+			          <th>출생일</th>
+			          <td>
+			            <input type="date" name="updChildBirthDate" 
+			                   value="<fmt:formatDate value="${confirmDTO.childBirthDate}" pattern="yyyy-MM-dd" />" 
+			                   class="form-control" style="width: 80%;">
+			          </td>
+			        </tr>
+			        <tr>
+			          <th>자녀 주민등록번호</th>
+			          <td colspan="3">
+			            <c:set var="childRrn" value="${confirmDTO.childResiRegiNumber}" />
+			            <input type="text" name="updChildResiRegiNumber" 
+			                   value="${fn:substring(childRrn, 0, 6)}-${fn:substring(childRrn, 6, 12)}" 
+			                   class="form-control" style="width: 40%;" 
+			                   placeholder="000000-0000000">
+			          </td>
+			        </tr>
+			      </c:when>
+			      <c:otherwise>
+			        <tr>
+			          <th>자녀 이름</th>
+			          <td>
+			            <input type="text" name="updChildName" 
+			                   value="" 
+			                   placeholder="출산 후 입력" 
+			                   class="form-control" style="width: 80%;">
+			          </td>
+			          <th>출산 예정일</th>
+			          <td>
+			            <input type="date" name="updChildBirthDate" 
+			                   value="<fmt:formatDate value="${confirmDTO.childBirthDate}" pattern="yyyy-MM-dd" />" 
+			                   class="form-control" style="width: 80%;">
+			          </td>
+			        </tr>
+			        <tr>
+			          <th>자녀 주민등록번호</th>
+			          <td colspan="3">
+			            <input type="text" name="updChildResiRegiNumber" 
+			                   value="" 
+			                   placeholder="출산 후 입력 (예: 000000-0000000)" 
+			                   class="form-control" style="width: 40%;">
+			          </td>
+			        </tr>
+			      </c:otherwise>
+			    </c:choose>
+				<!-- 월별 지급 내역 (수정) -->
+				
+			    <!-- 담당자 정보 (읽기 전용) -->
+			    <tr><th class="sheet-head" colspan="4">확인서 담당자 정보 (조회)</th></tr>
+			    <tr>
+			      <th>담당자 이름</th>
+			      <td><input type="text" value="${confirmDTO.responseName}" readonly class="form-control" style="width: 80%;"></td>
+			      <th>담당자 연락처</th>
+			      <td><input type="text" value="${confirmDTO.responsePhoneNumber}" readonly class="form-control" style="width: 80%;"></td>
+			    </tr>
+			  </table>
+			
+			  <div class="button-container">
+			    <button type="button" id="updateBtn" class="btn btn-primary" style="margin-right:10px;">
+			      <i class="fa fa-save"></i> 수정 저장
+			    </button>
+			    <button type="button" id="updateCancelBtn" class="btn btn-secondary">
+			      취소
+			    </button>
+			  </div>
+			
+			  <input type="hidden" name="confirmNumber" value="${confirmDTO.confirmNumber}">
+			</form>
+		</c:if>
         <div class="button-container">
         	<c:choose> 
 
@@ -802,24 +844,50 @@
 	document.getElementById("updateBtn")?.addEventListener("click", function() {
 	    const form = document.getElementById("updateForm");
 	    const formData = new FormData(form);
-	    const jsonData = Object.fromEntries(formData.entries());
-
-	    if (!confirm("수정된 내용을 저장하시겠습니까?")) return;
-
+	    const jsonData = {};
+	    
+	    // FormData를 JSON으로 변환 (빈 값 제외)
+	    for (let [key, value] of formData.entries()) {
+	        if (value && value.trim() !== '') {
+	            jsonData[key] = value.trim();
+	        }
+	    }
+	
+	    // confirmNumber는 필수
+	    jsonData.confirmNumber = document.getElementById("confirmNumber").value;
+	
+	    if (!confirm("수정된 내용을 저장하시겠습니까?\n\n수정하지 않은 항목은 기존 값이 유지됩니다.")) {
+	        return;
+	    }
+	
 	    fetch("${pageContext.request.contextPath}/admin/judge/update", {
 	        method: "POST",
 	        headers: { "Content-Type": "application/json" },
 	        body: JSON.stringify(jsonData)
 	    })
-	    .then(res => res.json())
+	    .then(res => {
+	        if (!res.ok) {
+	            throw new Error('서버 응답 오류');
+	        }
+	        return res.json();
+	    })
 	    .then(data => {
 	        alert(data.message);
-	        if (data.success) location.reload();
+	        if (data.success) {
+	            location.reload();
+	        }
 	    })
 	    .catch(err => {
 	        console.error(err);
 	        alert("수정 중 오류가 발생했습니다.");
 	    });
+	});
+	
+	// 수정 취소 버튼
+	document.getElementById("updateCancelBtn")?.addEventListener("click", function() {
+	    if (confirm("수정을 취소하시겠습니까?\n입력한 내용이 초기화됩니다.")) {
+	        location.reload();
+	    }
 	});
 
 </script>
