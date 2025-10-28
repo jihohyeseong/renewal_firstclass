@@ -274,23 +274,23 @@
                       <form id="main-form" action="${pageContext.request.contextPath}/user/update" method="post">
                       <input type="hidden" name="applicationNumber" value="${applicationDetailDTO.applicationNumber}">
                       <input type="hidden" name="confirmNumber" value="${applicationDetailDTO.confirmNumber}">
-					<c:if test="${not empty termIdList}">
-					    <%-- 1. joinedTermIdList 라는 변수를 빈 문자열로 생성 --%>
-					    <c:set var="joinedTermIdList" value="" />
-					    
-					    <%-- 2. termIdList를 반복하면서, 
-					             varStatus(status)를 이용해 마지막 항목이 아닐 때만 콤마(,)를 붙임 --%>
-					    <c:forEach var="termId" items="${termIdList}" varStatus="status">
-					        <c:set var="joinedTermIdList" value="${joinedTermIdList}${termId}" />
-					        <c:if test="${not status.last}">
-					            <c:set var="joinedTermIdList" value="${joinedTermIdList}," />
-					        </c:if>
-					    </c:forEach>
-					    
-					    <%-- 3.
-					         위에서 완성된 문자열(예: "55,56,57,58")을 hidden input의 값으로 사용 --%>
-					    <input type="hidden" name="termIdList" value="${joinedTermIdList}">
-					</c:if>
+                    <c:if test="${not empty termIdList}">
+                         <%-- 1. joinedTermIdList 라는 변수를 빈 문자열로 생성 --%>
+                         <c:set var="joinedTermIdList" value="" />
+                         
+                         <%-- 2. termIdList를 반복하면서, 
+                                 varStatus(status)를 이용해 마지막 항목이 아닐 때만 콤마(,)를 붙임 --%>
+                         <c:forEach var="termId" items="${termIdList}" varStatus="status">
+                             <c:set var="joinedTermIdList" value="${joinedTermIdList}${termId}" />
+                             <c:if test="${not status.last}">
+                                 <c:set var="joinedTermIdList" value="${joinedTermIdList}," />
+                             </c:if>
+                         </c:forEach>
+                         
+                         <%-- 3.
+                              위에서 완성된 문자열(예: "55,56,57,58")을 hidden input의 값으로 사용 --%>
+                         <input type="hidden" name="termIdList" value="${joinedTermIdList}">
+                    </c:if>
                  </c:when>
                  <c:otherwise>
                       <form id="main-form" action="${pageContext.request.contextPath}/user/apply" method="post">
@@ -341,16 +341,16 @@
                           <label class="field-title">사업장 등록번호</label>
                           <div class="input-field">
                               <input type="text" id="businessRegiNumber"
-                                      value="${applicationDTO.buisinessRegiNumber}" inputmode="numeric" autocomplete="off" disabled/>
-                               </div>
+                                     value="${applicationDTO.buisinessRegiNumber}" inputmode="numeric" autocomplete="off" disabled/>
+                                </div>
                       </div>
                       <div class="form-group">
                           <label class="field-title">사업장 주소</label>
                           <div class="input-field">
                               <div class="addr-row">
                                    <input type="text" id="biz-postcode"
-                                           placeholder="우편번호" value="${applicationDTO.companyZipNumber}"
-                                           disabled>
+                                          placeholder="우편번호" value="${applicationDTO.companyZipNumber}"
+                                          disabled>
                               </div>
                               <input type="text" id="biz-base"
                                      placeholder="기본주소" value="${applicationDTO.companyAddressBase}"
@@ -378,9 +378,24 @@
                               <div class="input-field"
                                    style="display: flex; align-items: center; gap: 10px;">
                                    <input type="date" id="end-date" value="${applicationDTO.endDate}" name="endDate" readonly
-                                           style="width: auto; flex-grow: 1;">
+                                          style="width: auto; flex-grow: 1;">
                               </div>
                           </div>
+                          
+                          <div class="form-group" style="margin-top: 5px; margin-bottom: 5px;">
+                              <label class="field-title" style="width: 160px;"></label> <div class="input-field">
+                                  <div class="checkbox-group">
+                                      <input type="checkbox" name="early" id="early-return-chk" style="transform: scale(1.2);">
+                                      <label for="early-return-chk" style="font-weight: 500; color: var(--primary-color);">조기복직(종료일 변경)</label>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="form-group" id="early-return-notice" style="display: none; margin-top:0;">
+                               <label class="field-title" style="width: 160px;"></label> <div class="input-field" style="color: #555; font-size: 14px;">
+                                   ※ 조기복직일이 2025.12.15 인 경우 급여 신청기간은 2025.12.14 까지입니다.
+                               </div>
+                          </div>
+                          
                       </div>
                       
 <div class="dynamic-form-row" style="background-color: transparent; border-bottom: 2px solid var(--border-color); font-weight: 500; margin-bottom: 0;">
@@ -401,71 +416,73 @@
 <div id="dynamic-forms-container" class="dynamic-form-container">
     <c:forEach var="term" items="${applicationDTO.list}" varStatus="status">
 
-        <%-- [★★ 1. 추가된 로직 ★★] termIdList에 현재 term.termId가 있는지 확인 --%>
-        <c:set var="isChecked" value="false" />
-        <c:if test="${not empty termIdList}">
-            <c:forEach var="selectedTermId" items="${termIdList}">
-                <c:if test="${selectedTermId == term.termId}">
-                    <c:set var="isChecked" value="true" />
-                </c:if>
-            </c:forEach>
-        </c:if>
-        <%-- [★★ 로직 끝 ★★] --%>
+         <%-- [★★ 1. 추가된 로직 ★★] termIdList에 현재 term.termId가 있는지 확인 --%>
+         <c:set var="isChecked" value="false" />
+         <c:if test="${not empty termIdList}">
+             <c:forEach var="selectedTermId" items="${termIdList}">
+                 <c:if test="${selectedTermId == term.termId}">
+                     <c:set var="isChecked" value="true" />
+                 </c:if>
+             </c:forEach>
+         </c:if>
+         <%-- [★★ 로직 끝 ★★] --%>
 
-        <%-- (기존 코드) 포맷팅 --%>
-        <fmt:formatNumber value="${term.govPayment}" pattern="#,##0" var="formattedGovPayment" />
-        <fmt:formatNumber value="${term.companyPayment}" pattern="#,##0" var="formattedCompanyPayment" />
-        <fmt:formatDate value="${term.startMonthDate}" pattern="yyyy-MM-dd" var="dataStartDate" />
-        <fmt:formatDate value="${term.endMonthDate}" pattern="yyyy-MM-dd" var="dataEndDate" />
+         <%-- (기존 코드) 포맷팅 --%>
+         <fmt:formatNumber value="${term.govPayment}" pattern="#,##0" var="formattedGovPayment" />
+         <fmt:formatNumber value="${term.companyPayment}" pattern="#,##0" var="formattedCompanyPayment" />
+         <fmt:formatDate value="${term.startMonthDate}" pattern="yyyy-MM-dd" var="dataStartDate" />
+         <fmt:formatDate value="${term.endMonthDate}" pattern="yyyy-MM-dd" var="dataEndDate" />
 
-        <div class="dynamic-form-row">
-            
-            <div class="period-checkbox-wrapper" style="padding: 0 15px; display: flex; align-items: center;">
-                <input type="checkbox" 
-                       class="period-checkbox" 
-                       data-start-date="${dataStartDate}" 
-                       data-end-date="${dataEndDate}"
-                       data-index="${status.index}"
-                       style="transform: scale(1.3);"
-                       ${isChecked ? 'checked' : ''}> <%-- [★★ 2. 수정된 부분 ★★] --%>
-            </div>
+         <div class="dynamic-form-row">
+             
+             <div class="period-checkbox-wrapper" style="padding: 0 15px; display: flex; align-items: center;">
+                 <input type="checkbox" 
+                      class="period-checkbox" 
+                      data-start-date="${dataStartDate}" 
+                      data-end-date="${dataEndDate}"
+                      data-index="${status.index}"
+                      style="transform: scale(1.3);"
+                      ${isChecked ? 'checked' : ''}> <%-- [★★ 2. 수정된 부분 ★★] --%>
+             </div>
 
-            <%-- (기존 코드) ★★★ 이 부분이 사라진 것 같습니다 ★★★ --%>
-            <div class="date-range-display">
-                <div>
-                    <fmt:formatDate value="${term.startMonthDate}" pattern="yyyy.MM.dd" />
-                    ~
-                    <fmt:formatDate value="${term.endMonthDate}" pattern="yyyy.MM.dd" />
-                </div>
-            </div>
-            
-            <%-- (기존 코드) DTO 바인딩을 위한 hidden input들 --%>
-            <input type="hidden" class="period-start-date-hidden" value="${dataStartDate}">
-            <input type="hidden" class="period-end-date-hidden" value="${dataEndDate}">
-            <input type="hidden" class="period-term-id" value="${term.termId}"> 
+             <%-- (기존 코드) --%>
+             <div class="date-range-display">
+                 <div>
+                     <fmt:formatDate value="${term.startMonthDate}" pattern="yyyy.MM.dd" />
+                     ~
+                     <fmt:formatDate value="${term.endMonthDate}" pattern="yyyy.MM.dd" />
+                 </div>
+             </div>
+             
+             <%-- (기존 코드) DTO 바인딩을 위한 hidden input들 --%>
+             <input type="hidden" class="period-start-date-hidden" value="${dataStartDate}">
+             <input type="hidden" class="period-end-date-hidden" value="${dataEndDate}">
+             <input type="hidden" class="period-term-id" value="${term.termId}"> 
 
-            <%-- (기존 코드) 정부 지급액 --%>
-            <div class="payment-input-field">
-                <input type="text" 
-                       class="period-gov-payment"
-                       value="${formattedGovPayment}" 
-                       placeholder="해당 기간의 정부지급액(원) 입력" 
-                       autocomplete="off" 
-                       disabled
-                       style="text-align: right;">
-            </div>
+             <%-- (기존 코드) 정부 지급액 --%>
+             <div class="payment-input-field">
+                 <input type="text" 
+                      class="period-gov-payment"
+                      value="${formattedGovPayment}" 
+                      placeholder="해당 기간의 정부지급액(원) 입력" 
+                      autocomplete="off" 
+                      disabled
+                      style="text-align: right;"
+                      data-original-gov="${term.govPayment}"> <%-- [★★ 신규 추가 (원본 값 저장) ★★] --%>
+             </div>
 
-            <%-- (기존 코드) 사업장 지급액 --%>
-            <div class="payment-input-field" style="margin-left:auto;">
-                <input type="text" 
-                       class="period-company-payment"
-                       value="${formattedCompanyPayment}" 
-                       placeholder="해당 기간의 사업장 지급액(원) 입력" 
-                       autocomplete="off" 
-                       disabled
-                       style="text-align: right;">
-            </div>
-        </div>
+             <%-- (기존 코드) 사업장 지급액 --%>
+             <div class="payment-input-field" style="margin-left:auto;">
+                 <input type="text" 
+                      class="period-company-payment"
+                      value="${formattedCompanyPayment}" 
+                      placeholder="해당 기간의 사업장 지급액(원) 입력" 
+                      autocomplete="off" 
+                      disabled
+                      style="text-align: right;"
+                      data-original-company="${term.companyPayment}"> <%-- [★★ 신규 추가 (원본 값 저장) ★★] --%>
+             </div>
+         </div>
     </c:forEach>
 </div>
 
@@ -488,16 +505,16 @@
                  </div>
 
                  <div class="form-group">
-                     <label class="field-title">통상임금(월)</label>
-                     <div class="input-field">
-                         <input type="text" id="regularWage" value="${applicationDTO.regularWage}" autocomplete="off" disabled>
-                     </div>
+                      <label class="field-title">통상임금(월)</label>
+                      <div class="input-field">
+                           <input type="text" id="regularWage" value="${applicationDTO.regularWage}" autocomplete="off" disabled>
+                      </div>
                  </div>
                  <div class="form-group">
-                     <label class="field-title">주당 소정근로시간</label>
-                     <div class="input-field">
-                         <input type="number" id="weeklyHours" name="weeklyHours" value="${applicationDTO.weeklyHours}" disabled>
-                     </div>
+                      <label class="field-title">주당 소정근로시간</label>
+                      <div class="input-field">
+                           <input type="number" id="weeklyHours" name="weeklyHours" value="${applicationDTO.weeklyHours}" disabled>
+                      </div>
                  </div>
 
                  <div class="form-section">
@@ -540,7 +557,7 @@
                           <label class="field-title">은행</label>
                           <div class="input-field">
                               <select name="bankCode" id="bankCode"
-                                       data-selected="${not empty applicationDetailDTO ? applicationDetailDTO.bankCode : applicationDTO.bankCode}">
+                                      data-selected="${not empty applicationDetailDTO ? applicationDetailDTO.bankCode : applicationDTO.bankCode}">
                                   <option value="" selected disabled>은행 선택</option>
                               </select>
                           </div>
@@ -605,7 +622,7 @@
                            style="justify-content: center; margin-top:  20px;">
                           <input type="checkbox" id="agree-notice" name="agreeNotice">
                           <label for="agree-notice">위 안내사항을 모두 확인했으며, 신청서 내용에 거짓이 없음을
-                              확인합니다.</label>
+                               확인합니다.</label>
                       </div>
                  </div>
 
@@ -621,8 +638,8 @@
                           </c:otherwise>
                       </c:choose>
                  </div>
-           </form>
-           
+            </form>
+            
         </div> </main>
 
     <footer class="footer">
@@ -631,6 +648,7 @@
 
 <%@ include file="/WEB-INF/views/conponent/centerModal.jsp" %>
 
+<%-- [★★ 스크립트 수정됨 ★★] --%>
 <script>
 // ─────────────────────────────────────
 // 다음 주소 API (전역 함수)
@@ -672,21 +690,21 @@ $(function () {
     const contextPath = "${pageContext.request.contextPath}";
     
     if (!isUpdatePage && confirmNumber) {
-         $.ajax({
-             type: "GET",
-             url: `${pageContext.request.contextPath}/user/check/${confirmNumber}`, 
-             dataType: "json",
-             success: function(response) {
-                 if (response.success === false) {
-                     window.location.href = contextPath + (response.redirectUrl || "/user/main");
-                 }
-             },
-             error: function(xhr, status, error) {
-                 console.error("Authentication check failed:", status, error);
-                 alert("페이지 접근 권한 확인 중 오류가 발생했습니다. 메인 페이지로 이동합니다.");
-                 window.location.href = contextPath + "/user/main";
-             }
-         });
+        $.ajax({
+            type: "GET",
+            url: `${pageContext.request.contextPath}/user/check/${confirmNumber}`, 
+            dataType: "json",
+            success: function(response) {
+                if (response.success === false) {
+                    window.location.href = contextPath + (response.redirectUrl || "/user/main");
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Authentication check failed:", status, error);
+                alert("페이지 접근 권한 확인 중 오류가 발생했습니다. 메인 페이지로 이동합니다.");
+                window.location.href = contextPath + "/user/main";
+            }
+        });
     }
 });
 
@@ -852,12 +870,12 @@ document.addEventListener('DOMContentLoaded', function () {
   // ─────────────────────────────────────
   const preloadedPayments = document.querySelectorAll('#dynamic-forms-container .period-company-payment');
   preloadedPayments.forEach(inp => {
-       allowDigitsOnlyAndCommasDisplay(inp, 19);
+        allowDigitsOnlyAndCommasDisplay(inp, 19);
   });
   
   const preloadedGovPayments = document.querySelectorAll('#dynamic-forms-container .period-gov-payment');
-     preloadedGovPayments.forEach(inp => {
-          allowDigitsOnlyAndCommasDisplay(inp, 19);
+        preloadedGovPayments.forEach(inp => {
+            allowDigitsOnlyAndCommasDisplay(inp, 19);
   });
 
   // ─────────────────────────────────────
@@ -945,13 +963,13 @@ document.addEventListener('DOMContentLoaded', function () {
   // ─────────────────────────────────────
   if (form) {
     form.addEventListener('submit', function(e) {
-      
+        
       // 1. 유효성 검사 실행
       if (!validateAndFocus()) {
            e.preventDefault(); 
            return; 
       }
-  
+
       // 2. [★★ 신규 로직 ★★]
       //    체크된 항목을 찾아서 Spring List 바인딩에 맞게 'name' 속성을 부여합니다.
       let newPeriodIndex = 0; // 0-based index for Spring list binding
@@ -968,46 +986,46 @@ document.addEventListener('DOMContentLoaded', function () {
           const companyInput = row.querySelector('.period-company-payment');
 
           if (checkbox && checkbox.checked) {
-              // 2-1. 이 행이 '체크된' 경우:
-              //    'disabled' 해제, 콤마 제거, 'name' 속성 부여
-              
-              if (startDateInput) {
-                  startDateInput.disabled = false;
-                  startDateInput.name = 'list[' + newPeriodIndex + '].startMonthDate';
-              }
-              if (endDateInput) {
-                  endDateInput.disabled = false;
-                  endDateInput.name = 'list[' + newPeriodIndex + '].endMonthDate';
-              }
-              
-              // [★★ termId 추가 ★★]
-              if (termIdInput) {
-                  termIdInput.disabled = false;
-                  termIdInput.name = 'list[' + newPeriodIndex + '].termId';
-              }
-              
-              if (govInput) {
-                  govInput.disabled = false;
-                  govInput.value = onlyDigits(govInput.value); // 콤마 제거
-                  govInput.name = 'list[' + newPeriodIndex + '].govPayment';
-              }
-              if (companyInput) {
-                  companyInput.disabled = false;
-                  companyInput.value = onlyDigits(companyInput.value); // 콤마 제거
-                  companyInput.name = 'list[' + newPeriodIndex + '].companyPayment';
-              }
+               // 2-1. 이 행이 '체크된' 경우:
+               //    'disabled' 해제, 콤마 제거, 'name' 속성 부여
+               
+               if (startDateInput) {
+                   startDateInput.disabled = false;
+                   startDateInput.name = 'list[' + newPeriodIndex + '].startMonthDate';
+               }
+               if (endDateInput) {
+                   endDateInput.disabled = false;
+                   endDateInput.name = 'list[' + newPeriodIndex + '].endMonthDate';
+               }
+               
+               // [★★ termId 추가 ★★]
+               if (termIdInput) {
+                   termIdInput.disabled = false;
+                   termIdInput.name = 'list[' + newPeriodIndex + '].termId';
+               }
+               
+               if (govInput) {
+                   govInput.disabled = false;
+                   govInput.value = onlyDigits(govInput.value); // 콤마 제거
+                   govInput.name = 'list[' + newPeriodIndex + '].govPayment';
+               }
+               if (companyInput) {
+                   companyInput.disabled = false;
+                   companyInput.value = onlyDigits(companyInput.value); // 콤마 제거
+                   companyInput.name = 'list[' + newPeriodIndex + '].companyPayment';
+               }
 
-              // '체크된' 항목에 대해서만 인덱스를 증가시킵니다.
-              newPeriodIndex++;
+               // '체크된' 항목에 대해서만 인덱스를 증가시킵니다.
+               newPeriodIndex++;
 
           } else {
-              // 2-2. 이 행이 '체크되지 않은' 경우:
-              //    'name' 속성을 제거합니다. (disabled 상태는 유지)
-              if (startDateInput) startDateInput.removeAttribute('name');
-              if (endDateInput) endDateInput.removeAttribute('name');
-              if (termIdInput) termIdInput.removeAttribute('name'); // [★★ termId 추가 ★★]
-              if (govInput) govInput.removeAttribute('name');
-              if (companyInput) companyInput.removeAttribute('name');
+               // 2-2. 이 행이 '체크되지 않은' 경우:
+               //    'name' 속성을 제거합니다. (disabled 상태는 유지)
+               if (startDateInput) startDateInput.removeAttribute('name');
+               if (endDateInput) endDateInput.removeAttribute('name');
+               if (termIdInput) termIdInput.removeAttribute('name'); // [★★ termId 추가 ★★]
+               if (govInput) govInput.removeAttribute('name');
+               if (companyInput) companyInput.removeAttribute('name');
           }
       });
       // --- [★★ 신규 로직 끝 ★★] ---
@@ -1016,10 +1034,10 @@ document.addEventListener('DOMContentLoaded', function () {
       // 3. '신청 기간' 외의 'disabled' 필드를 활성화합니다.
       const otherDisabledElements = form.querySelectorAll('input:disabled, select:disabled, textarea:disabled');
       otherDisabledElements.forEach(el => {
-          // 'dynamic-forms-container' *내부*에 있는 필드는 위에서 처리했으므로 건드리지 않습니다.
-          if (!el.closest('#dynamic-forms-container')) {
-              el.disabled = false;
-          }
+        // 'dynamic-forms-container' *내부*에 있는 필드는 위에서 처리했으므로 건드리지 않습니다.
+        if (!el.closest('#dynamic-forms-container')) {
+             el.disabled = false;
+        }
       });
       
       // 4. '신청 기간' 외의 콤마/서식 필드를 처리합니다.
@@ -1045,7 +1063,7 @@ document.addEventListener('DOMContentLoaded', function () {
            }
         }
       }
-  
+
       // 6. 성공 알림
       const action = (e.submitter && e.submitter.name === 'action') ? e.submitter.value : null;
       if (action === 'submit') {
@@ -1053,7 +1071,7 @@ document.addEventListener('DOMContentLoaded', function () {
       } else if (action === 'update') {
            alert('신청서가 수정되었습니다');
       }
-  
+
       // 7. 폼이 정상적으로 제출됩니다.
     });
   }
@@ -1136,11 +1154,72 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
     // ─────────────────────────────────────
-    // [★★ 신청 기간 체크박스 로직 (지난 요청사항) ★★]
+    // [★★ 신청 기간 / 조기복직 로직 (요청사항 통합) ★★]
+    // (기존 '신청 기간 체크박스 로직' 섹션을 대체합니다)
     // ─────────────────────────────────────
     
+    // --- [1. 신규] DOM 요소 캐싱 ---
     const totalSumDisplay = document.getElementById('total-sum-display');
+    const periodCheckboxes = document.querySelectorAll('.period-checkbox');
+    const startDateField = document.getElementById('start-date');
+    const endDateField = document.getElementById('end-date');
+    const earlyReturnChk = document.getElementById('early-return-chk');
+    const earlyReturnNotice = document.getElementById('early-return-notice');
 
+    // --- [2. 신규] 헬퍼 함수: 날짜 계산 (UTC) ---
+
+    // [★★ 요청사항 2에 필요한 헬퍼 함수 ★★]
+    // 'yyyy-MM-dd' 문자열에서 하루를 뺀 'yyyy-MM-dd' 문자열 반환
+    function getPreviousDay(dateStr) {
+        if (!dateStr) return '';
+        try {
+            const [y, m, d] = dateStr.split('-').map(Number);
+            const date = new Date(Date.UTC(y, m - 1, d)); // Use UTC
+            date.setUTCDate(date.getUTCDate() - 1); // Subtract one day
+            return date.toISOString().split('T')[0]; // Format back to 'yyyy-mm-dd'
+        } catch (e) {
+            console.error('Error getting previous day:', e);
+            return dateStr; // Fallback
+        }
+    }
+
+    // 'yyyy-MM-dd' 형식의 두 날짜 사이의 일수 (양끝 포함)
+    function daysBetween(dateStr1, dateStr2) {
+         if (!dateStr1 || !dateStr2) return 0;
+         try {
+             // new Date('yyyy-mm-dd')는 타임존 오류를 일으킬 수 있으므로 UTC로 파싱
+             const [y1, m1, d1] = dateStr1.split('-').map(Number);
+             const [y2, m2, d2] = dateStr2.split('-').map(Number);
+             const date1 = Date.UTC(y1, m1 - 1, d1); // 월은 0부터 시작
+             const date2 = Date.UTC(y2, m2 - 1, d2);
+             
+             if (date2 < date1) return 0; // 종료일이 시작일보다 빠르면 0
+             
+             const diffTime = date2 - date1;
+             const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+             
+             return diffDays + 1; // +1 (시작일과 종료일 포함)
+         } catch(e) {
+             console.error("Date calculation error:", e, dateStr1, dateStr2);
+             return 0;
+         }
+    }
+
+    // --- [3. 신규] 헬퍼 함수: 마지막 선택 행 찾기 ---
+    function getLastSelectedRow() {
+         const checkedBoxes = document.querySelectorAll('.period-checkbox:checked');
+         if (checkedBoxes.length === 0) return null;
+         
+         // data-index를 기준으로 정렬
+         const indices = Array.from(checkedBoxes).map(cb => parseInt(cb.dataset.index));
+         indices.sort((a, b) => a - b);
+         const maxIndex = indices[indices.length - 1]; // 가장 큰 index (마지막 기간)
+         
+         const lastBox = document.querySelector('.period-checkbox[data-index="' + maxIndex + '"]');
+         return lastBox ? lastBox.closest('.dynamic-form-row') : null;
+    }
+
+    // --- [4. 기존] 합계 계산 함수 (변경 없음) ---
     function updateApplicationTotalSum() {
          if (!totalSumDisplay) return;
          let totalSum = 0;
@@ -1149,11 +1228,8 @@ document.addEventListener('DOMContentLoaded', function () {
          checkedBoxes.forEach(checkbox => {
              const row = checkbox.closest('.dynamic-form-row');
              if (!row) return;
-
-             // name 대신 class로 찾습니다.
              const govPaymentInput = row.querySelector('.period-gov-payment');
              const companyPaymentInput = row.querySelector('.period-company-payment');
-
              const govPayment = parseInt(onlyDigits(govPaymentInput ? govPaymentInput.value : '0'), 10) || 0;
              const companyPayment = parseInt(onlyDigits(companyPaymentInput ? companyPaymentInput.value : '0'), 10) || 0;
              totalSum += govPayment + companyPayment;
@@ -1161,10 +1237,73 @@ document.addEventListener('DOMContentLoaded', function () {
          totalSumDisplay.textContent = withCommas(totalSum) + ' 원';
     }
 
-    const periodCheckboxes = document.querySelectorAll('.period-checkbox');
-    const startDateField = document.getElementById('start-date');
-    const endDateField = document.getElementById('end-date');
+    // --- [5. 신규] 헬퍼 함수: 마지막 항목 지급액 재계산 (Req 1, 6) ---
+    function recalculateLastPayment() {
+         if (!earlyReturnChk || !earlyReturnChk.checked) return; // 조기복직 상태가 아니면 실행 안함
 
+         const lastRow = getLastSelectedRow();
+         if (!lastRow) return; // 선택된 항목이 없으면 실행 안함
+
+         const govInput = lastRow.querySelector('.period-gov-payment');
+         const companyInput = lastRow.querySelector('.period-company-payment');
+         const checkbox = lastRow.querySelector('.period-checkbox');
+
+         // JSP에서 data- 속성에 저장해둔 '원본' 금액과 날짜를 가져옴
+         const originalGov = parseInt(govInput.dataset.originalGov, 10);
+         const originalCompany = parseInt(companyInput.dataset.originalCompany, 10);
+         const periodStartStr = checkbox.dataset.startDate; // 이 기간의 시작일
+         const periodEndStr = checkbox.dataset.endDate;     // 이 기간의 *원본* 종료일
+         
+         // 사용자가 수정한 '육아휴직 종료일' 값을 가져옴
+         const newEndDateStr = endDateField.value;
+
+         const totalDaysInLastPeriod = daysBetween(periodStartStr, periodEndStr); // 원본 기간의 총 일수
+         const daysOfNewPeriod = daysBetween(periodStartStr, newEndDateStr); // 새 기간의 총 일수
+
+         if (totalDaysInLastPeriod <= 0) { // 분모가 0이 되는 것 방지
+              console.error("원본 기간의 총 일수가 0입니다.");
+              return;
+         }
+
+         // (정부지급액 + 사업장 지급액) / 원본 총 일 수
+         const totalOriginalPayment = originalGov + originalCompany;
+         const dailyRate = totalOriginalPayment / totalDaysInLastPeriod;
+         
+         // (일급 * 새 일수) - 사업장지급액
+         let newGovPayment = (dailyRate * daysOfNewPeriod) - originalCompany;
+         
+         // newGovPayment = Math.round(newGovPayment); // (기존) 정수로 반올림
+         // [★★ 요청사항 1 ★★] 10원 단위로 내림 (1원 단위 절사)
+         newGovPayment = Math.floor(newGovPayment / 10) * 10;
+         
+         if (newGovPayment < 0) newGovPayment = 0; // 정부지급액이 음수가 될 수 없음
+
+         // 계산된 새 금액을 input에 반영 (콤마 포함)
+         govInput.value = withCommas(newGovPayment);
+         
+         // 합계 금액 다시 계산
+         updateApplicationTotalSum();
+    }
+    
+    // --- [6. 신규] 헬퍼 함수: 모든 항목 지급액 원복 ---
+    function resetLastPayment() {
+         // 조기복직 체크 해제 시, 모든 기간의 정부지급액을 원본으로 되돌림
+         periodCheckboxes.forEach(cb => {
+             const row = cb.closest('.dynamic-form-row');
+             const govInput = row.querySelector('.period-gov-payment');
+             if (govInput && govInput.dataset.originalGov) {
+                 const originalGov = parseInt(govInput.dataset.originalGov, 10);
+                 // 현재 값과 원본 값이 다를 경우에만 복구
+                 if (onlyDigits(govInput.value) != originalGov) {
+                     govInput.value = withCommas(originalGov);
+                 }
+             }
+         });
+         // 합계 금액 다시 계산
+         updateApplicationTotalSum();
+    }
+
+    // --- [7. 기존 + 수정] 상단 날짜 필드 업데이트 (Req 2, 4) ---
     function updateDateFieldsFromCheckboxes() {
          const checkedBoxes = document.querySelectorAll('.period-checkbox:checked');
          
@@ -1172,6 +1311,12 @@ document.addEventListener('DOMContentLoaded', function () {
              // (지난 요청) 체크된 박스가 없으면, 시작일/종료일 필드를 빈 값("")으로 설정
              startDateField.value = '';
              endDateField.value = '';
+             
+             // [수정] 조기복직 상태면 min/max 제거
+             if (earlyReturnChk && earlyReturnChk.checked) {
+                 endDateField.removeAttribute('min');
+                 endDateField.removeAttribute('max');
+             }
              return;
          }
 
@@ -1184,13 +1329,50 @@ document.addEventListener('DOMContentLoaded', function () {
 
          if (firstBox && lastBox) {
              startDateField.value = firstBox.dataset.startDate;
-             endDateField.value = lastBox.dataset.endDate;
+             
+             // [수정] 조기복직이 *아닐* 때만 마지막 날짜로 자동 설정
+             if (!earlyReturnChk || !earlyReturnChk.checked) {
+                 endDateField.value = lastBox.dataset.endDate;
+             }
+             
+             // [수정] 조기복직 상태면 min/max 설정 (Req 4)
+             if (earlyReturnChk && earlyReturnChk.checked) {
+                 
+                 // [★★ 요청사항 2 ★★]
+                 const originalEndDate = lastBox.dataset.endDate;
+                 const maxEndDate = getPreviousDay(originalEndDate); // 종료일 전날 계산
+
+                 endDateField.setAttribute('min', lastBox.dataset.startDate);
+                 // endDateField.setAttribute('max', lastBox.dataset.endDate); // (기존)
+                 endDateField.setAttribute('max', maxEndDate); // [★★ 요청사항 2 수정 ★★]
+
+                 // 현재 종료일 값이 새 max값을 넘으면 max로 강제
+                 // if (endDateField.value > lastBox.dataset.endDate) { // (기존)
+                 if (endDateField.value > maxEndDate) { // [★★ 요청사항 2 수정 ★★]
+                     endDateField.value = maxEndDate;
+                 }
+                 // 현재 종료일 값이 새 min값보다 작으면 min으로 강제
+                 if (endDateField.value < lastBox.dataset.startDate) {
+                     endDateField.value = lastBox.dataset.startDate;
+                 }
+             }
          }
     }
 
+    // --- [8. 기존 + 수정] 기간 체크박스 이벤트 (Req 3, 4) ---
     // (지난 요청) 체크박스 'change' 이벤트 리스너 (연속 선택)
     periodCheckboxes.forEach(checkbox => {
          checkbox.addEventListener('change', function() {
+
+             // [★★ 요청사항 3 ★★]
+             // 조기복직이 선택된 상태에서 기간 체크박스를 변경하면, 조기복직을 해제합니다.
+             if (earlyReturnChk && earlyReturnChk.checked) {
+                 earlyReturnChk.checked = false;
+                 // 'change' 이벤트를 수동으로 발생시켜 해제 로직(UI 복구, 금액 원복) 실행
+                 earlyReturnChk.dispatchEvent(new Event('change'));
+             }
+             // [★★ 요청사항 3 끝 ★★]
+
              const wasChecked = this.checked;
              const currentIndex = parseInt(this.dataset.index);
 
@@ -1210,28 +1392,110 @@ document.addEventListener('DOMContentLoaded', function () {
                  });
              }
              
-             updateDateFieldsFromCheckboxes();
+             // 상단 날짜 필드 업데이트 (min/max 포함)
+             updateDateFieldsFromCheckboxes(); 
+             
+             // [★★ 요청사항 3으로 인해 관련 로직(recalculateLastPayment 등)은 earlyReturnChk.checked가 false가 되어 자동으로 스킵됨 ★★]
+             
+             // 합계는 항상 마지막에 다시 계산
              updateApplicationTotalSum(); 
          });
     });
 
+    // --- [9. 기존] 가로줄 클릭 로직 (변경 없음) ---
     // (지난 요청) 가로줄 클릭 로직
     const clickableRows = document.querySelectorAll('#dynamic-forms-container .dynamic-form-row');
     clickableRows.forEach(row => {
          row.style.cursor = 'pointer'; 
          row.addEventListener('click', function(e) {
+             // 체크박스 자체를 클릭한 경우는 제외 (이중 동작 방지)
              if (e.target.matches('.period-checkbox')) {
                  return;
              }
              const checkbox = this.querySelector('.period-checkbox');
              if (checkbox) {
                  checkbox.checked = !checkbox.checked;
+                 // 'change' 이벤트를 수동으로 발생시켜 모든 로직(연속선택, 계산 등) 실행
                  checkbox.dispatchEvent(new Event('change'));
              }
          });
     });
     
-    // 페이지 로드 시 합계/날짜 초기화
+    // --- [10. 신규] 조기복직 체크박스 이벤트 (Req 2, 3, 5) ---
+    if (earlyReturnChk) {
+         earlyReturnChk.addEventListener('change', function() {
+             if (this.checked) {
+                 // 1. 조기복직 체크 시
+                 const lastRow = getLastSelectedRow();
+                 if (!lastRow) {
+                     alert('조기복직을 설정하려면 먼저 신청기간을 1개 이상 선택해야 합니다.');
+                     this.checked = false;
+                     return;
+                 }
+                 
+                 // (Req 3) 종료일 활성화
+                 endDateField.readOnly = false;
+                 
+                 // (Req 2) 안내문구 표시
+                 if (earlyReturnNotice) earlyReturnNotice.style.display = 'flex';
+                 
+                 // (Req 4) 종료일 범위 제한
+                 const lastCheckbox = lastRow.querySelector('.period-checkbox');
+
+                 // [★★ 요청사항 2 ★★]
+                 const originalEndDate = lastCheckbox.dataset.endDate;
+                 const maxEndDate = getPreviousDay(originalEndDate); // 종료일 전날 계산
+
+                 endDateField.setAttribute('min', lastCheckbox.dataset.startDate);
+                 // endDateField.setAttribute('max', lastCheckbox.dataset.endDate); // (기존)
+                 endDateField.setAttribute('max', maxEndDate); // [★★ 요청사항 2 수정 ★★]
+                 endDateField.focus();
+
+             } else {
+                 // 2. 조기복직 체크 해제 시
+                 
+                 // (Req 3) 종료일 비활성화
+                 endDateField.readOnly = true;
+                 
+                 // (Req 4) 종료일 범위 제한 해제
+                 endDateField.removeAttribute('min');
+                 endDateField.removeAttribute('max');
+                 
+                 // (Req 2) 안내문구 숨김
+                 if (earlyReturnNotice) earlyReturnNotice.style.display = 'none';
+                 
+                 // (Req 5 원상복구) 종료일 원복
+                 updateDateFieldsFromCheckboxes();
+                 
+                 // (Req 5 원상복구) 금액 원복
+                 resetLastPayment(); 
+             }
+         });
+    }
+    
+    // --- [11. 신규] 조기복직 시 종료일 변경 이벤트 (Req 1, 5, 6) ---
+    if (endDateField) {
+         endDateField.addEventListener('change', function() {
+             // 조기복직이 체크된 상태에서만 재계산 로직 실행
+             if (earlyReturnChk && earlyReturnChk.checked) {
+                 
+                 // 날짜가 min/max 범위를 벗어났는지 확인 (수동 입력 대비)
+                 const min = endDateField.getAttribute('min');
+                 const max = endDateField.getAttribute('max');
+                 if (min && endDateField.value < min) {
+                     endDateField.value = min;
+                 }
+                 if (max && endDateField.value > max) {
+                     endDateField.value = max;
+                 }
+                 
+                 // (Req 1, 5, 6) 금액 재계산
+                 recalculateLastPayment();
+             }
+         });
+    }
+
+    // --- [12. 기존] 페이지 로드 시 초기화 ---
     updateApplicationTotalSum();
     updateDateFieldsFromCheckboxes();
 

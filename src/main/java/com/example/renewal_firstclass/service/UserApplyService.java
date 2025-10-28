@@ -1,5 +1,6 @@
 package com.example.renewal_firstclass.service;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -134,8 +135,10 @@ public class UserApplyService {
 		return vo;
 	}
 
+	@Transactional
 	public void deleteApply(Long applicationNumber, List<Long> termIdList) {
 		
+		userApplyDAO.updateTermEarlyAndGov(applicationNumber);
 		userApplyDAO.updateTermApplyBefore(termIdList);
 		userApplyDAO.deleteApplication(applicationNumber);
 	}
@@ -146,7 +149,7 @@ public class UserApplyService {
 	}
 
 	@Transactional
-	public void updateApplication(ApplicationDTO applicationDTO, List<Long> termIdList) {
+	public void updateApplication(ApplicationDTO applicationDTO, List<Long> termIdList, boolean early) {
 		
 		try {
 			applicationDTO.setChildResiRegiNumber(aes256Util.encrypt(applicationDTO.getChildResiRegiNumber()));
@@ -159,8 +162,10 @@ public class UserApplyService {
 		}
 		userApplyDAO.updateConfirmApply(applicationDTO);
 		userApplyDAO.updateApplicationDetail(applicationDTO);
+		userApplyDAO.updateTermEarlyAndGov(applicationDTO.getApplicationNumber());
 		userApplyDAO.updateTermApplyBefore(termIdList);
 		userApplyDAO.updateTermApply(ids, applicationDTO.getApplicationNumber());
+		applyEarlyTerm(applicationDTO.getEndDate(), applicationDTO.getList().get(applicationDTO.getList().size() - 1));
 	}
 
 	public boolean userCheck(Long confirmNumber, String name) {
@@ -179,6 +184,14 @@ public class UserApplyService {
 			return false;
 		
 		return username.equals(name) ? true : false;
+	}
+
+	@Transactional
+	public void applyEarlyTerm(Date endDate, TermAmountDTO termAmountDTO) {
+		
+		termAmountDTO.setEndMonthDate(endDate);
+		userApplyDAO.updateTermEarly(termAmountDTO);
+		userApplyDAO.updateTermDelt(termAmountDTO);
 	}
 
 }

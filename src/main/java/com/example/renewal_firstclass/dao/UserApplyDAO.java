@@ -1,5 +1,6 @@
 package com.example.renewal_firstclass.dao;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import com.example.renewal_firstclass.domain.ApplicationDetailDTO;
 import com.example.renewal_firstclass.domain.ApplyListDTO;
 import com.example.renewal_firstclass.domain.SimpleConfirmVO;
 import com.example.renewal_firstclass.domain.SimpleUserInfoVO;
+import com.example.renewal_firstclass.domain.TermAmountDTO;
 import com.example.renewal_firstclass.domain.UserApplyCompleteVO;
 
 @Mapper
@@ -49,5 +51,11 @@ public interface UserApplyDAO {
 	void updateTermApply(@Param("ids")List<Long> ids, @Param("applicationNumber")Long applicationNumber);
 
 	void updateTermApplyBefore(@Param("termIdList")List<Long> termIdList);
+
+	void updateTermEarly(TermAmountDTO termAmountDTO);
+
+	void updateTermDelt(TermAmountDTO termAmountDTO);
+
+	void updateTermEarlyAndGov(Long applicationNumber);
 
 }

@@ -68,12 +68,14 @@ public class UserApplyController {
 	
 	// 육아휴직 급여 저장
 	@PostMapping("/user/apply")
-	public String applyUserApplication(ApplicationDTO applicationDTO, RedirectAttributes redirectAttributes, Model model) {
+	public String applyUserApplication(ApplicationDTO applicationDTO, boolean early, RedirectAttributes redirectAttributes, Model model) {
 		
 		if(applicationDTO.getBankCode() == null || applicationDTO.getAccountNumber() == null || applicationDTO.getCenterId() == null || applicationDTO.getGovInfoAgree() == null) {
 			model.addAttribute("applicationDTO", applicationDTO);
 			return "user/application";
 		}
+		if(early)
+			userApplyService.applyEarlyTerm(applicationDTO.getEndDate(), applicationDTO.getList().get(applicationDTO.getList().size() - 1));
 		userApplyService.insertApply(applicationDTO);
 		
 		return "redirect:/user/main";
@@ -127,14 +129,15 @@ public class UserApplyController {
 	// 육아휴직 등록 수정
 	@PostMapping("/user/update")
 	public String updateApplication(ApplicationDTO applicationDTO, 
-									@RequestParam(value = "termIdList", required = false) List<Long> termIdList, 
+									@RequestParam(value = "termIdList", required = false) List<Long> termIdList,
+									boolean early,
 									Model model) {
 
 		if(applicationDTO.getBankCode() == null || applicationDTO.getAccountNumber() == null || applicationDTO.getCenterId() == null || applicationDTO.getGovInfoAgree() == null) {
 			model.addAttribute("applicationDTO", applicationDTO);
 			return "user/application";
 		}
-		userApplyService.updateApplication(applicationDTO, termIdList);
+		userApplyService.updateApplication(applicationDTO, termIdList, early);
 		
 		return "redirect:/user/main";
 	}
