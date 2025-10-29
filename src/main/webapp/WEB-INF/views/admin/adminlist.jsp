@@ -266,7 +266,9 @@
       return;
     }
     tbody.innerHTML = list.map(function(row){
-      var appNo = (row.applicationNumber != null ? row.applicationNumber : '-');
+      var idVal = (row.docType === 'CONFIRM')
+      ? (row.confirmNumber != null ? row.confirmNumber : '-')
+      : (row.applicationNumber != null ? row.applicationNumber : '-');
       var nm    = row.name || '';
       var dt    = formatDate(row.applyDate);
       var st    = statusBadge(row.statusName);
@@ -277,7 +279,7 @@
 
       return '<tr>'
         + '<td>' + chip + '</td>'
-        + '<td>' + appNo + '</td>'
+        + '<td>' + idVal + '</td>'
         + '<td>' + nm   + '</td>'
         + '<td>' + dt   + '</td>'
         + '<td>' + st   + '</td>'
