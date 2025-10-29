@@ -198,5 +198,23 @@ public class UserApplyController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 		
 	}
+	
+	// 진행중인 신청 있는지 확인 AJAX
+	@GetMapping("/user/check/confirm/{confirmNumber}")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> confirmCheck(@PathVariable Long confirmNumber){
+		
+		Map<String, Object> response = new HashMap<>();
+		Long applicationNumber = userApplyService.confirmCheck(confirmNumber);
+		if(applicationNumber != null) {
+			response.put("success", false);
+			response.put("message", "이미 진행중인 신청이 있습니다.");
+			response.put("redirectUrl", "/user/detail/" + applicationNumber);
+		}
+		else
+			response.put("success", true);
+		
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
 
 }

@@ -229,6 +229,7 @@
     		TB_USER u ON p.user_id = u.id
     	WHERE
     		u.username = #{username} AND p.delt_at = 'N'
+    	ORDER BY application_number DESC
     </select>
     
     <!-- 육아휴직 상세페이지 -->
@@ -442,4 +443,10 @@
 		SET early_return_date = null, gov_payment_update = null
 		WHERE confirm_number = (select distinct confirm_number from TB_TERM_AMOUNT where application_number = #{applicationNumber})
 	</update>
+	
+	<select id="countByConfirmNumber" parameterType="long" resultType="long">
+		SELECT application_number
+		FROM TB_PARENTAL_LEAVE_APPLICATION
+		WHERE confirm_number = #{confirmNumber} AND delt_at = 'N' AND status_code IN ('ST_10', 'ST_20', 'ST_30', 'ST_40')
+	</select>
 </mapper>

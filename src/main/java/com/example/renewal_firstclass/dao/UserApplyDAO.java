@@ -58,4 +58,6 @@ public interface UserApplyDAO {
 
 	void updateTermEarlyAndGov(Long applicationNumber);
 
+	Long countByConfirmNumber(Long confirmNumber);
+
 }
