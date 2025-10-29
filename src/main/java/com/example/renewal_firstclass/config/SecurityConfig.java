@@ -52,7 +52,7 @@ public class SecurityConfig {
 
 	            if (isAdmin) {
 	                // ADMIN이면 /adminlist로 리디렉션
-	                response.sendRedirect("/renewal_firstclass/admin/user/apply");
+	                response.sendRedirect("/renewal_firstclass/admin/list");
 	            } else if (isCorp) {
 	                // 기업 사용자면 /comp/main으로 리디렉션
 	                response.sendRedirect("/renewal_firstclass/comp/main");

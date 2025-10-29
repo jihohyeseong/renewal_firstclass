@@ -66,7 +66,7 @@
     
     <!-- 신청서 유저정보  -->
     <select id="findUserInfo" parameterType="string" resultType="UserDTO">
-    	SELECT id, name, registration_number, zip_number, address_base, address_detail, username, phone_number
+    	SELECT id, name, registration_number, zip_number, address_base, address_detail, username, phone_number, center_id
     	FROM TB_User
     	WHERE username = #{username}
     </select>

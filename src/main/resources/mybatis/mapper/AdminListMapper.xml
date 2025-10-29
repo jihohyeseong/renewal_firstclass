@@ -1,85 +1,161 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="com.example.renewal_firstclass.dao.AdminListDAO">
 
-    <sql id="searchCondition">
-        <where>
-            <if test="keyword != null and keyword != ''">
-                (u.name LIKE '%' || #{keyword} || '%' OR p.application_number LIKE '%' || #{keyword} || '%')
-            </if>
-            <if test="status != null and status != ''">
-                <choose>
-	                <when test="status == 'PENDING' or status == 'ST_20' or status == 'ST_30' or status == 'ST_40'">
-	                    AND p.status_code IN ('ST_20', 'ST_30', 'ST_40')
-	                </when>
-	                <when test="status == 'APPROVED'">
-	                    AND p.status_code = 'ST_50' AND p.payment_result = 'Y'
-	                </when>
-	                <when test="status == 'REJECTED'">
-	                    AND p.status_code = 'ST_60' AND p.payment_result = 'N'
-	                </when>
-	                <when test="status == 'ST_50' or status == 'ST_60'">
-	                    AND p.status_code IN ('ST_50', 'ST_60')
-	                </when>
-            	</choose>
-            </if>
-            <if test="date != null and date != ''">
-            	AND TO_CHAR(p.submitted_dt, 'YYYY-MM-DD') = #{date}
-            </if>
-            AND p.delt_at = 'N'
-            AND p.status_code != 'ST_10'
-            AND p.status_code != 'ST_70'
-        </where>
-    </sql>
+  <!-- ================= 외부(통합) 공통 필터 ================= -->
+  <sql id="allFilters">
+    <where>
+      <!-- 문서 종류 :APPLICATION CONFIRM -->
+      <if test="docType != null">
+        AND t.doc_type = #{docType}
+      </if>
 
-    <select id="selectApplicationList" resultType="com.example.renewal_firstclass.domain.AdminListDTO">
-        SELECT
-            p.application_number AS applicationNumber,
-            p.user_id AS userId,
-            u.name AS name,
-            p.status_code AS statusCode,
-            TO_CHAR(p.submitted_dt, 'YYYY-MM-DD') AS submittedDate,
-            p.payment_result AS paymentResult,
-            CASE
-                WHEN p.status_code IN ('ST_20', 'ST_30', 'ST_40') THEN '대기'
-                WHEN p.status_code = 'ST_50' THEN '처리완료'
-                ELSE '기타'
-            END AS statusName
-        FROM
-            TB_PARENTAL_LEAVE_APPLICATION p
-        JOIN
-            TB_User u ON p.user_id = u.id
-        <include refid="searchCondition"/>
-        ORDER BY
-            p.application_number DESC
-        OFFSET #{pageDTO.startList} ROWS FETCH NEXT #{pageDTO.listSize} ROWS ONLY
-    </select>
+      <!-- 신청자명 / 신청서번호 / 확인서번호 -->
+      <if test="keyword != null and keyword != ''">
+        AND (
+          t.name LIKE '%' || #{keyword} || '%'
+          OR (t.application_number IS NOT NULL AND TO_CHAR(t.application_number) LIKE '%' || #{keyword} || '%')
+          OR (t.confirm_number     IS NOT NULL AND TO_CHAR(t.confirm_number)     LIKE '%' || #{keyword} || '%')
+        )
+      </if>
 
-    <select id="selectTotalCount" resultType="int">
-        SELECT 
-            COUNT(*)
-        FROM 
-            TB_PARENTAL_LEAVE_APPLICATION p
-        JOIN
-            TB_User u ON p.user_id = u.id
-        <include refid="searchCondition"/>
-    </select>
+      <!-- 날짜-->
+      <if test="date != null">
+        AND TO_CHAR(t.apply_date, 'YYYY-MM-DD') = #{date}
+      </if>
 
-    <select id="selectStatusCount" resultType="int">
-        SELECT COUNT(*)
-        FROM TB_PARENTAL_LEAVE_APPLICATION
-        WHERE status_code = #{statusCode}
-          AND delt_at = 'N'
-          AND payment_result = #{paymentResult}
-    </select>
-	
-	<select id="selectStatusCountIn" resultType="int">
-        SELECT COUNT(*)
-        FROM TB_PARENTAL_LEAVE_APPLICATION
-        WHERE status_code IN
-        <foreach item="item" index="index" collection="codes" open="(" separator="," close=")">
-            #{item}
-        </foreach>
-        AND delt_at = 'N'
-    </select>
+      <!-- 상태-->
+      <if test="statusName != null">
+        AND t.status_name = #{statusName}
+      </if>
+      <if test="statusCode != null">
+        AND t.status_code = #{statusCode}
+      </if>
+
+    </where>
+  </sql>
+
+  <!-- ================= 내부(타입별) 추가 필터 ================= -->
+  <!-- 신청서 전용: 상태명/코드값-->
+  <sql id="applyFilters">
+    <if test="applyDate != null">
+      AND TO_CHAR(p.submitted_dt, 'YYYY-MM-DD') = #{applyDate}
+    </if>
+    <if test="applyStatusName != null">
+      AND sc.name = #{applyStatusName}
+    </if>
+    <if test="applyStatusCode != null">
+      AND p.status_code = #{applyStatusCode}
+    </if>
+
+  </sql>
+
+  <!-- 확인서 전용-->
+  <sql id="confirmFilters">
+    <if test="confirmDate != null">
+      AND TO_CHAR(c.apply_dt, 'YYYY-MM-DD') = #{confirmDate}
+    </if>
+    <if test="confirmStatusName != null">
+      AND sc2.name = #{confirmStatusName}
+    </if>
+    <if test="confirmStatusCode != null">
+      AND c.status_code = #{confirmStatusCode}
+    </if>
+
+  </sql>
+
+  <!-- ================= 목록 ================= -->
+  <select id="selectApplyAndConfirm" resultType="com.example.renewal_firstclass.domain.AdminListDTO">
+    SELECT
+	  t.application_number,
+	  t.doc_type,
+	  t.name,
+	  t.apply_date,
+	  t.status_code,
+	  t.status_name,
+	  t.confirm_number
+    FROM (
+      /* 신청서 */
+	SELECT
+	  p.application_number,
+	  'APPLICATION'           AS doc_type,
+	  ca.name,
+	  p.submitted_dt          AS apply_date,
+	  p.status_code,
+	  sc.name                 AS status_name,
+	  p.confirm_number
+	FROM TB_PARENTAL_LEAVE_APPLICATION p
+	JOIN TB_CONFIRM_APPLICATION ca ON ca.confirm_number = p.confirm_number
+	LEFT JOIN TB_CODE sc ON sc.code  = p.status_code
+	WHERE p.delt_at = 'N'
+	  AND p.status_code != 'ST_10'
+	  AND p.center_id = #{centerId}
+      <include refid="applyFilters"/>
+
+      UNION ALL
+
+	/* 확인서 */
+	SELECT
+	  CAST(NULL AS NUMBER)      AS application_number,
+	  'CONFIRM'                 AS doc_type,
+	  c.name,
+	  c.apply_dt                AS apply_date,
+	  c.status_code,
+	  sc2.name					AS status_name,
+	  c.confirm_number
+	FROM TB_CONFIRM_APPLICATION c
+	LEFT JOIN TB_CODE sc2 ON sc2.code = c.status_code
+	WHERE c.delt_at = 'N'
+	  AND c.status_code != 'ST_10'
+	  AND c.center_id = #{centerId}
+	<include refid="confirmFilters"/>
+    ) t
+    <include refid="allFilters"/>
+    ORDER BY t.apply_date DESC NULLS LAST, t.application_number DESC NULLS LAST
+    OFFSET #{startList} ROWS FETCH NEXT #{listSize} ROWS ONLY
+  </select>
+
+  <!-- ================= 카운트 ================= -->
+   <select id="countApplyAndConfirm" resultType="int">
+    SELECT COUNT(*)
+    FROM (
+      SELECT
+        p.application_number,
+        'APPLICATION'        AS doc_type,
+        ca.name,
+        p.submitted_dt       AS apply_date,
+        p.status_code,
+        sc.name              AS status_name,
+        p.confirm_number
+      FROM TB_PARENTAL_LEAVE_APPLICATION p
+      JOIN TB_CONFIRM_APPLICATION ca ON ca.confirm_number = p.confirm_number
+      LEFT JOIN TB_CODE sc ON sc.code = p.status_code
+      WHERE p.delt_at = 'N'
+        AND p.status_code != 'ST_10'
+        AND p.center_id = #{centerId}
+      <include refid="applyFilters"/>
+
+      UNION ALL
+
+      SELECT
+        CAST(NULL AS NUMBER) AS application_number,
+        'CONFIRM'            AS doc_type,
+        c.name,
+        c.apply_dt           AS apply_date,
+        c.status_code,
+        sc2.name             AS status_name,
+        c.confirm_number
+      FROM TB_CONFIRM_APPLICATION c
+      LEFT JOIN TB_CODE sc2 ON sc2.code = c.status_code
+      WHERE c.delt_at = 'N'
+        AND c.status_code != 'ST_10'
+        AND c.center_id = #{centerId}
+      <include refid="confirmFilters"/>
+    ) t
+    <include refid="allFilters"/>
+  </select>
+
 </mapper>
