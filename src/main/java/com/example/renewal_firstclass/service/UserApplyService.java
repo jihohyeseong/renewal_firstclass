@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -59,6 +60,17 @@ public class UserApplyService {
 		}
 		String regiNum = applicationDTO.getRegistrationNumber();
 		applicationDTO.setRegistrationNumber(regiNum.substring(0,6) + "-" + regiNum.substring(6));
+		List<TermAmountDTO> list = applicationDTO.getList();
+		if (list != null && !list.isEmpty()) {
+			boolean hasUpdateY = list.stream().anyMatch(term -> "Y".equals(term.getUpdateAt()));
+			if (hasUpdateY) {
+		        List<TermAmountDTO> filteredList = list.stream()
+		                                               .filter(term -> "Y".equals(term.getUpdateAt()))
+		                                               .collect(Collectors.toList());
+		        
+		        applicationDTO.setList(filteredList);
+		    }
+		}
 		
 		return applicationDTO;
 	}
@@ -77,6 +89,17 @@ public class UserApplyService {
 		}
 		String regiNum = applicationDTO.getRegistrationNumber();
 		applicationDTO.setRegistrationNumber(regiNum.substring(0,6) + "-" + regiNum.substring(6));
+		List<TermAmountDTO> list = applicationDTO.getList();
+		if (list != null && !list.isEmpty()) {
+			boolean hasUpdateY = list.stream().anyMatch(term -> "Y".equals(term.getUpdateAt()));
+			if (hasUpdateY) {
+		        List<TermAmountDTO> filteredList = list.stream()
+		                                               .filter(term -> "Y".equals(term.getUpdateAt()))
+		                                               .collect(Collectors.toList());
+		        
+		        applicationDTO.setList(filteredList);
+		    }
+		}
 		
 		return applicationDTO;
 	}

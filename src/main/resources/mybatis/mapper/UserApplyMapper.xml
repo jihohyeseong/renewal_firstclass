@@ -26,7 +26,8 @@
             AND u.role = 'ROLE_CORP'
     </select>
     <resultMap id="applicationSingleQueryResultMap" type="com.example.renewal_firstclass.domain.ApplicationDTO">
-        <id property="confirmNumber" column="app_confirm_number"/> <id column="app_confirm_number" /> <result property="name" column="user_name"/>
+        <id property="confirmNumber" column="app_confirm_number"/>
+        <result property="name" column="user_name"/>
         <result property="registrationNumber" column="user_reg_num"/>
         <result property="zipNumber" column="user_zip_number"/>
         <result property="addressBase" column="user_address_base"/>
@@ -55,6 +56,7 @@
             <result property="startMonthDate" column="start_month_date"/>
             <result property="endMonthDate" column="end_month_date"/>
             <result property="confirmNumber" column="term_confirm_number"/>
+            <result property="updateAt" column="update_at"/>
             <result property="earlyReturnDate" column="early_return_date"/>
             <result property="govPaymentUpdate" column="gov_payment_update"/>
         </collection>
@@ -63,15 +65,15 @@
 
     <select id="getApplicationDTO" parameterType="long" resultMap="applicationSingleQueryResultMap">
         SELECT
-            -- 4. Application 정보
+            -- 4. Application 정보 (수정됨)
             a.confirm_number AS app_confirm_number,
-            a.start_date AS app_start_date,
-            a.end_date AS app_end_date,
-            a.regular_wage AS app_regular_wage,
-            a.weekly_hours AS app_weekly_hours,
-            a.child_name AS app_child_name,
-            a.child_birth_date AS app_child_birth_date,
-            a.child_resi_regi_number AS app_child_resi_regi_num,
+            COALESCE(a.upd_start_date, a.start_date) AS app_start_date,
+            COALESCE(a.upd_end_date, a.end_date) AS app_end_date,
+            COALESCE(a.upd_regular_wage, a.regular_wage) AS app_regular_wage,
+            COALESCE(a.upd_weekly_hours, a.weekly_hours) AS app_weekly_hours,
+            COALESCE(a.upd_child_name, a.child_name) AS app_child_name,
+            COALESCE(a.upd_child_birth_date, a.child_birth_date) AS app_child_birth_date,
+            COALESCE(a.upd_child_resi_regi_number, a.child_resi_regi_number) AS app_child_resi_regi_num,
             
             -- 1. 신청자 정보 (TB_USER as u1)
             u1.name AS user_name,
@@ -94,6 +96,7 @@
             t.company_payment,
             t.gov_payment,
             t.start_month_date,
+            t.update_at,
             t.end_month_date,
             t.confirm_number AS term_confirm_number
         FROM
@@ -110,17 +113,18 @@
         WHERE
             a.confirm_number = #{confirmNumber}
     </select>
+    
     <select id="getApplicationDTO2" resultMap="applicationSingleQueryResultMap">
         SELECT
-            -- 4. Application 정보
+            -- 4. Application 정보 (수정됨)
             a.confirm_number AS app_confirm_number,
-            a.start_date AS app_start_date,
-            a.end_date AS app_end_date,
-            a.regular_wage AS app_regular_wage,
-            a.weekly_hours AS app_weekly_hours,
-            a.child_name AS app_child_name,
-            a.child_birth_date AS app_child_birth_date,
-            a.child_resi_regi_number AS app_child_resi_regi_num,
+            COALESCE(a.upd_start_date, a.start_date) AS app_start_date,
+            COALESCE(a.upd_end_date, a.end_date) AS app_end_date,
+            COALESCE(a.upd_regular_wage, a.regular_wage) AS app_regular_wage,
+            COALESCE(a.upd_weekly_hours, a.weekly_hours) AS app_weekly_hours,
+            COALESCE(a.upd_child_name, a.child_name) AS app_child_name,
+            COALESCE(a.upd_child_birth_date, a.child_birth_date) AS app_child_birth_date,
+            COALESCE(a.upd_child_resi_regi_number, a.child_resi_regi_number) AS app_child_resi_regi_num,
             
             -- 1. 신청자 정보 (TB_USER as u1)
             u1.name AS user_name,
@@ -144,6 +148,7 @@
             t.gov_payment,
             t.start_month_date,
             t.end_month_date,
+            t.update_at,
             t.confirm_number AS term_confirm_number,
             t.early_return_date,
             t.gov_payment_update
@@ -172,6 +177,7 @@
         WHERE
             a.confirm_number = #{confirmNumber}
     </select>
+
     <insert id="insertApply" useGeneratedKeys="true" keyProperty="dto.applicationNumber" keyColumn="application_number">
     	INSERT INTO TB_PARENTAL_LEAVE_APPLICATION(
     		bank_code,
@@ -194,9 +200,9 @@
     <update id="updateConfirmApply" parameterType="com.example.renewal_firstclass.domain.ApplicationDTO">
     	UPDATE TB_CONFIRM_APPLICATION
     	SET
-    		child_name = #{childName},
-    		child_birth_date = #{childBirthDate},
-    		child_resi_regi_number = #{childResiRegiNumber}
+    		upd_child_name = #{childName},
+    		upd_child_birth_date = #{childBirthDate},
+    		upd_child_resi_regi_number = #{childResiRegiNumber}
     	WHERE
     		confirm_number = #{confirmNumber}
     </update>
@@ -306,13 +312,13 @@
 	        U_CORP.address_detail AS company_address_detail,
 	        
 	        C.confirm_number,
-	        C.start_date,
-	        C.end_date,
-	        C.regular_wage,
-	        C.weekly_hours,
-	        C.child_name,
-	        C.child_birth_date,
-	        C.child_resi_regi_number,
+	        COALESCE(C.upd_start_date, C.start_date) AS start_date,
+	        COALESCE(C.upd_end_date, C.end_date) AS end_date,
+	        COALESCE(C.upd_regular_wage, C.regular_wage) AS regular_wage,
+	        COALESCE(C.upd_weekly_hours, C.weekly_hours) AS weekly_hours,
+	        COALESCE(C.upd_child_name, C.child_name) AS child_name,
+	        COALESCE(C.upd_child_birth_date, C.child_birth_date) AS child_birth_date,
+	        COALESCE(C.upd_child_resi_regi_number, C.child_resi_regi_number) AS child_resi_regi_number,
 	        CO.name,
 	        
 	        CN.center_id,
