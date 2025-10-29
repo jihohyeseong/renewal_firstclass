@@ -55,6 +55,8 @@
             <result property="startMonthDate" column="start_month_date"/>
             <result property="endMonthDate" column="end_month_date"/>
             <result property="confirmNumber" column="term_confirm_number"/>
+            <result property="earlyReturnDate" column="early_return_date"/>
+            <result property="govPaymentUpdate" column="gov_payment_update"/>
         </collection>
     </resultMap>
 
@@ -142,7 +144,9 @@
             t.gov_payment,
             t.start_month_date,
             t.end_month_date,
-            t.confirm_number AS term_confirm_number
+            t.confirm_number AS term_confirm_number,
+            t.early_return_date,
+            t.gov_payment_update
         FROM
             TB_CONFIRM_APPLICATION a
         -- 1. 신청자 정보 조인
@@ -225,6 +229,7 @@
     		TB_USER u ON p.user_id = u.id
     	WHERE
     		u.username = #{username} AND p.delt_at = 'N'
+    	ORDER BY application_number DESC
     </select>
     
     <!-- 육아휴직 상세페이지 -->
@@ -274,6 +279,8 @@
             <result property="startMonthDate" column="start_month_date"/>
             <result property="endMonthDate" column="end_month_date"/>
             <result property="confirmNumber" column="term_confirm_number"/>
+            <result property="earlyReturnDate" column="early_return_date"/>
+            <result property="govPaymentUpdate" column="gov_payment_update"/>
         </collection>
     </resultMap>
 
@@ -318,17 +325,13 @@
 	        
 	        T.term_id,
 	        T.company_payment,
-	        
-	        -- [수정 1] T.gov_payment_update가 NULL이 아니면 T.gov_payment_update를, NULL이면 T.gov_payment를 선택
-	        COALESCE(T.gov_payment_update, T.gov_payment) AS gov_payment,
-	        
+	        T.gov_payment,
 	        T.payment_date,
 	        T.start_month_date,
-	        
-	        -- [수정 2] T.early_return_date가 NULL이 아니면 T.early_return_date를, NULL이면 T.end_month_date를 선택
-	        COALESCE(T.early_return_date, T.end_month_date) AS end_month_date,
-	        
-	        T.confirm_number AS term_confirm_number
+	        T.end_month_date,
+	        T.confirm_number AS term_confirm_number,
+	        T.early_return_date,
+	        T.gov_payment_update
 	        
 	    FROM 
 	        TB_PARENTAL_LEAVE_APPLICATION A
@@ -440,4 +443,10 @@
 		SET early_return_date = null, gov_payment_update = null
 		WHERE confirm_number = (select distinct confirm_number from TB_TERM_AMOUNT where application_number = #{applicationNumber})
 	</update>
+	
+	<select id="countByConfirmNumber" parameterType="long" resultType="long">
+		SELECT application_number
+		FROM TB_PARENTAL_LEAVE_APPLICATION
+		WHERE confirm_number = #{confirmNumber} AND delt_at = 'N' AND status_code IN ('ST_10', 'ST_20', 'ST_30', 'ST_40')
+	</select>
 </mapper>

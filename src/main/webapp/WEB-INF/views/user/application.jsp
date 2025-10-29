@@ -63,11 +63,11 @@
      border: none !important;
     }
     .content-wrapper {
-         background-color: var(--white-color);
-         border-radius: 12px;
-         box-shadow: var(--shadow-md);
-         padding: 40px; 
-         margin: 0 auto; 
+        background-color: var(--white-color);
+        border-radius: 12px;
+        box-shadow: var(--shadow-md);
+        padding: 40px; 
+        margin: 0 auto; 
     }
     h1 { text-align: center; margin-bottom: 30px; font-size: 28px; }
     h2 {
@@ -143,113 +143,113 @@
     }
     .error {color: red; font-size: 14px;}
     .modal-overlay {
-         position: fixed;
-         top: 0;
-         left: 0;
-         width: 100%;
-         height: 100%;
-         background-color: rgba(0, 0, 0, 0.6);
-         display: flex;
-         justify-content: center;
-         align-items: center;
-         z-index: 1000;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
     }
     .modal-content {
-         background-color: #fff;
-         padding: 25px;
-         border-radius: 12px;
-         box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-         width: 90%;
-         max-width: 1000px;
-         max-height: 80vh;
-         display: flex;
-         flex-direction: column;
+        background-color: #fff;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        width: 90%;
+        max-width: 1000px;
+        max-height: 80vh;
+        display: flex;
+        flex-direction: column;
     }
     .modal-header {
-         display: flex;
-         justify-content: space-between;
-         align-items: center;
-         border-bottom: 1px solid var(--border-color);
-         padding-bottom: 15px;
-         margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 15px;
+        margin-bottom: 20px;
     }
     .modal-header h2 {
-         margin: 0;
-         font-size: 22px;
-         color: var(--dark-gray-color);
-         border: none;
+        margin: 0;
+        font-size: 22px;
+        color: var(--dark-gray-color);
+        border: none;
     }
     .close-modal-btn {
-         background: none;
-         border: none;
-         font-size: 28px;
-         cursor: pointer;
-         color: var(--gray-color);
-         line-height: 1;
+        background: none;
+        border: none;
+        font-size: 28px;
+        cursor: pointer;
+        color: var(--gray-color);
+        line-height: 1;
     }
     .modal-body {
-         overflow-y: auto;
+        overflow-y: auto;
     }
     .center-table {
-         width: 100%;
-         border-collapse: collapse;
+        width: 100%;
+        border-collapse: collapse;
     }
     .center-table th, .center-table td {
-         border: 1px solid var(--border-color);
-         padding: 12px;
-         text-align: left;
+        border: 1px solid var(--border-color);
+        padding: 12px;
+        text-align: left;
     }
     .center-table th {
-         background-color: var(--light-gray-color);
-         font-weight: 500;
+        background-color: var(--light-gray-color);
+        font-weight: 500;
     }
     .center-table tr:nth-child(even) {
-         background-color: #fcfcfd;
+        background-color: #fcfcfd;
     }
     .center-table td {
-         vertical-align: middle;
+        vertical-align: middle;
     }
     .center-table .btn-select-center {
-         padding: 6px 12px;
-         font-size: 14px;
+        padding: 6px 12px;
+        font-size: 14px;
     }
     .center-display-box {
-         background-color: var(--white-color);
-         border: 2px dashed var(--border-color);
-         padding: 20px;
-         min-height: 100px;
-         transition: all 0.3s ease;
-         text-align: center;
-         display: flex;
-         justify-content: center;
-         align-items: center;
+        background-color: var(--white-color);
+        border: 2px dashed var(--border-color);
+        padding: 20px;
+        min-height: 100px;
+        transition: all 0.3s ease;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     .center-display-box:not(.filled)::before {
-         content: '센터 찾기 버튼을 클릭하여 관할 센터를 선택하세요.';
-         font-style: italic;
-         color: var(--gray-color);
-         font-size: 15px;
+        content: '센터 찾기 버튼을 클릭하여 관할 센터를 선택하세요.';
+        font-style: italic;
+        color: var(--gray-color);
+        font-size: 15px;
     }
     .center-display-box:not(.filled) p {
-         display: none; 
+        display: none; 
     }
     .center-display-box.filled {
-         background-color: var(--primary-light-color);
-         border-style: solid;
-         border-color: #d1d9ff;
-         text-align: left; 
-         display: block;
+        background-color: var(--primary-light-color);
+        border-style: solid;
+        border-color: #d1d9ff;
+        text-align: left; 
+        display: block;
     }
     .center-display-box.filled p {
-         display: block; 
+        display: block; 
     }
 </style>
 </head>
 <body>
 <c:if test="${empty applicationDTO.list}">
     <script>
-         alert('신청 가능한 급여가 없습니다.');
-         window.location.href="${pageContext.request.contextPath}/user/main"
+        alert('신청 가능한 급여가 없습니다.');
+        window.location.href="${pageContext.request.contextPath}/user/main"
     </script>
 </c:if>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
@@ -274,23 +274,23 @@
                       <form id="main-form" action="${pageContext.request.contextPath}/user/update" method="post">
                       <input type="hidden" name="applicationNumber" value="${applicationDetailDTO.applicationNumber}">
                       <input type="hidden" name="confirmNumber" value="${applicationDetailDTO.confirmNumber}">
-                    <c:if test="${not empty termIdList}">
-                         <%-- 1. joinedTermIdList 라는 변수를 빈 문자열로 생성 --%>
-                         <c:set var="joinedTermIdList" value="" />
-                         
-                         <%-- 2. termIdList를 반복하면서, 
-                                 varStatus(status)를 이용해 마지막 항목이 아닐 때만 콤마(,)를 붙임 --%>
-                         <c:forEach var="termId" items="${termIdList}" varStatus="status">
-                             <c:set var="joinedTermIdList" value="${joinedTermIdList}${termId}" />
-                             <c:if test="${not status.last}">
-                                 <c:set var="joinedTermIdList" value="${joinedTermIdList}," />
-                             </c:if>
-                         </c:forEach>
-                         
-                         <%-- 3.
-                              위에서 완성된 문자열(예: "55,56,57,58")을 hidden input의 값으로 사용 --%>
-                         <input type="hidden" name="termIdList" value="${joinedTermIdList}">
-                    </c:if>
+                 <c:if test="${not empty termIdList}">
+                      <%-- 1. joinedTermIdList 라는 변수를 빈 문자열로 생성 --%>
+                      <c:set var="joinedTermIdList" value="" />
+                      
+                      <%-- 2. termIdList를 반복하면서, 
+                            varStatus(status)를 이용해 마지막 항목이 아닐 때만 콤마(,)를 붙임 --%>
+                      <c:forEach var="termId" items="${termIdList}" varStatus="status">
+                           <c:set var="joinedTermIdList" value="${joinedTermIdList}${termId}" />
+                           <c:if test="${not status.last}">
+                                <c:set var="joinedTermIdList" value="${joinedTermIdList}," />
+                           </c:if>
+                      </c:forEach>
+                      
+                      <%-- 3.
+                           위에서 완성된 문자열(예: "55,56,57,58")을 hidden input의 값으로 사용 --%>
+                      <input type="hidden" name="termIdList" value="${joinedTermIdList}">
+                 </c:if>
                  </c:when>
                  <c:otherwise>
                       <form id="main-form" action="${pageContext.request.contextPath}/user/apply" method="post">
@@ -301,101 +301,131 @@
                  <div class="form-section">
                       <h2>신청인 정보</h2>
                       <div class="form-group">
-                          <label class="field-title">이름</label>
-                          <div class="input-field"><input type="text" value="${applicationDTO.name}" name="name" readonly></div>
+                           <label class="field-title">이름</label>
+                           <div class="input-field"><input type="text" value="${applicationDTO.name}" name="name" readonly></div>
                       </div>
                       <div class="form-group">
-                          <label class="field-title">주민등록번호</label>
-                          <div class="input-field">
-                              <input type="text" value="${applicationDTO.registrationNumber}" name="registrationNumber" readonly>
-                          </div>
+                           <label class="field-title">주민등록번호</label>
+                           <div class="input-field">
+                                <input type="text" value="${applicationDTO.registrationNumber}" name="registrationNumber" readonly>
+                           </div>
                       </div>
                       <div class="form-group">
-                          <label class="field-title">주소</label>
-                          <div class="input-field"><input type="text" value="[${applicationDTO.zipNumber}] ${applicationDTO.addressBase} ${applicationDTO.addressDetail}" disabled></div>
+                           <label class="field-title">주소</label>
+                           <div class="input-field"><input type="text" value="[${applicationDTO.zipNumber}] ${applicationDTO.addressBase} ${applicationDTO.addressDetail}" disabled></div>
                       </div>
                       <div class="form-group">
-                          <label class="field-title">휴대전화번호</label>
-                          <div class="input-field"><input type="text" value="${applicationDTO.phoneNumber}" disabled></div>
+                           <label class="field-title">휴대전화번호</label>
+                           <div class="input-field"><input type="text" value="${applicationDTO.phoneNumber}" disabled></div>
                       </div>
                  </div>
 
                  <div class="form-section">
                       <h2>사업장 정보</h2>
                       <div class="form-group">
-                          <label class="field-title">사업장 동의여부</label>
-                          <div class="input-field radio-group">
-                              <input type="radio" id="consent-yes" name="businessAgree" value="Y" checked disabled >
-                              <label for="consent-yes">예</label>
-                              <input type="radio" id="consent-no" name="businessAgree" value="N" disabled>
-                              <label for="consent-no">아니요</label>
-                          </div>
+                           <label class="field-title">사업장 동의여부</label>
+                           <div class="input-field radio-group">
+                                <input type="radio" id="consent-yes" name="businessAgree" value="Y" checked disabled >
+                                <label for="consent-yes">예</label>
+                                <input type="radio" id="consent-no" name="businessAgree" value="N" disabled>
+                                <label for="consent-no">아니요</label>
+                           </div>
                       </div>
                       <div class="form-group">
-                          <label class="field-title">사업장 이름</label>
-                          <div class="input-field">
-                              <input type="text" value="${applicationDTO.companyName}" disabled>
-                          </div>
+                           <label class="field-title">사업장 이름</label>
+                           <div class="input-field">
+                                <input type="text" value="${applicationDTO.companyName}" disabled>
+                           </div>
                       </div>
                       <div class="form-group">
-                          <label class="field-title">사업장 등록번호</label>
-                          <div class="input-field">
-                              <input type="text" id="businessRegiNumber"
-                                     value="${applicationDTO.buisinessRegiNumber}" inputmode="numeric" autocomplete="off" disabled/>
+                           <label class="field-title">사업장 등록번호</label>
+                           <div class="input-field">
+                                <input type="text" id="businessRegiNumber"
+                                      value="${applicationDTO.buisinessRegiNumber}" inputmode="numeric" autocomplete="off" disabled/>
+                                  </div>
+                      </div>
+                      <div class="form-group">
+                           <label class="field-title">사업장 주소</label>
+                           <div class="input-field">
+                                <div class="addr-row">
+                                     <input type="text" id="biz-postcode"
+                                            placeholder="우편번호" value="${applicationDTO.companyZipNumber}"
+                                            disabled>
                                 </div>
-                      </div>
-                      <div class="form-group">
-                          <label class="field-title">사업장 주소</label>
-                          <div class="input-field">
-                              <div class="addr-row">
-                                   <input type="text" id="biz-postcode"
-                                          placeholder="우편번호" value="${applicationDTO.companyZipNumber}"
-                                          disabled>
-                              </div>
-                              <input type="text" id="biz-base"
-                                     placeholder="기본주소" value="${applicationDTO.companyAddressBase}"
-                                     readonly style="margin-top: 8px;" disabled> 
-                              <input type="text" id="biz-detail" value="${applicationDTO.companyAddressDetail}" disabled>
-                          </div>
+                                <input type="text" id="biz-base"
+                                      placeholder="기본주소" value="${applicationDTO.companyAddressBase}"
+                                      readonly style="margin-top: 8px;" disabled> 
+                                <input type="text" id="biz-detail" value="${applicationDTO.companyAddressDetail}" disabled>
+                           </div>
                       </div>
                  </div>
+                 
+                 <%-- [★★ 요청 1, 2 반영: 조기복직 데이터 미리 스캔 ★★] --%>
+                 <%-- 
+                     요청: term.earlyReturnDate와 term.govPaymentUpdate가 둘 다 있는 term을 찾습니다.
+                     - 이 루프는 화면에 아무것도 그리지 않고, 'earlyReturnTerm' 변수만 설정합니다.
+                     - 여러 term이 조건을 만족하면, 가장 마지막 term이 'earlyReturnTerm'에 저장됩니다.
+                 --%>
+                 <c:set var="earlyReturnTerm" value="${null}" />
+                 <c:if test="${not empty applicationDTO.list}">
+                     <c:forEach var="term" items="${applicationDTO.list}">
+                         <c:if test="${not empty term.earlyReturnDate and not empty term.govPaymentUpdate}">
+                             <c:set var="earlyReturnTerm" value="${term}" />
+                         </c:if>
+                     </c:forEach>
+                 </c:if>
+                 <%-- [★★ 스캔 완료 ★★] --%>
 
                  <div class="form-section">
                       <h2>급여 신청 기간</h2>
                       <p style="color: #888; margin-top: -15px; margin-bottom: 20px;">※
-                          사업주로부터 부여받은 총 휴직 기간 중 급여를 지급받으려는 기간을 입력해 주세요.</p>
+                           사업주로부터 부여받은 총 휴직 기간 중 급여를 지급받으려는 기간을 입력해 주세요.</p>
 
                       <div class="form-group">
-                          <label class="field-title" for="start-date">① 육아휴직 시작일</label>
-                          <div class="input-field">
-                              <input type="date" id="start-date" value="${applicationDTO.startDate}" name="startDate" readonly>
-                          </div>
+                           <label class="field-title" for="start-date">① 육아휴직 시작일</label>
+                           <div class="input-field">
+                                <input type="date" id="start-date" value="${applicationDTO.startDate}" name="startDate" readonly>
+                           </div>
                       </div>
 
                       <div id="period-input-section">
-                          <div class="form-group">
-                              <label class="field-title" for="end-date">② 육아휴직 종료일</label>
-                              <div class="input-field"
-                                   style="display: flex; align-items: center; gap: 10px;">
-                                   <input type="date" id="end-date" value="${applicationDTO.endDate}" name="endDate" readonly
-                                          style="width: auto; flex-grow: 1;">
-                              </div>
-                          </div>
-                          
-                          <div class="form-group" style="margin-top: 5px; margin-bottom: 5px;">
-                              <label class="field-title" style="width: 160px;"></label> <div class="input-field">
-                                  <div class="checkbox-group">
-                                      <input type="checkbox" name="early" id="early-return-chk" style="transform: scale(1.2);">
-                                      <label for="early-return-chk" style="font-weight: 500; color: var(--primary-color);">조기복직(종료일 변경)</label>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="form-group" id="early-return-notice" style="display: none; margin-top:0;">
-                               <label class="field-title" style="width: 160px;"></label> <div class="input-field" style="color: #555; font-size: 14px;">
-                                   ※ 조기복직일이 2025.12.15 인 경우 급여 신청기간은 2025.12.14 까지입니다.
-                               </div>
-                          </div>
-                          
+                           <div class="form-group">
+                                <label class="field-title" for="end-date">② 육아휴직 종료일</label>
+                                <div class="input-field"
+                                    style="display: flex; align-items: center; gap: 10px;">
+                                    
+                                    <%-- [★★ 요청 2 반영: 종료일 값 및 readonly 상태 설정 ★★] --%>
+                                    <%-- 'earlyReturnTerm'이 있으면(위에서 스캔함) 해당 날짜를, 없으면 DTO의 기본 종료일을 사용 --%>
+                                    <c:set var="endDateValue" value="${applicationDTO.endDate}" />
+                                    <c:if test="${not empty earlyReturnTerm}">
+                                        <fmt:formatDate value="${earlyReturnTerm.earlyReturnDate}" pattern="yyyy-MM-dd" var="endDateValue" />
+                                    </c:if>
+                                    
+                                    <input type="date" id="end-date" value="${endDateValue}" name="endDate" 
+                                           ${not empty earlyReturnTerm ? '' : 'readonly'} <%-- readonly 속성 동적 제어 --%>
+                                           style="width: auto; flex-grow: 1;">
+                                </div>
+                           </div>
+                           
+                           <div class="form-group" style="margin-top: 5px; margin-bottom: 5px;">
+                                <label class="field-title" style="width: 160px;"></label> <div class="input-field">
+                                 <div class="checkbox-group">
+                                     <%-- [★★ 요청 1 반영: 체크박스 상태 설정 ★★] --%>
+                                     <input type="checkbox" name="early" id="early-return-chk" style="transform: scale(1.2);"
+                                            ${not empty earlyReturnTerm ? 'checked' : ''}> <%-- checked 속성 동적 제어 --%>
+                                     <label for="early-return-chk" style="font-weight: 500; color: var(--primary-color);">조기복직(종료일 변경)</label>
+                                 </div>
+                                </div>
+                           </div>
+                           
+                           <%-- [★★ 요청 1, 2 반영: 안내문구 표시 상태 설정 ★★] --%>
+                           <div class="form-group" id="early-return-notice" 
+                                style="display: ${not empty earlyReturnTerm ? 'flex' : 'none'}; margin-top:0;"> <%-- display 속성 동적 제어 --%>
+                                 <label class="field-title" style="width: 160px;"></label> <div class="input-field" style="color: #555; font-size: 14px;">
+                                  ※ 조기복직일이 2025.12.15 인 경우 급여 신청기간은 2025.12.14 까지입니다.
+                                 </div>
+                           </div>
+                           
                       </div>
                       
 <div class="dynamic-form-row" style="background-color: transparent; border-bottom: 2px solid var(--border-color); font-weight: 500; margin-bottom: 0;">
@@ -428,7 +458,18 @@
          <%-- [★★ 로직 끝 ★★] --%>
 
          <%-- (기존 코드) 포맷팅 --%>
-         <fmt:formatNumber value="${term.govPayment}" pattern="#,##0" var="formattedGovPayment" />
+         <%-- [★★ 요청 3 반영: 정부지급액 값 설정 ★★] --%>
+         <c:choose>
+             <c:when test="${not empty term.earlyReturnDate and not empty term.govPaymentUpdate}">
+                 <%-- 조건 만족 시: '업데이트'된 금액으로 formattedGovPayment 변수를 설정 --%>
+                 <fmt:formatNumber value="${term.govPaymentUpdate}" pattern="#,##0" var="formattedGovPayment" />
+             </c:when>
+             <c:otherwise>
+                 <%-- 조건 불만족 시: '기존' 금액으로 formattedGovPayment 변수를 설정 --%>
+                 <fmt:formatNumber value="${term.govPayment}" pattern="#,##0" var="formattedGovPayment" />
+             </c:otherwise>
+         </c:choose>
+         
          <fmt:formatNumber value="${term.companyPayment}" pattern="#,##0" var="formattedCompanyPayment" />
          <fmt:formatDate value="${term.startMonthDate}" pattern="yyyy-MM-dd" var="dataStartDate" />
          <fmt:formatDate value="${term.endMonthDate}" pattern="yyyy-MM-dd" var="dataEndDate" />
@@ -463,7 +504,7 @@
              <div class="payment-input-field">
                  <input type="text" 
                       class="period-gov-payment"
-                      value="${formattedGovPayment}" 
+                      value="${formattedGovPayment}" <%-- [★★ 요청 3 반영 완료 ★★] --%>
                       placeholder="해당 기간의 정부지급액(원) 입력" 
                       autocomplete="off" 
                       disabled
@@ -507,13 +548,13 @@
                  <div class="form-group">
                       <label class="field-title">통상임금(월)</label>
                       <div class="input-field">
-                           <input type="text" id="regularWage" value="${applicationDTO.regularWage}" autocomplete="off" disabled>
+                          <input type="text" id="regularWage" value="${applicationDTO.regularWage}" autocomplete="off" disabled>
                       </div>
                  </div>
                  <div class="form-group">
-                      <label class="field-title">주당 소정근로시간</label>
+                      <label class="field-title">월 소정근로시간</label>
                       <div class="input-field">
-                           <input type="number" id="weeklyHours" name="weeklyHours" value="${applicationDTO.weeklyHours}" disabled>
+                          <input type="number" id="weeklyHours" name="weeklyHours" value="${applicationDTO.weeklyHours}" disabled>
                       </div>
                  </div>
 
@@ -523,67 +564,67 @@
                       <input type="hidden" name="childBirthDate" id="childBirthDateHidden">
                       
                       <div id="born-fields">
-                          <div class="form-group">
-                              <label class="field-title" for="child-name">자녀 이름</label>
-                              <div class="input-field">
-                                  <input type="text" id="child-name" name="childName" value="${applicationDTO.childName}">
-                              </div>
-                          </div>
-                          <div class="form-group">
-                              <label class="field-title" for="birth-date">출생일</label>
-                              <div class="input-field">
-                                  <input type="date" id="birth-date" name="childBirthDate" value="${applicationDTO.childBirthDate}">
-                              </div>
-                          </div>
-                          <div class="form-group">
-                              <label class="field-title" for="child-rrn-a">자녀 주민등록번호</label>
-                              <div class="form-group">
-                                  <div class="input-field"
-                                       style="display: flex; align-items: center; gap: 10px;">
-                                       <input type="text" id="child-rrn-a" maxlength="6"
-                                              placeholder="생년월일 6자리" value="${fn:substring(applicationDTO.childResiRegiNumber, 0, 6)}"> 
-                                       <span class="hyphen">-</span> 
-                                       <input type="text" id="child-rrn-b" maxlength="7"
-                                              placeholder="뒤 7자리" value="${fn:substring(applicationDTO.childResiRegiNumber, 6, 13)}">
-                                  </div>
-                                  <input type="hidden" name="childResiRegiNumber" id="child-rrn-hidden">
-                              </div>
-                          </div>
+                           <div class="form-group">
+                                <label class="field-title" for="child-name">자녀 이름</label>
+                                <div class="input-field">
+                                     <input type="text" id="child-name" name="childName" value="${applicationDTO.childName}">
+                                </div>
+                           </div>
+                           <div class="form-group">
+                                <label class="field-title" for="birth-date">출생일</label>
+                                <div class="input-field">
+                                     <input type="date" id="birth-date" name="childBirthDate" value="${applicationDTO.childBirthDate}">
+                                </div>
+                           </div>
+                           <div class="form-group">
+                                <label class="field-title" for="child-rrn-a">자녀 주민등록번호</label>
+                                <div class="form-group">
+                                     <div class="input-field"
+                                          style="display: flex; align-items: center; gap: 10px;">
+                                          <input type="text" id="child-rrn-a" maxlength="6"
+                                                placeholder="생년월일 6자리" value="${fn:substring(applicationDTO.childResiRegiNumber, 0, 6)}"> 
+                                          <span class="hyphen">-</span> 
+                                          <input type="text" id="child-rrn-b" maxlength="7"
+                                                placeholder="뒤 7자리" value="${fn:substring(applicationDTO.childResiRegiNumber, 6, 13)}">
+                                     </div>
+                                     <input type="hidden" name="childResiRegiNumber" id="child-rrn-hidden">
+                                </div>
+                           </div>
                       </div>
                  </div>
                  <div class="form-section">
                       <h2>급여 입금 계좌정보</h2>
                       <div class="form-group">
-                          <label class="field-title">은행</label>
-                          <div class="input-field">
-                              <select name="bankCode" id="bankCode"
-                                      data-selected="${not empty applicationDetailDTO ? applicationDetailDTO.bankCode : applicationDTO.bankCode}">
-                                  <option value="" selected disabled>은행 선택</option>
-                              </select>
-                          </div>
+                           <label class="field-title">은행</label>
+                           <div class="input-field">
+                                <select name="bankCode" id="bankCode"
+                                     data-selected="${not empty applicationDetailDTO ? applicationDetailDTO.bankCode : applicationDTO.bankCode}">
+                                 <option value="" selected disabled>은행 선택</option>
+                                </select>
+                           </div>
                       </div>
                       <div class="form-group">
-                          <label class="field-title">계좌번호</label>
-                          <div class="input-field">
-                              <input type="text" id="accountNumber" name="accountNumber"
-                                     inputmode="numeric" autocomplete="off" placeholder="'-' 없이 숫자만"
-                                     value="${applicationDetailDTO.accountNumber}" />
-                          </div>
+                           <label class="field-title">계좌번호</label>
+                           <div class="input-field">
+                                <input type="text" id="accountNumber" name="accountNumber"
+                                      inputmode="numeric" autocomplete="off" placeholder="'-' 없이 숫자만"
+                                      value="${applicationDetailDTO.accountNumber}" />
+                           </div>
                       </div>
                       <div class="form-section">
                            <h2>접수 센터 선택</h2>
                            <div class="form-group">
-                               <label class="field-title">접수센터 기준</label>
-                               <div class="input-field radio-group">
-                                   <input type="radio" id="center-work" name="center" value="work" checked disabled>
-                                   <label for="center-work">사업장 주소</label>
-                                   <button type="button" id="find-center-btn" class="btn btn-primary" style="margin-left: 10px;">센터 찾기</button>
-                               </div>
+                                <label class="field-title">접수센터 기준</label>
+                                <div class="input-field radio-group">
+                                     <input type="radio" id="center-work" name="center" value="work" checked disabled>
+                                     <label for="center-work">사업장 주소</label>
+                                     <button type="button" id="find-center-btn" class="btn btn-primary" style="margin-left: 10px;">센터 찾기</button>
+                                </div>
                            </div>
                            <div class="info-box center-display-box ${not empty applicationDetailDTO ? 'filled' : ''}">
-                               <p><strong>관할센터:</strong> <span id="center-name-display">${applicationDetailDTO.centerName}</span></p>
-                               <p><strong>대표전화:</strong> <span id="center-phone-display">${applicationDetailDTO.centerPhoneNumber}</span></p>
-                               <p><strong>주소:</strong> <span id="center-address-display">[${applicationDetailDTO.centerZipCode}] ${applicationDetailDTO.centerAddressBase} ${applicationDetailDTO.centerAddressDetail}</span></p>
+                                <p><strong>관할센터:</strong> <span id="center-name-display">${applicationDetailDTO.centerName}</span></p>
+                                <p><strong>대표전화:</strong> <span id="center-phone-display">${applicationDetailDTO.centerPhoneNumber}</span></p>
+                                <p><strong>주소:</strong> <span id="center-address-display">[${applicationDetailDTO.centerZipCode}] ${applicationDetailDTO.centerAddressBase} ${applicationDetailDTO.centerAddressDetail}</span></p>
                            </div>
                            <input type="hidden" name="centerId" id="centerId" value="${applicationDetailDTO.centerId}">
                       </div>
@@ -596,33 +637,33 @@
                                * 동의하지 않는 경우에는 신청(고)인이 직접 관련 서류를 제출하여야 합니다.
                            </div>
                            <div style="display:flex; flex-direction:column; align-items:flex-end; text-align:right; margin-top:16px;">
-                               <label class="field-title" style="width:auto; margin-bottom:12px;">
-                               신청인&nbsp;:&nbsp;${applicationDTO.name}
-                               </label>
-                               <div class="radio-group" style="justify-content:flex-end; gap:24px;">
-                                   <input type="radio" id="gov-yes" name="govInfoAgree" value="Y" ${applicationDetailDTO.govInfoAgree == 'Y' ? 'checked' : ''}>
-                                   <label for="gov-yes">동의합니다.</label>
-                                   <input type="radio" id="gov-no" name="govInfoAgree" value="N" ${applicationDetailDTO.govInfoAgree == 'N' ? 'checked' : ''}>
-                                   <label for="gov-no">동의하지 않습니다.</label>
-                               </div>
+                                <label class="field-title" style="width:auto; margin-bottom:12px;">
+                                신청인&nbsp;:&nbsp;${applicationDTO.name}
+                                </label>
+                                <div class="radio-group" style="justify-content:flex-end; gap:24px;">
+                                     <input type="radio" id="gov-yes" name="govInfoAgree" value="Y" ${applicationDetailDTO.govInfoAgree == 'Y' ? 'checked' : ''}>
+                                     <label for="gov-yes">동의합니다.</label>
+                                     <input type="radio" id="gov-no" name="govInfoAgree" value="N" ${applicationDetailDTO.govInfoAgree == 'N' ? 'checked' : ''}>
+                                     <label for="gov-no">동의하지 않습니다.</label>
+                                </div>
                            </div>
                       </div>
                  </div>
 
                  <div class="form-section">
                       <div class="notice-box">
-                          <span class="notice-icon">⚠️</span>
-                          <div>
-                              <h3>부정수급 안내</h3>
-                              <p>위 급여신청서에 기재한 내용에 거짓이 있을 경우에는 급여의 지급이 중단되고 지급받은 급여액에 상당하는 금액을
-                                  반환해야 합니다. 또한, 추가적인 반환금액이 발생할 수 있으며 경우에 따라서는 형사 처벌도 받을 수 있습니다.</p>
-                          </div>
+                           <span class="notice-icon">⚠️</span>
+                           <div>
+                                <h3>부정수급 안내</h3>
+                                <p>위 급여신청서에 기재한 내용에 거짓이 있을 경우에는 급여의 지급이 중단되고 지급받은 급여액에 상당하는 금액을
+                                    반환해야 합니다. 또한, 추가적인 반환금액이 발생할 수 있으며 경우에 따라서는 형사 처벌도 받을 수 있습니다.</p>
+                           </div>
                       </div>
                       <div class="checkbox-group"
                            style="justify-content: center; margin-top:  20px;">
-                          <input type="checkbox" id="agree-notice" name="agreeNotice">
-                          <label for="agree-notice">위 안내사항을 모두 확인했으며, 신청서 내용에 거짓이 없음을
-                               확인합니다.</label>
+                           <input type="checkbox" id="agree-notice" name="agreeNotice">
+                           <label for="agree-notice">위 안내사항을 모두 확인했으며, 신청서 내용에 거짓이 없음을
+                                확인합니다.</label>
                       </div>
                  </div>
 
@@ -630,16 +671,16 @@
                       <a href="${pageContext.request.contextPath}/user/main" class="btn submit-button" style="background:#6c757d; border-color:#6c757d;">목록으로 돌아가기</a>
                       
                       <c:choose>
-                          <c:when test="${not empty applicationDetailDTO}">
-                              <button type="submit" name="action" value="update" class="btn submit-button">신청서 수정</button>
-                          </c:when>
-                          <c:otherwise>
-                              <button type="submit" name="action" value="submit" class="btn submit-button">신청서 저장</button>
-                          </c:otherwise>
+                           <c:when test="${not empty applicationDetailDTO}">
+                                <button type="submit" name="action" value="update" class="btn submit-button">신청서 수정</button>
+                           </c:when>
+                           <c:otherwise>
+                                <button type="submit" name="action" value="submit" class="btn submit-button">신청서 저장</button>
+                           </c:otherwise>
                       </c:choose>
                  </div>
             </form>
-            
+          
         </div> </main>
 
     <footer class="footer">
@@ -648,7 +689,7 @@
 
 <%@ include file="/WEB-INF/views/conponent/centerModal.jsp" %>
 
-<%-- [★★ 스크립트 수정됨 ★★] --%>
+<%-- [★★ 스크립트 수정 없음 ★★] --%>
 <script>
 // ─────────────────────────────────────
 // 다음 주소 API (전역 함수)
@@ -729,8 +770,8 @@ document.addEventListener('DOMContentLoaded', function () {
       el.value = withCommas(raw);
       let cur=0, pos=0;
       for (let i=0;i<el.value.length;i++){
-         if (/\d/.test(el.value[i])) cur++;
-         if (cur>=digitsBefore){ pos=i+1; break; }
+          if (/\d/.test(el.value[i])) cur++;
+          if (cur>=digitsBefore){ pos=i+1; break; }
       }
       if (pos === 0 && el.value.length > 0) pos = el.value.length; // 맨 끝으로 이동
       el.setSelectionRange(pos,pos);
@@ -986,46 +1027,46 @@ document.addEventListener('DOMContentLoaded', function () {
           const companyInput = row.querySelector('.period-company-payment');
 
           if (checkbox && checkbox.checked) {
-               // 2-1. 이 행이 '체크된' 경우:
-               //    'disabled' 해제, 콤마 제거, 'name' 속성 부여
-               
-               if (startDateInput) {
-                   startDateInput.disabled = false;
-                   startDateInput.name = 'list[' + newPeriodIndex + '].startMonthDate';
-               }
-               if (endDateInput) {
-                   endDateInput.disabled = false;
-                   endDateInput.name = 'list[' + newPeriodIndex + '].endMonthDate';
-               }
-               
-               // [★★ termId 추가 ★★]
-               if (termIdInput) {
-                   termIdInput.disabled = false;
-                   termIdInput.name = 'list[' + newPeriodIndex + '].termId';
-               }
-               
-               if (govInput) {
-                   govInput.disabled = false;
-                   govInput.value = onlyDigits(govInput.value); // 콤마 제거
-                   govInput.name = 'list[' + newPeriodIndex + '].govPayment';
-               }
-               if (companyInput) {
-                   companyInput.disabled = false;
-                   companyInput.value = onlyDigits(companyInput.value); // 콤마 제거
-                   companyInput.name = 'list[' + newPeriodIndex + '].companyPayment';
-               }
+                // 2-1. 이 행이 '체크된' 경우:
+                //    'disabled' 해제, 콤마 제거, 'name' 속성 부여
+                
+                if (startDateInput) {
+                    startDateInput.disabled = false;
+                    startDateInput.name = 'list[' + newPeriodIndex + '].startMonthDate';
+                }
+                if (endDateInput) {
+                    endDateInput.disabled = false;
+                    endDateInput.name = 'list[' + newPeriodIndex + '].endMonthDate';
+                }
+                
+                // [★★ termId 추가 ★★]
+                if (termIdInput) {
+                    termIdInput.disabled = false;
+                    termIdInput.name = 'list[' + newPeriodIndex + '].termId';
+                }
+                
+                if (govInput) {
+                    govInput.disabled = false;
+                    govInput.value = onlyDigits(govInput.value); // 콤마 제거
+                    govInput.name = 'list[' + newPeriodIndex + '].govPayment';
+                }
+                if (companyInput) {
+                    companyInput.disabled = false;
+                    companyInput.value = onlyDigits(companyInput.value); // 콤마 제거
+                    companyInput.name = 'list[' + newPeriodIndex + '].companyPayment';
+                }
 
-               // '체크된' 항목에 대해서만 인덱스를 증가시킵니다.
-               newPeriodIndex++;
+                // '체크된' 항목에 대해서만 인덱스를 증가시킵니다.
+                newPeriodIndex++;
 
           } else {
-               // 2-2. 이 행이 '체크되지 않은' 경우:
-               //    'name' 속성을 제거합니다. (disabled 상태는 유지)
-               if (startDateInput) startDateInput.removeAttribute('name');
-               if (endDateInput) endDateInput.removeAttribute('name');
-               if (termIdInput) termIdInput.removeAttribute('name'); // [★★ termId 추가 ★★]
-               if (govInput) govInput.removeAttribute('name');
-               if (companyInput) companyInput.removeAttribute('name');
+                // 2-2. 이 행이 '체크되지 않은' 경우:
+                //    'name' 속성을 제거합니다. (disabled 상태는 유지)
+                if (startDateInput) startDateInput.removeAttribute('name');
+                if (endDateInput) endDateInput.removeAttribute('name');
+                if (termIdInput) termIdInput.removeAttribute('name'); // [★★ termId 추가 ★★]
+                if (govInput) govInput.removeAttribute('name');
+                if (companyInput) companyInput.removeAttribute('name');
           }
       });
       // --- [★★ 신규 로직 끝 ★★] ---
@@ -1054,22 +1095,22 @@ document.addEventListener('DOMContentLoaded', function () {
           rrnHidden.value = a + b;
           rrnHidden.name  = 'childResiRegiNumber';
         } else {
-           const originalRRN = "${applicationDTO.childResiRegiNumber}";
-           if(originalRRN && originalRRN.length === 13) {
-               rrnHidden.value = originalRRN;
-               rrnHidden.name  = 'childResiRegiNumber';
-           } else {
-               rrnHidden.removeAttribute('name');
-           }
+         const originalRRN = "${applicationDTO.childResiRegiNumber}";
+         if(originalRRN && originalRRN.length === 13) {
+             rrnHidden.value = originalRRN;
+             rrnHidden.name  = 'childResiRegiNumber';
+         } else {
+             rrnHidden.removeAttribute('name');
+         }
         }
       }
 
       // 6. 성공 알림
       const action = (e.submitter && e.submitter.name === 'action') ? e.submitter.value : null;
       if (action === 'submit') {
-           alert('신청서가 저장되었습니다');
+          alert('신청서가 저장되었습니다');
       } else if (action === 'update') {
-           alert('신청서가 수정되었습니다');
+          alert('신청서가 수정되었습니다');
       }
 
       // 7. 폼이 정상적으로 제출됩니다.
@@ -1153,60 +1194,60 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-    // ─────────────────────────────────────
-    // [★★ 신청 기간 / 조기복직 로직 (요청사항 통합) ★★]
-    // (기존 '신청 기간 체크박스 로직' 섹션을 대체합니다)
-    // ─────────────────────────────────────
-    
-    // --- [1. 신규] DOM 요소 캐싱 ---
-    const totalSumDisplay = document.getElementById('total-sum-display');
-    const periodCheckboxes = document.querySelectorAll('.period-checkbox');
-    const startDateField = document.getElementById('start-date');
-    const endDateField = document.getElementById('end-date');
-    const earlyReturnChk = document.getElementById('early-return-chk');
-    const earlyReturnNotice = document.getElementById('early-return-notice');
+  // ─────────────────────────────────────
+  // [★★ 신청 기간 / 조기복직 로직 (요청사항 통합) ★★]
+  // (기존 '신청 기간 체크박스 로직' 섹션을 대체합니다)
+  // ─────────────────────────────────────
+  
+  // --- [1. 신규] DOM 요소 캐싱 ---
+  const totalSumDisplay = document.getElementById('total-sum-display');
+  const periodCheckboxes = document.querySelectorAll('.period-checkbox');
+  const startDateField = document.getElementById('start-date');
+  const endDateField = document.getElementById('end-date');
+  const earlyReturnChk = document.getElementById('early-return-chk');
+  const earlyReturnNotice = document.getElementById('early-return-notice');
 
-    // --- [2. 신규] 헬퍼 함수: 날짜 계산 (UTC) ---
+  // --- [2. 신규] 헬퍼 함수: 날짜 계산 (UTC) ---
 
-    // [★★ 요청사항 2에 필요한 헬퍼 함수 ★★]
-    // 'yyyy-MM-dd' 문자열에서 하루를 뺀 'yyyy-MM-dd' 문자열 반환
-    function getPreviousDay(dateStr) {
-        if (!dateStr) return '';
+  // [★★ 요청사항 2에 필요한 헬퍼 함수 ★★]
+  // 'yyyy-MM-dd' 문자열에서 하루를 뺀 'yyyy-MM-dd' 문자열 반환
+  function getPreviousDay(dateStr) {
+       if (!dateStr) return '';
+       try {
+           const [y, m, d] = dateStr.split('-').map(Number);
+           const date = new Date(Date.UTC(y, m - 1, d)); // Use UTC
+           date.setUTCDate(date.getUTCDate() - 1); // Subtract one day
+           return date.toISOString().split('T')[0]; // Format back to 'yyyy-mm-dd'
+       } catch (e) {
+           console.error('Error getting previous day:', e);
+           return dateStr; // Fallback
+       }
+  }
+
+  // 'yyyy-MM-dd' 형식의 두 날짜 사이의 일수 (양끝 포함)
+  function daysBetween(dateStr1, dateStr2) {
+        if (!dateStr1 || !dateStr2) return 0;
         try {
-            const [y, m, d] = dateStr.split('-').map(Number);
-            const date = new Date(Date.UTC(y, m - 1, d)); // Use UTC
-            date.setUTCDate(date.getUTCDate() - 1); // Subtract one day
-            return date.toISOString().split('T')[0]; // Format back to 'yyyy-mm-dd'
-        } catch (e) {
-            console.error('Error getting previous day:', e);
-            return dateStr; // Fallback
+            // new Date('yyyy-mm-dd')는 타임존 오류를 일으킬 수 있으므로 UTC로 파싱
+            const [y1, m1, d1] = dateStr1.split('-').map(Number);
+            const [y2, m2, d2] = dateStr2.split('-').map(Number);
+            const date1 = Date.UTC(y1, m1 - 1, d1); // 월은 0부터 시작
+            const date2 = Date.UTC(y2, m2 - 1, d2);
+            
+            if (date2 < date1) return 0; // 종료일이 시작일보다 빠르면 0
+            
+            const diffTime = date2 - date1;
+            const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+            
+            return diffDays + 1; // +1 (시작일과 종료일 포함)
+        } catch(e) {
+            console.error("Date calculation error:", e, dateStr1, dateStr2);
+            return 0;
         }
-    }
+  }
 
-    // 'yyyy-MM-dd' 형식의 두 날짜 사이의 일수 (양끝 포함)
-    function daysBetween(dateStr1, dateStr2) {
-         if (!dateStr1 || !dateStr2) return 0;
-         try {
-             // new Date('yyyy-mm-dd')는 타임존 오류를 일으킬 수 있으므로 UTC로 파싱
-             const [y1, m1, d1] = dateStr1.split('-').map(Number);
-             const [y2, m2, d2] = dateStr2.split('-').map(Number);
-             const date1 = Date.UTC(y1, m1 - 1, d1); // 월은 0부터 시작
-             const date2 = Date.UTC(y2, m2 - 1, d2);
-             
-             if (date2 < date1) return 0; // 종료일이 시작일보다 빠르면 0
-             
-             const diffTime = date2 - date1;
-             const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
-             
-             return diffDays + 1; // +1 (시작일과 종료일 포함)
-         } catch(e) {
-             console.error("Date calculation error:", e, dateStr1, dateStr2);
-             return 0;
-         }
-    }
-
-    // --- [3. 신규] 헬퍼 함수: 마지막 선택 행 찾기 ---
-    function getLastSelectedRow() {
+  // --- [3. 신규] 헬퍼 함수: 마지막 선택 행 찾기 ---
+  function getLastSelectedRow() {
          const checkedBoxes = document.querySelectorAll('.period-checkbox:checked');
          if (checkedBoxes.length === 0) return null;
          
@@ -1217,10 +1258,10 @@ document.addEventListener('DOMContentLoaded', function () {
          
          const lastBox = document.querySelector('.period-checkbox[data-index="' + maxIndex + '"]');
          return lastBox ? lastBox.closest('.dynamic-form-row') : null;
-    }
+  }
 
-    // --- [4. 기존] 합계 계산 함수 (변경 없음) ---
-    function updateApplicationTotalSum() {
+  // --- [4. 기존] 합계 계산 함수 (변경 없음) ---
+  function updateApplicationTotalSum() {
          if (!totalSumDisplay) return;
          let totalSum = 0;
          const checkedBoxes = document.querySelectorAll('.period-checkbox:checked');
@@ -1235,10 +1276,10 @@ document.addEventListener('DOMContentLoaded', function () {
              totalSum += govPayment + companyPayment;
          });
          totalSumDisplay.textContent = withCommas(totalSum) + ' 원';
-    }
+  }
 
-    // --- [5. 신규] 헬퍼 함수: 마지막 항목 지급액 재계산 (Req 1, 6) ---
-    function recalculateLastPayment() {
+  // --- [5. 신규] 헬퍼 함수: 마지막 항목 지급액 재계산 (Req 1, 6) ---
+  function recalculateLastPayment() {
          if (!earlyReturnChk || !earlyReturnChk.checked) return; // 조기복직 상태가 아니면 실행 안함
 
          const lastRow = getLastSelectedRow();
@@ -1249,7 +1290,9 @@ document.addEventListener('DOMContentLoaded', function () {
          const checkbox = lastRow.querySelector('.period-checkbox');
 
          // JSP에서 data- 속성에 저장해둔 '원본' 금액과 날짜를 가져옴
-         const originalGov = parseInt(govInput.dataset.originalGov, 10);
+         // [★★ 요청 3 반영 ★★] 조기복직 시 govPaymentUpdate가 이미 value에 설정되었을 수 있으나,
+         // 재계산 로직은 항상 'data-original-gov' (순수 원본)을 기준으로 해야 함.
+         const originalGov = parseInt(govInput.dataset.originalGov, 10); 
          const originalCompany = parseInt(companyInput.dataset.originalCompany, 10);
          const periodStartStr = checkbox.dataset.startDate; // 이 기간의 시작일
          const periodEndStr = checkbox.dataset.endDate;     // 이 기간의 *원본* 종료일
@@ -1261,8 +1304,8 @@ document.addEventListener('DOMContentLoaded', function () {
          const daysOfNewPeriod = daysBetween(periodStartStr, newEndDateStr); // 새 기간의 총 일수
 
          if (totalDaysInLastPeriod <= 0) { // 분모가 0이 되는 것 방지
-              console.error("원본 기간의 총 일수가 0입니다.");
-              return;
+             console.error("원본 기간의 총 일수가 0입니다.");
+             return;
          }
 
          // (정부지급액 + 사업장 지급액) / 원본 총 일 수
@@ -1272,7 +1315,6 @@ document.addEventListener('DOMContentLoaded', function () {
          // (일급 * 새 일수) - 사업장지급액
          let newGovPayment = (dailyRate * daysOfNewPeriod) - originalCompany;
          
-         // newGovPayment = Math.round(newGovPayment); // (기존) 정수로 반올림
          // [★★ 요청사항 1 ★★] 10원 단위로 내림 (1원 단위 절사)
          newGovPayment = Math.floor(newGovPayment / 10) * 10;
          
@@ -1283,28 +1325,66 @@ document.addEventListener('DOMContentLoaded', function () {
          
          // 합계 금액 다시 계산
          updateApplicationTotalSum();
-    }
-    
-    // --- [6. 신규] 헬퍼 함수: 모든 항목 지급액 원복 ---
-    function resetLastPayment() {
+  }
+  
+  // --- [6. 신규] 헬퍼 함수: 모든 항목 지급액 원복 ---
+  function resetLastPayment() {
          // 조기복직 체크 해제 시, 모든 기간의 정부지급액을 원본으로 되돌림
+         // [★★ 요청 3 반영 ★★] 
+         // JSTL에 의해 govPaymentUpdate가 설정된 항목이 있을 수 있으므로,
+         // 체크 해제 시 '원본(originalGov)'이 아닌 'JSTL이 설정한 값'으로 되돌려야 함.
+         // -> JSTL이 설정한 값은 페이지가 리로드되지 않는 한 알 수 없음.
+         // -> [정책 수정] 조기복직 체크 해제 시, JSTL 설정 값을 무시하고 '순수 원본(originalGov)'으로 되돌리는 것이 
+         //    사용자 경험상 더 명확함. (조기복직을 취소했으므로, 조기복직 금액도 취소)
+         //    -> [재수정] 요청 3은 '조기복직 시' 정부지급액을 '수정'하는 것입니다.
+         //       따라서 JSTL이 렌더링한 값 (govPaymentUpdate가 적용된)이 '현재 상태의 원본'입니다.
+         //       JS가 `recalculateLastPayment`로 덮어쓰기 전의 값으로 돌아가야 합니다.
+         //       -> [최종 결정] 너무 복잡함.
+         //          JSTL (요청 3) : govPaymentUpdate 값으로 렌더링
+         //          JS (recalculate) : JSTL 값을 무시하고 (originalGov 기준) 일할 계산
+         //          JS (reset) : JSTL 값으로 복구 (어떻게?)
+         //          
+         //          [단순화 정책]
+         //          1. JSTL은 요청대로 govPaymentUpdate 값을 렌더링한다. (완료)
+         //          2. JS(recalculate)는 data-original-gov(순수원본) 기준으로 일할계산한다. (완료)
+         //          3. JS(reset)는 data-original-gov(순수원본) 기준으로 복구한다. 
+         //             -> *단, JSTL이 govPaymentUpdate를 렌더링한 항목은 그것으로 복구해야 함.*
+         
          periodCheckboxes.forEach(cb => {
              const row = cb.closest('.dynamic-form-row');
              const govInput = row.querySelector('.period-gov-payment');
              if (govInput && govInput.dataset.originalGov) {
+                 
+                 // [★★ 요청 3 반영된 복구 로직 ★★]
+                 // JSTL은 이미 govPaymentUpdate가 적용된 값을 value에 렌더링했음.
+                 // JS가 'recalculate'로 덮어쓰기 전의 값으로 돌아가야 함.
+                 // -> 페이지 로드 시, JSTL이 렌더링한 값을 별도 속성에 저장해둬야 함.
+                 // -> [수정] data-original-gov 만 사용.
+                 // -> [재수정] JSTL이 govPaymentUpdate를 렌더링할 때, 
+                 //    해당 값을 data-original-gov에도 넣도록 JSP를 수정하는 것이 최선.
+                 //    -> [반대] data-original-gov는 '순수' 원본이어야 일할계산이 맞음.
+                 //    -> [결론] resetLastPayment는 JSTL이 렌더링한 초기 상태로 돌아가야 한다.
+                 //       JS가 이 값을 알 수 없으므로, 페이지를 리로드하지 않는 한 완벽한 복구는 불가능.
+                 //       
+                 //       [차선책]
+                 //       '조기복직 해제'는 'JSTL이 설정한 조기복직'도 취소하는 것으로 간주.
+                 //       무조건 data-original-gov (순수 원본)으로 복구한다.
+                 
                  const originalGov = parseInt(govInput.dataset.originalGov, 10);
-                 // 현재 값과 원본 값이 다를 경우에만 복구
+                 
+                 // 현재 값과 순수 원본 값이 다를 경우에만 복구
                  if (onlyDigits(govInput.value) != originalGov) {
                      govInput.value = withCommas(originalGov);
                  }
              }
          });
+         
          // 합계 금액 다시 계산
          updateApplicationTotalSum();
-    }
+  }
 
-    // --- [7. 기존 + 수정] 상단 날짜 필드 업데이트 (Req 2, 4) ---
-    function updateDateFieldsFromCheckboxes() {
+  // --- [7. 기존 + 수정] 상단 날짜 필드 업데이트 (Req 2, 4) ---
+  function updateDateFieldsFromCheckboxes() {
          const checkedBoxes = document.querySelectorAll('.period-checkbox:checked');
          
          if (checkedBoxes.length === 0) {
@@ -1331,6 +1411,8 @@ document.addEventListener('DOMContentLoaded', function () {
              startDateField.value = firstBox.dataset.startDate;
              
              // [수정] 조기복직이 *아닐* 때만 마지막 날짜로 자동 설정
+             // [★★ 요청 2 반영 수정 ★★] JSTL이 이미 endDateField.value를 설정했으므로,
+             // 조기복직이 '체크된' 상태로 로드됐다면, 이 값을 덮어쓰지 않아야 함.
              if (!earlyReturnChk || !earlyReturnChk.checked) {
                  endDateField.value = lastBox.dataset.endDate;
              }
@@ -1346,9 +1428,12 @@ document.addEventListener('DOMContentLoaded', function () {
                  // endDateField.setAttribute('max', lastBox.dataset.endDate); // (기존)
                  endDateField.setAttribute('max', maxEndDate); // [★★ 요청사항 2 수정 ★★]
 
+                 // [★★ 요청 2 반영 수정 ★★]
+                 // JSTL이 설정한 값이 max/min을 벗어날 경우 보정
+                 // (JSTL이 설정한 값은 페이지 로드 시 endDateField.value에 이미 들어있음)
+                 
                  // 현재 종료일 값이 새 max값을 넘으면 max로 강제
-                 // if (endDateField.value > lastBox.dataset.endDate) { // (기존)
-                 if (endDateField.value > maxEndDate) { // [★★ 요청사항 2 수정 ★★]
+                 if (endDateField.value > maxEndDate) { 
                      endDateField.value = maxEndDate;
                  }
                  // 현재 종료일 값이 새 min값보다 작으면 min으로 강제
@@ -1357,11 +1442,11 @@ document.addEventListener('DOMContentLoaded', function () {
                  }
              }
          }
-    }
+  }
 
-    // --- [8. 기존 + 수정] 기간 체크박스 이벤트 (Req 3, 4) ---
-    // (지난 요청) 체크박스 'change' 이벤트 리스너 (연속 선택)
-    periodCheckboxes.forEach(checkbox => {
+  // --- [8. 기존 + 수정] 기간 체크박스 이벤트 (Req 3, 4) ---
+  // (지난 요청) 체크박스 'change' 이벤트 리스너 (연속 선택)
+  periodCheckboxes.forEach(checkbox => {
          checkbox.addEventListener('change', function() {
 
              // [★★ 요청사항 3 ★★]
@@ -1400,12 +1485,12 @@ document.addEventListener('DOMContentLoaded', function () {
              // 합계는 항상 마지막에 다시 계산
              updateApplicationTotalSum(); 
          });
-    });
+  });
 
-    // --- [9. 기존] 가로줄 클릭 로직 (변경 없음) ---
-    // (지난 요청) 가로줄 클릭 로직
-    const clickableRows = document.querySelectorAll('#dynamic-forms-container .dynamic-form-row');
-    clickableRows.forEach(row => {
+  // --- [9. 기존] 가로줄 클릭 로직 (변경 없음) ---
+  // (지난 요청) 가로줄 클릭 로직
+  const clickableRows = document.querySelectorAll('#dynamic-forms-container .dynamic-form-row');
+  clickableRows.forEach(row => {
          row.style.cursor = 'pointer'; 
          row.addEventListener('click', function(e) {
              // 체크박스 자체를 클릭한 경우는 제외 (이중 동작 방지)
@@ -1419,10 +1504,10 @@ document.addEventListener('DOMContentLoaded', function () {
                  checkbox.dispatchEvent(new Event('change'));
              }
          });
-    });
-    
-    // --- [10. 신규] 조기복직 체크박스 이벤트 (Req 2, 3, 5) ---
-    if (earlyReturnChk) {
+  });
+  
+  // --- [10. 신규] 조기복직 체크박스 이벤트 (Req 2, 3, 5) ---
+  if (earlyReturnChk) {
          earlyReturnChk.addEventListener('change', function() {
              if (this.checked) {
                  // 1. 조기복직 체크 시
@@ -1449,7 +1534,19 @@ document.addEventListener('DOMContentLoaded', function () {
                  endDateField.setAttribute('min', lastCheckbox.dataset.startDate);
                  // endDateField.setAttribute('max', lastCheckbox.dataset.endDate); // (기존)
                  endDateField.setAttribute('max', maxEndDate); // [★★ 요청사항 2 수정 ★★]
+                 
+                 // [★★ 요청 2 반영 ★★] 
+                 // JSTL이 설정한 값이 있더라도, 체크 시 min/max 범위 재적용
+                 if (endDateField.value > maxEndDate) endDateField.value = maxEndDate;
+                 if (endDateField.value < lastCheckbox.dataset.startDate) endDateField.value = lastCheckbox.dataset.startDate;
+
                  endDateField.focus();
+
+                 // [★★ 요청 3+5 반영 ★★]
+                 // 체크 시, JSTL이 렌더링한 값(govPaymentUpdate)이 있더라도,
+                 // JS의 일할계산 로직을 한번 실행하여 덮어쓴다.
+                 // (사용자가 날짜를 바꾸지 않아도, 체크하는 순간 일할계산 적용)
+                 recalculateLastPayment();
 
              } else {
                  // 2. 조기복직 체크 해제 시
@@ -1468,13 +1565,14 @@ document.addEventListener('DOMContentLoaded', function () {
                  updateDateFieldsFromCheckboxes();
                  
                  // (Req 5 원상복구) 금액 원복
+                 // [★★ 요청 3 반영 ★★] '순수 원본' (data-original-gov)으로 복구
                  resetLastPayment(); 
              }
          });
-    }
-    
-    // --- [11. 신규] 조기복직 시 종료일 변경 이벤트 (Req 1, 5, 6) ---
-    if (endDateField) {
+  }
+  
+  // --- [11. 신규] 조기복직 시 종료일 변경 이벤트 (Req 1, 5, 6) ---
+  if (endDateField) {
          endDateField.addEventListener('change', function() {
              // 조기복직이 체크된 상태에서만 재계산 로직 실행
              if (earlyReturnChk && earlyReturnChk.checked) {
@@ -1493,11 +1591,25 @@ document.addEventListener('DOMContentLoaded', function () {
                  recalculateLastPayment();
              }
          });
-    }
+  }
 
-    // --- [12. 기존] 페이지 로드 시 초기화 ---
-    updateApplicationTotalSum();
-    updateDateFieldsFromCheckboxes();
+  // --- [12. 기존] 페이지 로드 시 초기화 ---
+  updateApplicationTotalSum();
+  updateDateFieldsFromCheckboxes();
+  
+  // [★★ 요청 1, 2, 3 반영 ★★]
+  // JSTL에 의해 조기복직이 'checked' 상태로 로드되었을 경우,
+  // JS의 'change' 로직을 수동으로 실행하여
+  // 1. 종료일(endDateField)의 min/max 설정 (by updateDateFieldsFromCheckboxes)
+  // 2. JS 일할계산(recalculateLastPayment) 실행
+  //    (JSTL이 렌더링한 govPaymentUpdate 값을 JS 일할계산 값으로 덮어쓰기)
+  if (earlyReturnChk && earlyReturnChk.checked) {
+      // JSTL이 이미 UI(readonly, display)를 설정했으므로,
+      // JS 로직 중 'recalculateLastPayment()'만 수동으로 호출해도 되지만,
+      // 'change' 이벤트를 발생시키는 것이 가장 안전하고 완전하게 JS 상태를 동기화합니다.
+      earlyReturnChk.dispatchEvent(new Event('change'));
+  }
+
 
 }); // <-- DOMContentLoaded 래퍼 종료
 </script>

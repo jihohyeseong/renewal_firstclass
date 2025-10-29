@@ -194,4 +194,9 @@ public class UserApplyService {
 		userApplyDAO.updateTermDelt(termAmountDTO);
 	}
 
+	public Long confirmCheck(Long confirmNumber) {
+		
+		return userApplyDAO.countByConfirmNumber(confirmNumber);
+	}
+
 }

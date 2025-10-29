@@ -405,44 +405,84 @@
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
 <script type="text/javascript">
 $(document).ready(function() {
     
+    // 1. 카드 선택 로직 (이 부분은 기존과 동일합니다)
     $('.card-list-container').on('click', '.selectable-card', function() {
         var $clickedCard = $(this);
         var selectedValue = $clickedCard.data('value');
         
         if ($clickedCard.hasClass('active')) {
+            // 이미 선택된 것을 다시 클릭하면 선택 해제
             $clickedCard.removeClass('active');
             $('#selectedConfirmNumber').val('');
         } else {
+            // 다른 카드를 선택하면 기존 선택은 해제하고 새 카드 선택
             $('.selectable-card').removeClass('active');
             $clickedCard.addClass('active');
             $('#selectedConfirmNumber').val(selectedValue);
         }
     });
 
-    // [수정 3] 폼 제출 이벤트를 가로채서 PathVariable URL로 직접 이동시킵니다.
+    // 2. 폼 제출 이벤트 수정 (AJAX 호출 로직 추가)
     $("#applyForm").submit(function(e) {
-        // 1. 폼의 기본 제출 동작(파라미터 전송)을 무조건 막습니다.
+        // 폼의 기본 제출 동작(페이지 새로고침/이동)을 일단 막습니다.
         e.preventDefault(); 
         
-        // 2. 숨겨진 input에서 선택된 값을 가져옵니다.
+        // 선택된 확인서 번호를 가져옵니다.
         var selectedValue = $('#selectedConfirmNumber').val();
+        
+        // ${pageContext.request.contextPath} 값을 JS 변수로 가져옵니다.
+        // JSP 스크립틀릿 안에서는 EL 태그를 따옴표로 감싸야 합니다.
+        var contextPath = "${pageContext.request.contextPath}";
 
-        // 3. 유효성 검사
+        // 3-1. 유효성 검사 (아무것도 선택하지 않은 경우)
         if (selectedValue === '' || selectedValue == null) {
             alert('신청할 항목을 하나 선택해주세요.');
-        } else {
-            // 4. 유효성 검사 통과: PathVariable을 포함한 새 URL을 만듭니다.
-            // <form>의 'action' 속성에 지정된 기본 URL을 가져옵니다.
-            var baseUrl = $(this).attr('action'); 
-            // 기본 URL 뒤에 선택된 값을 붙여서 새 URL을 만듭니다.
-            var newUrl = baseUrl + "/" + selectedValue;
-            
-            // 5. 브라우저를 새 URL로 이동시킵니다 (이것이 GET 요청입니다).
-            window.location.href = newUrl;
+            return; // 함수 중단
         }
+
+        // 3-2. AJAX로 중복 신청(진행 중) 확인 API 호출
+        var checkUrl = contextPath + "/user/check/confirm/" + selectedValue;
+
+        $.ajax({
+            type: "GET",       // 컨트롤러가 @GetMapping이므로 GET 방식
+            url: checkUrl,
+            dataType: "json",  // 서버가 JSON 객체를 반환
+            success: function(response) {
+                // 4. AJAX 응답 처리
+                if (response.success === true) {
+                    // 4a. 성공 (진행중인 건 없음): 신청 페이지로 이동
+                    
+                    // <form>의 'action' 속성에 지정된 기본 URL (/user/application)
+                    var baseUrl = $("#applyForm").attr('action'); 
+                    
+                    // 기본 URL 뒤에 선택된 값을 붙여서 새 URL 생성
+                    var newUrl = baseUrl + "/" + selectedValue;
+                    
+                    // 해당 URL로 페이지 이동 (GET 요청)
+                    window.location.href = newUrl;
+
+                } else {
+                    // 4b. 실패 (진행중인 건 있음): 서버가 보낸 메시지 표시 후, 상세 페이지로 리디렉션
+                    alert(response.message);
+                    
+                    // 서버가 리디렉션 URL을 보냈는지 확인
+                    if (response.redirectUrl) {
+                        // 컨트롤러에서 보낸 URL이 contextPath를 포함하지 않을 수 있으므로 붙여줍니다.
+                        window.location.href = contextPath + response.redirectUrl;
+                    }
+                }
+            },
+            error: function(xhr, status, error) {
+                // 5. (예외 처리) AJAX 통신 자체 실패 시
+                console.error("AJAX Error: ", status, error, xhr.responseText);
+                alert("신청 상태를 확인하는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+            }
+        });
     });
 });
 </script>
