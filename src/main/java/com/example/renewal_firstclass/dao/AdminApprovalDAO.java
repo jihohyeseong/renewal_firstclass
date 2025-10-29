@@ -1,10 +1,12 @@
 package com.example.renewal_firstclass.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.example.renewal_firstclass.domain.ApplicationDTO;
 import com.example.renewal_firstclass.domain.ConfirmApplyDTO;
+import com.example.renewal_firstclass.domain.TermAmountDTO;
 
 @Mapper
 public interface AdminApprovalDAO {
@@ -18,8 +20,13 @@ public interface AdminApprovalDAO {
     void updateStatusCode(Long confirmNumber);
     // UPD 컬럼 업데이트
     int updateConfirmEdit(ConfirmApplyDTO confirmApplyDTO);
+    // update_at을 Y로 업데이트
+    int updateTermAmountStatusToY(@Param("confirmNumber") Long confirmNumber);
     // 수정된 값 포함하여 조회
     ConfirmApplyDTO selectByConfirmNumberWithUpdates(@Param("confirmNumber") Long confirmNumber);
     // upd 컬럼 null 체크
     int checkUpdColumnsExist(@Param("confirmNumber") Long confirmNumber);
+    // 단위기간 수정
+    int insertUpdatedTermAmounts(@Param("list") List<TermAmountDTO> list);
+    int deleteUpdatedTerms(@Param("confirmNumber") Long confirmNumber);
 }

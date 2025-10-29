@@ -288,6 +288,49 @@
 	    width: 80%;
 	  }
 	  
+	  /* 동적 폼 스타일 */
+	.dynamic-form-container {
+	    display: flex;
+	    flex-direction: column;
+	    gap: 0;
+	}
+	
+	.dynamic-form-row {
+	    display: flex;
+	    align-items: center;
+	    padding: 12px 16px;
+	    border-bottom: 1px solid #e0e0e0;
+	    background: #fff;
+	}
+	
+	.dynamic-form-row:hover {
+	    background: #f8f9fa;
+	}
+	
+	.date-range-display {
+	    flex: 1;
+	    display: flex;
+	    align-items: center;
+	    font-size: 14px;
+	    color: #333;
+	}
+	
+	.payment-input-field {
+	    flex: 1;
+	    display: flex;
+	    align-items: center;
+	    justify-content: flex-end;
+	}
+	
+	.payment-input-field .input-field {
+	    margin: 0;
+	}
+	
+	.payment-input-field input {
+	    text-align: right;
+	    padding-right: 8px;
+	}
+	  
 </style>
 </head>
 <body>
@@ -566,14 +609,41 @@
 			      <th>육아휴직 시작일 <i class="fa fa-edit" style="color:#007bff;"></i></th>
 			      <td>
 			        <input type="date" name="updStartDate" 
-			               value="<fmt:formatDate value="${confirmDTO.startDate}" pattern="yyyy-MM-dd" />" 
+			               id="edit-start-date" value="<fmt:formatDate value="${confirmDTO.startDate}" pattern="yyyy-MM-dd" />" 
 			               class="form-control" style="width: 80%;">
 			      </td>
 			      <th>육아휴직 종료일 <i class="fa fa-edit" style="color:#007bff;"></i></th>
 			      <td>
 			        <input type="date" name="updEndDate" 
-			               value="<fmt:formatDate value="${confirmDTO.endDate}" pattern="yyyy-MM-dd" />" 
+			               id="edit-end-date" value="<fmt:formatDate value="${confirmDTO.endDate}" pattern="yyyy-MM-dd" />" 
 			               class="form-control" style="width: 80%;">
+			      </td>
+			    </tr>
+			    
+			    <!-- 단위기간별 지급액-->
+			    <tr><th class="sheet-head" colspan="4">단위기간별 지급액 <i class="fa fa-edit" style="color:#007bff;"></i></th></tr>
+			    <tr>
+			      <td colspan="4" style="padding: 20px;">
+			        <div style="margin-bottom: 12px;">
+			          <button type="button" id="generate-edit-forms-btn" class="btn btn-secondary">
+			            <i class="fa fa-calendar"></i> 기간 나누기
+			          </button>
+			          <small style="display:block; margin-top:8px; color:#666;">
+			            ※ 기간을 수정한 후 '기간 나누기'를 클릭하여 월별 지급액을 다시 입력하세요.
+			          </small>
+			        </div>
+			        
+			        <!-- 동적 헤더 행 -->
+			        <div id="edit-dynamic-header-row" class="dynamic-form-row" 
+			             style="display: none; background: transparent; border-bottom: 2px solid var(--border-color); font-weight: 500; margin-bottom: 0;">
+			          <div class="date-range-display"><span>신청기간</span></div>
+			          <div class="payment-input-field" style="padding-right: 150px;">
+			            <span>사업장 지급액(원)</span>
+			          </div>
+			        </div>
+			        
+			        <!-- 동적 단위기간 컨테이너 -->
+			        <div id="edit-dynamic-forms-container" class="dynamic-form-container"></div>
 			      </td>
 			    </tr>
 			    
@@ -649,7 +719,6 @@
 			        </tr>
 			      </c:otherwise>
 			    </c:choose>
-				<!-- 월별 지급 내역 (수정) -->
 				
 			    <!-- 담당자 정보 (읽기 전용) -->
 			    <tr><th class="sheet-head" colspan="4">확인서 담당자 정보 (조회)</th></tr>
@@ -724,172 +793,376 @@
 <script>
 	document.addEventListener("DOMContentLoaded", function() {
 		
-	    const confirmBtn = document.getElementById("confirmBtn");
-	    const rejectForm = document.getElementById("rejectForm");
-	    const cancelBtn = document.getElementById("cancelBtn");
-	    const confirmNumber = document.getElementById("confirmNumber").value;
-	    const rejectComment = document.getElementById("rejectComment");
- 
-	    console.log("✅ 페이지 로드 완료");
-	    console.log("confirmNumber:", confirmNumber);
-	    
-	 	// 상태 코드에 따른 진행바 길이 조정
-	    const progressLine = document.querySelector('.progress-line');
-	    let progressWidth = 0;
+	    // 1. 변수 선언 영역
+	    const confirmBtn = document.getElementById("confirmBtn");
+	    const rejectForm = document.getElementById("rejectForm");
+	    const cancelBtn = document.getElementById("cancelBtn");
+	    const confirmNumber = document.getElementById("confirmNumber").value;
+	    const rejectComment = document.getElementById("rejectComment");
+	    const progressLine = document.querySelector('.progress-line');
+		
+	    // 수정 폼 관련 변수
+	    const editStartDateInput = document.getElementById('edit-start-date');
+	    const editEndDateInput = document.getElementById('edit-end-date');
+	    const generateEditBtn = document.getElementById('generate-edit-forms-btn');
+	    const editFormsContainer = document.getElementById('edit-dynamic-forms-container');
+	    const editHeaderRow = document.getElementById('edit-dynamic-header-row');
+		
+	    console.log("✅ 페이지 로드 완료");
+	    console.log("confirmNumber:", confirmNumber);
+	    
+	 	// 2. 초기 로직: 상태 코드에 따른 진행바 길이 조정
+	    let progressWidth = 0;
 
-	    switch ("${confirmDTO.statusCode}") {
-	      case "ST_20":
-	        progressWidth = 43;
-	        break;
-	      case "ST_30":
-	        progressWidth = 43;
-	        break;
-	      case "ST_50":
-	      case "ST_60":
-	        progressWidth = 85;
-	        break;
-	      default:
-	        progressWidth = 0;
-	    }
+	    switch ("${confirmDTO.statusCode}") {
+	      case "ST_20":
+	      case "ST_30":
+	        progressWidth = 43;
+	        break;
+	      case "ST_50":
+	      case "ST_60":
+	        progressWidth = 85;
+	        break;
+	      default:
+	        progressWidth = 0;
+	    }
 
-	    progressLine.style.width = progressWidth + "%";
-	    
-	    // 지급 / 부지급 선택 시 즉시 반응
-	    document.querySelectorAll('input[name="judgeOption"]').forEach(radio => {
-	        radio.addEventListener('change', function() {
-	            if (this.value === 'reject') {
-	                // 부지급 선택 시 폼 표시
-	                rejectForm.style.display = "block";
-	                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-	            } else {
-	                // 지급 선택 시 폼 숨김
-	                rejectForm.style.display = "none";
-	            }
-	        });
-	    });
-
-	    // 확인 버튼 클릭 이벤트
-	    confirmBtn.addEventListener("click", function() {
-	        const selectedOption = document.querySelector('input[name="judgeOption"]:checked');
-
-	        if (!selectedOption) {
-	            alert("접수 또는 반려를 선택해주세요.");
-	            return;
-	        }
-
-	        const optionValue = selectedOption.value;
-
-	        // 지급 처리
-	        if (optionValue === "approve") {
-	            if (!confirm("접수 처리하시겠습니까?")) return;
-
-	            fetch("${pageContext.request.contextPath}/admin/judge/approve", {
-	                method: "POST",
-	                headers: { "Content-Type": "application/json" },
-	                body: JSON.stringify({ confirmNumber: confirmNumber })
-	            })
-	            .then(res => res.json())
-	            .then(data => {
-	                alert(data.message);
-	                if (data.success) location.href = data.redirectUrl;
-	            })
-	            .catch(err => {
-	                console.error(err);
-	                alert("접수 처리 중 오류가 발생했습니다.");
-	            });
-	        }
-
-	        // 부지급 처리
-	        else if (optionValue === "reject") {
-	            const selectedReason = document.querySelector('input[name="reasonCode"]:checked');
-	            const comment = rejectComment.value.trim();
-
-	            if (!selectedReason) {
-	                alert("반려 사유를 선택해주세요.");
-	                return;
-	            }
-
-	            if (selectedReason.value === "RJ_99" && comment === "") {
-	                alert("기타를 선택한 경우 상세 사유를 입력해야 합니다.");
-	                return;
-	            }
-
-	            if (!confirm("반려 처리하시겠습니까?")) return;
-
-	            const requestData = {
-	                confirmNumber: confirmNumber,
-	                rejectionReasonCode: selectedReason.value,
-	                rejectComment: comment
-	            };
-
-	            fetch("${pageContext.request.contextPath}/admin/judge/reject", {
-	                method: "POST",
-	                headers: { "Content-Type": "application/json" },
-	                body: JSON.stringify(requestData)
-	            })
-	            .then(res => res.json())
-	            .then(data => {
-	                alert(data.message);
-	                if (data.success) location.href = data.redirectUrl;
-	            })
-	            .catch(err => {
-	                console.error(err);
-	                alert("반려 처리 중 오류가 발생했습니다.");
-	            });
-	        }
-	    });
-	});
+	    progressLine.style.width = progressWidth + "%";
+	    
+	    // 3. 유틸리티 함수 (기간 나누기, 콤마 포맷 등에 사용)
+	    function withCommas(s) { 
+	        return String(s).replace(/\B(?=(\d{3})+(?!\d))/g, ','); 
+	    }
+	    
+	    function onlyDigits(s) { 
+	        return (s || '').replace(/[^\d]/g, ''); 
+	    }
+	    
+	    function allowDigitsAndCommas(el, maxDigits) {
+	        function format() {
+	            const originalValue = onlyDigits(el.value).substring(0, maxDigits);
+	            el.value = withCommas(originalValue);
+	        }
+	        el.addEventListener('input', format);
+	        format();
+	    }
 	
-	// 수정 저장 버튼 클릭
+	    function formatDate(date) {
+	        var y = date.getFullYear();
+	        var m = String(date.getMonth() + 1).padStart(2, '0');
+	        var d = String(date.getDate()).padStart(2, '0');
+	        return y + '.' + m + '.' + d;
+	    }
+	
+	    function formatDateForDB(date) {
+	        var y = date.getFullYear();
+	        var m = String(date.getMonth() + 1).padStart(2, '0');
+	        var d = String(date.getDate()).padStart(2, '0');
+	        return y + '-' + m + '-' + d;
+	    }
+	
+	    function getPeriodEndDate(originalStart, periodNumber) {
+	        let nextPeriodStart = new Date(
+	            originalStart.getFullYear(),
+	            originalStart.getMonth() + periodNumber,
+	            originalStart.getDate()
+	        );
+	        if (nextPeriodStart.getDate() !== originalStart.getDate()) {
+	            nextPeriodStart = new Date(
+	                originalStart.getFullYear(),
+	                originalStart.getMonth() + periodNumber + 1,
+	                1
+	            );
+	        }
+	        nextPeriodStart.setDate(nextPeriodStart.getDate() - 1);
+	        return nextPeriodStart;
+	    }
+
+	    // ===============================================
+	    // 4. 이벤트 리스너 설정
+	    // ===============================================
+
+	    // 4-1. 지급 / 부지급 선택 시 즉시 반응
+	    document.querySelectorAll('input[name="judgeOption"]').forEach(radio => {
+	        radio.addEventListener('change', function() {
+	            if (this.value === 'reject') {
+	                // 부지급 선택 시 폼 표시
+	                rejectForm.style.display = "block";
+	                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+	            } else {
+	                // 지급 선택 시 폼 숨김
+	                rejectForm.style.display = "none";
+	            }
+	        });
+	    });
+
+	    // 4-2. 확인 버튼 클릭 이벤트 (접수/반려 처리)
+	    confirmBtn.addEventListener("click", function() {
+	        const selectedOption = document.querySelector('input[name="judgeOption"]:checked');
+
+	        if (!selectedOption) {
+	            alert("접수 또는 반려를 선택해주세요.");
+	            return;
+	        }
+
+	        const optionValue = selectedOption.value;
+
+	        // 지급 처리
+	        if (optionValue === "approve") {
+	            if (!confirm("접수 처리하시겠습니까?")) return;
+
+	            fetch("${pageContext.request.contextPath}/admin/judge/approve", {
+	                method: "POST",
+	                headers: { "Content-Type": "application/json" },
+	                body: JSON.stringify({ confirmNumber: confirmNumber })
+	            })
+	            .then(res => res.json())
+	            .then(data => {
+	                alert(data.message);
+	                if (data.success) location.href = data.redirectUrl;
+	            })
+	            .catch(err => {
+	                console.error(err);
+	                alert("접수 처리 중 오류가 발생했습니다.");
+	            });
+	        }
+
+	        // 부지급 처리
+	        else if (optionValue === "reject") {
+	            const selectedReason = document.querySelector('input[name="reasonCode"]:checked');
+	            const comment = rejectComment.value.trim();
+
+	            if (!selectedReason) {
+	                alert("반려 사유를 선택해주세요.");
+	                return;
+	            }
+
+	            if (selectedReason.value === "RJ_99" && comment === "") {
+	                alert("기타를 선택한 경우 상세 사유를 입력해야 합니다.");
+	                return;
+	            }
+
+	            if (!confirm("반려 처리하시겠습니까?")) return;
+
+	            const requestData = {
+	                confirmNumber: confirmNumber,
+	                rejectionReasonCode: selectedReason.value,
+	                rejectComment: comment
+	            };
+
+	            fetch("${pageContext.request.contextPath}/admin/judge/reject", {
+	                method: "POST",
+	                headers: { "Content-Type": "application/json" },
+	                body: JSON.stringify(requestData)
+	            })
+	            .then(res => res.json())
+	            .then(data => {
+	                alert(data.message);
+	                if (data.success) location.href = data.redirectUrl;
+	            })
+	            .catch(err => {
+	                console.error(err);
+	                alert("반려 처리 중 오류가 발생했습니다.");
+	            });
+	        }
+	    });
+
+	    // 4-3. 기간 나누기 버튼 클릭
+	    if (generateEditBtn) {
+	        generateEditBtn.addEventListener('click', function() {
+	            if (!editStartDateInput.value || !editEndDateInput.value) {
+	                alert('육아휴직 시작일과 종료일을 모두 선택해주세요.');
+	                return;
+	            }
+
+            const originalStartDate = new Date(editStartDateInput.value + 'T00:00:00');
+            const finalEndDate = new Date(editEndDateInput.value + 'T00:00:00');
+
+            if (originalStartDate > finalEndDate) {
+                alert('종료일은 시작일보다 빠를 수 없습니다.');
+                return;
+            }
+
+            // 최소 1개월 이상 체크
+            const firstPeriodEndDate = getPeriodEndDate(originalStartDate, 1);
+            if (finalEndDate < firstPeriodEndDate) {
+                alert('신청 기간은 최소 1개월 이상이어야 합니다.');
+                return;
+            }
+
+            // 최대 12개월 체크
+            let monthCount = (finalEndDate.getFullYear() - originalStartDate.getFullYear()) * 12;
+            monthCount -= originalStartDate.getMonth();
+            monthCount += finalEndDate.getMonth();
+            if (finalEndDate.getDate() >= originalStartDate.getDate()) {
+                monthCount++;
+            }
+            
+            if (monthCount > 12) {
+                alert('최대 12개월까지만 신청 가능합니다. 종료일을 조정해주세요.');
+                return;
+            }
+
+            editFormsContainer.innerHTML = '';
+            editHeaderRow.style.display = 'flex';
+
+            let currentPeriodStart = new Date(originalStartDate);
+            let monthIdx = 1;
+
+            while (currentPeriodStart <= finalEndDate && monthIdx <= 12) {
+                const theoreticalEndDate = getPeriodEndDate(originalStartDate, monthIdx);
+                let actualPeriodEnd = new Date(theoreticalEndDate);
+                if (actualPeriodEnd > finalEndDate) {
+                    actualPeriodEnd = new Date(finalEndDate);
+                }
+                
+                if (currentPeriodStart > actualPeriodEnd) break;
+
+			const rangeText = formatDate(currentPeriodStart) + ' ~ ' + formatDate(actualPeriodEnd);
+			// 데이터 속성으로 날짜 저장
+            const startDateStr = formatDateForDB(currentPeriodStart);
+            const endDateStr = formatDateForDB(actualPeriodEnd);
+            
+            var row = document.createElement('div');
+            row.className = 'dynamic-form-row';
+            row.setAttribute('data-start-date', startDateStr);
+            row.setAttribute('data-end-date', endDateStr);
+            row.innerHTML =
+                '<div class="date-range-display"><div>' + rangeText + '</div></div>' +
+                '<div class="payment-input-field">' +
+                '<div class="input-field" style="width:70%;">' +
+                '<input type="text" name="editMonthlyCompanyPay" placeholder="사업장 지급액(원)" autocomplete="off" />' +
+                '</div>' +
+                '</div>';
+            editFormsContainer.appendChild(row);
+
+            currentPeriodStart = new Date(actualPeriodEnd);
+            currentPeriodStart.setDate(currentPeriodStart.getDate() + 1);
+            monthIdx++;
+        }
+        
+        // 콤마 포맷 적용
+	    // 여기서도 콤마 포맷을 적용하여 최초 생성 시 포맷 유지
+	    editFormsContainer
+	        .querySelectorAll('input[name="editMonthlyCompanyPay"]')
+	        .forEach(inp => allowDigitsAndCommas(inp, 19));
+	    });
+	} // generateEditBtn if 블록 종료
+
+	// 4-4. 시작일 변경 시 종료일 최소값 설정 및 폼 초기화
+	if (editStartDateInput) {
+	    editStartDateInput.addEventListener('change', function () {
+	        if (editStartDateInput.value) {
+	            editEndDateInput.min = editStartDateInput.value;
+	        } else {
+	            editEndDateInput.removeAttribute('min');
+	        }
+	        editFormsContainer.innerHTML = '';
+	        editHeaderRow.style.display = 'none';
+	    });
+	}
+	
+	// 4-5. 종료일 변경 시 폼 초기화
+	if (editEndDateInput) {
+	    editEndDateInput.addEventListener('change', function () {
+	        editFormsContainer.innerHTML = '';
+	        editHeaderRow.style.display = 'none';
+	    });
+	}
+		
+	// 4-6. 수정 저장 버튼 클릭
 	document.getElementById("updateBtn")?.addEventListener("click", function() {
-	    const form = document.getElementById("updateForm");
-	    const formData = new FormData(form);
-	    const jsonData = {};
-	    
-	    // FormData를 JSON으로 변환 (빈 값 제외)
-	    for (let [key, value] of formData.entries()) {
-	        if (value && value.trim() !== '') {
-	            jsonData[key] = value.trim();
-	        }
-	    }
-	
-	    // confirmNumber는 필수
-	    jsonData.confirmNumber = document.getElementById("confirmNumber").value;
-	
-	    if (!confirm("수정된 내용을 저장하시겠습니까?\n\n수정하지 않은 항목은 기존 값이 유지됩니다.")) {
-	        return;
-	    }
-	
-	    fetch("${pageContext.request.contextPath}/admin/judge/update", {
-	        method: "POST",
-	        headers: { "Content-Type": "application/json" },
-	        body: JSON.stringify(jsonData)
-	    })
-	    .then(res => {
-	        if (!res.ok) {
-	            throw new Error('서버 응답 오류');
-	        }
-	        return res.json();
-	    })
-	    .then(data => {
-	        alert(data.message);
-	        if (data.success) {
-	            location.reload();
-	        }
-	    })
-	    .catch(err => {
-	        console.error(err);
-	        alert("수정 중 오류가 발생했습니다.");
-	    });
-	});
-	
-	// 수정 취소 버튼
+		const form = document.getElementById("updateForm");
+		const formData = new FormData(form);
+		const jsonData = {};
+		
+		// FormData를 JSON으로 변환 (빈 값 제외)
+		for (let [key, value] of formData.entries()) {
+			// 문제의 'editMonthlyCompanyPay' 필드 필터링
+	        if (key === 'editMonthlyCompanyPay') continue; 
+			
+		    if (value && value.trim() !== '') {
+		        jsonData[key] = value.trim();
+			
+		    }
+		}
+		
+		// confirmNumber는 필수
+		jsonData.confirmNumber = document.getElementById("confirmNumber").value;
+		
+		// 단위기간 데이터 수집
+		const termRows = editFormsContainer.querySelectorAll('.dynamic-form-row');
+		if (termRows.length > 0) {
+		    const updatedTermAmounts = [];
+		    let hasError = false;
+		    
+		    termRows.forEach(row => {
+		        const startDate = row.getAttribute('data-start-date');
+		        const endDate = row.getAttribute('data-end-date');
+		        const paymentInput = row.querySelector('input[name="editMonthlyCompanyPay"]');
+		        const companyPayment = onlyDigits(paymentInput.value);
+		        
+		        if (!companyPayment) {
+		            alert('모든 월별 사업장 지급액을 입력해주세요.');
+		            paymentInput.focus();
+		            hasError = true;
+		            return; // forEach 루프 중단
+		        }
+		        
+		        updatedTermAmounts.push({
+		            startMonthDate: startDate,
+		            endMonthDate: endDate,
+		            companyPayment: Number(companyPayment),
+		            govPayment: 0,
+		            paymentDate: endDate // 종료일을 지급일로 설정
+		        });
+		    });
+		    
+		    if (hasError) return;
+		    
+		    jsonData.updatedTermAmounts = updatedTermAmounts;
+		    
+		    console.log("전송할 단위기간 데이터:", updatedTermAmounts);
+		}
+		
+		if (!confirm("수정된 내용을 저장하시겠습니까?\n\n수정하지 않은 항목은 기존 값이 유지됩니다.")) {
+		    return;
+		}
+		
+		console.log("전송 데이터:", jsonData);
+		
+		fetch("${pageContext.request.contextPath}/admin/judge/update", {
+		    method: "POST",
+		    headers: { "Content-Type": "application/json" },
+		    body: JSON.stringify(jsonData)
+		})
+		.then(res => {
+		    if (!res.ok) {
+		        throw new Error('서버 응답 오류');
+		    }
+		    return res.json();
+		})
+		.then(data => {
+		    console.log("서버 응답:", data);
+		    alert(data.message);
+		    if (data.success) {
+		        location.reload();
+		    }
+		})
+		.catch(err => {
+		    console.error("저장 오류:", err);
+		    alert("수정 중 오류가 발생했습니다.");
+		});
+	}); // updateBtn 이벤트 리스너 종료
+		
+	// 4-7. 수정 취소 버튼
 	document.getElementById("updateCancelBtn")?.addEventListener("click", function() {
-	    if (confirm("수정을 취소하시겠습니까?\n입력한 내용이 초기화됩니다.")) {
-	        location.reload();
-	    }
+		if (confirm("수정을 취소하시겠습니까?\n입력한 내용이 초기화됩니다.")) {
+		    location.reload();
+		}
 	});
 
+}); 
 </script>
 
     <footer class="footer">

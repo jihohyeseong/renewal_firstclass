@@ -60,23 +60,25 @@
 	<update id="updateConfirmEdit">
 	    UPDATE TB_CONFIRM_APPLICATION
 	    <set>
-	        <if test="updStartDate != null and updStartDate != ''">upd_start_date = #{updStartDate},</if>
-	        <if test="updEndDate != null and updEndDate != ''">upd_end_date = #{updEndDate},</if>
+	        <if test="updStartDate != null">upd_start_date = #{updStartDate},</if>
+	        <if test="updEndDate != null">upd_end_date = #{updEndDate},</if>
 	        <if test="updWeeklyHours != null and updWeeklyHours != ''">upd_weekly_hours = #{updWeeklyHours},</if>
 	        <if test="updRegularWage != null and updRegularWage != ''">upd_regular_wage = #{updRegularWage},</if>
 	        <if test="updChildName != null and updChildName != ''">upd_child_name = #{updChildName},</if>
 	        <if test="updChildResiRegiNumber != null and updChildResiRegiNumber != ''">upd_child_resi_regi_number = #{updChildResiRegiNumber},</if>
-	        <if test="updChildBirthDate != null and updChildBirthDate != ''">upd_child_birth_date = #{updChildBirthDate},</if>
+	        <if test="updChildBirthDate != null">upd_child_birth_date = #{updChildBirthDate},</if>
 	        processor_id = #{processorId}
 	    </set>
 	    WHERE confirm_number = #{confirmNumber}
 	          AND status_code = 'ST_30'
 	          AND NVL(delt_at, 'N') = 'N'
-	    
-		UPDATE TB_TERM_AMOUNT
-		SET update_at='Y'
-		WHERE confirm_number = #{confirmNumber}
-			  AND update_at = 'N' 	          
+	</update>
+	
+	<update id="updateTermAmountStatusToY">
+	    UPDATE TB_TERM_AMOUNT
+	    SET update_at = 'Y'
+	    WHERE confirm_number = #{confirmNumber}
+	      AND update_at = 'N'
 	</update>
 	
 	<select id="selectByConfirmNumberWithUpdates" parameterType="long" resultType="com.example.renewal_firstclass.domain.ConfirmApplyDTO">
@@ -117,5 +119,32 @@
 				OR upd_child_birth_date IS NOT NULL)
 			AND NVL(delt_at, 'N') = 'N'
 	</select>
-
+	
+	<!-- 수정된 단위기간 삽입 (update_at='Y') -->
+	<insert id="insertUpdatedTermAmounts" parameterType="java.util.List">
+		BEGIN
+		  <foreach collection="list" item="t">
+		    INSERT INTO TB_TERM_AMOUNT (
+		      payment_date, company_payment, gov_payment,
+		      start_month_date, end_month_date, confirm_number, update_at
+		    ) VALUES (
+		      #{t.paymentDate, jdbcType=DATE},
+		      #{t.companyPayment},
+		      #{t.govPayment},
+		      #{t.startMonthDate, jdbcType=DATE},
+		      #{t.endMonthDate, jdbcType=DATE},
+		      #{t.confirmNumber},
+		      'Y'
+		    );
+		  </foreach>
+		END;
+	</insert>
+	
+	<!-- update_at='Y'인 단위기간만 삭제 -->
+	<delete id="deleteUpdatedTerms" parameterType="long">
+		DELETE FROM TB_TERM_AMOUNT
+		WHERE confirm_number = #{confirmNumber}
+		  AND update_at = 'Y'
+	</delete>
+	
 </mapper>

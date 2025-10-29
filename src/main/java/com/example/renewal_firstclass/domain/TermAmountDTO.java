@@ -24,4 +24,5 @@ public class TermAmountDTO {
 	private Date startMonthDate;
 	private Date endMonthDate;
 	private Long confirmNumber;
+	private String updateAt;
 }

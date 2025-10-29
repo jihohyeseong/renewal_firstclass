@@ -29,13 +29,13 @@ public class ConfirmApplyDTO {
     private String responsePhoneNumber;     // 담당자 전화번호
 
     // 변경요청
-    private String updStartDate;
-    private String updEndDate;
+    private Date updStartDate;
+    private Date updEndDate;
     private String updWeeklyHours;
     private String updRegularWage;
     private String updChildName;
     private String updChildResiRegiNumber;
-    private String updChildBirthDate;
+    private Date updChildBirthDate;
 
     // 반려 관련
     private String rejectionReasonCode;     // 반려사유 코드 

@@ -174,6 +174,17 @@ public class AdminApprovalController {
         // processorId 설정
         dto.setProcessorId(userDTO.getId());
         
+        // 단위기간 데이터 처리
+        if (dto.getUpdatedTermAmounts() != null && !dto.getUpdatedTermAmounts().isEmpty()) {
+        	dto.getUpdatedTermAmounts().forEach(term -> {
+        		term.setConfirmNumber(dto.getConfirmNumber());
+        		// govPayment는 0으로 설정
+                if (term.getGovPayment() == null) {
+                    term.setGovPayment(0L);
+                }
+        		
+        	});
+        }
         boolean updateSuccess = adminApprovalService.updateConfirm(dto);
         
         if (updateSuccess) {
