@@ -274,7 +274,7 @@
       var st    = statusBadge(row.statusName);
       var chip  = docChip(row.docType);
       var detailHref = (row.docType === 'APPLICATION')
-        ? (CXT + '/admin/user/detail/?appNo=' + row.applicationNumber)
+        ? (CXT + '/admin/user/apply/detail/?appNo=' + row.applicationNumber)
         : (CXT + '/admin/judge/detail/' + row.confirmNumber);
 
       return '<tr>'

@@ -25,3 +25,7 @@
 # Other common files to ignore
 .DS_Store
 /bin/
+
+/src/main/resources/firstclass-b26aa-firebase-adminsdk-fbsvc-61f90a0113.json
+
+src/main/webapp/resources/firstclass-b26aa-firebase-adminsdk-fbsvc-61f90a0113.json

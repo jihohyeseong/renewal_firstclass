@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -16,12 +15,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.renewal_firstclass.domain.ApplicationDetailDTO;
 import com.example.renewal_firstclass.domain.CodeDTO;
 import com.example.renewal_firstclass.domain.CustomUserDetails;
 import com.example.renewal_firstclass.domain.PageDTO;
 import com.example.renewal_firstclass.domain.UserDTO;
 import com.example.renewal_firstclass.service.AdminUserApprovalService;
 import com.example.renewal_firstclass.service.CodeService;
+import com.example.renewal_firstclass.service.UserApplyService;
 import com.example.renewal_firstclass.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ public class AdminUserApprovalController {
     private final CodeService codeService;
     
     private final UserService userService;
+    private final UserApplyService userApplyService;
     
 
     @GetMapping("/admin/user/apply")
@@ -61,10 +63,20 @@ public class AdminUserApprovalController {
         return "admin/adminuserlist";
     }
     
-    @GetMapping("/admin/user/detail")
-    public String detail(@RequestParam long appNo, Model model) {
-        adminUserApprovalService.userApplyDetail(appNo, model);
-        return "admin/adminuserdetail";
+//    @GetMapping("/admin/user/detail")
+//    public String detail(@RequestParam long appNo, Model model) {
+//        adminUserApprovalService.userApplyDetail(appNo, model);
+//        return "admin/adminuserdetail";
+//    }
+    
+    // 새로만든 신청서 상세
+    @GetMapping("/admin/user/apply/detail")
+    public String detailPage(@RequestParam Long appNo, Model model) {
+    	
+    	ApplicationDetailDTO applicationDetailDTO = userApplyService.getApplicationDetail(appNo);
+		model.addAttribute("dto", applicationDetailDTO);
+		
+		return "admin/admin_user_detail";
     }
     
      // 부지급 사유 코드 목록
