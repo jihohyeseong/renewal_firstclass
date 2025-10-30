@@ -58,8 +58,8 @@ public class FcmTokenController {
             // 2. FcmService를 호출하여 푸시 알림 전송
             fcmService.sendPushNotification(
                     fcmToken, 
-                    "🔔 젠지 4강딱", 
-                    userId + "등은 티원"
+                    "🔔 알림테스트", 
+                    userId + "에게 푸시알림 전송"
             );
 
             return ResponseEntity.ok(userId + "님에게 푸시를 전송했습니다. (토큰: " + fcmToken + ")");
