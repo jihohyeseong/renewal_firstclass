@@ -31,8 +31,8 @@ public class ConfirmApplyDTO {
     // 변경요청
     private Date updStartDate;
     private Date updEndDate;
-    private String updWeeklyHours;
-    private String updRegularWage;
+    private Integer updWeeklyHours;
+    private Long updRegularWage;
     private String updChildName;
     private String updChildResiRegiNumber;
     private Date updChildBirthDate;
@@ -61,4 +61,6 @@ public class ConfirmApplyDTO {
     
     //수정용 단위기간 저장 데이터
     private List<TermAmountDTO> updatedTermAmounts;
+    private List<Long> monthlyCompanyPay;
+
 }

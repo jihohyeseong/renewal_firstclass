@@ -19,14 +19,13 @@ public interface AdminApprovalDAO {
     // 심사중으로 업데이트
     void updateStatusCode(Long confirmNumber);
     // UPD 컬럼 업데이트
-    int updateConfirmEdit(ConfirmApplyDTO confirmApplyDTO);
-    // update_at을 Y로 업데이트
-    int updateTermAmountStatusToY(@Param("confirmNumber") Long confirmNumber);
+    int updateConfirmEdit(ConfirmApplyDTO dto);
     // 수정된 값 포함하여 조회
     ConfirmApplyDTO selectByConfirmNumberWithUpdates(@Param("confirmNumber") Long confirmNumber);
-    // upd 컬럼 null 체크
+    // upd 컬럼 존재 여부 확인
     int checkUpdColumnsExist(@Param("confirmNumber") Long confirmNumber);
-    // 단위기간 수정
-    int insertUpdatedTermAmounts(@Param("list") List<TermAmountDTO> list);
-    int deleteUpdatedTerms(@Param("confirmNumber") Long confirmNumber);
+    // 수정된 단위기간 삽입
+    int insertUpdatedTermAmounts(@Param("terms") List<TermAmountDTO> terms);
+    // Y인 데이터 삭제
+    int deleteUpdatedTerms(Long confirmNumber);
 }

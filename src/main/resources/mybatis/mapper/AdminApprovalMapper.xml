@@ -62,36 +62,28 @@
 	    <set>
 	        <if test="updStartDate != null">upd_start_date = #{updStartDate},</if>
 	        <if test="updEndDate != null">upd_end_date = #{updEndDate},</if>
-	        <if test="updWeeklyHours != null and updWeeklyHours != ''">upd_weekly_hours = #{updWeeklyHours},</if>
-	        <if test="updRegularWage != null and updRegularWage != ''">upd_regular_wage = #{updRegularWage},</if>
+	        <if test="updWeeklyHours != 0">upd_weekly_hours = #{updWeeklyHours},</if>
+	        <if test="updRegularWage != 0">upd_regular_wage = #{updRegularWage},</if>
 	        <if test="updChildName != null and updChildName != ''">upd_child_name = #{updChildName},</if>
 	        <if test="updChildResiRegiNumber != null and updChildResiRegiNumber != ''">upd_child_resi_regi_number = #{updChildResiRegiNumber},</if>
 	        <if test="updChildBirthDate != null">upd_child_birth_date = #{updChildBirthDate},</if>
 	        processor_id = #{processorId}
 	    </set>
 	    WHERE confirm_number = #{confirmNumber}
-	          AND status_code = 'ST_30'
 	          AND NVL(delt_at, 'N') = 'N'
-	</update>
-	
-	<update id="updateTermAmountStatusToY">
-	    UPDATE TB_TERM_AMOUNT
-	    SET update_at = 'Y'
-	    WHERE confirm_number = #{confirmNumber}
-	      AND update_at = 'N'
 	</update>
 	
 	<select id="selectByConfirmNumberWithUpdates" parameterType="long" resultType="com.example.renewal_firstclass.domain.ConfirmApplyDTO">
 		SELECT
 			confirm_number,
 		    apply_dt,
-		    NVL(upd_start_date, start_date) as start_date,
-	    	NVL(upd_end_date, end_date) as end_date,
-	    	NVL(upd_weekly_hours, weekly_hours) as weekly_hours,
-	    	NVL(upd_regular_wage, regular_wage) as regular_wage,
-	    	NVL(upd_child_name, child_name) as child_name,
-	    	NVL(upd_child_resi_regi_number, child_resi_regi_number) as child_resi_regi_number,
-	    	NVL(upd_child_birth_date, child_birth_date) as child_birth_date,
+		    upd_start_date,
+	    	upd_end_date,
+	    	upd_weekly_hours,
+	    	upd_regular_wage,
+	    	upd_child_name,
+	    	upd_child_resi_regi_number,
+	    	upd_child_birth_date,
 		    registration_number,
 		    name,
 		    response_name,
@@ -123,7 +115,7 @@
 	<!-- 수정된 단위기간 삽입 (update_at='Y') -->
 	<insert id="insertUpdatedTermAmounts" parameterType="java.util.List">
 		BEGIN
-		  <foreach collection="list" item="t">
+		  <foreach collection="terms" item="t">
 		    INSERT INTO TB_TERM_AMOUNT (
 		      payment_date, company_payment, gov_payment,
 		      start_month_date, end_month_date, confirm_number, update_at
