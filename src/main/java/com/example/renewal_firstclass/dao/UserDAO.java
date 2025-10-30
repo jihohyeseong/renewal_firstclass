@@ -32,4 +32,8 @@ public interface UserDAO {
 
 	Long findByRegistrationNumber(String registrationNumber);
 
+	void updateToken(@Param("username")String username, @Param("fcmToken")String fcmToken);
+
+	String findTokenByUserId(Long userId);
+
 }

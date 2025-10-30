@@ -194,7 +194,8 @@
         background-color: #fffbeb; /* 연한 황색 */
         color: #b45309;
     }
-    .status-badge.status-심사완료 { /* ST_50 */
+    .status-badge.status-심사완료, /* ST_50 -> '승인'으로 변경됨 */
+    .status-badge.status-승인 {
         background-color: var(--primary-color-light);
         color: var(--primary-color-dark);
     }
@@ -256,7 +257,6 @@
 </style>
 </head>
 <body>
-
 <%@ include file="header.jsp" %>
 
 <main class="main-container"> 
@@ -325,7 +325,7 @@
                                     
                                     <span class="status-badge status-${stName}">${stName}</span>
                                 </td>
-    
+   
                                 <td class="actions">
                                     <a href="${pageContext.request.contextPath}/user/detail/${app.applicationNumber}" class="btn btn-secondary">
                                         상세보기</a>
@@ -337,6 +337,7 @@
             </c:otherwise>
         </c:choose>
     </div>
+    <button id="allow-push-btn">🔔 알림 허용하기</button>
 </main>
 
 <footer class="footer">
@@ -351,4 +352,91 @@
     </script>
 </c:if>
 </body>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-messaging-compat.js"></script>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        // 1. Firebase 초기화 (Firebase 콘솔 -> 프로젝트 설정 -> 웹 앱에서 복사)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBb2vaosR63S_Knim9gbnGH5Rk7F87qkC4",
+            authDomain: "firstclass-b26aa.firebaseapp.com",
+            projectId: "firstclass-b26aa",
+            storageBucket: "firstclass-b26aa.firebasestorage.app",
+            messagingSenderId: "90572579455",
+            appId: "1:90572579455:web:49c5070ba44f968649154a"
+        };
+        firebase.initializeApp(firebaseConfig);
+        
+        const messaging = firebase.messaging();
+
+        // 2. 알림 권한 요청 및 토큰 발급
+        document.getElementById('allow-push-btn').addEventListener('click', () => {
+            requestNotificationPermission();
+        });
+
+        // ==================================================================
+        // 💡 [수정된 부분] 컨텍스트 경로 문제를 해결하기 위해 수동 등록
+        // ==================================================================
+        function requestNotificationPermission() {
+            Notification.requestPermission().then((permission) => {
+                if (permission === 'granted') {
+                    console.log('알림 권한이 허용되었습니다.');
+                    
+                    // Firebase 콘솔 -> 프로젝트 설정 -> 클라우드 메시징 -> 웹 푸시 인증서 -> "키 쌍" 생성
+                    const vapidKey = "BBc3HyjOmOGy5y6MK6fMzBazOvOIMdx7WJ0VIA7AM-pdzF-dBk6cBbwThsHHnVt1XFRt6J_uqF-EmjxLXEB7BLI";
+                    
+                    // 1. 서비스 워커를 컨텍스트 경로로 수동 등록합니다.
+                    //    JSP EL을 사용하여 동적 경로를 주입합니다.
+                    navigator.serviceWorker.register('${pageContext.request.contextPath}/firebase-messaging-sw.js')
+                        .then((registration) => {
+                            console.log('Service worker registered with scope: ', registration.scope);
+
+                            // 2. 등록된 서비스 워커를 사용하여 토큰을 요청합니다.
+                            return messaging.getToken({ 
+                                vapidKey: vapidKey,
+                                serviceWorkerRegistration: registration // <-- 이 옵션이 핵심입니다.
+                            });
+                        })
+                        .then((currentToken) => {
+                            if (currentToken) {
+                                console.log('FCM Token:', currentToken);
+                                // 4. 발급받은 토큰을 Spring 서버로 전송
+                                sendTokenToServer(currentToken);
+                            } else {
+                                console.log('토큰을 발급받지 못했습니다. 권한을 확인하세요.');
+                            }
+                        }).catch((err) => {
+                            // 여기서는 서비스 워커 등록 실패 또는 토큰 발급 실패를 모두 잡습니다.
+                            console.error('서비스 워커 등록 또는 토큰 발급 중 오류:', err);
+                        });
+                        
+                } else {
+                    console.log('알림 권한이 거부되었습니다.');
+                }
+            });
+        }
+
+        // 4. Spring 컨트롤러로 토큰 전송 (jQuery AJAX 예시)
+        // (이 부분은 이미 contextPath를 사용하고 계셔서 올바르게 작성되어 있습니다.)
+        function sendTokenToServer(token) {
+            $.ajax({
+                url: "${pageContext.request.contextPath}/save-fcm-token", // 토큰 저장용 Spring 컨트롤러 주소
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ 
+                    fcmToken: token
+                    // 필요시 사용자 ID 등 추가 정보 전송
+                    // userId: "currentUserId" 
+                }),
+                success: function(response) {
+                    console.log('FCM 토큰이 서버에 성공적으로 저장되었습니다.');
+                },
+                error: function(xhr, status, error) {
+                    console.error('서버에 토큰 저장 실패:', error);
+                }
+            });
+        }
+    </script>
 </html>

@@ -18,4 +18,5 @@
 	
 	<mvc:annotation-driven />
 	<mvc:resources mapping="/upload/**" location="file:///C:/upload/" />
+	<mvc:default-servlet-handler />
 </beans>

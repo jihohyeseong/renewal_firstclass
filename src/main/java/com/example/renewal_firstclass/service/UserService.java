@@ -41,4 +41,15 @@ public class UserService {
 		}
         return user;
 	}
+
+	public void updateFcmToken(String username, String fcmToken) {
+		
+		userDAO.updateToken(username, fcmToken);
+		System.out.println("DB 업데이트 시도 -> 사용자: " + username + ", 토큰: " + fcmToken);
+	}
+
+	public String getFcmTokenByUserId(Long userId) {
+		
+		return userDAO.findTokenByUserId(userId);
+	}
 }
