@@ -29,6 +29,8 @@ public class AdminUserApprovalDTO {
     private Long userId;
     private Long processorId;
     private Long superiorId;
+    private String updBankCode;
+    private String updAccountNumber;
 
     // TB_CONFIRM_APPLICATION
     private Date startDate;
@@ -40,6 +42,12 @@ public class AdminUserApprovalDTO {
     private Date childBirthDate;
     private String responseName;
     private String responsePhoneNumber;
+    private Date updStartDate;
+    private Date updEndDate;
+    private String updWeeklyHours;
+    private String updChildName;
+    private String updChildResiRegiNumber;
+    private Date updChildBirthDate;
 
     // USERS
     // 신청자(근로자)
@@ -47,6 +55,10 @@ public class AdminUserApprovalDTO {
     private String applicantPhoneNumber;
     private String applicantResiRegiNumber;
     private String applicantNameFromCA;
+    private String applicantZipNumber;
+    private String applicantAddrBase;
+    private String applicantAddrDetail;
+    
 
     // 회사(사업장)
     private String businessName;

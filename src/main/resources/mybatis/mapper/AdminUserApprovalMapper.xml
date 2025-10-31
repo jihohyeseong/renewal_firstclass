@@ -106,6 +106,8 @@
     p.confirm_number,
     p.user_id,                   -- 신청자 ID
     p.processor_id,
+    p.upd_bank_code,
+    p.upd_account_number,
 
     /* ===== 확인서(CA) ===== */
     c.start_date,
@@ -121,10 +123,22 @@
     c.response_phone_number,
     c.user_id        AS corpUserId,   -- 회사계정 ID (참고용 필요시)
     c.center_id      AS corpCenterId, -- 회사의 소속 센터 (필요시)
+    c.upd_start_date,
+    c.upd_end_date,
+    c.upd_weekly_hours,
+    c.upd_regular_wage,
+    c.upd_child_name,
+    c.upd_child_resi_regi_number,
+    c.upd_child_birth_date,
+    
 
     /* ===== 신청자(USER, from PLA.user_id) ===== */
     au.name                      AS applicantName,           -- 신청자 이름(사용자 테이블)
     au.phone_number              AS applicantPhoneNumber,
+    au.zip_number				 AS applicantZipNumber,
+    au.address_base              AS applicantAddrBase,
+    au.address_detail            AS applicantAddrDetail,
+    
 
     /* ===== 회사(USER, from CA.user_id) ===== */
     cu.name                      AS businessName,            -- 회사명
@@ -190,7 +204,26 @@
      AND status_code = 'ST_20'
 </update>   
     
-    
+<update id="updateBankInfoByAppNo">
+  UPDATE TB_PARENTAL_LEAVE_APPLICATION
+     SET upd_bank_code      = #{updBankCode},
+         upd_account_number = #{updAccountNumber}
+   WHERE application_number = #{applicationNumber}
+     AND NVL(delt_at,'N') = 'N'
+</update>
+
+<update id="updateChildInfoByAppNo">
+  UPDATE TB_CONFIRM_APPLICATION
+     SET upd_child_name             = #{updChildName},
+         upd_child_birth_date       = #{updChildBirthDate},
+         upd_child_resi_regi_number = #{updChildResiRegiNumber}
+   WHERE confirm_number = (
+           SELECT confirm_number
+             FROM TB_PARENTAL_LEAVE_APPLICATION
+            WHERE application_number = #{applicationNumber}
+         )
+     AND NVL(delt_at,'N') = 'N'
+</update>
     
     
 </mapper>

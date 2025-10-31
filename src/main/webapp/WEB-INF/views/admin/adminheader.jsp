@@ -32,11 +32,10 @@
 </style>
 
 <header class="header">
-    <a href="${pageContext.request.contextPath}/admin/applications" class="logo"><img src="${pageContext.request.contextPath}/resources/images/logo.png" alt="Logo" width="auto" height="80"></a>
+    <a href="${pageContext.request.contextPath}/admin/list" class="logo"><img src="${pageContext.request.contextPath}/resources/images/logo.png" alt="Logo" width="auto" height="80"></a>
     <nav>
     	<ul class="header-nav">
-    		<li><a class="nav-link ${fn:contains(currentURI, '/confirm') ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/confirm">확인서 보기</a></li>
-    		<li><a class="nav-link ${fn:contains(currentURI, '/apply') ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/user/apply">신청서 보기</a></li>
+    		<li><a class="nav-link ${fn:contains(currentURI, '/confirm') ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/list">전체 민원 보기</a></li>
     		<li>
     			<c:choose>
 				    <c:when test="${not empty adminCheck && adminCheck.centerPosition eq 'leader'}">
