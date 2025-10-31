@@ -24,9 +24,19 @@ public interface ConfirmApplyDAO {
     int recallConfirm(@Param("confirmNumber") Long confirmNumber,
             @Param("userId") Long userId);
     
-    List<ConfirmListDTO> selectConfirmList(@Param("userId") Long userId,@Param("statusCode") String statusCode,
-            @Param("offset") int offset,
+    List<ConfirmListDTO> selectConfirmListSearch(@Param("userId") Long userId,@Param("statusCode") String statusCode,
+    	    @Param("nameKeyword") String nameKeyword,
+    	    @Param("regNoKeyword") String regNoKeyword,
+    		@Param("offset") int offset,
             @Param("size") int size);
     
-    int countConfirmList(@Param("userId") Long userId,@Param("statusCode") String statusCode);
+    int countConfirmListSearch(@Param("userId") Long userId,@Param("statusCode") String statusCode,
+    	    @Param("nameKeyword") String nameKeyword,
+    	    @Param("regNoKeyword") String regNoKeyword);
+    
+    List<ConfirmListDTO> selectConfirmList(@Param("userId") Long userId,
+    		@Param("offset") int offset,
+            @Param("size") int size);
+    
+    int countConfirmList(@Param("userId") Long userId);
 }

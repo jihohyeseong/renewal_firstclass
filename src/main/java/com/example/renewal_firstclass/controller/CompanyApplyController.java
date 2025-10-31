@@ -68,27 +68,28 @@ public class CompanyApplyController {
     
     /* 메인 */
     @GetMapping("/comp/main")
-    public String main(@RequestParam(defaultValue = "ALL") String status,
-                       @RequestParam(defaultValue = "1") int page,
-                       @RequestParam(defaultValue = "10") int size,
-                       Model model) {
+    public String mainPage(@RequestParam(defaultValue = "1") int page,
+                           @RequestParam(defaultValue = "10") int size,
+                           Model model) {
 
         UserDTO user = currentUserOrNull();
         if (user == null || user.getId() == null) {
             return "redirect:/login";
         }
 
-        int total = companyApplyService.countConfirmList(user.getId(), status);
-
-        int totalPages = (int)Math.ceil((double) total / Math.max(1, size));
+        // 기본 목록용 (검색조건 없음)
+        int total = companyApplyService.countConfirmList(user.getId());
+        int totalPages = (int) Math.ceil((double) total / Math.max(1, size));
         if (page < 1) page = 1;
         if (totalPages > 0 && page > totalPages) page = totalPages;
 
-        List<ConfirmListDTO> list = companyApplyService.getConfirmList(user.getId(), status, page, size);
+        List<ConfirmListDTO> list = companyApplyService.getConfirmList(user.getId(), page, size);
 
         model.addAttribute("confirmList", list);
         model.addAttribute("userDTO", user);
-        model.addAttribute("status", status);
+        model.addAttribute("status", "ALL");
+        model.addAttribute("nameKeyword", null);
+        model.addAttribute("regNoKeyword", null);
         model.addAttribute("page", page);
         model.addAttribute("size", size);
         model.addAttribute("total", total);
@@ -96,6 +97,52 @@ public class CompanyApplyController {
 
         return "company/compmain";
     }
+    /*메인에서검색*/
+    @PostMapping("/comp/search")
+    public String search(@RequestParam(defaultValue = "ALL") String status,
+                         @RequestParam(required = false) String nameKeyword,
+                         @RequestParam(required = false) String regNoKeyword,
+                         @RequestParam(defaultValue = "1") int page,
+                         @RequestParam(defaultValue = "10") int size,
+                         Model model) {
+
+        UserDTO user = currentUserOrNull();
+        if (user == null || user.getId() == null) {
+            return "redirect:/login";
+        }
+
+        boolean hasKeyword = (nameKeyword != null) ||
+                             (regNoKeyword != null);
+
+        int total;
+        List<ConfirmListDTO> list;
+
+        if (hasKeyword) {
+            total = companyApplyService.countConfirmList(user.getId(), status, nameKeyword, regNoKeyword);
+            list = companyApplyService.getConfirmList(user.getId(), status, nameKeyword, regNoKeyword, page, size);
+        } else {
+            total = companyApplyService.countConfirmList(user.getId());
+            list = companyApplyService.getConfirmList(user.getId(), page, size);
+        }
+
+        int totalPages = (int) Math.ceil((double) total / Math.max(1, size));
+        if (page < 1) page = 1;
+        if (totalPages > 0 && page > totalPages) page = totalPages;
+
+        model.addAttribute("confirmList", list);
+        model.addAttribute("userDTO", user);
+        model.addAttribute("status", status);
+        model.addAttribute("nameKeyword", nameKeyword);
+        model.addAttribute("regNoKeyword", regNoKeyword);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
+        model.addAttribute("total", total);
+        model.addAttribute("totalPages", totalPages);
+
+        return "company/compmain";
+    }
+
+
 
 
     
@@ -177,7 +224,7 @@ public class CompanyApplyController {
         }
     }
 
-    /* 제출: ST_10 → ST_20 & apply_dt = SYSDATE — 로그인 필수 */
+    /* 제출*/
     @PostMapping("/comp/submit")
     public String submit(@RequestParam("confirmNumber") Long confirmNumber,
                          java.security.Principal principal,

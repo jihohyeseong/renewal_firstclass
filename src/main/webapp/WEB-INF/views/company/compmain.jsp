@@ -315,8 +315,17 @@
 			<h2>${userDTO.name}님의신청 내역</h2>
 
 			<div class="content-header-right">
-				<form id="statusForm" class="status-form" method="get"
-					action="${pageContext.request.contextPath}/comp/main">
+				<form id="statusForm" class="status-form" method="post"
+					action="${pageContext.request.contextPath}/comp/search">
+					 <input type="text" name="nameKeyword" placeholder="근로자 이름" value="${nameKeyword}" maxlength="50"/>
+  					 <c:set var="regNoRaw" value="${empty regNoKeyword ? '' : regNoKeyword}" />
+
+<!-- 전송용: 숫자만 -->
+<input type="hidden" name="regNoKeyword" id="regNoRaw" value="${regNoRaw}" />
+
+<!-- 표시용: 하이픈 포함(보여주기만) -->
+<input type="text" id="regNoDisplay"
+       placeholder="주민등록번호(숫자13자리)" value="" maxlength="14"/>
 					<label for="status" class="sr-only">상태 선택</label> <select
 						id="status" name="status" onchange="this.form.submit()" class="status-select">
 						<option value="ALL" ${status=='ALL'  ? 'selected' : ''}>전체</option>
@@ -327,6 +336,7 @@
 						<option value="ST_60" ${status=='ST_60' ? 'selected' : ''}>반려처리</option>
 					</select> <input type="hidden" name="page" value="1" /> <input type="hidden"
 						name="size" value="${size}" />
+						<button type="submit">검색</button>
 				</form>
 
 				<a href="${pageContext.request.contextPath}/comp/apply"
@@ -436,5 +446,44 @@
     };
     </script>
 </c:if>
+
+<script>
+(function () {
+	  const raw  = document.getElementById('regNoRaw');      // hidden (name="regNoKeyword")
+	  const disp = document.getElementById('regNoDisplay');  // 표시용
+	  const form = document.getElementById('statusForm');
+	  if (!raw || !disp || !form) return;
+
+	  const onlyDigits = s => String(s||'').replace(/\D/g,'').slice(0,13);
+	  const fmt = d => d.length<=6 ? d : d.slice(0,6)+'-'+d.slice(6);
+
+	  disp.value = raw.value ? fmt(onlyDigits(raw.value)) : '';
+
+	  disp.addEventListener('input', () => {
+	    const d = onlyDigits(disp.value);
+	    disp.value = fmt(d);
+	    raw.value  = d;
+	  });
+
+	  disp.addEventListener('paste', e => {
+	    e.preventDefault();
+	    const d = onlyDigits((e.clipboardData||window.clipboardData).getData('text')||'');
+	    disp.value = fmt(d); raw.value = d;
+	  });
+
+	  form.addEventListener('submit', () => {
+	    const d = onlyDigits(disp.value);
+	    if (d.length === 0) {
+	      raw.disabled = true;     // ★ 전송에서 제외
+	    } else {
+	      raw.disabled = false;
+	      raw.value = d;           // 숫자만
+	    }
+	  });
+	})();
+
+
+</script>
+
 </body>
 </html>

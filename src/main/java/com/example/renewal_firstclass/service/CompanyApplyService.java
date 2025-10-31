@@ -173,7 +173,7 @@ public class CompanyApplyService {
     }
     
     
-    /*메인페이지 페이징처리용*/
+/*    메인페이지 페이징처리용
     public List<ConfirmListDTO> getListByUser(Long userId, int page, int size) {
         int offset = (page - 1) * size;
         return confirmApplyDAO.selectByUserId(userId, offset, size);
@@ -181,7 +181,7 @@ public class CompanyApplyService {
 
     public int countByUser(Long userId) {
         return confirmApplyDAO.countByUser(userId);
-    }  
+    }  */
     
     @Transactional
     public Long updateConfirm (ConfirmApplyDTO dto, List<Long> monthlyCompanyPay) {
@@ -220,14 +220,57 @@ public class CompanyApplyService {
         return confirmApplyDAO.recallConfirm(confirmNumber, userId);
     }  
     
-    public List<ConfirmListDTO> getConfirmList(Long userId, String statusCode, int page, int size) {
-        int offset = Math.max(0, page - 1) * size;
-        return confirmApplyDAO.selectConfirmList(userId, statusCode, offset, size);
+    public List<ConfirmListDTO> getConfirmList(Long userId,
+            String statusCode,
+            String nameKeyword,
+            String regNoKeyword,
+            int page, int size) {
+			int offset = Math.max(0, page - 1) * size;
+			
+			String regNoEnc = null;
+			if (regNoKeyword != null) {
+			try {
+			regNoEnc = aes256Util.encrypt(regNoKeyword); 
+			} catch (Exception e) {
+			throw new IllegalStateException("주민번호 암호화 실패", e);
+			}
+			}
+			
+			return confirmApplyDAO.selectConfirmListSearch(
+			userId, statusCode, nameKeyword, regNoEnc, offset, size
+			);
     }
-    
-    public int countConfirmList(Long userId, String statusCode) {
-    	return confirmApplyDAO.countConfirmList(userId, statusCode);
+
+	
+	public int countConfirmList(Long userId,
+								String statusCode,
+								String nameKeyword,
+								String regNoKeyword) {
+		String regNoEnc = null;
+		if (regNoKeyword != null) {
+		try {
+		regNoEnc = aes256Util.encrypt(regNoKeyword); 
+		} catch (Exception e) {
+		throw new IllegalStateException("주민번호 암호화 실패", e);
+		}
+		}
+		
+	return confirmApplyDAO.countConfirmListSearch(userId, statusCode, nameKeyword, regNoEnc);
+	}
+	
+    public List<ConfirmListDTO> getConfirmList(Long userId, int page, int size) {
+			int offset = Math.max(0, page - 1) * size;
+			
+			return confirmApplyDAO.selectConfirmList(
+			userId, offset, size
+			);
     }
+
+	
+	public int countConfirmList(Long userId) {
+	return confirmApplyDAO.countConfirmList(userId);
+	}
+
 
 
 }

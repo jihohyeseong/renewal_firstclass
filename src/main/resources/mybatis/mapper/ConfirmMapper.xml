@@ -113,7 +113,8 @@
        AND NVL(delt_at, 'N') = 'N'
   </update>
   
-<select id="selectConfirmList"
+<select id="selectConfirmListSearch"
+        parameterType="map"
         resultType="com.example.renewal_firstclass.domain.ConfirmListDTO">
   SELECT
     ca.confirm_number,
@@ -124,12 +125,24 @@
   FROM TB_CONFIRM_APPLICATION ca
   LEFT JOIN TB_CODE c
     ON ca.status_code = c.code
-  WHERE ca.user_id = #{userId} 
+  WHERE ca.user_id = #{userId}
+  
   <if test="statusCode != null and statusCode != '' and statusCode != 'ALL'">
-      AND ca.status_code = #{statusCode}
+    AND ca.status_code = #{statusCode}
   </if>
+
+  <!-- 근로자 이름 검색 -->
+  <if test="nameKeyword != null and nameKeyword != ''">
+    AND UPPER(ca.name) LIKE '%' || UPPER(#{nameKeyword}) || '%'
+  </if>
+
+  <!-- 근로자 주민등록번호 검색 -->
+  <if test="regNoKeyword != null and regNoKeyword != ''">
+    AND ca.registration_number = #{regNoKeyword}
+  </if>
+
   AND NVL(ca.delt_at, 'N') = 'N'
-    ORDER BY
+  ORDER BY
     CASE ca.status_code
       WHEN 'ST_10' THEN 1
       WHEN 'ST_20' THEN 2
@@ -142,14 +155,63 @@
   OFFSET #{offset} ROWS FETCH NEXT #{size} ROWS ONLY
 </select>
 
-<select id="countConfirmList" parameterType="map" resultType="int">
-   SELECT COUNT(*) 
-   FROM TB_CONFIRM_APPLICATION 
-   WHERE user_id = #{userId} 
-   <if test="statusCode != null and statusCode != '' and statusCode != 'ALL'">
-   AND status_code = #{statusCode}
-   </if>
-   AND NVL(delt_at,'N')='N'
+<select id="countConfirmListSearch"
+        parameterType="map"
+        resultType="int">
+  SELECT COUNT(*)
+  FROM TB_CONFIRM_APPLICATION ca
+  WHERE ca.user_id = #{userId}
+  
+  <if test="statusCode != null and statusCode != '' and statusCode != 'ALL'">
+    AND ca.status_code = #{statusCode}
+  </if>
+
+  <if test="nameKeyword != null and nameKeyword != ''">
+    AND UPPER(ca.name) LIKE '%' || UPPER(#{nameKeyword}) || '%'
+  </if>
+
+  <if test="regNoKeyword != null and regNoKeyword != ''">
+    AND ca.registration_number = #{regNoKeyword}
+  </if>
+
+  AND ca.delt_at = 'N'
+</select>
+
+<!-- 기본 목록-->
+<select id="selectConfirmList"
+        parameterType="map"
+        resultType="com.example.renewal_firstclass.domain.ConfirmListDTO">
+  SELECT
+    ca.confirm_number,
+    ca.apply_dt,
+    ca.status_code,
+    ca.name,
+    c.name            AS statusName
+  FROM TB_CONFIRM_APPLICATION ca
+  LEFT JOIN TB_CODE c
+    ON ca.status_code = c.code
+  WHERE ca.user_id = #{userId}
+    AND ca.delt_at = 'N'
+  ORDER BY
+    CASE ca.status_code
+      WHEN 'ST_10' THEN 1
+      WHEN 'ST_20' THEN 2
+      WHEN 'ST_30' THEN 3
+      WHEN 'ST_50' THEN 4
+      WHEN 'ST_60' THEN 5
+      ELSE 6
+    END,
+    ca.confirm_number DESC
+  OFFSET #{offset} ROWS FETCH NEXT #{size} ROWS ONLY
+</select>
+
+<select id="countConfirmList"
+        parameterType="map"
+        resultType="int">
+  SELECT COUNT(*)
+  FROM TB_CONFIRM_APPLICATION
+  WHERE user_id = #{userId}
+    AND delt_at = 'N'
 </select>
 
 </mapper>
