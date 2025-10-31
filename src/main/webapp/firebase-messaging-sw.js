@@ -15,17 +15,3 @@ firebase.initializeApp(firebaseConfig);
 
 const messaging = firebase.messaging();
 
-// 백그라운드 메시지 핸들러
-messaging.onBackgroundMessage((payload) => {
-    console.log('[firebase-messaging-sw.js] Received background message ', payload);
-
-    // Spring 백엔드에서 보낸 Notification 객체를 사용합니다.
-    const notificationTitle = payload.notification.title;
-    const notificationOptions = {
-        body: payload.notification.body,
-        //icon: '/images/your-push-icon.png' // 알림에 표시할 아이콘 (경로 확인)
-    };
-
-    // 사용자에게 알림을 표시합니다.
-    self.registration.showNotification(notificationTitle, notificationOptions);
-});

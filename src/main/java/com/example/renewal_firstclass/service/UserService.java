@@ -52,4 +52,9 @@ public class UserService {
 		
 		return userDAO.findTokenByUserId(userId);
 	}
+
+	public Long findIdByUsername(String username) {
+		
+		return userDAO.findIdByUsername(username);
+	}
 }
