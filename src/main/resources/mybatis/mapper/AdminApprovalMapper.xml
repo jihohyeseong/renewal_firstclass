@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.renewal_firstclass.dao.AdminApprovalDAO">
+
 	<select id="selectByConfirmNumber"
         parameterType="long"
         resultType="com.example.renewal_firstclass.domain.ConfirmApplyDTO">
@@ -27,7 +28,7 @@
 	    AND NVL(delt_at,'N') = 'N'
 	</select>
 	
-	<!-- 관리자 접수/반려 -->
+	<!-- 관리자 접수/반려 섹션 -->
 	<update id="updateAdminJudge" parameterType="com.example.renewal_firstclass.domain.ConfirmApplyDTO">
 		UPDATE TB_CONFIRM_APPLICATION
 		SET
@@ -73,6 +74,7 @@
 	          AND NVL(delt_at, 'N') = 'N'
 	</update>
 	
+	<!-- 관리자 수정 기능 섹션 -->
 	<select id="selectByConfirmNumberWithUpdates" parameterType="long" resultType="com.example.renewal_firstclass.domain.ConfirmApplyDTO">
 		SELECT
 			confirm_number,
@@ -95,6 +97,26 @@
 		FROM TB_CONFIRM_APPLICATION
 		WHERE confirm_number = #{confirmNumber}
 		    AND NVL(delt_at,'N') = 'N'
+	</select>
+	
+	<select id="selectOriginalTermAmounts" 
+        parameterType="long" 
+        resultType="com.example.renewal_firstclass.domain.TermAmountDTO">
+	    SELECT
+	        *
+	    FROM TB_TERM_AMOUNT
+	    WHERE confirm_number = #{confirmNumber}
+	    AND update_at = 'N'
+	</select>
+	
+	<select id="selectUpdatedTermAmounts" 
+	        parameterType="long" 
+	        resultType="com.example.renewal_firstclass.domain.TermAmountDTO">
+	    SELECT
+	        *
+	    FROM TB_TERM_AMOUNT
+	    WHERE confirm_number = #{confirmNumber}
+	    AND update_at = 'Y'
 	</select>
 	
 	<!-- upd 컬럼 존재 여부 확인 -->
@@ -131,6 +153,23 @@
 		  </foreach>
 		END;
 	</insert>
+	
+	<!-- delt_at 'Y'로 변경 -->
+	<update id="markOriginalTermsAsDeleted" parameterType="long">
+    UPDATE TB_TERM_AMOUNT
+    SET delt_at = 'Y'
+    WHERE confirm_number = #{confirmNumber}
+      AND update_at = 'N'
+      AND NVL(delt_at, 'N') = 'N'
+	</update>
+	
+	<!-- update_at 'Y'인 데이터 확인 -->
+	<select id="countUpdatedTerms" parameterType="long" resultType="int">
+	    SELECT COUNT(*)
+	    FROM TB_TERM_AMOUNT
+	    WHERE confirm_number = #{confirmNumber}
+	      AND update_at = 'Y'
+	</select>
 	
 	<!-- update_at='Y'인 단위기간만 삭제 -->
 	<delete id="deleteUpdatedTerms" parameterType="long">

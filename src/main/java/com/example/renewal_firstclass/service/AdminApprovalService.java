@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.renewal_firstclass.dao.AdminApprovalDAO;
 import com.example.renewal_firstclass.dao.ConfirmApplyDAO;
-import com.example.renewal_firstclass.dao.TermAmountDAO;
 import com.example.renewal_firstclass.domain.AdminJudgeDTO;
 import com.example.renewal_firstclass.domain.ConfirmApplyDTO;
 import com.example.renewal_firstclass.domain.TermAmountDTO;
@@ -27,55 +26,43 @@ public class AdminApprovalService {
 
     private final AdminApprovalDAO adminApprovalDAO;
     private final ConfirmApplyDAO confirmApplyDAO;
-    private final TermAmountDAO termAmountDAO;
     private final AES256Util aes256Util;
     
     // 신청 상세 조회
-    public ConfirmApplyDTO getConfirmDetail(Long confirmNumber) {
-   
-        ConfirmApplyDTO dto = confirmApplyDAO.selectByConfirmNumber(confirmNumber);
-        if (dto == null) return null;
+    public ConfirmApplyDTO getConfirmForEditing(Long confirmNumber) {
 
+        // 1. 원본 데이터 조회
+        ConfirmApplyDTO originalDto = confirmApplyDAO.selectByConfirmNumber(confirmNumber);
+        if (originalDto == null) return null;
+
+        // 2. 수정된 데이터 포함 조회 
+        ConfirmApplyDTO updatesDto = adminApprovalDAO.selectByConfirmNumberWithUpdates(confirmNumber);
+        if (updatesDto != null) {
+            // upd컬럼 업데이트
+            originalDto.setUpdStartDate(updatesDto.getUpdStartDate());
+            originalDto.setUpdEndDate(updatesDto.getUpdEndDate());
+            originalDto.setUpdWeeklyHours(updatesDto.getUpdWeeklyHours());
+            originalDto.setUpdRegularWage(updatesDto.getUpdRegularWage());
+            originalDto.setUpdChildName(updatesDto.getUpdChildName());
+            originalDto.setUpdChildResiRegiNumber(updatesDto.getUpdChildResiRegiNumber());
+            originalDto.setUpdChildBirthDate(updatesDto.getUpdChildBirthDate());
+        }
+
+        // 3. 주민번호 복호화
         try {
-            if (dto.getRegistrationNumber() != null && !dto.getRegistrationNumber().trim().isEmpty()) {
-                dto.setRegistrationNumber(aes256Util.decrypt(dto.getRegistrationNumber()));
+            if (originalDto.getRegistrationNumber() != null && !originalDto.getRegistrationNumber().trim().isEmpty()) {
+                originalDto.setRegistrationNumber(aes256Util.decrypt(originalDto.getRegistrationNumber()));
+            }
+            if (originalDto.getChildResiRegiNumber() != null && !originalDto.getChildResiRegiNumber().trim().isEmpty()) {
+                originalDto.setChildResiRegiNumber(aes256Util.decrypt(originalDto.getChildResiRegiNumber()));
             }
         } catch (Exception ignore) {}
 
-        try {
-            if (dto.getChildResiRegiNumber() != null && !dto.getChildResiRegiNumber().trim().isEmpty()) {
-                dto.setChildResiRegiNumber(aes256Util.decrypt(dto.getChildResiRegiNumber()));
-            }
-        } catch (Exception ignore) {}
+        // 4. 원본 단위기간과 수정된 단위기간을 각각 조회하여 DTO에 설정
+        originalDto.setTermAmounts(adminApprovalDAO.selectOriginalTermAmounts(confirmNumber));
+        originalDto.setUpdatedTermAmounts(adminApprovalDAO.selectUpdatedTermAmounts(confirmNumber));
         
-        List<TermAmountDTO> terms = termAmountDAO.selectByConfirmId(confirmNumber);
-        dto.setTermAmounts(terms);
-        
-        return dto;
-    }
-    
-    // 수정값 상세 조회
-    public ConfirmApplyDTO getConfirmDetailWithUpdates(Long confirmNumber) {
-   
-        ConfirmApplyDTO dto = adminApprovalDAO.selectByConfirmNumberWithUpdates(confirmNumber);
-        if (dto == null) return null;
-
-        try {
-            if (dto.getRegistrationNumber() != null && !dto.getRegistrationNumber().trim().isEmpty()) {
-                dto.setRegistrationNumber(aes256Util.decrypt(dto.getRegistrationNumber()));
-            }
-        } catch (Exception ignore) {}
-
-        try {
-            if (dto.getChildResiRegiNumber() != null && !dto.getChildResiRegiNumber().trim().isEmpty()) {
-                dto.setChildResiRegiNumber(aes256Util.decrypt(dto.getChildResiRegiNumber()));
-            }
-        } catch (Exception ignore) {}
-        
-        List<TermAmountDTO> terms = termAmountDAO.selectByConfirmId(confirmNumber);
-        dto.setTermAmounts(terms);
-        
-        return dto;
+        return originalDto;
     }
 
 
@@ -181,84 +168,70 @@ public class AdminApprovalService {
  	public boolean saveConfirmEdits(ConfirmApplyDTO dto) {
  		Long confirmNumber = dto.getConfirmNumber();
 
- 	    // ★★★ 1. DB 원본 데이터 조회 (필수: DTO 값이 null일 때 사용) ★★★
- 	    // confirmApplyDAO는 원본 데이터(upd_xx가 없는)를 조회하는 메서드라고 가정합니다.
- 	    ConfirmApplyDTO originalData = confirmApplyDAO.selectByConfirmNumber(confirmNumber);
- 	    if (originalData == null) {
- 	        log.error("Original confirmation data not found for confirmNumber: {}", confirmNumber);
- 	        return false;
- 	    }
+ 		// 1. TB_CONFIRM_APPLICATION 테이블의 upd_ 컬럼들 업데이트
+        adminApprovalDAO.updateConfirmEdit(dto);
 
- 	    List<Long> monthlyCompanyPay = dto.getMonthlyCompanyPay();
+        // 2. 단위기간 재계산이 필요한지 여부
+        List<Long> monthlyCompanyPay = dto.getMonthlyCompanyPay();
+        boolean needsRecalculation = (dto.getUpdStartDate() != null ||
+                                      dto.getUpdEndDate() != null ||
+                                      (dto.getUpdRegularWage() != null && dto.getUpdRegularWage() > 0) ||
+                                      (monthlyCompanyPay != null && !monthlyCompanyPay.isEmpty()));
 
- 	    // upd 컬럼 업데이트
- 	    int updated = adminApprovalDAO.updateConfirmEdit(dto);
- 	    // 업데이트 실패(수정사항이 없거나 DB 오류)는 재계산이 필요한지를 결정하는 updExists와 별개로 처리할 수 있습니다.
- 	    // 여기서는 일단 업데이트가 성공해야만 다음 로직을 진행한다고 가정하고, 업데이트가 안되면 return false;
- 	    // 만약 월별 지급액만 수정될 수 있다면 이 updated == 0 체크는 제거해야 합니다.
- 	    if (updated == 0) {
- 	         // 월별 지급액 수정만 있는 경우를 허용하기 위해 잠시 주석 처리하거나,
- 	         // 월별 지급액이 있으면 통과시키도록 로직 변경이 필요함
- 	         // return false; 
- 	    } 
+        // 3. 재계산이 필요할 경우에만 단위기간 관련 로직 수행
+        if (needsRecalculation) {
+            log.info("단위기간 재계산을 시작합니다. ConfirmNumber: {}", confirmNumber);
+            
+            // 단위기간 테이블에서 update_at='Y' 데이터가 있는지 확인
+            int existingUpdatedCount = adminApprovalDAO.countUpdatedTerms(confirmNumber);
 
- 	    // upd 컬럼 존재 여부 확인 (upd_start_date 등이 DB에 Y/N이 아닌 실제로 값이 있는지 체크하는 DAO 메서드)
- 	    int updExists = adminApprovalDAO.checkUpdColumnsExist(confirmNumber);
- 	    
- 	    // 재계산된 단위기간을 담을 리스트
- 	    List<TermAmountDTO> updatedTerms;
+            if (existingUpdatedCount > 0) {
+                // 재수정이므로 이전 'Y'데이터 삭제후 update_at='Y' 테이블 새로 추가
+                log.info("재수정으로 감지. 기존 수정 데이터(Y)를 삭제합니다.");
+                adminApprovalDAO.deleteUpdatedTerms(confirmNumber);
+            } else {
+                // 최초 수정이므로 update_at='Y'로 테이블 새로 추가&원본 데이터의 delt_at을 'Y'로 업데이트
+                log.info("최초 수정으로 감지. 원본 데이터(N)를 delt_at='Y'로 처리합니다.");
+                adminApprovalDAO.markOriginalTermsAsDeleted(confirmNumber);
+            }
+            
+            // DB에서 최신 원본 데이터를 다시 조회
+            ConfirmApplyDTO originalData = confirmApplyDAO.selectByConfirmNumber(confirmNumber);
+            if (originalData == null) {
+                log.error("Original confirmation data not found for confirmNumber: {}", confirmNumber);
+                throw new IllegalStateException("원본 확인서 정보를 찾을 수 없습니다.");
+            }
 
- 	    // 단위기간 테이블 처리
- 	    // upd 필드가 수정되었거나, 월별 지급액 리스트가 넘어온 경우 재계산을 수행
- 	    if (updExists > 0 || (monthlyCompanyPay != null && !monthlyCompanyPay.isEmpty())) {
- 	        
- 	        // (1) 기존 Y데이터 삭제
- 	        adminApprovalDAO.deleteUpdatedTerms(confirmNumber);
+            // 재계산에 사용될 값 결정 
+            Date sDate = dto.getUpdStartDate() != null ? dto.getUpdStartDate() : originalData.getStartDate();
+            Date eDate = dto.getUpdEndDate() != null ? dto.getUpdEndDate() : originalData.getEndDate();
+            Long wage = (dto.getUpdRegularWage() != null && dto.getUpdRegularWage() > 0) ? dto.getUpdRegularWage() : originalData.getRegularWage();
+            
+            if (sDate == null || eDate == null || wage == null) {
+                 throw new IllegalStateException("단위기간 계산에 필요한 시작일, 종료일, 또는 통상임금 정보가 없습니다.");
+            }
 
- 	        Date sDate = dto.getUpdStartDate() != null ? dto.getUpdStartDate()
- 	                   : dto.getStartDate() != null ? dto.getStartDate()
- 	                   : originalData.getStartDate(); // ★ 안전 장치
+            LocalDate s = sDate.toLocalDate();
+            LocalDate e = eDate.toLocalDate();
+            
+            // 단위기간 재계산
+            List<TermAmountDTO> updatedTerms = calculateUpdatedTerms(s, e, wage, monthlyCompanyPay);
+            
+            // 재계산된 단위기간을 update_at='Y'로 삽입
+            if (!updatedTerms.isEmpty()) {
+                for (TermAmountDTO t : updatedTerms) {
+                    t.setConfirmNumber(confirmNumber);
+                }
+                adminApprovalDAO.insertUpdatedTermAmounts(updatedTerms);
+            }
+        } else {
+             log.info("단위기간 관련 정보가 수정되지 않아 재계산을 건너뜁니다. ConfirmNumber: {}", confirmNumber);
+        }
 
- 	        Date eDate = dto.getUpdEndDate() != null ? dto.getUpdEndDate()
- 	                   : dto.getEndDate() != null ? dto.getEndDate()
- 	                   : originalData.getEndDate(); // ★ 안전 장치
-
- 	        Long wage = dto.getUpdRegularWage() != null ? dto.getUpdRegularWage()
- 	                  : dto.getRegularWage() != null ? dto.getRegularWage()
- 	                  : originalData.getRegularWage(); // ★ 안전 장치
-
- 	        // Date 객체를 toLocalDate()로 안전하게 변환
- 	        // sDate, eDate, wage는 originalData 덕분에 절대 null이 아닙니다.
- 	        LocalDate s = sDate.toLocalDate(); 
- 	        LocalDate e = eDate.toLocalDate();
- 	        
- 	        updatedTerms = calculateUpdatedTerms(s, e, wage, monthlyCompanyPay);
- 	        
- 	    } else {
- 	        
- 	        // ★★★ 이 else 블록은 삭제하거나, 아래처럼 원본을 기준으로만 재계산을 해야 합니다. ★★★
- 	        adminApprovalDAO.deleteUpdatedTerms(confirmNumber);
- 	        
- 	        LocalDate s = originalData.getStartDate().toLocalDate();
- 	        LocalDate e = originalData.getEndDate().toLocalDate();
- 	        Long wage = originalData.getRegularWage();
-
- 	        // monthlyCompanyPay는 이 블록에서 null일 가능성이 높으므로 null로 전달됨
- 	        updatedTerms = calculateUpdatedTerms(s, e, wage, null); 
- 	    }
- 	    
- 	    // (3) 공통 로직: update_at = 'Y' 지정 및 삽입
- 	    for (TermAmountDTO t : updatedTerms) {
- 	        t.setConfirmNumber(confirmNumber);
- 	        t.setUpdateAt("Y");
- 	    }
-
- 	    adminApprovalDAO.insertUpdatedTermAmounts(updatedTerms);
-
- 	    return true;
- 	}
+        return true;
+    }
  	
- 	// 재계산 로직
+ 	// 재계산 로직(확인서에서 그대로 가져옴)
  	private List<TermAmountDTO> calculateUpdatedTerms(LocalDate start, LocalDate end, long regularWage, List<Long> monthlyCompanyPay) {
  	    List<TermAmountDTO> list = new ArrayList<>();
  	    LocalDate curStart = start;

@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="com.google.gson.Gson" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -377,35 +378,35 @@
 	</div>
 	
 	<!-- 반려 사유 안내 박스 -->
-<c:if test="${confirmDTO.statusCode == 'ST_60'}">
-    <div class="reject-result">
-        <div class="title-section">
-            <i class="fa-solid fa-circle-xmark"></i>
-            <h3>반려</h3>
-            <span class="reason-inline">
-                <c:choose>
-                    <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_10'}">계좌정보 불일치</c:when>
-                    <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_20'}">필요 서류 미제출</c:when>
-                    <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_30'}">신청시기 미도래</c:when>
-                    <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_40'}">근속기간 미충족</c:when>
-                    <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_50'}">자녀 연령 기준 초과</c:when>
-                    <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_60'}">휴직 가능 기간 초과</c:when>
-                    <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_70'}">제출서류 정보 불일치</c:when>
-                    <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_80'}">신청서 작성 내용 미비</c:when>
-                    <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_99'}">기타</c:when>
-                </c:choose>
-            </span>
-        </div>
-        <div class="info-grid">
-            <div class="info-item">
-                <div class="label">상세 사유</div>
-                <div class="value">${confirmDTO.rejectComment}</div>
-            </div>
-        </div>
-    </div>
-</c:if>
+	<c:if test="${confirmDTO.statusCode == 'ST_60'}">
+	    <div class="reject-result">
+	        <div class="title-section">
+	            <i class="fa-solid fa-circle-xmark"></i>
+	            <h3>반려</h3>
+	            <span class="reason-inline">
+	                <c:choose>
+	                    <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_10'}">계좌정보 불일치</c:when>
+	                    <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_20'}">필요 서류 미제출</c:when>
+	                    <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_30'}">신청시기 미도래</c:when>
+	                    <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_40'}">근속기간 미충족</c:when>
+	                    <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_50'}">자녀 연령 기준 초과</c:when>
+	                    <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_60'}">휴직 가능 기간 초과</c:when>
+	                    <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_70'}">제출서류 정보 불일치</c:when>
+	                    <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_80'}">신청서 작성 내용 미비</c:when>
+	                    <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_99'}">기타</c:when>
+	                </c:choose>
+	            </span>
+	        </div>
+	        <div class="info-grid">
+	            <div class="info-item">
+	                <div class="label">상세 사유</div>
+	                <div class="value">${confirmDTO.rejectComment}</div>
+	            </div>
+	        </div>
+	    </div>
+	</c:if>
 
-	
+	<!-- 확인서 상세폼(원본 데이터) -->
   <div class="content-wrapper">
     <div class="content-header" style="margin-bottom:24px;">
     
@@ -513,7 +514,7 @@
 	                </tr>
         		</thead>
         		<tbody>
-                    <c:forEach var="term" items="${termList}" varStatus="status">
+                    <c:forEach var="term" items="${confirmDTO.termAmounts}" varStatus="status">
                         <tr>
                             <td style="text-align:center;" colspan="1"><c:out value="${status.count}" />개월차</td>
                             <td style="text-align:center;" colspan="1">
@@ -528,7 +529,7 @@
                             </td>
                         </tr>
                     </c:forEach>
-                    <c:if test="${empty termList}">
+                    <c:if test="${empty confirmDTO.termAmounts}">
                         <tr>
                             <td colspan="3" style="text-align:center; color: var(--gray-color);">입력된 지급 내역이 없습니다.</td>
                         </tr>
@@ -548,126 +549,115 @@
                     </tr>
         </table>
 		
-		<!-- ===== 확인서 수정 카드 ===== -->
-		  <div class="card" style="width: 48%; display: inline-block; vertical-align: top; margin-left: 2%;">
-    <div class="card-body">
-        <h3 style="margin-bottom: 20px;">확인서 수정</h3>
+		<!-- 확인서 수정 폼 -->
+		<div class="card" style="width: 48%; display: inline-block; vertical-align: top; margin-left: 2%;">
+	    <div class="card-body">
+	        <h3 style="margin-bottom: 20px;">확인서 수정</h3>
+	
+	        <form id="updateForm">
+	            <input type="hidden" name="confirmNumber" value="${confirmDTO.confirmNumber}">
+	
+	            <table class="sheet-table">
+	                <colgroup>
+	                    <col class="w160"><col><col class="w160"><col>
+	                </colgroup>
+	
+	                <tr><th class="sheet-head" colspan="4">육아휴직 기간 <i class="fa fa-edit" style="color:#007bff;"></i></th></tr>
+	                <tr>
+	                    <th>육아휴직 시작일</th>
+	                    <td>
+	                        <input type="date" name="updStartDate"
+	                               id="edit-start-date"
+	                               class="form-control" style="width: 80%;"
+	                               value="<fmt:formatDate value='${confirmDTO.updStartDate}' pattern='yyyy-MM-dd' />">
+	                    </td>
+	                    <th>육아휴직 종료일</th>
+	                    <td>
+	                        <input type="date" name="updEndDate"
+	                               id="edit-end-date"
+	                               class="form-control" style="width: 80%;"
+	                               value="<fmt:formatDate value='${confirmDTO.updEndDate}' pattern='yyyy-MM-dd' />">
+	                    </td>
+	                </tr>
+	
+	                <tr><th class="sheet-head" colspan="4">단위기간별 지급액 <i class="fa fa-edit" style="color:#007bff;"></i></th></tr>
+	                <tr>
+	                    <td colspan="4" style="padding: 20px;">
+	                        <div style="margin-bottom: 12px;">
+	                            <button type="button" id="generate-edit-forms-btn" class="btn btn-secondary">
+	                                <i class="fa fa-calendar"></i> 기간 나누기 및 재계산
+	                            </button>
+	                            <small style="display:block; margin-top:8px; color:#666;">
+	                                ※ 기간, 근로조건, 통상임금을 수정한 후 '기간 나누기 및 재계산'을 클릭하세요.<br>
+	                                ※ 이후 월별 사업장 지급액을 수정하고 '수정 저장'을 클릭해야 최종 반영됩니다.
+	                            </small>
+	                        </div>
+	                        <div id="edit-dynamic-header-row" class="dynamic-form-row" style="display: none; ...">
+	                            </div>
+	                        <div id="edit-dynamic-forms-container" class="dynamic-form-container"></div>
+	                    </td>
+	                </tr>
+	
+	                <tr><th class="sheet-head" colspan="4">근로조건 <i class="fa fa-edit" style="color:#007bff;"></i></th></tr>
+	                <tr>
+	                    <th>주당 소정근로시간</th>
+	                    <td>
+	                        <input type="number" name="updWeeklyHours"
+	                               id="edit-weekly-hours"
+	                               class="form-control" style="width: 60%;"
+	                               value="${confirmDTO.updWeeklyHours != null ? confirmDTO.updWeeklyHours : ''}"> 시간
+	                    </td>
+	                    <th>통상임금 (월)</th>
+	                    <td>
+	                        <input type="number" name="updRegularWage"
+	                               id="edit-regular-wage"
+	                               class="form-control" style="width: 60%;"
+	                               value="${confirmDTO.updRegularWage != null ? confirmDTO.updRegularWage : ''}"> 원
+	                    </td>
+	                </tr>
+	
+	                <tr><th class="sheet-head" colspan="4">대상 자녀 정보 <i class="fa fa-edit" style="color:#007bff;"></i></th></tr>
+	                <tr>
+	                    <th>자녀 이름</th>
+	                    <td>
+	                        <input type="text" name="updChildName"
+	                               id="edit-child-name"
+	                               placeholder="출산 후 입력"
+	                               class="form-control" style="width: 80%;"
+	                               value="${confirmDTO.updChildName != null ? confirmDTO.updChildName : ''}">
+	                    </td>
+	                    <th>출산(예정)일</th>
+	                    <td>
+	                        <input type="date" name="updChildBirthDate"
+	                               id="edit-child-birth-date"
+	                               class="form-control" style="width: 80%;"
+	                               value="<fmt:formatDate value='${confirmDTO.updChildBirthDate}' pattern='yyyy-MM-dd' />">
+	                    </td>
+	                </tr>
+	                <tr>
+	                    <th>자녀 주민등록번호</th>
+	                    <td colspan="3">
+	                        <input type="text" name="updChildResiRegiNumber"
+	                               id="edit-child-rrn"
+	                               placeholder="출산 후 입력 (예: 000000-0000000)"
+	                               class="form-control" style="width: 40%;"
+	                               value="${confirmDTO.updChildResiRegiNumber != null ? confirmDTO.updChildResiRegiNumber : ''}">
+	                    </td>
+	                </tr>
+	            </table>
+	
+	            <div class="button-container">
+	                <button type="button" id="updateBtn" class="btn btn-primary" style="margin-right:10px;">
+	                    <i class="fa fa-save"></i> 수정 저장
+	                </button>
+	                <button type="button" id="updateCancelBtn" class="btn btn-secondary">
+	                    	취소
+	                </button>
+	            </div>
+	        </form>
+	    </div>
+	</div>
 
-        <form id="updateForm">
-            <input type="hidden" name="confirmNumber" value="${confirmDTO.confirmNumber}">
-
-            <input type="hidden" id="initialTermAmounts" 
-                   value='${fn:escapeXml(gson.toJson(termList))}' data-initialized="false">
-
-            <table class="sheet-table">
-                <colgroup>
-                    <col class="w160"><col><col class="w160"><col>
-                </colgroup>
-
-                <tr><th class="sheet-head" colspan="4">육아휴직 기간 <i class="fa fa-edit" style="color:#007bff;"></i></th></tr>
-                <tr>
-                    <th>육아휴직 시작일</th>
-                    <td>
-                        <input type="date" name="startDate"
-                               id="edit-start-date"
-                               class="form-control" style="width: 80%;"
-                               value="<fmt:formatDate value='${confirmDTO.startDate}' pattern='yyyy-MM-dd' />">
-                    </td>
-                    <th>육아휴직 종료일</th>
-                    <td>
-                        <input type="date" name="endDate"
-                               id="edit-end-date"
-                               class="form-control" style="width: 80%;"
-                               value="<fmt:formatDate value='${confirmDTO.endDate}' pattern='yyyy-MM-dd' />">
-                    </td>
-                </tr>
-
-                <tr><th class="sheet-head" colspan="4">단위기간별 지급액 <i class="fa fa-edit" style="color:#007bff;"></i></th></tr>
-                <tr>
-                    <td colspan="4" style="padding: 20px;">
-                        <div style="margin-bottom: 12px;">
-                            <button type="button" id="generate-edit-forms-btn" class="btn btn-secondary">
-                                <i class="fa fa-calendar"></i> 기간 나누기 및 재계산
-                            </button>
-                            <small style="display:block; margin-top:8px; color:#666;">
-                                ※ 기간, 근로조건, 통상임금을 수정한 후 '기간 나누기 및 재계산'을 클릭하세요.
-                                <br>
-                                ※ 이후 월별 사업장 지급액을 수정하고 '수정 저장'을 클릭해야 최종 반영됩니다.
-                            </small>
-                        </div>
-
-                        <div id="edit-dynamic-header-row" class="dynamic-form-row"
-                             style="display: none; background: var(--light-gray-color); border-bottom: 1px solid var(--border-color); font-weight: 500; margin-bottom: 0;">
-                            <div class="col-term-no">회차</div>
-                            <div class="col-term-period">기간</div>
-                            <div class="col-term-company">사업장 지급액(원)</div>
-                            <div class="col-term-gov">정부 지급액 (예상)</div>
-                        </div>
-
-                        <div id="edit-dynamic-forms-container" class="dynamic-form-container">
-                            </div>
-                    </td>
-                </tr>
-
-                <tr><th class="sheet-head" colspan="4">근로조건 <i class="fa fa-edit" style="color:#007bff;"></i></th></tr>
-                <tr>
-                    <th>월 소정근로시간</th>
-                    <td>
-                        <input type="number" name="weeklyHours"
-                               id="edit-weekly-hours"
-                               class="form-control" style="width: 60%;"
-                               value="${confirmDTO.weeklyHours}"> 시간
-                    </td>
-                    <th>통상임금 (월)</th>
-                    <td>
-                        <input type="number" name="regularWage"
-                               id="edit-regular-wage"
-                               class="form-control" style="width: 60%;"
-                               value="${confirmDTO.regularWage}"> 원
-                    </td>
-                </tr>
-
-                <tr><th class="sheet-head" colspan="4">대상 자녀 정보 <i class="fa fa-edit" style="color:#007bff;"></i></th></tr>
-                <tr>
-                    <th>자녀 이름</th>
-                    <td>
-                        <input type="text" name="childName"
-                               id="edit-child-name"
-                               placeholder="출산 후 입력"
-                               class="form-control" style="width: 80%;"
-                               value="${confirmDTO.childName}">
-                    </td>
-                    <th>출산(예정)일</th>
-                    <td>
-                        <input type="date" name="childBirthDate"
-                               id="edit-child-birth-date"
-                               class="form-control" style="width: 80%;"
-                               value="<fmt:formatDate value='${confirmDTO.childBirthDate}' pattern='yyyy-MM-dd' />">
-                    </td>
-                </tr>
-                <tr>
-                    <th>자녀 주민등록번호</th>
-                    <td colspan="3">
-                        <input type="text" name="childResiRegiNumber"
-                               id="edit-child-rrn"
-                               placeholder="출산 후 입력 (예: 000000-0000000)"
-                               class="form-control" style="width: 40%;"
-                               value="${confirmDTO.childResiRegiNumber}">
-                    </td>
-                </tr>
-            </table>
-
-            <div class="button-container">
-                <button type="button" id="updateBtn" class="btn btn-primary" style="margin-right:10px;">
-                    <i class="fa fa-save"></i> 수정 저장
-                </button>
-                <button type="button" id="updateCancelBtn" class="btn btn-secondary">
-                    취소
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
 		        <div class="button-container">
 		        	<c:choose> 
 		
@@ -707,7 +697,7 @@
 					            <button type="button" id="cancelBtn" class="btn btn-secondary">취소</button>
 				            </div>
 				            
-				            <a href="${pageContext.request.contextPath}/admin/confirm" class="btn btn-secondary">목록</a>
+				            <a href="${pageContext.request.contextPath}/admin/list" class="btn btn-secondary">목록</a>
 				        </c:otherwise>
 		    		</c:choose>
 				</div>
@@ -719,7 +709,6 @@
 <script>
 document.addEventListener("DOMContentLoaded", function() {
 
-    // ===== 변수 선언 =====
     const confirmBtn = document.getElementById("confirmBtn");
     const rejectForm = document.getElementById("rejectForm");
     const cancelBtn = document.getElementById("cancelBtn");
@@ -733,8 +722,25 @@ document.addEventListener("DOMContentLoaded", function() {
     const generateEditBtn = document.getElementById('generate-edit-forms-btn');
     const editFormsContainer = document.getElementById('edit-dynamic-forms-container');
     const editHeaderRow = document.getElementById('edit-dynamic-header-row');
-
+	
+    const initialData = {
+            // gson.toJson이 JSON 배열 문자열("[]" 또는 "[{...}]")이나 "null"을 직접 출력
+            termAmounts: ${gson.toJson(confirmDTO.updatedTermAmounts)} || [],
+            originalTermAmounts: ${gson.toJson(confirmDTO.termAmounts)} || []
+        };
+    
     console.log("✅ 페이지 로드 완료, confirmNumber:", confirmNumber);
+    
+ 	// ===== 페이지 로드 시 수정 폼 초기화 함수 =====
+    function initializeEditForm() {
+        console.log("수정 폼 초기화 시작", initialData.termAmounts);
+        // 페이지 로드 시, 이미 저장된 '수정된 단위기간(Y)' 데이터가 있다면 화면에 그려줌
+        if (initialData.termAmounts && initialData.termAmounts.length > 0) {
+            updateTermRows(initialData.termAmounts);
+        }
+    }
+    
+    initializeEditForm(); // 페이지 로드 시 함수 호출
 
     // ===== 진행바 초기화 =====
     let progressWidth = 0;
@@ -824,9 +830,9 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
- 	// ===== 기간 나누기 버튼 (수정된 로직) =====
+ 	// ===== 기간 나누기 버튼  =====
     generateEditBtn?.addEventListener('click', function() {
-        // ... (유효성 검증 로직은 기존과 동일)
+       
         if (!editStartDateInput.value || !editEndDateInput.value) { alert('기간 선택'); return; }
         const originalStart = new Date(editStartDateInput.value+'T00:00:00');
         const finalEnd = new Date(editEndDateInput.value+'T00:00:00');
@@ -873,158 +879,140 @@ document.addEventListener("DOMContentLoaded", function() {
     });
  
     // ===== 수정 저장 버튼 =====
-document.getElementById("updateBtn")?.addEventListener("click", function() {
-    const form = document.getElementById("updateForm");
-    const formData = new FormData(form);
-    const jsonData = {};
+	document.getElementById("updateBtn")?.addEventListener("click", function() {
+	    const form = document.getElementById("updateForm");
+	    const formData = new FormData(form);
+	    const jsonData = {};
+	
+	    // 1. 기본 폼 데이터 수집
+	    for (let [key, value] of formData.entries()) {
+	        // editMonthlyCompanyPay는 따로 처리해야 하므로 건너뜀
+	        if (key==='editMonthlyCompanyPay') continue; 
+	        
+	        // 값이 있고 공백이 아닌 경우에만 JSON에 추가 
+	        if (value && value.trim() !== '') jsonData[key] = value.trim(); 
+	    }
+	    jsonData.confirmNumber = confirmNumber;
+	
+	    // 2. 단위기간 데이터 수집 (updatedTermAmounts)
+	    const termRows = editFormsContainer.querySelectorAll('.dynamic-form-row');
+	    const monthlyCompanyPayList = [];
+	    let hasError = false;
+	
+	    // 기간 나누기 버튼을 눌러 행이 생성된 경우에만 처리
+	    if (termRows.length > 0) { 
+	        termRows.forEach((row, index) => {
+	            const start = row.getAttribute('data-start-date');
+	            const end = row.getAttribute('data-end-date');
+	            const companyInput = row.querySelector('input[name="editMonthlyCompanyPay"]');
+	            
+	            // 쉼표 제거 후 숫자로 변환
+	            const companyPay = onlyDigits(companyInput.value); 
+	            
+	            // 필수 입력 검증
+	            if (companyPay === '' || companyPay === null) { 
+	                alert((index + 1) + '개월차의 월별 사업장 지급액을 입력해주세요.'); 
+	                companyInput.focus(); 
+	                hasError=true; 
+	                return; 
+	            }
+	            monthlyCompanyPayList.push(Number(companyPay));
+	  
+	        });
+	
+	        if (hasError) return;
+	        
+	        jsonData.monthlyCompanyPay = monthlyCompanyPayList;
+	        
+	    } else {
+	        // 기간 나누기 버튼을 누르지 않은 경우 (기존 데이터만 업데이트하는 경우) 처리
+	    }
+	
+	    if (!confirm("수정 내용을 저장하시겠습니까? (이 작업은 월별 정부 지원금 재계산을 포함합니다.)")) return;
+	
+	    // 3. AJAX 요청
+	    fetch("${pageContext.request.contextPath}/admin/judge/update", {
+	        method:"POST",
+	        headers:{ "Content-Type":"application/json" },
+	        body:JSON.stringify(jsonData)
+	    })
+	    .then(res => res.json())
+	    .then(data => {
+	        alert(data.message);
+	        if (data.success) {
 
-    // 1. 기본 폼 데이터 수집
-    for (let [key, value] of formData.entries()) {
-        // editMonthlyCompanyPay는 따로 처리해야 하므로 건너뜀
-        if (key==='editMonthlyCompanyPay') continue; 
-        
-        // 값이 있고 공백이 아닌 경우에만 JSON에 추가 
-        if (value && value.trim()!=='') jsonData[key] = value.trim(); 
-    }
-    jsonData.confirmNumber = confirmNumber;
+	            // 서버로부터 받은 최신 '수정된 단위기간' 데이터로 화면을 갱신(기존데이터와 섞이는 문제 해결)
+	            if (data.data && data.data.updatedTermAmounts) {
+	                updateTermRows(data.data.updatedTermAmounts);
+	                
+	            } else {
+	                // 단위기간 변경 없이 다른 정보만 수정된 경우, 컨테이너를 비울 수 있습니다.
+	                editFormsContainer.innerHTML = '';
+	                editHeaderRow.style.display = 'none';
+	            }
+	        }
+	    })
+	    .catch(err => {
+	        console.error("저장 오류:", err);
+	        alert("수정 저장 중 오류 발생: " + err.message);
+	    });
+	});
+	
+	    // ===== 단위기간 화면 갱신 (수정 폼 영역) =====
+		function updateTermRows(termAmounts) {
+		    // 1. 수정 폼 컨테이너 (우측 카드) 갱신
+		    const editFormsContainer = document.getElementById('edit-dynamic-forms-container');
+		    editFormsContainer.innerHTML = '';
+		    
+		    // 헤더 노출
+		    document.getElementById('edit-dynamic-header-row').style.display = 'flex'; 
+		
+		    termAmounts.forEach((term, index) => {
+		        const row = document.createElement('div');
+		        row.className = 'dynamic-form-row';
+		        row.setAttribute('data-start-date', term.startMonthDate); 
+		        row.setAttribute('data-end-date', term.endMonthDate);
+		        
+		        // 값 포맷팅
+		        const companyPay = term.companyPayment || 0;
+		        const govPay = term.govPayment || 0;
+		        const rangeText = formatDate(new Date(term.startMonthDate)) + ' ~ ' + formatDate(new Date(term.endMonthDate));
+		        
+		        row.innerHTML =
+		            '<div class="col-term-no">' + (index + 1) + '개월차</div>' +
+		            '<div class="col-term-period">' + rangeText + '</div>' +
+		            '<div class="payment-input-field col-term-company">' +
+		                '<input type="text" name="editMonthlyCompanyPay" class="form-control" value="' + withCommas(companyPay) + '">' +
+		            '</div>' +
+		            // 재계산된 정부 지급액을 표시
+		            '<div class="col-term-gov" style="text-align: right; padding-right: 15px;">' +
+		                '<span>' + withCommas(govPay) + '원</span>' + 
+		            '</div>';
+		
+		        editFormsContainer.appendChild(row);
+		        
+		        // 쉼표 허용 유틸리티 다시 바인딩 (input에만)
+		        allowDigitsAndCommas(row.querySelector('input[name="editMonthlyCompanyPay"]'), 19);
+		    });
 
-    // 2. 단위기간 데이터 수집 (updatedTermAmounts)
-    const termRows = editFormsContainer.querySelectorAll('.dynamic-form-row');
-    const monthlyCompanyPayList = [];
-    let hasError = false;
-
-    // 기간 나누기 버튼을 눌러 행이 생성된 경우에만 처리
-    if (termRows.length > 0) { 
-        termRows.forEach((row, index) => {
-            const start = row.getAttribute('data-start-date');
-            const end = row.getAttribute('data-end-date');
-            const companyInput = row.querySelector('input[name="editMonthlyCompanyPay"]');
-            
-            // 쉼표 제거 후 숫자로 변환
-            const companyPay = onlyDigits(companyInput.value); 
-            
-            // 필수 입력 검증
-            if (companyPay === '' || companyPay === null) { 
-                alert((index + 1) + '개월차의 월별 사업장 지급액을 입력해주세요.'); 
-                companyInput.focus(); 
-                hasError=true; 
-                return; 
-            }
-            monthlyCompanyPayList.push(Number(companyPay));
-            /* // 서버로 보낼 DTO 구조에 맞게 데이터를 구성
-            updatedTermAmounts.push({ 
-                startMonthDate: start, 
-                endMonthDate: end, 
-                // DB 저장을 위해 Number로 변환하여 전송
-                companyPayment: Number(companyPay) 
-            }); */
-        });
-
-        if (hasError) return;
-        
-        // 서버의 ConfirmApplyDTO의 필드명에 맞게 updatedTermAmounts 배열을 추가
-        //jsonData.updatedTermAmounts = updatedTermAmounts;
-        jsonData.monthlyCompanyPay = monthlyCompanyPayList;
-        
-    } else {
-        // 기간 나누기 버튼을 누르지 않은 경우 (기존 데이터만 업데이트하는 경우) 처리
-        // 만약 기간/금액 수정이 필수라면 이 부분을 수정해야 함
-        // 현재는 필수 아닌 것으로 가정하고 진행
-    }
-
-    if (!confirm("수정 내용을 저장하시겠습니까? (이 작업은 월별 정부 지원금 재계산을 포함합니다.)")) return;
-
-    // 3. AJAX 요청
-    fetch("${pageContext.request.contextPath}/admin/judge/update", {
-        method:"POST",
-        headers:{ "Content-Type":"application/json" },
-        body:JSON.stringify(jsonData)
-    })
-    .then(res => {
-        // HTTP 응답 코드가 200 (OK)이 아니면 에러로 처리
-        if (!res.ok) {
-            return res.json().then(errorData => {
-                throw new Error(errorData.message || "서버 오류 발생");
-            });
-        }
-        return res.json();
-    })
-    .then(data => {
-        alert(data.message);
-        if(data.success && data.data && data.data.termAmounts) {
-            // 4. 서버에서 최종 계산된 termAmounts를 받아 화면 갱신
-            updateTermRows(data.data.termAmounts); 
-        } else if (data.success) {
-            // 성공했으나 데이터가 없는 경우 (예: 금액 관련 수정이 없었던 경우)
-            alert("수정은 완료되었으나 화면 갱신 데이터가 없습니다.");
-        }
-    })
-    .catch(err => { 
-        console.error("저장 오류:", err); 
-        alert("수정 저장 중 오류 발생: " + err.message); 
-    });
-});
-
-    // ===== 단위기간 화면 갱신 (수정 폼 영역) =====
-function updateTermRows(termAmounts) {
-    // 1. 수정 폼 컨테이너 (우측 카드) 갱신
-    const editFormsContainer = document.getElementById('edit-dynamic-forms-container');
-    editFormsContainer.innerHTML = '';
-    
-    // 헤더 노출
-    document.getElementById('edit-dynamic-header-row').style.display = 'flex'; 
-
-    termAmounts.forEach((term, index) => {
-        const row = document.createElement('div');
-        row.className = 'dynamic-form-row';
-        // startMonthDate와 endMonthDate는 DB 포맷(yyyy-MM-dd)으로 가정
-        row.setAttribute('data-start-date', term.startMonthDate); 
-        row.setAttribute('data-end-date', term.endMonthDate);
-        
-        // 값 포맷팅
-        const companyPay = term.companyPayment || 0;
-        const govPay = term.govPayment || 0;
-        const rangeText = formatDate(new Date(term.startMonthDate)) + ' ~ ' + formatDate(new Date(term.endMonthDate));
-
-        // HTML 구성
-        row.innerHTML =
-            '<div class="col-term-no">' + (index + 1) + '개월차</div>' +
-            '<div class="col-term-period">' + rangeText + '</div>' +
-            '<div class="payment-input-field col-term-company">' +
-                '<input type="text" name="editMonthlyCompanyPay" class="form-control" value="' + withCommas(companyPay) + '">' +
-            '</div>' +
-            // 재계산된 정부 지급액을 표시
-            '<div class="col-term-gov" style="text-align: right; padding-right: 15px;">' +
-                '<span>' + withCommas(govPay) + '원</span>' + 
-            '</div>';
-
-        editFormsContainer.appendChild(row);
-        
-        // 쉼표 허용 유틸리티 다시 바인딩 (input에만)
-        allowDigitsAndCommas(row.querySelector('input[name="editMonthlyCompanyPay"]'), 19);
-    });
-    
-    // 2. (선택적) 원본 데이터 테이블 (좌측 테이블) 갱신 로직 추가
-    // 이 부분은 뷰 구조에 따라 다르므로 필요하다면 직접 구현하거나 별도로 요청해주세요.
-    // 예: document.getElementById('original-term-table-body').innerHTML = ...
-}
-
-    // ===== 시작일/종료일 변경 시 폼 초기화 =====
-    editStartDateInput?.addEventListener('change',function(){
-        if(editStartDateInput.value) editEndDateInput.min=editStartDateInput.value;
-        else editEndDateInput.removeAttribute('min');
-        editFormsContainer.innerHTML=''; editHeaderRow.style.display='none';
-    });
-    editEndDateInput?.addEventListener('change',function(){
-        editFormsContainer.innerHTML=''; editHeaderRow.style.display='none';
-    });
-
-    // ===== 수정 취소 =====
-    document.getElementById("updateCancelBtn")?.addEventListener("click",function(){
-        if(confirm("수정을 취소하시겠습니까?\n입력한 내용이 초기화됩니다.")) location.reload();
-    });
-
-});
+		}
+	
+	    // ===== 시작일/종료일 변경 시 폼 초기화 =====
+	    editStartDateInput?.addEventListener('change',function(){
+	        if(editStartDateInput.value) editEndDateInput.min=editStartDateInput.value;
+	        else editEndDateInput.removeAttribute('min');
+	        editFormsContainer.innerHTML=''; editHeaderRow.style.display='none';
+	    });
+	    editEndDateInput?.addEventListener('change',function(){
+	        editFormsContainer.innerHTML=''; editHeaderRow.style.display='none';
+	    });F
+	
+	    // ===== 수정 취소 =====
+	    document.getElementById("updateCancelBtn")?.addEventListener("click",function(){
+	        if(confirm("수정을 취소하시겠습니까?\n입력한 내용이 초기화됩니다.")) location.reload();
+	    });
+	
+	});
 </script>
 
 
