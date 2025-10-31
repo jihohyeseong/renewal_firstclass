@@ -710,7 +710,7 @@ document.addEventListener("DOMContentLoaded", function () {
 				error: function(xhr, status, error) {
 					console.error('Push notification failed:', error);
 					// 푸시 실패 시 (메시지에 실패 내역 추가)
-					alert(successMessage + '\n(푸시 알림 전송 실패)');
+					alert(successMessage);
 				},
 				complete: function() {
 					// 푸시 성공/실패 여부와 관계없이 리디렉션 실행

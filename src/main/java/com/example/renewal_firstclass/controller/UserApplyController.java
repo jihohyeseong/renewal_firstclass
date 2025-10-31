@@ -78,7 +78,7 @@ public class UserApplyController {
 			userApplyService.applyEarlyTerm(applicationDTO.getEndDate(), applicationDTO.getList().get(applicationDTO.getList().size() - 1));
 		userApplyService.insertApply(applicationDTO);
 		
-		return "redirect:/user/main";
+		return "redirect:/user/detail/" + applicationDTO.getApplicationNumber();
 	}
 	
 	// 육아휴직 급여 제출
