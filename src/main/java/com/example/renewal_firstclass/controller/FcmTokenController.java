@@ -99,8 +99,8 @@ public class FcmTokenController {
             for(int i = 0; i < fcmToken.size(); i++) {
 	            fcmService.sendPushNotification(
 	                    fcmToken.get(i), 
-	                    "🔔 알림테스트", 
-	                    userId + "에게 푸시알림 전송l"
+	                    "🔔 육아휴직 급여심사가 완료되었습니다!", 
+	                    "홈페이지에 접속해 확인해주세요."
 	            );
             }
             return ResponseEntity.ok(userId + "님에게 푸시를 전송했습니다. (토큰: " + fcmToken + ")");
