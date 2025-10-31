@@ -1,5 +1,6 @@
 package com.example.renewal_firstclass.dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +30,7 @@ public interface AdminUserApprovalDAO {
     /** 관리자 상세 진입 시 심사중상태로*/
     int whenOpenChangeState(@Param("applicationNumber") long applicationNumber);
 
-    /** 지급 확정(2차 심사로)*/
+    /** 1차 지급 확정(2차 심사로)*/
     int approveApplicationLevel1(@Param("applicationNumber") long applicationNumber,
                                  @Param("processorId") Long processorId);
 
@@ -38,5 +39,18 @@ public interface AdminUserApprovalDAO {
                           @Param("rejectionReasonCode") String rejectionReasonCode,
                           @Param("rejectComment") String rejectComment,
                           @Param("processorId") Long processorId);
+    
+    int updateBankInfoByAppNo(
+            @Param("applicationNumber") Long applicationNumber,
+            @Param("updBankCode") String updBankCode,
+            @Param("updAccountNumber") String updAccountNumber
+        );
+
+    int updateChildInfoByAppNo(
+            @Param("applicationNumber") Long applicationNumber,
+            @Param("updChildName") String updChildName,
+            @Param("updChildBirthDate") Date updChildBirthDate,
+            @Param("updChildResiRegiNumber") String updChildResiRegiNumber
+        );
 
 }

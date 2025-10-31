@@ -130,7 +130,7 @@
         <div class="form-group">
           <label class="field-title" for="employee-name">근로자 성명</label>
           <div class="input-field">
-            <input type="text" id="employee-name" name="name" placeholder="육아휴직 대상 근로자 성명">
+            <input type="text" id="employee-name" name="name" placeholder="육아휴직 대상 근로자 성명" maxlength="50">
           </div>
         </div>
         <div class="form-group">
@@ -159,7 +159,7 @@
         <div id="born-fields">
           <div class="form-group">
             <label class="field-title" for="child-name">자녀 이름 </label>
-            <div class="input-field"><input type="text" id="child-name" name="childName"></div>
+            <div class="input-field"><input type="text" id="child-name" name="childName" maxlength="50"></div>
           </div>
           <div class="form-group">
   <label class="field-title" for="child-rrn-a">
@@ -272,7 +272,7 @@
         <h2>확인서 작성자 정보</h2>
         <div class="form-group">
           <label class="field-title" for="response-name">담당자 이름</label>
-          <div class="input-field"><input type="text" id="response-name" name="responseName"></div>
+          <div class="input-field"><input type="text" id="response-name" name="responseName" maxlength="50"></div>
         </div>
         <div class="form-group">
           <label class="field-title" for="response-phone">담당자 전화번호</label>

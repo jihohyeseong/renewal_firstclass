@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
@@ -14,6 +13,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/global.css">
+
 <style>
 :root{
 	--primary-color:#3f58d4;
@@ -27,7 +27,6 @@
 	--warning-bg-color:#fff3cd;
 	--warning-border-color:#ffeeba;
 	--warning-text-color:#856404;
-    --danger-color: #dc3545;
 	--shadow-sm:0 1px 3px rgba(0,0,0,0.05);
 	--shadow-md:0 4px 8px rgba(0,0,0,0.07);
 }
@@ -46,16 +45,37 @@ a{text-decoration:none;color:inherit}
 	background-color:var(--white-color);padding:15px 40px;border-bottom:1px solid var(--border-color);box-shadow:var(--shadow-sm);
 }
 .footer{border-top:1px solid var(--border-color);border-bottom:none;text-align:center;padding:20px 0;margin-top:auto}
-.header{display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
-.header nav{display:flex;align-items:center;gap:15px}
-.header .welcome-msg{font-size:16px}
+
+		.header-nav {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+		}
+	
+		.header-nav .nav-link {
+            display: block;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            color: #495057;
+            transition: all 0.3s ease-in-out;
+		}
+		.header-nav .nav-link:hover {
+            color: #3f58d4;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(63, 88, 212, 0.3);
+		}
 
 .main-container{
-	flex-grow:1;width:100%;max-width:1060px;margin:40px auto;padding:40px;
+	flex-grow:1;width:100%;max-width:850px;margin:40px auto;padding:40px;
 	background-color:var(--white-color);border-radius:12px;box-shadow:var(--shadow-md);
 }
 
-h1{text-align:center;margin-bottom:30px;font-size:28px}
+h1{text-align:center;margin-bottom:10px;font-size:28px}
 h2{
 	color:var(--primary-color);border-bottom:2px solid var(--primary-light-color);
 	padding-bottom:10px;margin-bottom:25px;font-size:20px;
@@ -68,21 +88,25 @@ h2{
 }
 
 /* 테이블 */
-.info-table-container{margin-bottom:40px}
+.info-table-container{margin-bottom:30px}
 .info-table{
 	width:100%;border-collapse:collapse;
-	border-top:2px solid var(--dark-gray-color);
+	border-top:2px solid var(--border-color);
+	border-left:none;border-right:none;
 }
 .info-table th,.info-table td{
 	padding:12px 15px;border:1px solid var(--border-color);
 	text-align:left;font-size:15px;
-	vertical-align: middle;
 }
 .info-table th{
 	background-color:var(--light-gray-color);
 	font-weight:500;width:150px;color:var(--dark-gray-color);
 }
 .info-table td{background-color:var(--white-color);color:#333}
+.info-table.table-4col th{width:120px;background-color:var(--light-gray-color)}
+.info-table.table-4col td{width:auto}
+.info-table.table-4col th,.info-table.table-4col td{border-top:none}
+.info-table tr:first-child th,.info-table tr:first-child td{border-top:1px solid var(--border-color)}
 
 /* 버튼 */
 .btn{
@@ -94,31 +118,14 @@ h2{
 .btn-primary:hover{background-color:#364ab1;box-shadow:var(--shadow-md);transform:translateY(-2px)}
 .btn-secondary{background-color:var(--white-color);color:var(--gray-color);border-color:var(--border-color)}
 .btn-secondary:hover{background-color:var(--light-gray-color);color:var(--dark-gray-color);border-color:#ccc}
-.btn-danger { background-color: var(--danger-color); color: #fff; border-color: var(--danger-color); }
-.btn-danger:hover { background-color: #c82333; border-color: #bd2130; transform:translateY(-2px); box-shadow:var(--shadow-md); }
+.btn-logout{background-color:var(--dark-gray-color);color:#fff;border:none}
+.btn-logout:hover{background-color:#555}
 
-
-/* [수정] 하단 버튼 컨테이너 스타일 */
-.button-container{
-	display: flex;
-    justify-content: center; /* 기본은 중앙 정렬 */
-    align-items: center;
-    gap: 15px;
-    margin-top:50px;
-}
-/* [추가] 버튼들을 양쪽으로 배치할 때 사용하는 클래스 */
-.button-container.spread-out {
-    justify-content: space-between;
-    gap: 0; /* space-between 사용 시에는 gap 불필요 */
-}
-/* [추가] 왼쪽 버튼들을 그룹화 하기 위한 클래스 */
-.button-group-left {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
+/* 하단 버튼 컨테이너 */
+.button-container{text-align:center;margin-top:50px}
 .bottom-btn{padding:12px 30px;font-size:1.1em}
+#edit-btn{background-color:var(--primary-color);color:#fff;border-color:var(--primary-color)}
+#edit-btn:hover{background-color:#364ab1;border-color:#364ab1;transform:translateY(-2px)}
 
 .data-title{font-weight:500}
 .detail-btn{
@@ -129,90 +136,320 @@ h2{
 .detail-btn:hover{background-color:var(--primary-light-color)}
 .success-text{color:var(--success-color);font-weight:500}
 
-/* 하이라이팅을 위한 CSS 클래스 */
+/* 모달 스타일 */
+.modal-overlay{
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    background-color:rgba(0,0,0,0.5);display:flex;
+    justify-content:center;align-items:center;z-index:1000;
+    transition: opacity 0.2s ease-in-out;
+}
+.modal-content {
+    background-color:var(--white-color);padding:30px 40px;
+    border-radius:12px;width:100%;max-width:500px;
+    box-shadow:var(--shadow-md);
+    transform: scale(0.95);
+    transition: transform 0.2s ease-in-out;
+}
+.modal-overlay.visible .modal-content { transform: scale(1); }
+.modal-content h2 {
+    margin-top:0;text-align:center;color:var(--dark-gray-color);
+    border-bottom:none;padding-bottom:0;margin-bottom:25px;
+    font-size: 22px;
+}
+.form-group {margin-bottom:20px}
+.form-group label {
+    display:block;font-weight:500;margin-bottom:8px;font-size:16px;
+}
+.form-control {
+    width:100%;padding:10px;font-size:15px;
+    border:1px solid var(--border-color);border-radius:8px;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+textarea.form-control { resize: vertical; }
+.modal-buttons {
+    display:flex;justify-content:flex-end;gap:10px;margin-top:30px;
+}
+/* [추가] 하이라이팅을 위한 CSS 클래스 */
 .highlight-warning {
-    background-color: #fff3cd; 
-    color: #856404;
+    background-color: #f8d7da; /* 부드러운 빨간색 배경 */
+    color: var(--danger-color); /* 진한 빨간색 텍스트 */
     font-weight: 700;
     padding: 2px 6px;
     border-radius: 4px;
 }
+
+/* ===== 진행 상태 카드 (Step Progress Bar) - Blue Theme (5단계) ===== */
+.progress-card {
+  background: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+.stepper-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  padding: 0 6%;
+  margin: 6px 0 2px;
+}
+.stepper-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 6%;
+  right: 6%;
+  height: 8px;
+  border-radius: 8px;
+  background-color: #dbe4ff; /* 연파랑 */
+  z-index: 1;
+  transform: translateY(-50%);
+}
+.stepper-item { position: relative; z-index: 2; text-align: center; flex: 1; }
+.step-counter {
+  width: 36px; height: 36px; border-radius: 50%;
+  background-color: #b6ccff; color: #fff; font-weight: 700;
+  margin: 18px auto 6px; display:flex; align-items:center; justify-content:center;
+  transition: background-color .25s ease, box-shadow .25s ease;
+}
+.step-name { font-size: 13px; color: #334155; }
+.stepper-item.completed .step-counter {
+  background-color: #5c7cfa; box-shadow: inset 0 0 0 5px rgba(92,124,250,.22);
+}
+.stepper-item.current .step-counter {
+  background-color: var(--primary-color); /* #3f58d4 */
+  box-shadow: 0 0 0 4px rgba(63,88,212,.18);
+}
+.stepper-wrapper .progress-line {
+  position: absolute; top: 50%; left: 6%;
+  height: 8px; border-radius: 8px; background-color: var(--primary-color);
+  z-index: 1; transform: translateY(-50%);
+  width: 0%; transition: width .35s ease;
+}
+
+#rejectForm { display: none; }
+
+.judge-wrap {
+  display: flex;
+  align-items: center;
+  gap: 16px;             /* 라디오들 사이 간격 */
+  margin: 12px 0 16px;   /* 위/아래 마진 */
+}
+.judge-wrap input[type="radio"] {
+  margin-right: 6px;     /* 아이콘과 텍스트 사이 */
+}
 </style>
 </head>
 <body>
+
 <jsp:include page="adminheader.jsp" />
-	<main class="main-container">
-	<h1>육아휴직 급여 신청서 상세 보기</h1>
-	
-	<!-- DTO가 비어있는 경우 처리 -->
-	<c:if test="${empty dto}">
-		<p style="text-align:center; font-size:18px; color:var(--gray-color);">신청서 정보를 불러올 수 없습니다.</p>
-	</c:if>
-	
-	<c:if test="${not empty dto}">
-		<div class="info-table-container">
-			<h2 class="section-title">접수정보</h2>
-			<table class="info-table">
-				<tbody>
-					<tr>
-						<th>접수번호</th>
-						<td><c:out value="${dto.applicationNumber}" /></td>
-						<th>신청인</th>
-						<td><c:out value="${dto.name}" /></td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	
-		<div class="info-table-container">
-			<h2 class="section-title">신청인 정보 (육아휴직자)</h2>
-			<table class="info-table">
-				<tbody>
-					<tr>
-						<th>이름</th>
-						<td colspan="3"><c:out value="${dto.name}" /></td>
-					</tr>
-					<tr>
-						<th>주민등록번호</th>
-						<td colspan="3">
-							<c:if test="${not empty dto.registrationNumber}">
-						        <c:set var="rrnCleaned" value="${fn:replace(fn:replace(fn:trim(dto.registrationNumber), '-', ''), ' ', '')}" />
-						        ${fn:substring(rrnCleaned, 0, 6)}-${fn:substring(rrnCleaned, 6, 13)}
-						    </c:if>
-						</td>
-					</tr>
-					<tr>
-						<th>휴대전화번호</th>
-						<td colspan="3"><c:out value="${dto.phoneNumber}" /></td>
-					</tr>
-					<tr>
-						<th>주소</th>
-						<td colspan="3">(${dto.zipNumber}) ${dto.addressBase} ${dto.addressDetail}</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	
-		<div class="info-table-container">
-			<h2 class="section-title">사업장 정보 (회사)</h2>
-			<table class="info-table">
-				<tbody>
-					<tr>
-						<th>사업장 이름</th>
-						<td><c:out value="${dto.companyName}" /></td>
-					</tr>
-					<tr>
-						<th>사업자 등록번호</th>
-						<td><c:out value="${dto.buisinessRegiNumber}" /></td>
-					</tr>
-					<tr>
-						<th>사업장 주소</th>
-						<td>(${dto.companyZipNumber}) ${dto.companyAddressBase} ${dto.companyAddressDetail}</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	
+
+<main class="main-container">
+<%-- 상태 코드/결과 기반으로 서버에서 단계/진행폭 계산 --%>
+<c:set var="status" value="${appDTO.statusCode}" />
+<c:set var="payRes" value="${appDTO.paymentResult}" />
+
+<%-- 단계: 1 제출, 2 심사중(1차), 3 승인/반려, 4 심사중(2차), 5 최종지급결정 --%>
+<c:set var="currentStep" value="2" />
+<c:choose>
+  <c:when test="${status == 'ST_20'}"><c:set var="currentStep" value="1"/></c:when>
+  <c:when test="${status == 'ST_30'}"><c:set var="currentStep" value="2"/></c:when>
+  <c:when test="${status == 'ST_40'}"><c:set var="currentStep" value="4"/></c:when>
+  <c:when test="${status == 'ST_60'}"><c:set var="currentStep" value="3"/></c:when>
+</c:choose>
+<c:if test="${status == 'ST_50'}"><c:set var="currentStep" value="5"/></c:if>
+
+<%-- 진행선 폭 계산 --%>
+<c:set var="progressWidth" value="0"/>
+<c:choose>
+  <c:when test="${currentStep == 1}"><c:set var="progressWidth" value="0"/></c:when>
+  <c:when test="${currentStep == 2}"><c:set var="progressWidth" value="25"/></c:when>
+  <c:when test="${currentStep == 3}"><c:set var="progressWidth" value="50"/></c:when>
+  <c:when test="${currentStep == 4}"><c:set var="progressWidth" value="75"/></c:when>
+  <c:when test="${currentStep == 5}"><c:set var="progressWidth" value="100"/></c:when>
+</c:choose>
+
+<!-- 진행 상태 카드 (5단계) -->
+<div class="progress-card">
+  <div class="stepper-wrapper">
+    <div class="progress-line" style="width:${progressWidth}%;"></div>
+
+    <div class="stepper-item ${currentStep > 1 ? 'completed' : (currentStep == 1 ? 'current' : '')}">
+      <div class="step-counter">1</div><div class="step-name">제출</div>
+    </div>
+    <div class="stepper-item ${currentStep > 2 ? 'completed' : (currentStep == 2 ? 'current' : '')}">
+      <div class="step-counter">2</div><div class="step-name">심사중(1차)</div>
+    </div>
+    <div class="stepper-item ${currentStep > 3 ? 'completed' : (currentStep == 3 ? 'current' : '')}">
+      <div class="step-counter">3</div>
+      <div class="step-name">
+        <c:choose>
+          <c:when test="${status == 'ST_50'}">승인</c:when>
+          <c:when test="${status == 'ST_60'}">반려</c:when>
+          <c:otherwise>승인/반려</c:otherwise>
+        </c:choose>
+      </div>
+    </div>
+    <div class="stepper-item ${currentStep > 4 ? 'completed' : (currentStep == 4 ? 'current' : '')}">
+      <div class="step-counter">4</div><div class="step-name">심사중(2차)</div>
+    </div>
+    <div class="stepper-item ${currentStep > 5 ? 'completed' : (currentStep == 5 ? 'current' : '')}">
+      <div class="step-counter">5</div><div class="step-name">최종지급결정</div>
+    </div>
+  </div>
+</div>
+<h1>육아휴직 급여 신청서 상세 보기</h1>
+
+<!-- 접수정보 -->
+<div class="info-table-container">
+  <h2 class="section-title">접수정보</h2>
+  <table class="info-table table-4col">
+    <tbody>
+      <tr>
+        <th class="data-title">접수번호</th>
+        <td><c:out value="${appDTO.applicationNumber}" /></td>
+        <th class="data-title">민원내용</th>
+        <td>육아휴직 급여 신청</td>
+      </tr>
+      <tr>
+        <th class="data-title">신청일</th>
+        <td>
+          <c:choose>
+            <c:when test="${not empty appDTO.submittedDt}">
+              <fmt:formatDate value="${appDTO.submittedDt}" pattern="yyyy-MM-dd" />
+            </c:when>
+            <c:otherwise>미신청</c:otherwise>
+          </c:choose>
+        </td>
+        <th class="data-title">신청인</th>
+        <!-- 관리자 전용: applicantName 표시 -->
+        <td><c:out value="${appDTO.applicantName}" /></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 신청인 정보 -->
+<div class="info-table-container">
+  <h2 class="section-title">신청인 정보 (육아휴직자)</h2>
+  <table class="info-table table-4col">
+    <tbody>
+      <tr>
+        <th>이름</th>
+        <td colspan="3"><c:out value="${appDTO.applicantName}" /></td>
+      </tr>
+      <tr>
+        <th>주민등록번호</th>
+        <td colspan="3">
+          <c:if test="${not empty appDTO.applicantResiRegiNumber}">
+            <c:set var="rrnRaw" value="${appDTO.applicantResiRegiNumber}" />
+            <c:set var="rrnDigits" value="${fn:replace(fn:replace(fn:trim(rrnRaw), '-', ''), ' ', '')}" />
+            ${fn:substring(rrnDigits,0,6)}-${fn:substring(rrnDigits,6,7)}******
+          </c:if>
+          <c:if test="${empty appDTO.applicantResiRegiNumber}">
+            <span class="highlight-warning">미입력</span>
+          </c:if>
+        </td>
+      </tr>
+      <tr>
+        <th>휴대전화번호</th>
+        <td colspan="3">
+          <c:if test="${not empty appDTO.applicantPhoneNumber}">
+            <c:out value="${appDTO.applicantPhoneNumber}" />
+          </c:if>
+          <c:if test="${empty appDTO.applicantPhoneNumber}">
+            <span class="highlight-warning">미입력</span>
+          </c:if>
+        </td>
+      </tr>
+      <tr>
+        <th>주소</th>
+        <td colspan="3">
+          <c:choose>
+            <c:when test="${empty appDTO.applicantZipNumber and empty appDTO.applicantAddrBase}">
+              <span class="highlight-warning">미입력</span>
+            </c:when>
+            <c:otherwise>
+              <c:if test="${not empty appDTO.applicantZipNumber}">(${appDTO.applicantZipNumber})&nbsp;</c:if>
+              <c:out value="${appDTO.applicantAddrBase}" />
+              <c:if test="${not empty appDTO.applicantAddrDetail}">&nbsp;<c:out value="${appDTO.applicantAddrDetail}" /></c:if>
+            </c:otherwise>
+          </c:choose>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 사업장 정보 -->
+<div class="info-table-container">
+  <h2 class="section-title">사업장 정보 (회사)</h2>
+  <table class="info-table table-4col">
+    <colgroup>
+      <col style="width:120px"><col>
+      <col style="width:120px"><col>
+    </colgroup>
+    <tbody>
+
+      <tr>
+        <th>사업장 이름</th>
+        <td>
+          <c:if test="${empty appDTO.businessName}">
+            <span class="highlight-warning">미입력</span>
+          </c:if>
+          <c:if test="${not empty appDTO.businessName}">
+            <c:out value="${appDTO.businessName}"/>
+          </c:if>
+        </td>
+
+        <th>인사담당자 연락처</th>
+        <td style="white-space:nowrap;">
+              <c:out value="${appDTO.responsePhoneNumber}"/>
+        </td>
+      </tr>
+
+      <tr>
+        <th>사업장 <br/>등록번호</th>
+        <td>
+          <c:choose>
+            <c:when test="${empty appDTO.businessRegiNumber}">
+              <span class="highlight-warning">미입력</span>
+            </c:when>
+            <c:otherwise>
+              <c:set var="bizRaw" value="${appDTO.businessRegiNumber}" />
+              <c:set var="bizDigits" value="${fn:replace(fn:replace(fn:replace(fn:trim(bizRaw), '-', ''), ' ', ''), ',', '')}" />
+              <c:choose>
+                <c:when test="${fn:length(bizDigits) == 10}">
+                  ${fn:substring(bizDigits,0,3)}-${fn:substring(bizDigits,3,5)}-${fn:substring(bizDigits,5,10)}
+                </c:when>
+                <c:otherwise>
+                  <span class="highlight-warning"><c:out value="${bizRaw}" /></span>
+                </c:otherwise>
+              </c:choose>
+            </c:otherwise>
+          </c:choose>
+        </td>
+
+        <th>사업장 주소</th>
+        <td>
+          <c:choose>
+            <c:when test="${empty appDTO.businessZipNumber and empty appDTO.businessAddrBase}">
+              <span class="highlight-warning">미입력</span>
+            </c:when>
+            <c:otherwise>
+              <c:if test="${not empty appDTO.businessZipNumber}">(${appDTO.businessZipNumber})&nbsp;</c:if>
+              <c:out value="${appDTO.businessAddrBase}" />
+              <c:if test="${not empty appDTO.businessAddrDetail}">&nbsp;<c:out value="${appDTO.businessAddrDetail}" /></c:if>
+            </c:otherwise>
+          </c:choose>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
 		<div class="info-table-container">
 			<h2 class="section-title">급여 신청 기간 및 월별 내역</h2>
 			<table class="info-table">
@@ -323,150 +560,395 @@ h2{
 				</tbody>
 			</table>
 		</div>
-	
-		<div class="info-table-container">
-			<h2 class="section-title">자녀 정보 (육아 대상)</h2>
-			<table class="info-table">
-				<tbody>
+
+
+
+
+
+<!-- 급여 신청 기간 및 월별 내역 -->
+<div class="info-table-container">
+  <h2 class="section-title">급여 신청 기간 및 월별 내역</h2>
+  <table class="info-table table-4col">
+    <tbody>
+      <tr>
+        <th>육아휴직 <br>시작일</th>
+        <td>
+          <c:if test="${empty appDTO.startDate}"><span class="highlight-warning">미입력</span></c:if>
+          <c:if test="${not empty appDTO.startDate}">${appDTO.startDate}</c:if>
+        </td>
+        <th>총 휴직 기간</th>
+        <td id="total-leave-period">(${empty appDTO.startDate ? '미입력' : appDTO.startDate}
+          ~ ${empty appDTO.endDate ? '미입력' : appDTO.endDate})</td>
+      </tr>
+      <tr>
+        <th>월별 분할 <br>신청 여부</th>
+        <td colspan="3">아니오 (일괄 신청)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 class="section-title" style="font-size: 16px; margin-top: 25px;">월별 지급 내역</h3>
+  <table class="info-table table-4col">
+    <thead>
+      <tr>
+        <th>회차</th>
+        <th>기간</th>
+        <th>사업장 지급액</th>
+        <th>정부 지급액</th>
+        <th>지급예정일</th>
+      </tr>
+    </thead>
+    <tbody>
+      <c:forEach var="t" items="${terms}" varStatus="st">
+        <tr>
+          <td><c:out value="${st.index + 1}" />개월차</td>
+          <td><c:out value="${t.startMonthDate}" /> ~ <c:out value="${t.endMonthDate}" /></td>
+          <td><fmt:formatNumber value="${t.companyPayment}" type="number" /></td>
+          <td><fmt:formatNumber value="${t.govPayment}" type="number" /></td>
+          <td><c:out value="${t.paymentDate}" /></td>
+        </tr>
+      </c:forEach>
+
+      <c:if test="${empty terms}">
+        <tr>
+          <td colspan="5" style="text-align: center; color: #888;">단위기간 내역이 없습니다.</td>
+        </tr>
+      </c:if>
+    </tbody>
+  </table>
+</div>
+
+<!-- 자녀 정보 -->
+<div class="info-table-container">
+  <h2 class="section-title">자녀 정보 (육아 대상)</h2>
+
+  <!-- 원본 데이터 표시 테이블 -->
+  <table class="info-table table-4col">
+    <tbody>
+      <tr>
+        <th>자녀 이름</th>
+        <td><c:out value="${appDTO.childName}" /></td>
+        <th>출산(예정)일</th>
+        <td>
+          <fmt:formatDate value="${appDTO.childBirthDate}" pattern="yyyy.MM.dd" />
+        </td>
+      </tr>
+      <tr>
+        <th>주민등록번호</th>
+        <td colspan="3">
+          <c:if test="${not empty appDTO.childResiRegiNumber}">
+            ${fn:substring(appDTO.childResiRegiNumber, 0, 6)}-${fn:substring(appDTO.childResiRegiNumber, 6, 7)}******
+          </c:if>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+
+
+<!-- 계좌정보 -->
+<div class="info-table-container">
+  <h2 class="section-title">급여 입금 계좌정보</h2>
+  <table class="info-table table-4col">
+    <tbody>
+      <tr>
+        <th>은행</th>
+        <td>
+          <c:if test="${empty appDTO.bankName}">
+            <span class="highlight-warning">미입력</span>
+          </c:if>
+          <c:if test="${not empty appDTO.bankName}">
+            <c:out value="${appDTO.bankName}" />
+          </c:if>
+        </td>
+        <th>계좌번호</th>
+        <td>
+          <c:if test="${empty appDTO.accountNumber}">
+            <span class="highlight-warning">미입력</span>
+          </c:if>
+          <c:if test="${not empty appDTO.accountNumber}">
+            <c:out value="${appDTO.accountNumber}" />
+          </c:if>
+        </td>
+      </tr>
+      <tr>
+        <th>예금주 이름</th>
+        <td colspan="3"><c:out value="${appDTO.applicantName}" /></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 센터 정보 (고정 예시) -->
+<div class="info-table-container">
+  <h2 class="section-title">접수 처리 센터 정보</h2>
+  <table class="info-table table-4col">
+    <tbody>
+      <tr>
+        <th>관할센터</th>
+        <td>서울 고용 복지 플러스 센터
+          <a href="https://www.work.go.kr/seoul/main.do" class="detail-btn">자세히 보기</a>
+        </td>
+        <th>대표전화</th>
+        <td>02-2004-7301</td>
+      </tr>
+      <tr>
+        <th>주소</th>
+        <td colspan="3">서울 중구 삼일대로363 1층 (장교동)</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 행정정보 공동이용 동의 -->
+<div class="info-table-container">
+  <h2 class="section-title">행정정보 공동이용 동의</h2>
+  <table class="info-table table-4col">
+    <tbody>
+      <tr>
+        <th>동의 여부</th>
+        <td colspan="3">
+          <c:choose>
+            <c:when test="${appDTO.govInfoAgree == 'Y'}">예</c:when>
+            <c:when test="${appDTO.govInfoAgree == 'N'}"><span class="highlight-warning">아니요</span></c:when>
+            <c:otherwise>미선택</c:otherwise>
+          </c:choose>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+		<%-- 컨텍스트 경로 --%>
+		<c:set var="ctx" value="${pageContext.request.contextPath}" />
+
+
+		<%@ taglib prefix="sec"
+			uri="http://www.springframework.org/security/tags"%>
+
+
+		<!-- 관리자 임시수정 폼 -->
+		<form id="adminUpdateForm" method="post"
+			action="${ctx}/admin/user/update" style="margin-top: 18px;">
+			<%-- CSRF --%>
+			<sec:csrfInput />
+
+			<!-- 필수: 신청번호 -->
+			<input type="hidden" name="applicationNumber"
+				value="${appDTO.applicationNumber}" />
+
+			<!-- 계좌정보(업데이트) -->
+			<div class="info-table-container">
+				<h2 class="section-title">급여 입금 계좌정보 (수정)</h2>
+				<table class="info-table table-4col">
+					<tbody>
 						<tr>
-							<th>자녀 이름</th>
-							<td><c:out value="${dto.childName}" /></td>
-							<th>생년월일</th>
-							<td><fmt:formatDate value="${dto.childBirthDate}" pattern="yyyy-MM-dd" /></td>
-						</tr>
-						<tr>
-							<th>주민등록번호</th>
-							<td colspan="3">
-								<c:if test="${not empty dto.childResiRegiNumber}">
-							        <c:set var="rrnCleaned" value="${fn:replace(fn:replace(fn:trim(dto.childResiRegiNumber), '-', ''), ' ', '')}" />
-							        ${fn:substring(rrnCleaned, 0, 6)}-${fn:substring(rrnCleaned, 6, 13)}
-							    </c:if>
+							<th>은행</th>
+							<td>
+							<select name="updBankCode" id="updBankCode" class="form-control">
+							  <option value="">(없음)</option>
+							  <c:forEach var="b" items="${bankCodes}">
+							    <option value="${b.code}"
+							      <c:if test="${b.code == appDTO.updBankCode}">selected</c:if>>
+							      ${b.name} (${b.code})
+							    </option>
+							  </c:forEach>
+							</select>
+								</td>
+							<th>계좌번호</th>
+							<td>
+								<%-- 컨트롤러 파라미터명과 동일: updAccountNumber --%> <input type="text"
+								name="updAccountNumber" class="form-control"
+								value="${fn:escapeXml(appDTO.updAccountNumber)}"
+								placeholder="계좌번호(숫자/하이픈)" />
 							</td>
 						</tr>
-				</tbody>
-			</table>
-		</div>
-	
-		<div class="info-table-container">
-			<h2 class="section-title">급여 입금 계좌정보</h2>
-			<table class="info-table">
-				<tbody>
-					<tr>
-						<th>은행</th>
-						<td><c:out value="${dto.bankName}" /></td>
-						<th>계좌번호</th>
-						<td><c:out value="${dto.accountNumber}" /></td>
-					</tr>
-					<tr>
-						<th>예금주 이름</th>
-						<td colspan="3"><c:out value="${dto.name}" /></td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	
-		<div class="info-table-container">
-			<h2 class="section-title">접수 처리 센터 정보</h2>
-			<table class="info-table">
-				<tbody>
-					<tr>
-						<th>관할센터</th>
-						<td>
-							<c:out value="${dto.centerName}"/>
-							<a href="<c:out value='${dto.centerUrl}'/>" target="_blank" class="detail-btn">자세히 보기</a>
-						</td>
-						<th>대표전화</th>
-						<td><c:out value="${dto.centerPhoneNumber}"/></td>
-					</tr>
-					<tr>
-						<th>주소</th>
-						<td colspan="3">(${dto.centerZipCode}) ${dto.centerAddressBase} ${dto.centerAddressDetail}</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	
-		<div class="info-table-container">
-			<h2 class="section-title">행정정보 공동이용 동의</h2>
-			<table class="info-table">
-				<tbody>
-					<tr>
-						<th>동의 여부</th>
-						<td colspan="3">
-							<c:choose>
-								<c:when test="${dto.govInfoAgree == 'Y'}">예</c:when>
-								<c:otherwise><span class="highlight-warning">아니요</span></c:otherwise>
-							</c:choose>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	
-		<!-- [수정] 버튼 컨테이너 구조 변경 -->
-		<c:choose>
-			<c:when test="${dto.statusCode == 'ST_10'}">
-				<div class="button-container spread-out">
-					<div class="button-group-left">
-						<a href="${pageContext.request.contextPath}/user/main" class="btn bottom-btn btn-secondary">목록으로 돌아가기</a>
-						<form action="${pageContext.request.contextPath}/user/application/update/${dto.applicationNumber}" method="post" style="display: inline;">
-						    <%-- CSRF 토큰 추가 --%>
-						    <sec:csrfInput/>
-						    
-						    <%-- termId 리스트를 hidden input으로 추가 --%>
-						    <c:forEach var="item" items="${dto.list}">
-						        <input type="hidden" name="termId" value="${item.termId}" />
-						    </c:forEach>
-						    
-						    <%-- 버튼은 <a> 태그와 동일한 스타일을 적용 --%>
-						    <button type="submit" class="btn bottom-btn btn-primary">신청 내용 수정</button>
-						</form>
-						<form id="submitForm" action="${pageContext.request.contextPath}/user/submit/${dto.applicationNumber}" method="post" style="display: inline;">
-							<sec:csrfInput/>
-							<button type="button" onclick="confirmAction('submitForm', '최종 제출 후에는 수정할 수 없습니다. 제출하시겠습니까?')" class="btn bottom-btn btn-primary">최종 제출</button>
-						</form>
-					</div>
-					<form id="deleteForm" action="${pageContext.request.contextPath}/user/delete/${dto.applicationNumber}" method="post" style="display: inline;">
-						<sec:csrfInput/>
-						<c:forEach var="item" items="${dto.list}">
-						        <input type="hidden" name="termId" value="${item.termId}" />
-						</c:forEach>
-						<button type="button" onclick="confirmAction('deleteForm', '정말로 삭제하시겠습니까?')" class="btn bottom-btn btn-danger">삭제</button>
-					</form>
-				</div>
-			</c:when>
-	
-			<c:when test="${dto.statusCode == 'ST_20' or dto.statusCode == 'ST_30' or dto.statusCode == 'ST_40'}">
-				<div class="button-container spread-out">
-					<a href="${pageContext.request.contextPath}/user/main" class="btn bottom-btn btn-secondary">목록으로 돌아가기</a>
-					<form id="cancelForm" action="${pageContext.request.contextPath}/user/cancel/${dto.applicationNumber}" method="post" style="display: inline;">
-						<sec:csrfInput/>
-						<button type="button" onclick="confirmAction('cancelForm', '신청을 취소하시겠습니까?')" class="btn bottom-btn btn-danger">신청 취소</button>
-					</form>
-				</div>
-			</c:when>
-	
-			<c:otherwise>
-				<%-- ST_50, ST_60 and any other cases --%>
-				<div class="button-container">
-					<a href="${pageContext.request.contextPath}/user/main" class="btn bottom-btn btn-secondary">목록으로 돌아가기</a>
-				</div>
-			</c:otherwise>
-		</c:choose>
-	</c:if>
-	</main>
-	
-	<footer class="footer">
-		<p>&copy; 2025 육아휴직 서비스. All Rights Reserved.</p>
-	</footer>
+					</tbody>
+				</table>
+			</div>
 
+			<!-- 자녀 정보(업데이트) -->
+			<div class="info-table-container">
+				<h2 class="section-title">자녀 정보 (수정)</h2>
+				<table class="info-table table-4col">
+					<tbody>
+						<tr>
+							<th style="background: #b0baec;">자녀 이름</th>
+							<td><input type="text" name="updChildName"
+								class="form-control"
+								value="${fn:escapeXml(appDTO.updChildName)}" placeholder="자녀 이름" />
+							</td>
+							<th style="background: #b0baec;">출산(예정)일</th>
+							<td><fmt:formatDate value="${appDTO.updChildBirthDate}"
+									pattern="yyyy-MM-dd" var="updBirthStr" /> <input type="date"
+								name="updChildBirthDate" class="form-control"
+								value="${updBirthStr}" /></td>
+						</tr>
+						<tr>
+							<th style="background: #b0baec;">주민등록번호</th>
+							<td colspan="3"><input type="text"
+								name="updChildResiRegiNumber" class="form-control"
+								maxlength="13"
+								value="${fn:escapeXml(appDTO.updChildResiRegiNumber)}"
+								placeholder="숫자만 입력 (예: 0101011234567)" /></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="button-container"
+				style="margin-top: 18px; display: flex; gap: 8px; justify-content: center;">
+				<button type="submit" class="btn btn-secondary">수정사항 저장</button>
+			</div>
+		</form>
+
+
+		<!-- 하단 관리자 버튼 -->
+<div class="button-container">
+  <c:choose>
+    <c:when test="${appDTO.statusCode == 'ST_40' or appDTO.statusCode == 'ST_50' or appDTO.statusCode == 'ST_60' or appDTO.paymentResult == 'Y'}">
+      <a href="${pageContext.request.contextPath}/admin/list" class="btn btn-secondary">목록으로 돌아가기</a>
+    </c:when>
+    <c:otherwise>
+      <div class="judge-wrap">
+        <label><input type="radio" name="judgeOption" value="approve"> 지급</label>
+        <label><input type="radio" name="judgeOption" value="reject"> 부지급</label>
+      </div>
+
+      <div id="rejectForm">
+        <h3>부지급 사유 선택</h3>
+        <div class="reasons" id="rejectReasons"></div>
+        <div style="margin-top:10px;">
+          <label>상세 사유</label><br>
+          <input type="text" id="rejectComment" class="form-control" placeholder="상세 사유를 입력하세요 (선택)">
+        </div>
+      </div>
+
+      <div class="judge-actions">
+        <button type="button" id="confirmBtn" class="btn btn-primary">확인</button>
+        <a href="${pageContext.request.contextPath}/admin/list" class="btn btn-secondary">목록으로 돌아가기</a>
+      </div>
+    </c:otherwise>
+  </c:choose>
+</div>
+
+
+<input type="hidden" id="applicationNumber" value="${appDTO.applicationNumber}" />
+
+
+<footer class="footer">
+  <p>&copy; 2025 육아휴직 서비스. All Rights Reserved.</p>
+</footer>
+
+<!-- 관리자 전용: 항상 실행 -->
 <script>
-function confirmAction(formId, message) {
-    if (confirm(message)) {
-        document.getElementById(formId).submit();
-    }
-}
+document.addEventListener("DOMContentLoaded", function () {
+	  const ctx = '${pageContext.request.contextPath}';
+
+	  const confirmBtn        = document.getElementById("confirmBtn");
+	  const rejectForm        = document.getElementById("rejectForm");
+	  const rejectReasonsEl   = document.getElementById("rejectReasons"); // ← 꼭 필요
+	  const rejectCommentEl   = document.getElementById("rejectComment");
+	  const applicationNumber = document.getElementById("applicationNumber")?.value;
+
+	  // 지급/부지급 라디오 선택 시 사유 로딩
+	  document.querySelectorAll('input[name="judgeOption"]').forEach(radio => {
+	    radio.addEventListener('change', function() {
+	      if (this.value === 'reject') {
+	        rejectForm.style.display = "block";
+
+	        if (!rejectReasonsEl.dataset.loaded) {
+	          fetch(ctx + '/codes/reject', {
+	            method: 'GET',
+	            headers: { 'Accept': 'application/json' }
+	          })
+	          .then(res => res.json())
+	          .then(list => {
+	            if (!Array.isArray(list) || list.length === 0) {
+	              rejectReasonsEl.innerHTML =
+	                '<em style="color:#64748b;">사유 코드가 없습니다.</em>';
+	            } else {
+	            	rejectReasonsEl.innerHTML = list
+	            	  .map(({code, name}) =>
+	            	    '<label><input type="radio" name="reasonCode" value="' + code + '"> ' + (name ?? code) + '</label>'
+	            	  )
+	            	  .join('');
+	            }
+	            rejectReasonsEl.dataset.loaded = '1';
+	          })
+	          .catch(() => {
+	            // 네트워크 실패 시라도 선택 가능하도록 기본 옵션 제공
+	            rejectReasonsEl.innerHTML =
+	              '<label><input type="radio" name="reasonCode" value="RJ_99"> 기타(네트워크 오류)</label>';
+	            rejectReasonsEl.dataset.loaded = '1';
+	          });
+	        }
+	      } else {
+	        rejectForm.style.display = "none";
+	      }
+	    });
+	  });
+
+	  // 확인(지급/부지급) — 토큰 없이
+	  if (confirmBtn) {
+	    confirmBtn.addEventListener('click', function() {
+	      const selected = document.querySelector('input[name="judgeOption"]:checked');
+	      if (!selected) { alert('지급 또는 부지급을 선택해주세요.'); return; }
+
+	      // ★ 컨트롤러 경로와 반드시 통일 (예: admin/judge/**)
+	      const approveUrl = ctx + '/admin/user/approve';
+	      const rejectUrl  = ctx + '/admin/user/reject';
+
+	      if (selected.value === 'approve') {
+	        if (!confirm('지급 확정하시겠습니까?')) return;
+
+	        fetch(approveUrl, {
+	          method: 'POST',
+	          headers: { 'Content-Type': 'application/json' },
+	          body: JSON.stringify({ applicationNumber: Number(applicationNumber) })
+	        })
+	        .then(res => res.json())
+	        .then(data => {
+	          alert(data.message || '처리가 완료되었습니다.');
+	          if (data.redirectUrl) location.href = data.redirectUrl.startsWith('/') ? (ctx + data.redirectUrl) : data.redirectUrl;
+	        })
+	        .catch(() => alert('지급 처리 중 오류가 발생했습니다.'));
+	      } else {
+	        const reason  = document.querySelector('input[name="reasonCode"]:checked');
+	        const comment = (rejectCommentEl?.value || '').trim();
+	        if (!reason) { alert('부지급 사유를 선택해주세요.'); return; }
+	        if (reason.value === 'RJ_99' && !comment) { alert('기타 선택 시 상세 사유를 입력하세요.'); return; }
+	        if (!confirm('부지급 처리하시겠습니까?')) return;
+
+	        fetch(rejectUrl, {
+	          method: 'POST',
+	          headers: { 'Content-Type': 'application/json' },
+	          body: JSON.stringify({
+	            applicationNumber: Number(applicationNumber),
+	            rejectionReasonCode: reason.value,
+	            rejectComment: comment
+	          })
+	        })
+	        .then(res => res.json())
+	        .then(data => {
+	          alert(data.message || '부지급 처리가 완료되었습니다.');
+	          if (data.redirectUrl) location.href = data.redirectUrl.startsWith('/') ? (ctx + data.redirectUrl) : data.redirectUrl;
+	        })
+	        .catch(() => alert('부지급 처리 중 오류가 발생했습니다.'));
+	      }
+	    });
+	  }
+	});
+
+</script>
+
+
+<div id="flash-error" style="display:none;"><c:out value="${error}"/></div>
+<script>
+ (function () {
+   var err = document.getElementById('flash-error')?.textContent.trim();
+   if (err) alert(err);
+ })();
 </script>
 </body>
 </html>
-

@@ -104,22 +104,23 @@
 
 			<!-- 근로자 정보 -->
       <tr><th class="sheet-head" colspan="4">근로자 정보</th></tr>
-      <tr>
-        <th>성명</th><td>${confirmDTO.name}</td>
-        <th>주민등록번호</th>
-        <td>
-          <c:set var="rrn"/>
-          ${fn:substring(confirmDTO.registrationNumber,0,6)}-${fn:substring(confirmDTO.registrationNumber,6,13)}
-        </td>
-      </tr>
-      <tr>
-        <th>육아휴직 기간</th>
-        <td colspan="3">
-          <fmt:formatDate value="${confirmDTO.startDate}" pattern="yyyy.MM.dd"/> ~
-          <fmt:formatDate value="${confirmDTO.endDate}" pattern="yyyy.MM.dd"/>
-        </td>
-      </tr>
-      <tr>
+			<tr>
+				<th>성명</th>
+				<td>${confirmDTO.name}</td>
+				<th>주민등록번호</th>
+				<td><c:set var="rrn" />
+					${fn:substring(confirmDTO.registrationNumber,0,6)}-${fn:substring(confirmDTO.registrationNumber,6,13)}
+				</td>
+			</tr>
+			<tr>
+				<th>육아휴직 기간</th>
+				<td colspan="3"><fmt:formatDate value="${confirmDTO.startDate}"
+						pattern="yyyy.MM.dd" /> ~ <fmt:formatDate
+						value="${confirmDTO.endDate}" pattern="yyyy.MM.dd" /> <!-- ⬇ 여기 추가: 일수 표시 자리 -->
+					<span id="leave-days" style="margin-left: 8px; color: #555;"></span>
+				</td>
+			</tr>
+			<tr>
         <th>주당 소정근로시간</th><td>${confirmDTO.weeklyHours} 시간</td>
         <th>통상임금(월)</th><td>₩ <fmt:formatNumber value="${confirmDTO.regularWage}" pattern="#,##0"/></td>
       </tr>
@@ -241,5 +242,28 @@
 <footer class="footer">
   <p>&copy; 2025 육아휴직 서비스. All Rights Reserved.</p>
 </footer>
+
+<script>
+(function(){
+  var s = '<fmt:formatDate value="${confirmDTO.startDate}" pattern="yyyy-MM-dd"/>';
+  var e = '<fmt:formatDate value="${confirmDTO.endDate}"   pattern="yyyy-MM-dd"/>';
+
+  if (!s || !e) return;
+  var start = new Date(s + 'T00:00:00');
+  var end   = new Date(e + 'T00:00:00');
+  if (isNaN(start) || isNaN(end)) return;
+
+  // 계산: 끝 - 시작 + 1
+  var msPerDay = 24*60*60*1000;
+  var days = Math.floor((end - start) / msPerDay) + 1;
+  if (days < 0) return;
+
+  var el = document.getElementById('leave-days');
+  if (el) {
+    el.textContent = '(' + days + '일)';
+  }
+})();
+</script>
+
 </body>
 </html>

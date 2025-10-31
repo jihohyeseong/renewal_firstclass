@@ -1,9 +1,12 @@
 package com.example.renewal_firstclass.controller;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -63,20 +66,39 @@ public class AdminUserApprovalController {
         return "admin/adminuserlist";
     }
     
-//    @GetMapping("/admin/user/detail")
-//    public String detail(@RequestParam long appNo, Model model) {
-//        adminUserApprovalService.userApplyDetail(appNo, model);
-//        return "admin/adminuserdetail";
-//    }
+    @GetMapping("/admin/user/detail")
+    public String detail(@RequestParam long appNo, Model model) {
+       adminUserApprovalService.userApplyDetail(appNo, model);
+       return "admin/adminuserdetail";
+   }
     
-    // 새로만든 신청서 상세
+/*    // 새로만든 신청서 상세
     @GetMapping("/admin/user/apply/detail")
     public String detailPage(@RequestParam Long appNo, Model model) {
     	
     	ApplicationDetailDTO applicationDetailDTO = userApplyService.getApplicationDetail(appNo);
 		model.addAttribute("dto", applicationDetailDTO);
 		
+		adminUserApprovalService.userApplyDetail(appNo, model);
+		
 		return "admin/admin_user_detail";
+    }*/
+    
+    @GetMapping("/admin/user/apply/detail")
+    public String detailPage(@RequestParam Long appNo, Model model) {
+
+        // 단위기간/월별내역
+        ApplicationDetailDTO applicationDetailDTO = userApplyService.getApplicationDetail(appNo);
+        model.addAttribute("dto", applicationDetailDTO);
+
+        // 기존 상세
+        adminUserApprovalService.userApplyDetail(appNo, model);
+
+        // 은행 코드
+        List<CodeDTO> bankCodes = codeService.getBankCodeList();
+        model.addAttribute("bankCodes", bankCodes);
+
+        return "admin/admin_user_detail";
     }
     
      // 부지급 사유 코드 목록
@@ -164,5 +186,24 @@ public class AdminUserApprovalController {
      }
      return resp;
  }
+ 
+ @PostMapping("/admin/user/update")
+ public String updateAdminApply(@RequestParam Long applicationNumber,
+		 						@RequestParam(required=false) String updChildName, 
+		 						@RequestParam(required=false) 
+ 								@DateTimeFormat(pattern="yyyy-MM-dd") Date updChildBirthDate,
+		 						@RequestParam(required=false) String updChildResiRegiNumber,
+		 						@RequestParam(required=false) String updBankCode, 
+		 						@RequestParam(required=false) String updAccountNumber, Model model){
+		try {
+			adminUserApprovalService.updateAdminApply(applicationNumber, updChildName, updChildBirthDate, 
+				updChildResiRegiNumber, updBankCode, updAccountNumber, model);
+			return "redirect:/admin/user/apply/detail?appNo=" + applicationNumber;
+		} catch(Exception e) {
+			e.printStackTrace();
+			return "redirect:/admin/user/apply/detail?appNo=" + applicationNumber;
+		}
+ }
+ 
 
 }
