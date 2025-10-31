@@ -70,6 +70,13 @@
         font-weight: 700;
     }
 
+    /* --- [수정] 헤더 버튼 영역 --- */
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px; /* 버튼 사이 간격 */
+    }
+
     /* --- 버튼 (comp.css 오버라이드) --- */
     .btn {
         display: inline-flex;
@@ -86,11 +93,15 @@
         transition: all 0.2s ease;
         white-space: nowrap;
     }
+    .btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
     .btn-primary {
         background-color: var(--primary-color);
         color: var(--white);
     }
-    .btn-primary:hover {
+    .btn-primary:hover:not(:disabled) {
         background-color: var(--primary-color-dark);
     }
     .btn-secondary {
@@ -98,161 +109,95 @@
         color: #495057;
         border-color: #dee2e6;
     }
-    .btn-secondary:hover {
+    .btn-secondary:hover:not(:disabled) {
         background-color: #d1d5db;
     }
-
-    /* --- 안내 상자 --- */
-    .notice-box {
-        background-color: var(--primary-color-light);
-        border: 1px solid var(--primary-color);
-        border-left-width: 5px;
-        border-radius: 8px;
-        padding: 20px;
-    }
-    .notice-box .title {
-        display: flex;
-        align-items: center;
-        font-size: 18px;
-        font-weight: 700;
-        color: var(--primary-color-dark);
-        margin-bottom: 12px;
-    }
-    .notice-box .title .fa-solid {
-        margin-right: 10px;
-        font-size: 20px;
-    }
-    .notice-box ul {
-        margin: 0;
-        padding-left: 20px;
-        color: var(--text-color-light);
-        font-size: 14px;
-    }
-    .notice-box li {
-        margin-bottom: 6px;
-    }
-    .notice-box li:last-child { margin-bottom: 0; }
-
-    /* --- 리스트 테이블 --- */
-    .list-table {
-        width: 100%;
-        border-collapse: collapse;
-        table-layout: fixed;
-        font-size: 15px;
-    }
-    .list-table thead th {
-        padding: 14px 16px;
-        font-weight: 600;
-        background-color: var(--primary-color); /* 메인 색상 헤더 */
-        color: var(--white);
-        text-align: left;
-        border-bottom: 2px solid var(--primary-color-dark);
-    }
-    .list-table thead th:nth-child(4), /* 상태 */
-    .list-table thead th:nth-child(5) { /* 작업 */
-        text-align: center;
-    }
     
-    .list-table tbody td {
-        padding: 14px 16px; /* 행 높이 확보 */
-        line-height: 1.5;
-        vertical-align: middle;
-        border-bottom: 1px solid var(--border-color);
-        color: var(--text-color-light);
+    /* --- [신규] 아웃라인 버튼 스타일 (페이지 테마에 맞춤) --- */
+    .btn-outline-primary {
+        background-color: var(--white);
+        color: var(--primary-color);
+        border-color: var(--primary-color);
     }
-    /* 신청번호 강조 */
-    .list-table tbody td:first-child {
-        color: var(--text-color);
-        font-weight: 500;
-    }
-    .list-table tbody tr:hover { 
-        background: var(--primary-color-light); /* 연한 파란색 호버 */
+    .btn-outline-primary:hover:not(:disabled) {
+        background-color: var(--primary-color-light);
     }
 
-    /* --- 상태 배지 --- */
-    .status-badge {
+    /* --- [신규] 커스텀 툴팁 스타일 --- */
+    .tooltip-wrapper {
+        position: relative; /* 툴팁을 이 요소 기준으로 위치시킴 */
         display: inline-block;
-        font-size: 12px;
-        font-weight: 600;
-        padding: 5px 12px;
-        border-radius: 999px;
-        line-height: 1;
-        text-align: center;
-        /* 기본 상태 (알 수 없는 값일 경우) */
-        background-color: #f3f4f6; 
-        color: #4b5563;
-    }
-    
-    /* ※ statusCode 매핑 이름(한글) 기준으로 클래스명 변경 */
-    .status-badge.status-등록,  /* ST_10 (임시저장) */
-    .status-badge.status-제출,  /* ST_20 */
-    .status-badge.status-대기 {  /* otherwise */
-        background-color: #f3f4f6; /* 기본 회색 */
-        color: #4b5563;
-    }
-    .status-badge.status-심사중 { /* ST_30 */
-        background-color: #fffbeb; /* 연한 황색 */
-        color: #b45309;
-    }
-    .status-badge.status-심사완료, /* ST_50 -> '승인'으로 변경됨 */
-    .status-badge.status-승인 {
-        background-color: var(--primary-color-light);
-        color: var(--primary-color-dark);
-    }
-    .status-badge.status-반려 { /* (반려 코드 추가 시) */
-        background-color: #ffebeb; /* 연한 적색 */
-        color: #b91c1c;
     }
 
-    /* 상태 셀 중앙 정렬 */
-    .list-table td.status-cell {
+    .custom-tooltip {
+        visibility: hidden; /* 기본 숨김 */
+        opacity: 0;
+        
+        position: absolute;
+        bottom: 125%; /* 버튼 위에 위치 */
+        left: 50%;
+        transform: translateX(-50%); /* 중앙 정렬 */
+        
+        background-color: #333; /* 어두운 배경 */
+        color: var(--white);
         text-align: center;
-    }
-
-    /* --- 테이블 내부 버튼 (기존 오버라이드 유지 및 수정) --- */
-    .list-table .btn {
-        padding: 6px 12px;
+        padding: 8px 12px;
+        border-radius: 6px;
         font-size: 13px;
         font-weight: 500;
-        line-height: 1;
-        border-radius: 6px;
-        margin: 0 2px;
-    }
-    .list-table td.actions {
-        text-align: right;
-        white-space: nowrap;
+        white-space: nowrap; /* 툴팁 텍스트가 줄바꿈되지 않도록 */
+        
+        z-index: 10;
+        transition: opacity 0.2s ease, visibility 0.2s ease;
     }
 
-    /* --- 빈 상태 박스 --- */
-    .empty-state-box {
-        text-align: center;
-        padding: 60px 40px;
-        background-color: #fcfcfc;
-        border-radius: 10px;
-        border: 1px dashed var(--border-color);
+    /* 툴팁 꼬리 (화살표) */
+    .custom-tooltip::after {
+        content: "";
+        position: absolute;
+        top: 100%; /* 툴팁 하단 중앙 */
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #333 transparent transparent transparent; /* 위쪽을 가리키는 삼각형 */
     }
-    /* Font Awesome 아이콘 추가 */
-    .empty-state-box::before {
-        font-family: "Font Awesome 6 Free";
-        font-weight: 900;
-        content: "\f115"; /* fa-folder-open */
-        font-size: 40px;
-        color: var(--primary-color);
-        display: block;
-        margin-bottom: 20px;
-        opacity: 0.6;
+
+    .tooltip-wrapper:hover .custom-tooltip {
+        visibility: visible;
+        opacity: 1;
     }
-    .empty-state-box h3 {
-        font-size: 22px;
-        color: var(--text-color);
-        margin-top: 0;
-        margin-bottom: 12px;
-    }
-    .empty-state-box p {
-        font-size: 16px;
-        color: var(--text-color-light);
-        margin: 0;
-    }
+
+
+    /* --- 안내 상자 (생략) --- */
+    .notice-box { background-color: var(--primary-color-light); border: 1px solid var(--primary-color); border-left-width: 5px; border-radius: 8px; padding: 20px; }
+    .notice-box .title { display: flex; align-items: center; font-size: 18px; font-weight: 700; color: var(--primary-color-dark); margin-bottom: 12px; }
+    .notice-box .title .fa-solid { margin-right: 10px; font-size: 20px; }
+    .notice-box ul { margin: 0; padding-left: 20px; color: var(--text-color-light); font-size: 14px; }
+    .notice-box li { margin-bottom: 6px; }
+    .notice-box li:last-child { margin-bottom: 0; }
+
+    /* --- 리스트 테이블 (생략) --- */
+    .list-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 15px; }
+    .list-table thead th { padding: 14px 16px; font-weight: 600; background-color: var(--primary-color); color: var(--white); text-align: left; border-bottom: 2px solid var(--primary-color-dark); }
+    .list-table thead th:nth-child(4), .list-table thead th:nth-child(5) { text-align: center; }
+    .list-table tbody td { padding: 14px 16px; line-height: 1.5; vertical-align: middle; border-bottom: 1px solid var(--border-color); color: var(--text-color-light); }
+    .list-table tbody td:first-child { color: var(--text-color); font-weight: 500; }
+    .list-table tbody tr:hover { background: var(--primary-color-light); }
+    .status-badge { display: inline-block; font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 999px; line-height: 1; text-align: center; background-color: #f3f4f6; color: #4b5563; }
+    .status-badge.status-등록, .status-badge.status-제출, .status-badge.status-대기 { background-color: #f3f4f6; color: #4b5563; }
+    .status-badge.status-심사중 { background-color: #fffbeb; color: #b45309; }
+    .status-badge.status-심사완료, .status-badge.status-승인 { background-color: var(--primary-color-light); color: var(--primary-color-dark); }
+    .status-badge.status-반려 { background-color: #ffebeb; color: #b91c1c; }
+    .list-table td.status-cell { text-align: center; }
+    .list-table .btn { padding: 6px 12px; font-size: 13px; font-weight: 500; line-height: 1; border-radius: 6px; margin: 0 2px; }
+    .list-table td.actions { text-align: right; white-space: nowrap; }
+    
+    /* --- 빈 상태 박스 (생략) --- */
+    .empty-state-box { text-align: center; padding: 60px 40px; background-color: #fcfcfc; border-radius: 10px; border: 1px dashed var(--border-color); }
+    .empty-state-box::before { font-family: "Font Awesome 6 Free"; font-weight: 900; content: "\f115"; font-size: 40px; color: var(--primary-color); display: block; margin-bottom: 20px; opacity: 0.6; }
+    .empty-state-box h3 { font-size: 22px; color: var(--text-color); margin-top: 0; margin-bottom: 12px; }
+    .empty-state-box p { font-size: 16px; color: var(--text-color-light); margin: 0; }
 
 </style>
 </head>
@@ -261,7 +206,8 @@
 
 <main class="main-container"> 
 
-    <div class="notice-box"> <div class="title">
+    <div class="notice-box"> 
+        <div class="title">
             <i class="fa-solid fa-volume-high"></i>
             <span>안내</span>
         </div>
@@ -276,12 +222,21 @@
         <div class="content-header">
             <h2><sec:authentication property="principal.username" /> 님의 신청 내역</h2>
             
-            <form action="${pageContext.request.contextPath}/user/confirms" method="POST" style="margin: 0;">
-                <input type="hidden" name="name" value="${simpleUserInfoVO.name}">
-                <input type="hidden" name="registrationNumber" value="${simpleUserInfoVO.registrationNumber}">
+            <div class="header-actions">
                 
-                <button type="submit" class="btn btn-primary">새로 신청하기</button>
-            </form>
+                <div class="tooltip-wrapper">
+                    <button type="button" id="allow-push-btn" class="btn" data-status="loading">
+                        🔔 ...
+                    </button>
+                    <span class="custom-tooltip" id="push-btn-tooltip">로딩 중...</span> 
+                </div>
+
+                <form action="${pageContext.request.contextPath}/user/confirms" method="POST" style="margin: 0;">
+                    <input type="hidden" name="name" value="${simpleUserInfoVO.name}">
+                    <input type="hidden" name="registrationNumber" value="${simpleUserInfoVO.registrationNumber}">
+                    <button type="submit" class="btn btn-primary">새로 신청하기</button>
+                </form>
+            </div>
         </div>
 
         <c:choose>
@@ -319,7 +274,7 @@
                                             <c:when test="${stCode == 'ST_40'}">심사중</c:when>
                                             <c:when test="${stCode == 'ST_50'}">승인</c:when>
                                             <c:when test="${stCode == 'ST_60'}">반려</c:when>
-                                            <c:otherwise>대기</c:otherwise> <%-- 예외 처리 (기본값) --%>
+                                            <c:otherwise>대기</c:otherwise>
                                         </c:choose>
                                     </c:set>
                                     
@@ -337,7 +292,7 @@
             </c:otherwise>
         </c:choose>
     </div>
-    <button id="allow-push-btn">🔔 알림 허용하기</button>
+    
 </main>
 
 <footer class="footer">
@@ -358,7 +313,16 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
-        // 1. Firebase 초기화 (Firebase 콘솔 -> 프로젝트 설정 -> 웹 앱에서 복사)
+    $(document).ready(function() {
+        
+        // --- 1. 스코프 내 변수 설정 ---
+        const VAPID_KEY = "BBc3HyjOmOGy5y6MK6fMzBazOvOIMdx7WJ0VIA7AM-pdzF-dBk6cBbwThsHHnVt1XFRt6J_uqF-EmjxLXEB7BLI";
+        const CONTEXT_PATH = "${pageContext.request.contextPath}";
+        
+        const CHECK_URL = CONTEXT_PATH + "/check-fcm-token";
+        const SAVE_URL = CONTEXT_PATH + "/save-fcm-token";
+        const DELETE_URL = CONTEXT_PATH + "/delete-fcm-token";
+
         const firebaseConfig = {
             apiKey: "AIzaSyBb2vaosR63S_Knim9gbnGH5Rk7F87qkC4",
             authDomain: "firstclass-b26aa.firebaseapp.com",
@@ -369,74 +333,246 @@
         };
         firebase.initializeApp(firebaseConfig);
         
+        const pushButton = document.getElementById('allow-push-btn');
+        const tooltip = document.getElementById('push-btn-tooltip');
         const messaging = firebase.messaging();
 
-        // 2. 알림 권한 요청 및 토큰 발급
-        document.getElementById('allow-push-btn').addEventListener('click', () => {
-            requestNotificationPermission();
-        });
+        
+        // --- 2. UI 업데이트 함수 ---
+        function updateButtonUI(status, token) {
+            token = token || null;
+            
+            if (!pushButton || !tooltip) return;
+            
+            pushButton.classList.remove('btn-primary', 'btn-secondary', 'btn-outline-primary');
+            pushButton.disabled = false;
+            pushButton.dataset.status = status;
+            pushButton.dataset.token = token;
 
-        // ==================================================================
-        // 💡 [수정된 부분] 컨텍스트 경로 문제를 해결하기 위해 수동 등록
-        // ==================================================================
-        function requestNotificationPermission() {
-            Notification.requestPermission().then((permission) => {
-                if (permission === 'granted') {
-                    console.log('알림 권한이 허용되었습니다.');
-                    
-                    // Firebase 콘솔 -> 프로젝트 설정 -> 클라우드 메시징 -> 웹 푸시 인증서 -> "키 쌍" 생성
-                    const vapidKey = "BBc3HyjOmOGy5y6MK6fMzBazOvOIMdx7WJ0VIA7AM-pdzF-dBk6cBbwThsHHnVt1XFRt6J_uqF-EmjxLXEB7BLI";
-                    
-                    // 1. 서비스 워커를 컨텍스트 경로로 수동 등록합니다.
-                    //    JSP EL을 사용하여 동적 경로를 주입합니다.
-                    navigator.serviceWorker.register('${pageContext.request.contextPath}/firebase-messaging-sw.js')
-                        .then((registration) => {
-                            console.log('Service worker registered with scope: ', registration.scope);
+            switch (status) {
+                case 'denied': // (조건 1)
+                    pushButton.textContent = '🔔 알림 차단됨';
+                    pushButton.classList.add('btn-secondary');
+                    pushButton.disabled = true;
+                    tooltip.textContent = '브라우저 상단 주소창 왼쪽의 ⓘ 버튼을 클릭해 알림 권한을 허용해주세요';
+                    break;
+                case 'subscribed': // (조건 2: 켜짐 + true)
+                    pushButton.textContent = '🔔 푸시 알림ON';
+                    pushButton.classList.add('btn-primary'); // (채움)
+                    tooltip.textContent = '심사 완료 시 알림을 받습니다.';
+                    break;
+                case 'unsubscribed': // (조건 3: 켜짐 + false)
+                    pushButton.textContent = '🔔 푸시 알림OFF';
+                    pushButton.classList.add('btn-outline-primary'); // (비움)
+                    tooltip.textContent = '심사 완료 시 알림을 받지 않습니다.';
+                    break;
+                case 'unsupported':
+                    pushButton.textContent = '🔔 알림 미지원';
+                    pushButton.classList.add('btn-secondary');
+                    pushButton.disabled = true;
+                    tooltip.textContent = '이 브라우저는 푸시 알림을 지원하지 않습니다.';
+                    break;
+                case 'loading':
+                    pushButton.textContent = '🔔 ...';
+                    pushButton.classList.add('btn-secondary');
+                    pushButton.disabled = true;
+                    tooltip.textContent = '상태 확인 중...';
+                    break;
+                default: // 'default' (기본 상태)
+                    pushButton.textContent = '🔔 푸시 알림받기';
+                    pushButton.classList.add('btn-outline-primary');
+                    tooltip.textContent = '클릭하여 알림 허용하기';
+                    break;
+            }
+        }
+        
+        // --- 3. Firebase 및 서버 통신 함수 ---
 
-                            // 2. 등록된 서비스 워커를 사용하여 토큰을 요청합니다.
-                            return messaging.getToken({ 
-                                vapidKey: vapidKey,
-                                serviceWorkerRegistration: registration // <-- 이 옵션이 핵심입니다.
-                            });
-                        })
-                        .then((currentToken) => {
-                            if (currentToken) {
-                                console.log('FCM Token:', currentToken);
-                                // 4. 발급받은 토큰을 Spring 서버로 전송
-                                sendTokenToServer(currentToken);
-                            } else {
-                                console.log('토큰을 발급받지 못했습니다. 권한을 확인하세요.');
-                            }
-                        }).catch((err) => {
-                            // 여기서는 서비스 워커 등록 실패 또는 토큰 발급 실패를 모두 잡습니다.
-                            console.error('서비스 워커 등록 또는 토큰 발급 중 오류:', err);
+        /**
+         * Firebase로부터 현재 기기의 토큰을 가져옵니다.
+         * @returns {Promise<string>} FCM 토큰
+         */
+        function getFirebaseToken() {
+            return new Promise(function(resolve, reject) {
+                navigator.serviceWorker.register(CONTEXT_PATH + "/firebase-messaging-sw.js")
+                    .then(function(registration) {
+                        return messaging.getToken({ 
+                            vapidKey: VAPID_KEY,
+                            serviceWorkerRegistration: registration
                         });
-                        
-                } else {
-                    console.log('알림 권한이 거부되었습니다.');
-                }
+                    })
+                    .then(function(currentToken) {
+                        if (currentToken) {
+                            resolve(currentToken);
+                        } else {
+                            console.log('토큰을 발급받지 못했습니다.');
+                            reject('No token generated');
+                        }
+                    })
+                    .catch(function(err) {
+                        console.error('토큰 발급 중 오류:', err);
+                        reject(err);
+                    });
             });
         }
 
-        // 4. Spring 컨트롤러로 토큰 전송 (jQuery AJAX 예시)
-        // (이 부분은 이미 contextPath를 사용하고 계셔서 올바르게 작성되어 있습니다.)
-        function sendTokenToServer(token) {
-            $.ajax({
-                url: "${pageContext.request.contextPath}/save-fcm-token", // 토큰 저장용 Spring 컨트롤러 주소
+        /**
+         * (AJAX) 현재 기기 토큰을 가져와서 서버에 등록 여부를 확인합니다.
+         * @returns {Promise<{isSubscribed: boolean, token: string | null}>} 
+         */
+        function checkTokenOnServer() {
+            // 1. 먼저 Firebase에서 토큰을 가져옵니다.
+            return getFirebaseToken().then(function(token) {
+                
+                // 2. 토큰을 서버로 보내 확인합니다.
+                return $.ajax({
+                    url: CHECK_URL,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ fcmToken: token })
+                }).then(function(response) {
+                    // 3. 서버 응답(true/false)과 토큰을 함께 반환합니다.
+                    return { isSubscribed: response === true, token: token };
+                });
+
+            }).catch(function(err) {
+                // getFirebaseToken() 실패 또는 ajax 실패
+                console.error('서버 토큰 확인 프로세스 실패:', err);
+                // 실패 시, 비구독 상태와 null 토큰 반환
+                return { isSubscribed: false, token: null }; 
+            });
+        }
+        
+        /**
+         * (AJAX) 토큰을 서버에 저장(구독)하거나 삭제(구독해지)합니다.
+         * @param {'save' | 'delete'} action - 수행할 작업
+         * @param {string} token - 대상 FCM 토큰
+         * @returns {Promise<void>}
+         */
+        function sendTokenToServer(action, token) {
+            var url = (action === 'save') ? SAVE_URL : DELETE_URL;
+            
+            return $.ajax({
+                url: url,
                 type: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({ 
-                    fcmToken: token
-                    // 필요시 사용자 ID 등 추가 정보 전송
-                    // userId: "currentUserId" 
-                }),
-                success: function(response) {
-                    console.log('FCM 토큰이 서버에 성공적으로 저장되었습니다.');
-                },
-                error: function(xhr, status, error) {
-                    console.error('서버에 토큰 저장 실패:', error);
-                }
+                data: JSON.stringify({ fcmToken: token })
             });
         }
+
+        // --- 4. 메인 로직 (구독/해지) ---
+
+        /**
+         * (클릭 시) 구독 처리 (권한 요청 + 토큰 발급 + 서버 전송)
+         */
+        function subscribeUser() {
+            updateButtonUI('loading');
+            
+            Notification.requestPermission().then(function(permission) {
+                if (permission === 'denied') {
+                    updateButtonUI('denied');
+                    return;
+                }
+                
+                if (permission === 'default') {
+                    updateButtonUI('default');
+                    return;
+                }
+
+                getFirebaseToken()
+                    .then(function(token) {
+                        return sendTokenToServer('save', token).then(function() {
+                            return token; 
+                        });
+                    })
+                    .then(function(token) {
+                        console.log('FCM 토큰이 서버에 저장되었습니다.');
+                        updateButtonUI('subscribed', token);
+                    })
+                    .catch(function(err) {
+                        console.error('구독 처리 중 오류:', err);
+                        updateButtonUI('unsubscribed', null); 
+                    });
+            });
+        }
+        
+        /**
+         * (클릭 시) 구독 해지 (서버 토큰 삭제)
+         */
+        function unsubscribeUser() {
+            const token = pushButton.dataset.token;
+            if (!token) {
+                console.error('해지할 토큰이 없습니다.');
+                return;
+            }
+            
+            updateButtonUI('loading');
+            
+            sendTokenToServer('delete', token)
+                .then(function() {
+                    console.log('FCM 토큰이 서버에서 삭제되었습니다.');
+                    updateButtonUI('unsubscribed', token);
+                })
+                .catch(function(err) {
+                    console.error('토큰 삭제 실패:', err);
+                    updateButtonUI('subscribed', token); 
+                });
+        }
+        
+        // --- 5. 페이지 로드 시 초기 상태 설정 ---
+        
+        function initializePushState() {
+            if (!("Notification" in window) || !("serviceWorker" in navigator)) {
+                updateButtonUI('unsupported');
+                return;
+            }
+
+            const permission = Notification.permission;
+
+            if (permission === 'denied') {
+                // (조건 1)
+                updateButtonUI('denied');
+            } else if (permission === 'default') {
+                // (기본 상태)
+                updateButtonUI('default');
+            } else { 
+                // (조건 2 또는 3)
+                updateButtonUI('loading');
+                
+                // [수정] checkTokenOnServer가 토큰 가져오기 및 서버 확인을 모두 처리
+                checkTokenOnServer()
+                    .then(function(result) { // result = { isSubscribed: boolean, token: string }
+                        if (result.isSubscribed) {
+                            // (조건 2) 켜짐 + true
+                            updateButtonUI('subscribed', result.token);
+                        } else {
+                            // (조건 3) 켜짐 + false
+                            updateButtonUI('unsubscribed', result.token);
+                        }
+                    })
+                    .catch(function(err) {
+                        // checkTokenOnServer 내부에서 catch되었지만, 만약의 경우
+                        console.error('초기화 중 오류:', err);
+                        updateButtonUI('unsubscribed', null); // 오류 시 비구독 상태로 간주
+                    });
+            }
+        }
+        
+        // --- 6. 이벤트 리스너 연결 ---
+        
+        initializePushState();
+
+        pushButton.addEventListener('click', function() {
+            const status = pushButton.dataset.status;
+            pushButton.disabled = true;
+
+            if (status === 'subscribed') {
+                unsubscribeUser();
+            } else {
+                subscribeUser();
+            }
+        });
+        
+    }); // <-- $(document).ready() 끝
     </script>
 </html>

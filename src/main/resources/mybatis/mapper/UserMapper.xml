@@ -112,17 +112,17 @@
 	    FROM TB_User
 	    WHERE registration_number = #{registrationNumber}
 	</select>
-	
-	<update id="updateToken">
-         UPDATE TB_USER
-         SET fcm_token = #{fcmToken}
-         WHERE username = #{username}
-    </update>
     
     <select id="findTokenByUserId" parameterType="long" resultType="string">
     	SELECT fcm_token
     	FROM TB_USER
     	WHERE id = #{userId}
+    </select>
+    
+    <select id="findIdByUsername" parameterType="string" resultType="long">
+    	SELECT id
+    	FROM TB_USER
+    	WHERE username = #{username}
     </select>
 	
 </mapper>

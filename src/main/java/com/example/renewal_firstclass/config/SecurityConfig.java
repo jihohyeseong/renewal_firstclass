@@ -31,7 +31,8 @@ public class SecurityConfig {
 	                new AntPathRequestMatcher("/joinProc/**"),
 	                new AntPathRequestMatcher("/find/**"),
 	                new AntPathRequestMatcher("/"),
-	                new AntPathRequestMatcher("/firebase-messaging-sw.js")
+	                new AntPathRequestMatcher("/firebase-messaging-sw.js"),
+	                new AntPathRequestMatcher("/push/**")
 	            ).permitAll()
 	            .requestMatchers(
 	            		new AntPathRequestMatcher("/admin/**")
