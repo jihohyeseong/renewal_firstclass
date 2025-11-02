@@ -36,6 +36,8 @@ public class ConfirmApplyDTO {
     private String updChildName;
     private String updChildResiRegiNumber;
     private Date updChildBirthDate;
+    private String updName;
+    private String updRegistrationNumber;
 
     // 반려 관련
     private String rejectionReasonCode;     // 반려사유 코드 

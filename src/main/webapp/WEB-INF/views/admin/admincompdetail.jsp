@@ -331,6 +331,69 @@
 	    text-align: right;
 	    padding-right: 8px;
 	}
+	/* 1. 전체 컨테이너 너비 확장 */
+	.main-container {
+	    max-width: 1700px; /* 폼 2개가 들어가도록 기존보다 넓게 설정 */
+	}
+	
+	/* 2. 좌우 비교 레이아웃 컨테이너 */
+	.comparison-layout {
+	    display: flex;
+	    gap: 24px; /* 좌우 폼 사이 간격 */
+	    background: #fff;
+	    border: 1px solid var(--border-color);
+	    border-radius: 14px; /* 전체를 하나의 카드로 */
+	    padding: 24px;
+	    box-shadow: var(--shadow-lg);
+	    margin-bottom: 24px;
+	}
+	
+	/* 3. 좌(원본), 우(수정) 컬럼 */
+	.comparison-column {
+	    flex: 1; /* 1:1 비율로 공간 차지 */
+	    min-width: 0; /* flex 버그 방지 */
+	}
+	
+	/* 4. 중간 구분선 */
+	.comparison-divider {
+	    width: 1px;
+	    background-color: #e0e0e0; /* 연한 회색 구분선 */
+	    align-self: stretch; /* 부모 높이만큼 꽉 차게 */
+	}
+	
+	/* 5. 수정폼 내부 입력필드(Input) 스타일 (요청사항) */
+	.comparison-column.update-form input[type="text"],
+	.comparison-column.update-form input[type="password"],
+	.comparison-column.update-form input[type="date"],
+	.comparison-column.update-form input[type="number"] {
+	    width: 100% !important; /* 인라인 스타일(width: 80%)을 덮어쓰고 꽉 채움 */
+	    box-sizing: border-box; 
+	    border-radius: 6px; /* 모서리 둥글게 */
+	    padding: 8px 10px;  /* 입력칸 내부 여백 */
+	    border: 1px solid #ced4da;
+	}
+	
+	/* 6. 주민번호 입력칸 정렬 (100% 너비 적용 시 필요) */
+	.comparison-column.update-form .rrn-inputs {
+	    display: flex;
+	    align-items: center;
+	    gap: 5px;
+	}
+	.comparison-column.update-form .rrn-inputs input {
+	     flex: 1; /* 입력칸이 유연하게 늘어남 */
+	}
+	.comparison-column.update-form .rrn-inputs .hyphen {
+	    flex: 0 0 auto; /* 하이픈(-)은 공간 차지 안함 */
+	}
+	
+	/* 7. '시간', '원' 텍스트가 줄바꿈되지 않도록 */
+	.comparison-column.update-form .sheet-table td {
+	    white-space: nowrap;
+	}
+	.comparison-column.update-form .sheet-table th {
+	    /* 수정 폼의 th(제목)은 원본보다 연하게 */
+	    background: #fdfdfd; 
+	}
 	  
 </style>
 </head>
@@ -413,7 +476,9 @@
         <h2 class="page-title">육아휴직 확인서 상세</h2>
         <div></div>
     </div>
-    
+    <div class="comparison-layout">
+            
+       <div class="comparison-column original-details">
 		<!-- 하나의 “카드” 안에 들어가는 표 -->
 	    <table class="sheet-table">
 	      <colgroup>
@@ -548,11 +613,10 @@
                         </td>
                     </tr>
         </table>
-		
+        </div>
+		<div class="comparison-divider"></div>
 		<!-- 확인서 수정 폼 -->
-		<div class="card" style="width: 48%; display: inline-block; vertical-align: top; margin-left: 2%;">
-	    <div class="card-body">
-	        <h3 style="margin-bottom: 20px;">확인서 수정</h3>
+        <div class="comparison-column update-form">
 	
 	        <form id="updateForm">
 	            <input type="hidden" name="confirmNumber" value="${confirmDTO.confirmNumber}">
@@ -561,7 +625,30 @@
 	                <colgroup>
 	                    <col class="w160"><col><col class="w160"><col>
 	                </colgroup>
-	
+					
+					<tr><th class="sheet-head" colspan="4">근로자 정보 <i class="fa fa-edit" style="color:#007bff;"></i></th></tr>
+	                <tr>
+                        <th>성명</th>
+                        <td><input type="text" id="employee-name" name="updName"
+                   			value="${confirmDTO.updName}" placeholder="육아휴직 대상 근로자 성명"/>
+                   		</td>
+                        <th>주민등록번호</th>
+                        <td>
+                        	<div class="rrn-inputs">
+                        	<input type="text" id="employee-rrn-a" maxlength="6"
+				                   value="${fn:substring(confirmDTO.updRegistrationNumber,0,6)}"
+				                   placeholder="앞 6자리" style="flex:1;">
+				            <span class="hyphen">-</span>
+				            <input type="password" id="employee-rrn-b" maxlength="7"
+				                   value="${fn:substring(confirmDTO.updRegistrationNumber,6,13)}"
+				                   placeholder="뒤 7자리" style="flex:1;">
+				            </div>
+				            <input type="hidden" name="updRegistrationNumber" id="employee-rrn-hidden">
+                            <%-- <c:set var="rrnDigits" value="${fn:replace(confirmDTO.registrationNumber, '-', '')}" />
+                            ${fn:substring(rrnDigits,0,6)}-${fn:substring(rrnDigits,6,13)} --%>
+                        </td>
+                    </tr>
+	                
 	                <tr><th class="sheet-head" colspan="4">육아휴직 기간 <i class="fa fa-edit" style="color:#007bff;"></i></th></tr>
 	                <tr>
 	                    <th>육아휴직 시작일</th>
@@ -600,7 +687,7 @@
 	
 	                <tr><th class="sheet-head" colspan="4">근로조건 <i class="fa fa-edit" style="color:#007bff;"></i></th></tr>
 	                <tr>
-	                    <th>주당 소정근로시간</th>
+	                    <th>월 소정근로시간</th>
 	                    <td>
 	                        <input type="number" name="updWeeklyHours"
 	                               id="edit-weekly-hours"
@@ -664,7 +751,7 @@
 				        <c:when test="${confirmDTO.statusCode == 'ST_50' or confirmDTO.statusCode == 'ST_60'}">
 				            <a href="${pageContext.request.contextPath}/admin/list" class="btn btn-secondary">목록으로</a>
 				        </c:when>
-		
+		 
 				        <c:otherwise>
 				            <div style="margin-bottom:15px;">
 				                <label><input type="radio" name="judgeOption" value="approve">접수</label>

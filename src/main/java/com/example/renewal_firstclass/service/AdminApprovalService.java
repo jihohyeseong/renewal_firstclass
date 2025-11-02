@@ -46,6 +46,8 @@ public class AdminApprovalService {
             originalDto.setUpdChildName(updatesDto.getUpdChildName());
             originalDto.setUpdChildResiRegiNumber(updatesDto.getUpdChildResiRegiNumber());
             originalDto.setUpdChildBirthDate(updatesDto.getUpdChildBirthDate());
+            originalDto.setUpdName(updatesDto.getUpdName());
+            originalDto.setUpdRegistrationNumber(updatesDto.getUpdRegistrationNumber());
         }
 
         // 3. 주민번호 복호화

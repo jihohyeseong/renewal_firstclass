@@ -61,6 +61,8 @@
 	<update id="updateConfirmEdit">
 	    UPDATE TB_CONFIRM_APPLICATION
 	    <set>
+	    	<if test="updName != null and updName != ''">upd_name = #{updName},</if>
+	    	<if test="updRegistrationNumber != null and updRegistrationNumber != ''">upd_registration_number = #{updRegistrationNumber},</if>
 	        <if test="updStartDate != null">upd_start_date = #{updStartDate},</if>
 	        <if test="updEndDate != null">upd_end_date = #{updEndDate},</if>
 	        <if test="updWeeklyHours != 0">upd_weekly_hours = #{updWeeklyHours},</if>
@@ -86,6 +88,8 @@
 	    	upd_child_name,
 	    	upd_child_resi_regi_number,
 	    	upd_child_birth_date,
+	    	upd_name,
+	    	upd_registration_number,
 		    registration_number,
 		    name,
 		    response_name,
@@ -128,6 +132,8 @@
 				OR upd_end_date IS NOT NULL 
 				OR upd_weekly_hours IS NOT NULL 
 				OR upd_regular_wage IS NOT NULL
+				OR upd_name IS NOT NULL
+				OR upd_registration_number IS NOT NULL
 				OR upd_child_name IS NOT NULL
 				OR upd_child_resi_regi_number IS NOT NULL
 				OR upd_child_birth_date IS NOT NULL)
