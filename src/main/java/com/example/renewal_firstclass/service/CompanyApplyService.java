@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -266,11 +267,23 @@ public class CompanyApplyService {
 			);
     }
 
-	
 	public int countConfirmList(Long userId) {
 	return confirmApplyDAO.countConfirmList(userId);
 	}
+	
+	public Map<String, Object> findLatestPeriodByPerson(String name, String registrationNumber) {
+	    if (name == null || registrationNumber == null) {
+	        return java.util.Collections.emptyMap();
+	    }
 
+	    try {
+	        String regNoEnc = aes256Util.encrypt(registrationNumber);
+	        Map<String, Object> row = confirmApplyDAO.findLatestPeriodByPerson(name, regNoEnc);
+	        return (row != null) ? row : java.util.Collections.emptyMap();
+	    } catch (Exception e) {
+	        throw new IllegalStateException("주민번호 암호화 실패", e);
+	    }
+	}
 
 
 }

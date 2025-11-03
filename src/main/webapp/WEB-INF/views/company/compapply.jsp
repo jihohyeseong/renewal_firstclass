@@ -115,13 +115,44 @@
 	<div class="alert alert-success">${message}</div>
 </c:if>
 
+  <div id="client-alerts" style="margin-top:8px;"></div>
+
+
 <main class="main-container">
   <div class="content-wrapper">
+  
+  <!-- ▼ 디버그: 이전 육휴기간 패널 -->
+<div id="prev-periods-panel" style="margin-top:16px; border:1px dashed #cbd3ff; border-radius:8px; padding:12px; background:#f6f8ff; display:none;">
+  <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+    <strong>이전 육아휴직 기간(서버 조회)</strong>
+    <button type="button" id="btn-refresh-periods" class="btn btn-secondary" style="padding:4px 10px;">조회/새로고침</button>
+    <span id="prev-periods-count" style="color:#666;"></span>
+    <span id="prev-periods-note" style="color:#999;">(이름+주민번호 입력 후 조회)</span>
+  </div>
+
+  <div id="prev-periods-empty" style="margin-top:8px; color:#666; display:none;">조회된 기간이 없습니다.</div>
+
+  <table id="prev-periods-table" style="width:100%; border-collapse:collapse; margin-top:8px; background:#fff; border:1px solid #e9ecef; display:none;">
+    <thead>
+      <tr style="background:#eef2ff;">
+        <th style="padding:8px; border-bottom:1px solid #e9ecef; text-align:left;">#</th>
+        <th style="padding:8px; border-bottom:1px solid #e9ecef; text-align:left;">시작일</th>
+        <th style="padding:8px; border-bottom:1px solid #e9ecef; text-align:left;">종료일</th>
+        <th style="padding:8px; border-bottom:1px solid #e9ecef; text-align:left;">현재 선택과 겹침</th>
+      </tr>
+    </thead>
+    <tbody id="prev-periods-tbody"></tbody>
+  </table>
+
+  <div id="prev-periods-raw" style="margin-top:8px; font-size:12px; color:#666; white-space:pre-wrap; display:none;"></div>
+</div>
+<!-- ▲ 디버그 패널 끝 -->
 
     <!-- 기존 .content-header는 숨겼으므로 h1로 통일 -->
     <h1>육아휴직 확인서 제출</h1>
 
-    <form id="confirm-form" action="${pageContext.request.contextPath}/comp/apply/save" method="post">
+      
+      <form id="confirm-form" action="${pageContext.request.contextPath}/comp/apply/save" method="post">
       <sec:csrfInput/>
 
       <!-- 근로자 정보 -->
@@ -130,19 +161,24 @@
         <div class="form-group">
           <label class="field-title" for="employee-name">근로자 성명</label>
           <div class="input-field">
-            <input type="text" id="employee-name" name="name" placeholder="육아휴직 대상 근로자 성명" maxlength="50">
+            <input type="text" id="employee-name" name="name" placeholder="이름 검색 버튼을 누르면 자동으로 채워집니다." readonly>
           </div>
         </div>
         <div class="form-group">
-          <label class="field-title" for="employee-rrn-a">근로자 주민등록번호</label>
-          <div class="input-field" style="display:flex; align-items:center; gap:10px;">
-            <input type="text" id="employee-rrn-a" maxlength="6" placeholder="앞 6자리" style="flex:1;">
-            <span class="hyphen">-</span>
-            <input type="password" id="employee-rrn-b" maxlength="7" placeholder="뒤 7자리" style="flex:1;">
-            <input type="hidden" name="registrationNumber" id="employee-rrn-hidden">
-          </div>
-        </div>
+		  <label class="field-title" for="employee-rrn-a">근로자 주민등록번호</label>
+		  <div class="input-field" style="display:flex; align-items:center; gap:10px;">
+		    <input type="text" id="employee-rrn-a" maxlength="6" placeholder="앞 6자리" style="flex:1;">
+		    <span class="hyphen">-</span>
+		    <input type="password" id="employee-rrn-b" maxlength="7" placeholder="뒤 7자리" style="flex:1;">
+		    <input type="hidden" name="registrationNumber" id="employee-rrn-hidden">
+		    <!-- ⬇︎ 추가 -->
+		    <button type="button" id="find-employee-btn" class="btn btn-secondary" style="white-space:nowrap;">
+		      이름 검색
+		    </button>
+		  </div>
+		</div>
       </div>
+
       
             <!-- 대상 자녀 정보 -->
       <div class="form-section">
@@ -162,36 +198,36 @@
             <div class="input-field"><input type="text" id="child-name" name="childName" maxlength="50"></div>
           </div>
           <div class="form-group">
-  <label class="field-title" for="child-rrn-a">
-    자녀 주민등록번호 </label>
-
- <div class="input-field"
-     style="display:flex; align-items:center; gap:12px; flex-wrap:nowrap; width:100%;">
-  <input type="text" id="child-rrn-a" maxlength="6" placeholder="앞 6자리"
-         style="flex:1 1 0;">
-  <span class="hyphen" style="flex:0 0 auto;">-</span>
-  <input type="password" id="child-rrn-b" maxlength="7" placeholder="뒤 7자리"
-         style="flex:1 1 0;">
-  <input type="hidden" name="childResiRegiNumber" id="child-rrn-hidden">
-
-  <!-- 오른쪽 끝으로 보내되, 텍스트 줄바꿈은 방지 -->
-  <label class="checkbox-group"
-         style="margin-left:auto; display:flex; align-items:center; gap:8px; white-space:nowrap;">
-    <input type="checkbox" id="pregnant-leave" name="pregnantLeave">
-    <span>임신 중 육아휴직</span>
-  </label>
-</div>
-
-</div>
-<div class="form-group">
-  <div class="field-title"></div>
-  <div class="input-field">
-    <label class="checkbox-group" style="display:flex; align-items:flex-start; gap:8px;">
-      <input type="checkbox" id="no-rrn-foreign" name="childRrnUnverified">
-      <span>해외자녀 등 영아 주민등록번호가 미발급되어 확인되지 않는 경우에만 체크합니다</span>
-    </label>
-  </div>
-</div>
+		  <label class="field-title" for="child-rrn-a">
+		    자녀 주민등록번호 </label>
+		
+		 <div class="input-field"
+		     style="display:flex; align-items:center; gap:12px; flex-wrap:nowrap; width:100%;">
+		  <input type="text" id="child-rrn-a" maxlength="6" placeholder="앞 6자리"
+		         style="flex:1 1 0;">
+		  <span class="hyphen" style="flex:0 0 auto;">-</span>
+		  <input type="password" id="child-rrn-b" maxlength="7" placeholder="뒤 7자리"
+		         style="flex:1 1 0;">
+		  <input type="hidden" name="childResiRegiNumber" id="child-rrn-hidden">
+		
+		  <!-- 오른쪽 끝으로 보내되, 텍스트 줄바꿈은 방지 -->
+		  <label class="checkbox-group"
+		         style="margin-left:auto; display:flex; align-items:center; gap:8px; white-space:nowrap;">
+		    <input type="checkbox" id="pregnant-leave" name="pregnantLeave">
+		    <span>임신 중 육아휴직</span>
+		  </label>
+		</div>
+		
+		</div>
+		<div class="form-group">
+		  <div class="field-title"></div>
+		  <div class="input-field">
+		    <label class="checkbox-group" style="display:flex; align-items:flex-start; gap:8px;">
+		      <input type="checkbox" id="no-rrn-foreign" name="childRrnUnverified">
+		      <span>해외자녀 등 영아 주민등록번호가 미발급되어 확인되지 않는 경우에만 체크합니다</span>
+		    </label>
+		  </div>
+		</div>
         </div>
       </div>
       
@@ -342,6 +378,77 @@ document.addEventListener('DOMContentLoaded', function () {
     bindDigitsOnly(document.getElementById('child-rrn-b'));
     bindDigitsOnly(document.getElementById('weeklyHours'));
     
+ // 🔼 DOMContentLoaded 내부, 하지만 어떤 IIFE 바깥(= 최상위 스코프)
+// 🔁 기존 guardBeforeGenerate() 전부 교체
+function guardBeforeGenerate() {
+  const chkPregnant = document.getElementById('pregnant-leave');
+  const chkNoRRN    = document.getElementById('no-rrn-foreign');
+
+  const childDateEl = document.getElementById('child-date');
+  const childNameEl = document.getElementById('child-name');
+  const rrnA        = document.getElementById('child-rrn-a');
+  const rrnB        = document.getElementById('child-rrn-b');
+
+  const parseDate = s => s ? new Date(s + 'T00:00:00') : null;
+
+  const isPregnant = !!chkPregnant?.checked;
+  const noRRN      = !!chkNoRRN?.checked;
+
+  const childDate  = parseDate(childDateEl?.value);
+  const startDate  = parseDate(startDateInput?.value);
+  const endDate    = parseDate(endDateInput?.value);
+
+  if (!startDate || !endDate) { 
+    alert('육아휴직 시작일과 종료일을 먼저 선택해 주세요.'); 
+    return false; 
+  }
+  if (!childDate) { 
+    alert('출산(예정)일을 먼저 입력해 주세요.'); 
+    return false; 
+  }
+
+  if (isPregnant) {
+    // 임신 중: 종료일 < 출산(예정)일, 시작일도 출산(예정)일 이전
+    if (endDate >= childDate) { 
+      alert('임신 중 육아휴직은 출산(예정)일 전날까지만 가능합니다.'); 
+      return false; 
+    }
+    if (startDate >= childDate) { 
+      alert('임신 중 육아휴직은 출산(예정)일 이전에만 시작할 수 있습니다.'); 
+      return false; 
+    }
+  } else {
+    // 출산 후
+    const nameVal = (childNameEl?.value || '').trim();
+    const a = (rrnA?.value || '').replace(/[^\d]/g,'');
+    const b = (rrnB?.value || '').replace(/[^\d]/g,'');
+
+    if (!nameVal) { 
+      alert('출산 후 신청 시 자녀 이름을 입력해야 합니다.'); 
+      childNameEl?.focus(); 
+      return false; 
+    }
+
+    // ✅ 미발급 체크 시 RRN 필수 아님
+    if (!noRRN) {
+      if (!(a.length === 6 && b.length === 7)) {
+        alert('출산 후 신청 시 자녀 주민등록번호(앞 6자리/뒤 7자리)를 반드시 입력해야 합니다.');
+        (a.length !== 6 ? rrnA : rrnB)?.focus();
+        return false;
+      }
+    }
+
+    if (startDate < childDate) { 
+      alert('출산 후 육아휴직은 출산(예정)일 이후로만 시작할 수 있습니다.'); 
+      return false; 
+    }
+  }
+
+  return true;
+}
+
+
+    
     // ────────────────────────────────────
     // 단위기간 생성 로직 (복원)
     // ─────────────────────────────────────
@@ -353,6 +460,7 @@ document.addEventListener('DOMContentLoaded', function () {
    var noPaymentChk = document.getElementById('no-payment');
    var noPaymentWrapper = document.getElementById('no-payment-wrapper');
    var headerRow = document.getElementById('dynamic-header-row');
+
 
    function formatDate(date) {
       var y = date.getFullYear();
@@ -378,7 +486,26 @@ document.addEventListener('DOMContentLoaded', function () {
       return nextPeriodStart;
    }
 
-   generateBtn.addEventListener('click', function() {
+   generateBtn.addEventListener('click',  async function() {
+	   
+	   const ok = await showPrevPeriodAlert();
+	   if (!ok) {
+	     // 진행 차단 + UI 초기화
+	     formsContainer.innerHTML = '';
+	     if (noPaymentWrapper) noPaymentWrapper.style.display = 'none';
+	     if (headerRow) headerRow.style.display = 'none';
+	     return;
+	   }
+	   
+	   // 1) 임신/출산 규칙 가드
+	   if (!guardBeforeGenerate()) {
+	     formsContainer.innerHTML = '';
+	     if (noPaymentWrapper) noPaymentWrapper.style.display = 'none';
+	     if (headerRow) headerRow.style.display = 'none';
+	     return;
+	   }
+
+	   
       if (!startDateInput.value || !endDateInput.value) {
          alert('육아휴직 시작일과 종료일을 모두 선택해주세요.');
          return;
@@ -596,7 +723,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	  // generate 버튼 누르기 전에 규칙 위반 차단
 	  // (기존) applyPregnancyRules() 안의 guardBeforeGenerate() 전체를 아래로 교체
-		function guardBeforeGenerate() {
+/* 		function guardBeforeGenerate() {
 		  const isPregnant = !!chkPregnant?.checked;
 		  const childDate  = parseDate(childDateEl?.value);
 		  const startDate  = parseDate(startDateInput?.value);
@@ -642,9 +769,9 @@ document.addEventListener('DOMContentLoaded', function () {
 		  }
 		  return true;
 		}
+ */
 
-
-	  // generate 버튼 가드 추가(한 번만 래핑)
+/* 	  // generate 버튼 가드 추가(한 번만 래핑)
 	  if (generateBtn && !generateBtn.dataset.guardApplied) {
 	    const origHandler = generateBtn.onclick;
 	    generateBtn.addEventListener('click', function(e){
@@ -662,7 +789,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	    }, true);
 	    generateBtn.dataset.guardApplied = '1';
 	  }
-
+ */
 	  // 이벤트 바인딩: 상태 바뀔 때마다 규칙 즉시 반영
 	  function onAnyRuleRelatedChange() {
 	    applyFieldLockByMode();
@@ -966,6 +1093,209 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     
 });
+
+//─────────────────────────────────────
+//주민번호로 이름 자동 채우기
+//─────────────────────────────────────
+(function wireFindName(){
+  const btn   = document.getElementById('find-employee-btn');
+  const aEl   = document.getElementById('employee-rrn-a');
+  const bEl   = document.getElementById('employee-rrn-b');
+  const nameEl= document.getElementById('employee-name');
+  const hidEl = document.getElementById('employee-rrn-hidden');
+
+  if (!btn || !aEl || !bEl) return;
+
+  function onlyDigits(s){ return (s||'').replace(/[^\d]/g,''); }
+
+  const ctx = '${pageContext.request.contextPath}';
+  const url = ctx + '/comp/apply/find-name';
+
+  btn.addEventListener('click', async function(){
+    const a = onlyDigits(aEl.value);
+    const b = onlyDigits(bEl.value);
+
+    if (a.length !== 6 || b.length !== 7) {
+      alert('근로자 주민등록번호 앞 6자리와 뒤 7자리를 정확히 입력하세요.');
+      (a.length !== 6 ? aEl : bEl).focus();
+      return;
+    }
+
+    const regNo = a + b;
+    if (hidEl) hidEl.value = regNo;
+
+    const csrfInput = document.querySelector('input[name="_csrf"]');
+    const csrfToken = csrfInput ? csrfInput.value : null;
+
+    try {
+      const body = new URLSearchParams({ regNo });
+      if (csrfToken) body.append('_csrf', csrfToken);
+
+      const resp = await fetch(url, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+          ...(csrfToken ? {'X-CSRF-TOKEN': csrfToken} : {})
+        },
+        body
+      });
+
+      const ct = (resp.headers.get('content-type') || '').toLowerCase();
+      if (!resp.ok) {
+        console.error('[find-name] HTTP', resp.status, await resp.text().catch(()=> ''));
+        alert('이름 조회 요청에 실패했습니다. (' + resp.status + ')');
+        return;
+      }
+      if (!ct.includes('application/json')) {
+        console.error('[find-name] not JSON', ct, await resp.text().catch(()=> ''));
+        alert('서버 응답이 JSON이 아닙니다. (로그인 리다이렉트/시큐리티 확인)');
+        return;
+      }
+
+      const data = await resp.json();
+      if (data && data.found && data.name) {
+        nameEl.value = data.name;
+      } else {
+        alert('일치하는 근로자 정보를 찾을 수 없습니다.');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('일시적인 오류로 조회에 실패했습니다.');
+    }
+  });
+})();
+
+//─────────────────────────────────────
+//이전 육휴기간(최신 1건) 조회 & 표시
+//─────────────────────────────────────
+// === 클라이언트 알림 유틸 ===
+function renderClientAlert({ type = 'info', html = '' }) {
+  // type: success | warning | danger | info
+  const wrap = document.getElementById('client-alerts');
+  if (!wrap) return;
+
+  // 기존 동일 타입 알림은 한 개만 유지(원하면 누적되게 바꿔도 ok)
+  const prev = wrap.querySelector(`.alert.alert-${type}`);
+  if (prev) prev.remove();
+
+  const div = document.createElement('div');
+  div.className = `alert alert-${type}`;
+  div.style.marginTop = '10px';
+  div.innerHTML = html;
+  wrap.prepend(div); // 최신 내용이 항상 위로
+  div.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// === 이전 기간 조회 후 알림으로 표시 ===
+async function showPrevPeriodAlert() {
+  try {
+    const nameEl = document.getElementById('employee-name');
+    const aEl    = document.getElementById('employee-rrn-a');
+    const bEl    = document.getElementById('employee-rrn-b');
+
+    const name  = (nameEl?.value || '').trim();
+    const regNo = ((aEl?.value || '') + (bEl?.value || '')).replace(/[^\d]/g, '');
+
+    if (!name || regNo.length !== 13) {
+      alert('근로자 성명과 주민등록번호(6+7)를 먼저 입력하세요.');
+      window.prevPeriod = { start:null, end:null, overlap:false };
+      return false;
+    }
+
+    const csrfToken = document.querySelector('input[name="_csrf"]')?.value || null;
+    const CTX = '${pageContext.request.contextPath}';
+
+    const resp = await fetch(CTX + '/comp/apply/leave-period', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+        ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {})
+      },
+      body: JSON.stringify({ name, regNo })
+    });
+
+    if (resp.status === 204) {
+      window.prevPeriod = { start:null, end:null, overlap:false };
+      return true;
+    }
+    const ct = (resp.headers.get('content-type') || '').toLowerCase();
+    if (!ct.includes('application/json')) {
+      window.prevPeriod = { start:null, end:null, overlap:false };
+      return true;
+    }
+
+    const text = await resp.text();
+    if (!resp.ok || !text) {
+      window.prevPeriod = { start:null, end:null, overlap:false };
+      return true;
+    }
+    const data = JSON.parse(text) || {};
+
+    // ---- 파서/유틸 ----
+    function toDateSafe(v){
+      if (v == null) return null;
+      if (typeof v === 'number' || /^\d+$/.test(String(v))) {
+        let n = Number(v);
+        if (String(v).length === 10) n *= 1000;
+        const d = new Date(n);
+        return isNaN(d) ? null : d;
+      }
+      let s = String(v).trim();
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) s += 'T00:00:00';
+      if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(s)) s = s.replace(' ', 'T');
+      const d1 = new Date(s); if (!isNaN(d1)) return d1;
+      const d2 = new Date(s.replace(/-/g,'/')); return isNaN(d2) ? null : d2;
+    }
+    function two(n){ return (n<10?'0':'')+n; }
+    function fmt(d){ return d.getFullYear()+'.'+two(d.getMonth()+1)+'.'+two(d.getDate()); }
+    function parseInputDate(id){
+      const el = document.getElementById(id);
+      return (el && el.value) ? new Date(el.value + 'T00:00:00') : null;
+    }
+    function isOverlap(aStart,aEnd,bStart,bEnd){
+      if (!aStart || !aEnd || !bStart || !bEnd) return false;
+      return aStart <= bEnd && bStart <= aEnd;
+    }
+
+    const startRaw = data.startDate ?? data.STARTDATE ?? data.start_date;
+    const endRaw   = data.endDate   ?? data.ENDDATE   ?? data.end_date;
+
+    const prevS = toDateSafe(startRaw);
+    const prevE = toDateSafe(endRaw);
+
+    // 이전 기간이 없으면 조용히 통과
+    if (!prevS || !prevE) {
+      window.prevPeriod = { start:null, end:null, overlap:false };
+      return true;
+    }
+
+    const curS = parseInputDate('start-date');
+    const curE = parseInputDate('end-date');
+    const overlapped = isOverlap(prevS, prevE, curS, curE);
+
+    window.prevPeriod = { start: prevS, end: prevE, overlap: overlapped };
+
+    if (overlapped) {
+      alert(
+        '해당 근무자는 이미 존재하는 확인서와 육아휴직 기간이 겹칩니다.\n\n' +
+        '이전 확인서: ' + fmt(prevS) + ' ~ ' + fmt(prevE) + '\n' +
+        '현재 입력하신 기간: ' + (curS ? fmt(curS) : '-') + ' ~ ' + (curE ? fmt(curE) : '-')
+      );
+      return false;
+    }
+
+    return true;
+
+  } catch (e) {
+    console.error(e);
+    window.prevPeriod = { start:null, end:null, overlap:false };
+    // 오류도 사용자 방해 없이 진행
+    return true;
+  }
+}
+
 </script>
 
 </body>

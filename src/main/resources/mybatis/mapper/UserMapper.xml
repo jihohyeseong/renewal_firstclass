@@ -124,5 +124,11 @@
     	FROM TB_USER
     	WHERE username = #{username}
     </select>
+    
+    <select id="findNameByRegistrationNumber" parameterType="string" resultType="string">
+	    SELECT name
+	    FROM TB_User
+	    WHERE registration_number = #{registrationNumber}
+	</select>
 	
 </mapper>

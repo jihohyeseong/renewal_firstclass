@@ -57,4 +57,18 @@ public class UserService {
 		
 		return userDAO.findIdByUsername(username);
 	}
+	
+	public String findNameByRegistrationNumber(String registrationNumber) {
+		
+		String regNoEnc = null;
+		if (registrationNumber != null) {
+		try {
+		regNoEnc = aes256Util.encrypt(registrationNumber); 
+		} catch (Exception e) {
+		throw new IllegalStateException("주민번호 암호화 실패", e);
+		}
+		}
+		
+		return userDAO.findNameByRegistrationNumber(regNoEnc);
+	}
 }

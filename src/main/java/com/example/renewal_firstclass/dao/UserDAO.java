@@ -37,5 +37,7 @@ public interface UserDAO {
 	String findTokenByUserId(Long userId);
 
 	Long findIdByUsername(String username);
+	
+	String findNameByRegistrationNumber(String registrationNumber);
 
 }

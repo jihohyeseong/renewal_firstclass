@@ -1,6 +1,7 @@
 package com.example.renewal_firstclass.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -39,4 +40,7 @@ public interface ConfirmApplyDAO {
             @Param("size") int size);
     
     int countConfirmList(@Param("userId") Long userId);
+    
+    Map<String, Object> findLatestPeriodByPerson(@Param("name") String name,
+            @Param("registrationNumber") String registrationNumber);
 }

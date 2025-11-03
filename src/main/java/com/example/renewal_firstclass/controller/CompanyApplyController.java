@@ -1,12 +1,14 @@
 package com.example.renewal_firstclass.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,7 +19,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.renewal_firstclass.domain.ConfirmApplyDTO;
@@ -171,6 +175,32 @@ public class CompanyApplyController {
         }
         model.addAttribute("userDTO", user);
         return "company/compapply";
+    }
+    
+    /*주민번호로이름찾기*/
+    @PostMapping("/comp/apply/find-name")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> findName(@RequestParam String regNo) {
+        String name = userService.findNameByRegistrationNumber(regNo);
+        boolean found = (name != null);
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("found", found);
+        if (found) body.put("name", name);
+        else body.put("name", null);
+
+        return ResponseEntity.ok(body);
+    }
+    
+    @PostMapping("/comp/apply/leave-period")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> leavePeriod(@RequestBody Map<String, String> body) {
+        String name = (body != null) ? body.get("name") : null;
+        String regNo = (body != null) ? body.get("regNo") : null;
+
+        Map<String, Object> res = companyApplyService.findLatestPeriodByPerson(name, regNo);
+
+        return ResponseEntity.ok(res == null || res.isEmpty() ? null : res);
     }
 
 

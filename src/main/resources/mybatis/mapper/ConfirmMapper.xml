@@ -214,4 +214,19 @@
     AND delt_at = 'N'
 </select>
 
+<select id="findLatestPeriodByPerson"
+        resultType="map">
+  SELECT
+    NVL(upd_start_date, start_date) AS startDate,
+    NVL(upd_end_date,   end_date)   AS endDate
+  FROM TB_CONFIRM_APPLICATION
+  WHERE name = #{name}
+    AND registration_number = #{registrationNumber}
+    AND NVL(delt_at, 'N') = 'N'
+    AND status_code != 'ST_60'
+  ORDER BY apply_dt DESC
+  FETCH FIRST 1 ROWS ONLY
+</select>
+
+
 </mapper>
