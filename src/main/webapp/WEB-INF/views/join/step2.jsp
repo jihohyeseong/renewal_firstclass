@@ -204,6 +204,125 @@
             from { opacity: 0; }
             to { opacity: 1; }
         }
+        /* ---------------------------------- */
+        /* 📱 반응형 스타일 (Tablet & Mobile) */
+        /* ---------------------------------- */
+        @media (max-width: 768px) {
+            .page-wrapper {
+                padding: 20px 10px; /* 페이지 전체 여백 축소 */
+            }
+
+            .signup-container {
+                padding: 40px 20px; /* 컨테이너 내부 여백 축소 */
+            }
+
+            .main-title {
+                font-size: 26px; /* 메인 타이틀 폰트 축소 */
+                margin-bottom: 30px;
+            }
+
+            .progress-stepper {
+                margin-bottom: 40px;
+            }
+
+            /* 768px 미디어 쿼리 내의 .step 규칙을 이걸로 교체하세요 */
+            .step {
+                font-size: 13px;
+                padding: 10px 5px;      /* [수정] 상하 여백을 주어 텍스트를 중앙 정렬 */
+                height: auto;           /* [수정] 고정 높이 제거 */
+                min-height: 40px;     /* [추가] 화살표 높이(40px)만큼 최소 높이 보장 */
+                line-height: 1.3;     /* [추가] 줄바꿈 시를 대비한 줄간격 */
+                word-break: break-word; /* [수정] 'keep-all' 대신 자연스러운 줄바꿈 허용 */
+                
+                /* [추가] 텍스트를 세로/가로 중앙에 배치하기 위해 flex 사용 */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* 스텝 화살표 크기 및 위치 조정 */
+            .step:not(:last-child)::after {
+                border-top-width: 20px;
+                border-bottom-width: 20px;
+                border-left-width: 10px;
+                right: -10px;
+            }
+
+            .content-box h2 {
+                font-size: 22px; /* 서브 타이틀 폰트 축소 */
+                margin-bottom: 30px;
+            }
+
+            /* 약관 동의 컨테이너 */
+            .terms-container {
+                padding: 20px; /* 내부 여백 축소 */
+            }
+
+            .agree-all-box label {
+                font-size: 17px;
+            }
+
+            .terms-header {
+                 /* 좁은 화면에서 라벨이 2줄이 될 경우, 
+                    체크박스가 첫 번째 줄에 정렬되도록 함 */
+                align-items: flex-start;
+            }
+
+            .terms-header label {
+                font-size: 15px;
+                line-height: 1.4; /* 줄바꿈 시 줄간격 확보 */
+            }
+            
+            .term-content {
+                font-size: 13px; /* 약관 내용 폰트 축소 */
+            }
+
+            /* 하단 버튼 */
+            .action-buttons {
+                flex-direction: column; /* 버튼 세로로 쌓기 */
+                gap: 10px;
+                margin-top: 40px;
+            }
+
+            .btn {
+                width: 100%; /* 버튼 너비를 100%로 설정 */
+                padding-top: 16px;
+                padding-bottom: 16px;
+            }
+        }
+
+        /* ---------------------------------- */
+        /* 📱 더 작은 화면 (e.g., iPhone SE) */
+        /* ---------------------------------- */
+        @media (max-width: 375px) {
+            .signup-container {
+                padding: 30px 15px;
+            }
+
+            .main-title {
+                font-size: 24px;
+            }
+
+            .content-box h2 {
+                font-size: 20px;
+            }
+
+            .step {
+                font-size: 12px; /* 스텝 폰트 더 축소 */
+            }
+
+            .terms-container {
+                padding: 15px; /* 약관 박스 여백 더 축소 */
+            }
+
+            .agree-all-box label {
+                font-size: 16px;
+            }
+
+            .terms-header label {
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>

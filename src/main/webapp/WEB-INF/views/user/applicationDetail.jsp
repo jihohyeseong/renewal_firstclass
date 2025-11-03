@@ -8,11 +8,18 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<%-- [추가] 반응형을 위한 뷰포트 메타 태그 --%>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>육아휴직 급여 신청서 상세 보기</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<%-- PDF 생성을 위한 라이브러리 (html2canvas, jspdf) --%>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/global.css">
 <style>
 :root{
@@ -42,13 +49,8 @@ body{
 }
 a{text-decoration:none;color:inherit}
 
-.header,.footer{
-	background-color:var(--white-color);padding:15px 40px;border-bottom:1px solid var(--border-color);box-shadow:var(--shadow-sm);
-}
-.footer{border-top:1px solid var(--border-color);border-bottom:none;text-align:center;padding:20px 0;margin-top:auto}
-.header{display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
-.header nav{display:flex;align-items:center;gap:15px}
-.header .welcome-msg{font-size:16px}
+/* [삭제] 헤더/푸터 스타일 (global.css 또는 comp.css 등 공통 CSS에 이미 존재할 것이므로 제거) */
+/* ... .header, .footer 관련 스타일 ... */
 
 .main-container{
 	flex-grow:1;width:100%;max-width:1060px;margin:40px auto;padding:40px;
@@ -84,12 +86,38 @@ h2{
 }
 .info-table td{background-color:var(--white-color);color:#333}
 
+/* [추가] 월별 내역 테이블(데이터 그리드) 스크롤 컨테이너 */
+.data-grid-container {
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch; /* 모바일 스크롤 부드럽게 */
+	border: 1px solid var(--border-color);
+	border-radius: 8px;
+	margin-top: -15px; /* h3와 붙이기 */
+	margin-bottom: 25px;
+}
+/* 스크롤 컨테이너 안의 테이블은 약간 다르게 스타일링 */
+.data-grid-container .info-table {
+	border-top: none;
+	margin-bottom: 0;
+}
+.data-grid-container .info-table th,
+.data-grid-container .info-table td {
+	white-space: nowrap; /* 내용이 줄바꿈되지 않게 */
+	text-align: center; /* [수정] 기존 스타일을 그대로 유지 */
+}
+
+
 /* 버튼 */
 .btn{
 	display:inline-block;padding:10px 20px;font-size:15px;font-weight:500;
 	border-radius:8px;border:1px solid var(--border-color);cursor:pointer;
 	transition:all .2s ease-in-out;text-align:center;
 }
+.btn:disabled, .btn.disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
 .btn-primary{background-color:var(--primary-color);color:#fff;border-color:var(--primary-color)}
 .btn-primary:hover{background-color:#364ab1;box-shadow:var(--shadow-md);transform:translateY(-2px)}
 .btn-secondary{background-color:var(--white-color);color:var(--gray-color);border-color:var(--border-color)}
@@ -98,7 +126,7 @@ h2{
 .btn-danger:hover { background-color: #c82333; border-color: #bd2130; transform:translateY(-2px); box-shadow:var(--shadow-md); }
 
 
-/* [수정] 하단 버튼 컨테이너 스타일 */
+/* 하단 버튼 컨테이너 스타일 */
 .button-container{
 	display: flex;
     justify-content: center; /* 기본은 중앙 정렬 */
@@ -106,12 +134,10 @@ h2{
     gap: 15px;
     margin-top:50px;
 }
-/* [추가] 버튼들을 양쪽으로 배치할 때 사용하는 클래스 */
 .button-container.spread-out {
     justify-content: space-between;
-    gap: 0; /* space-between 사용 시에는 gap 불필요 */
+    gap: 0; 
 }
-/* [추가] 왼쪽 버튼들을 그룹화 하기 위한 클래스 */
 .button-group-left {
     display: flex;
     align-items: center;
@@ -129,7 +155,6 @@ h2{
 .detail-btn:hover{background-color:var(--primary-light-color)}
 .success-text{color:var(--success-color);font-weight:500}
 
-/* 하이라이팅을 위한 CSS 클래스 */
 .highlight-warning {
     background-color: #fff3cd; 
     color: #856404;
@@ -137,14 +162,168 @@ h2{
     padding: 2px 6px;
     border-radius: 4px;
 }
+
+
+/* ---------------------------------- */
+/* 📱 [추가] 반응형 스타일 */
+/* ---------------------------------- */
+
+/* 992px 이하 (태블릿) */
+@media (max-width: 992px) {
+	/* 헤더, 푸터는 공통 CSS에서 관리한다고 가정 */
+
+	.main-container {
+		max-width: 95%;
+		margin: 30px auto;
+		padding: 30px;
+	}
+	h1 { font-size: 26px; }
+	h2 { font-size: 19px; }
+}
+
+/* 768px 이하 (모바일) */
+@media (max-width: 768px) {
+	.main-container {
+		max-width: 100%;
+		margin: 0;
+		padding: 25px;
+		border-radius: 0;
+		box-shadow: none;
+	}
+
+	h1 { font-size: 24px; margin-bottom: 25px; }
+	
+	/* * [수정] 키-값 테이블을 스택 레이아웃으로 변경 
+	 * (데이터 그리드 테이블은 .data-grid-container로 감쌌으므로 영향받지 않음)
+	 */
+	.info-table-container .info-table {
+		border-top: none; /* 상단 굵은 선 제거 */
+	}
+
+	.info-table-container .info-table tbody tr {
+		display: flex;
+		flex-wrap: wrap; 
+		border: none;
+	}
+
+	.info-table-container .info-table tbody th,
+	.info-table-container .info-table tbody td {
+		display: block;
+		width: 100% !important; /* CSS 우선순위 및 인라인 스타일 무시 */
+		text-align: left !important;
+		border: none;
+		padding-left: 0;
+		padding-right: 0;
+		vertical-align: top;
+	}
+
+	.info-table-container .info-table tbody th {
+		background-color: transparent;
+		font-weight: 500;
+		padding-top: 15px;
+		padding-bottom: 5px;
+		width: 100% !important; /* th 너비 강제 해제 */
+		color: var(--gray-color);
+	}
+
+	.info-table-container .info-table tbody td {
+		padding-top: 0;
+		padding-bottom: 15px;
+		border-bottom: 1px solid var(--border-color);
+		color: var(--dark-gray-color);
+		font-weight: 500;
+	}
+	
+	/* 테이블의 마지막 행, 마지막 셀의 하단 보더 제거 */
+	.info-table-container .info-table tbody tr:last-child td:last-child {
+		border-bottom: none;
+	}
+	
+	/* 섹션간 간격 조정 */
+	.info-table-container {
+		 margin-bottom: 30px;
+	}
+
+	/* [중요] 데이터 그리드 테이블은 스택 레이아웃을 적용하지 않음 (초기화) */
+	.data-grid-container .info-table tbody tr {
+		display: table-row; /* flex 대신 table-row로 복원 */
+	}
+	.data-grid-container .info-table tbody th,
+	.data-grid-container .info-table tbody td {
+		display: table-cell; /* block 대신 table-cell로 복원 */
+		width: auto !important; /* 100% 너비 해제 */
+		text-align: center !important; /* [수정] 원본 스타일 유지 */
+		border: 1px solid var(--border-color); /* [수정] 보더 복원 */
+		padding: 12px 15px; /* [수정] 패딩 복원 */
+	}
+	
+	
+	/* [수정] 버튼 컨테이너 세로 쌓기 */
+	.button-container {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 12px;
+		margin-top: 30px;
+	}
+	.button-container form {
+		margin-left: 0 !important; /* '삭제', '취소' 버튼의 margin-left 제거 */
+		display: block;
+		width: 100%;
+	}
+	.button-group-left {
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		width: 100%;
+		gap: 12px;
+	}
+	.button-container .btn,
+	.button-container form .btn {
+		width: 100%;
+		margin: 0 !important; /* 인라인 margin 제거 */
+	}
+}
+
+@media (max-width: 480px) {
+	.main-container {
+		 padding: 20px;
+	}
+	.info-table th, .info-table td {
+		 font-size: 14px;
+	}
+	.bottom-btn {
+		padding: 12px 20px;
+		font-size: 1em;
+	}
+}
 </style>
 </head>
 <body>
-<jsp:include page="header.jsp" />
+<%-- 헤더 include --%>
+<c:set var="role" value="${user.role}" />
+<c:choose>
+  <c:when test="${role == 'ROLE_CORP'}">
+    <jsp:include page="../company/compheader.jsp"/>
+    <style>
+      :root{
+        --primary-color:#24A960;
+        --primary-light-color:rgba(36,169,96,.08);
+      }
+      .btn-primary:hover { background-color: #3ed482; }
+	  h2 { color: var(--primary-color); border-left: 4px solid var(--primary-color); }
+	  .section-title { border-left: 4px solid var(--primary-color); }
+	  .detail-btn { border-color: var(--primary-color); color: var(--primary-color); }
+	  .detail-btn:hover { background-color: var(--primary-light-color); }
+    </style>
+  </c:when>
+  <c:otherwise>
+    <jsp:include page="header.jsp"/>
+  </c:otherwise>
+</c:choose>
+
 	<main class="main-container">
 	<h1>육아휴직 급여 신청서 상세 보기</h1>
 	
-	<!-- DTO가 비어있는 경우 처리 -->
 	<c:if test="${empty dto}">
 		<p style="text-align:center; font-size:18px; color:var(--gray-color);">신청서 정보를 불러올 수 없습니다.</p>
 	</c:if>
@@ -174,12 +353,7 @@ h2{
 					</tr>
 					<tr>
 						<th>주민등록번호</th>
-						<td colspan="3">
-							<c:if test="${not empty dto.registrationNumber}">
-						        <c:set var="rrnCleaned" value="${fn:replace(fn:replace(fn:trim(dto.registrationNumber), '-', ''), ' ', '')}" />
-						        ${fn:substring(rrnCleaned, 0, 6)}-${fn:substring(rrnCleaned, 6, 13)}
-						    </c:if>
-						</td>
+						<td colspan="3"><c:if test="${not empty dto.registrationNumber}"><c:set var="rrnCleaned" value="${fn:replace(fn:replace(fn:trim(dto.registrationNumber), '-', ''), ' ', '')}" />${fn:substring(rrnCleaned, 0, 6)}-${fn:substring(rrnCleaned, 6, 13)}</c:if></td>
 					</tr>
 					<tr>
 						<th>휴대전화번호</th>
@@ -213,7 +387,8 @@ h2{
 			</table>
 		</div>
 	
-		<div class="info-table-container">
+		<%-- [수정] info-table-container 클래스 제거 및 data-grid-container 추가 --%>
+		<div>
 			<h2 class="section-title">급여 신청 기간 및 월별 내역</h2>
 			<table class="info-table">
 				<tbody>
@@ -227,101 +402,101 @@ h2{
 			</table>
 	
 			<h3 class="section-title" style="font-size: 16px; margin-top: 25px;">월별 지급 내역</h3>
-			<table class="info-table">
-				<thead>
-					<tr>
-						<th style="text-align:center;">시작일</th>
-						<th style="text-align:center;">종료일</th>
-						<th style="text-align:center;">사업장 지급액</th>
-						<th style="text-align:center;">정부 지급액</th>
-						<th style="text-align:center;">총 지급액</th>
-					</tr>
-				</thead>
-				<tbody>
-					<%-- 1. 합계 계산을 위한 변수 초기화 --%>
-					<c:set var="totalAmount" value="${0}" />
-					
-					<c:forEach var="item" items="${dto.list}" varStatus="status">
+			
+			<%-- [추가] 데이터 그리드 테이블을 감싸는 스크롤 컨테이너 --%>
+			<div class="data-grid-container">
+				<table class="info-table">
+					<thead>
 						<tr>
-							<td style="text-align:center;">
-								<fmt:formatDate value="${item.startMonthDate}" pattern="yyyy.MM.dd"/>
-							</td>
-					
-							<td style="text-align:center;">
-								<c:choose>
-									<c:when test="${not empty item.earlyReturnDate}">
-										<fmt:formatDate value="${item.earlyReturnDate}" pattern="yyyy.MM.dd"/>
-									</c:when>
-									<c:otherwise>
-										<fmt:formatDate value="${item.endMonthDate}" pattern="yyyy.MM.dd"/>
-									</c:otherwise>
-								</c:choose>
-							</td>
-					
-							<td style="text-align:center;">
-								<fmt:formatNumber value="${item.companyPayment}" type="number" pattern="#,###" />원
-							</td>
-					
-							<td style="text-align:center;">
-								<c:choose>
-									<c:when test="${not empty item.govPaymentUpdate}">
-										<fmt:formatNumber value="${item.govPaymentUpdate}" type="number" pattern="#,###" />원
-									</c:when>
-									<c:otherwise>
-										<fmt:formatNumber value="${item.govPayment}" type="number" pattern="#,###" />원
-									</c:otherwise>
-								</c:choose>
-							</td>
-					
-							<td style="text-align:center;">
-								<fmt:formatNumber 
-									value="${item.companyPayment + 
-											(not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}" 
-									type="number" 
-									pattern="#,###" />원
-							</td>
+							<th>시작일</th>
+							<th>종료일</th>
+							<th>사업장 지급액</th>
+							<th>정부 지급액</th>
+							<th>총 지급액</th>
 						</tr>
-					
-						<%-- 2. 루프를 돌면서 총 지급액을 합계 변수에 누적 --%>
-						<c:set var="totalAmount" 
-							value="${totalAmount + item.companyPayment + 
-									(not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}" />
-					</c:forEach>
+					</thead>
+					<tbody>
+						<c:set var="totalAmount" value="${0}" />
+						
+						<c:forEach var="item" items="${dto.list}" varStatus="status">
+							<tr>
+								<td>
+									<fmt:formatDate value="${item.startMonthDate}" pattern="yyyy.MM.dd"/>
+								</td>
+						
+								<td>
+									<c:choose>
+										<c:when test="${not empty item.earlyReturnDate}">
+											<fmt:formatDate value="${item.earlyReturnDate}" pattern="yyyy.MM.dd"/>
+										</c:when>
+										<c:otherwise>
+											<fmt:formatDate value="${item.endMonthDate}" pattern="yyyy.MM.dd"/>
+										</c:otherwise>
+									</c:choose>
+								</td>
+						
+								<td>
+									<fmt:formatNumber value="${item.companyPayment}" type="number" pattern="#,###" />원
+								</td>
+						
+								<td>
+									<c:choose>
+										<c:when test="${not empty item.govPaymentUpdate}">
+											<fmt:formatNumber value="${item.govPaymentUpdate}" type="number" pattern="#,###" />원
+										</c:when>
+										<c:otherwise>
+											<fmt:formatNumber value="${item.govPayment}" type="number" pattern="#,###" />원
+										</c:otherwise>
+									</c:choose>
+								</td>
+						
+								<td>
+									<fmt:formatNumber
+										value="${item.companyPayment + 
+												(not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}" 
+										type="number" 
+										pattern="#,###" />원
+								</td>
+							</tr>
+						
+							<c:set var="totalAmount"
+								value="${totalAmount + item.companyPayment + 
+										(not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}" />
+						</c:forEach>
+		
+						<c:if test="${not empty dto.list}">
+							<tr style="background-color: var(--light-gray-color);">
+								<td colspan="2">
+									<fmt:formatDate value="${dto.list[0].startMonthDate}" pattern="yyyy.MM.dd" />
+									-
+									<c:choose>
+										<c:when test="${not empty dto.list[fn:length(dto.list) - 1].earlyReturnDate}">
+											<fmt:formatDate value="${dto.list[fn:length(dto.list) - 1].earlyReturnDate}" pattern="yyyy.MM.dd" />
+										</c:when>
+										<c:otherwise>
+											<fmt:formatDate value="${dto.list[fn:length(dto.list) - 1].endMonthDate}" pattern="yyyy.MM.dd" />
+										</c:otherwise>
+									</c:choose>
+								</td>
+						
+								<td colspan="2" style="text-align: center; font-weight: 700; color: var(--dark-gray-color);">
+									합계 신청금액
+								</td>
+						
+								<td style="text-align: center; font-weight: 700; font-size: 1.05em; color: var(--primary-color);">
+									<fmt:formatNumber value="${totalAmount}" type="number" pattern="#,###" />원
+								</td>
+							</tr>
+						</c:if>
 	
-					<%-- 3. [추가] 리스트가 비어있지 않을 때만 합계 행 표시 --%>
-					<c:if test="${not empty dto.list}">
-						<tr style="background-color: var(--light-gray-color);">
-							<td colspan="2" style="text-align:center;">
-								<fmt:formatDate value="${dto.list[0].startMonthDate}" pattern="yyyy.MM.dd" />
-								-
-								<c:choose>
-									<c:when test="${not empty dto.list[fn:length(dto.list) - 1].earlyReturnDate}">
-										<fmt:formatDate value="${dto.list[fn:length(dto.list) - 1].earlyReturnDate}" pattern="yyyy.MM.dd" />
-									</c:when>
-									<c:otherwise>
-										<fmt:formatDate value="${dto.list[fn:length(dto.list) - 1].endMonthDate}" pattern="yyyy.MM.dd" />
-									</c:otherwise>
-								</c:choose>
-							</td>
-					
-							<td colspan="2" style="text-align: center; font-weight: 700; color: var(--dark-gray-color);">
-								합계 신청금액
-							</td>
-					
-							<td style="text-align: center; font-weight: 700; font-size: 1.05em; color: var(--primary-color);">
-								<fmt:formatNumber value="${totalAmount}" type="number" pattern="#,###" />원
-							</td>
-						</tr>
-					</c:if>
-
-					<%-- 기존 '내역 없음' 메시지 --%>
-					<c:if test="${empty dto.list}">
-						<tr>
-							<td colspan="5" style="text-align: center; color: #888;">단위기간 내역이 없습니다.</td>
-						</tr>
-					</c:if>
-				</tbody>
-			</table>
+						<c:if test="${empty dto.list}">
+							<tr>
+								<td colspan="5" style="text-align: center; color: #888;">단위기간 내역이 없습니다.</td>
+							</tr>
+						</c:if>
+					</tbody>
+				</table>
+			</div>
 		</div>
 	
 		<div class="info-table-container">
@@ -336,12 +511,7 @@ h2{
 						</tr>
 						<tr>
 							<th>주민등록번호</th>
-							<td colspan="3">
-								<c:if test="${not empty dto.childResiRegiNumber}">
-							        <c:set var="rrnCleaned" value="${fn:replace(fn:replace(fn:trim(dto.childResiRegiNumber), '-', ''), ' ', '')}" />
-							        ${fn:substring(rrnCleaned, 0, 6)}-${fn:substring(rrnCleaned, 6, 13)}
-							    </c:if>
-							</td>
+							<td colspan="3"><c:if test="${not empty dto.childResiRegiNumber}"><c:set var="rrnCleaned" value="${fn:replace(fn:replace(fn:trim(dto.childResiRegiNumber), '-', ''), ' ', '')}" />${fn:substring(rrnCleaned, 0, 6)}-${fn:substring(rrnCleaned, 6, 13)}</c:if></td>
 						</tr>
 				</tbody>
 			</table>
@@ -403,52 +573,74 @@ h2{
 			</table>
 		</div>
 	
-		<!-- [수정] 버튼 컨테이너 구조 변경 -->
+		<%-- [수정] 버튼 컨테이너 로직은 그대로 유지 (CSS가 반응형으로 처리) --%>
 		<c:choose>
 			<c:when test="${dto.statusCode == 'ST_10'}">
-				<div class="button-container spread-out">
-					<div class="button-group-left">
-						<a href="${pageContext.request.contextPath}/user/main" class="btn bottom-btn btn-secondary">목록으로 돌아가기</a>
-						<form action="${pageContext.request.contextPath}/user/application/update/${dto.applicationNumber}" method="post" style="display: inline;">
-						    <%-- CSRF 토큰 추가 --%>
-						    <sec:csrfInput/>
-						    
-						    <%-- termId 리스트를 hidden input으로 추가 --%>
-						    <c:forEach var="item" items="${dto.list}">
-						        <input type="hidden" name="termId" value="${item.termId}" />
-						    </c:forEach>
-						    
-						    <%-- 버튼은 <a> 태그와 동일한 스타일을 적용 --%>
-						    <button type="submit" class="btn bottom-btn btn-primary">신청 내용 수정</button>
-						</form>
-						<form id="submitForm" action="${pageContext.request.contextPath}/user/submit/${dto.applicationNumber}" method="post" style="display: inline;">
+				<div class="button-container" style="display: flex; align-items: center; width: 100%;">
+					<div style="display: flex; gap: 8px;">
+						<a href="${pageContext.request.contextPath}/user/main" 
+						   class="btn bottom-btn btn-secondary"
+						   style="margin: 0;">목록으로 돌아가기</a>
+			
+						<form action="${pageContext.request.contextPath}/user/application/update/${dto.applicationNumber}" 
+							  method="post" 
+							  style="display: contents;">
 							<sec:csrfInput/>
-							<button type="button" onclick="confirmAction('submitForm', '최종 제출 후에는 수정할 수 없습니다. 제출하시겠습니까?')" class="btn bottom-btn btn-primary">최종 제출</button>
+							<c:forEach var="item" items="${dto.list}">
+								<input type="hidden" name="termId" value="${item.termId}" />
+							</c:forEach>
+							<button type="submit" class="btn bottom-btn btn-primary" style="margin: 0;">신청 내용 수정</button>
+						</form>
+			
+						<form id="submitForm" 
+							  action="${pageContext.request.contextPath}/user/submit/${dto.applicationNumber}" 
+							  method="post" 
+							  style="display: contents;">
+							<sec:csrfInput/>
+							<button type="button" 
+									onclick="confirmAction('submitForm', '최종 제출 후에는 수정할 수 없습니다. 제출하시겠습니까?')" 
+									class="btn bottom-btn btn-primary"
+									style="margin: 0;">최종 제출</button>
 						</form>
 					</div>
-					<form id="deleteForm" action="${pageContext.request.contextPath}/user/delete/${dto.applicationNumber}" method="post" style="display: inline;">
+			
+					<form id="deleteForm" 
+						  action="${pageContext.request.contextPath}/user/delete/${dto.applicationNumber}" 
+						  method="post" 
+						  style="margin-left: auto;">
 						<sec:csrfInput/>
 						<c:forEach var="item" items="${dto.list}">
-						        <input type="hidden" name="termId" value="${item.termId}" />
+							<input type="hidden" name="termId" value="${item.termId}" />
 						</c:forEach>
-						<button type="button" onclick="confirmAction('deleteForm', '정말로 삭제하시겠습니까?')" class="btn bottom-btn btn-danger">삭제</button>
+						<button type="button" 
+								onclick="confirmAction('deleteForm', '정말로 삭제하시겠습니까?')" 
+								class="btn bottom-btn btn-danger"
+								style="margin: 0; background-color: #dc3545; border-color: #dc3545;"
+								onmouseover="this.style.backgroundColor='#dc3545'; this.style.borderColor='#dc3545';"
+								onmouseout="this.style.backgroundColor='#dc3545'; this.style.borderColor='#dc3545';">
+							삭제
+						</button>
 					</form>
 				</div>
 			</c:when>
 	
 			<c:when test="${dto.statusCode == 'ST_20' or dto.statusCode == 'ST_30' or dto.statusCode == 'ST_40'}">
-				<div class="button-container spread-out">
-					<a href="${pageContext.request.contextPath}/user/main" class="btn bottom-btn btn-secondary">목록으로 돌아가기</a>
-					<form id="cancelForm" action="${pageContext.request.contextPath}/user/cancel/${dto.applicationNumber}" method="post" style="display: inline;">
+				<div class="button-container"> 
+					<div class="button-group-left">
+						<a href="${pageContext.request.contextPath}/user/main" class="btn bottom-btn btn-secondary">목록으로 돌아가기</a>
+						<button type="button" id="btn-pdf-download" class="btn bottom-btn btn-primary">PDF 다운로드</button>
+					</div>
+					
+					<form id="cancelForm" action="${pageContext.request.contextPath}/user/cancel/${dto.applicationNumber}" method="post" style="margin-left: auto;">
 						<sec:csrfInput/>
-						<button type="button" onclick="confirmAction('cancelForm', '신청을 취소하시겠습니까?')" class="btn bottom-btn btn-danger">신청 취소</button>
+						<button type="button" onclick="confirmAction('cancelForm', '신청을 취소하시겠습니까?')" class="btn bottom-btn btn-danger" 
+								style="background-color: #c82333; border-color: #bd2130; transform: translateY(-2px); box-shadow: var(--shadow-md);">신청 취소</button>
 					</form>
 				</div>
 			</c:when>
 	
 			<c:otherwise>
-				<%-- ST_50, ST_60 and any other cases --%>
-				<div class="button-container">
+				<div class="button-container" style="display: flex; justify-content: center;">
 					<a href="${pageContext.request.contextPath}/user/main" class="btn bottom-btn btn-secondary">목록으로 돌아가기</a>
 				</div>
 			</c:otherwise>
@@ -462,54 +654,101 @@ h2{
 
 <script>
 function confirmAction(formId, message) {
-    if (confirm(message)) {
-        document.getElementById(formId).submit();
-    }
+    if (confirm(message)) {
+        document.getElementById(formId).submit();
+    }
 }
 
-// 1. $(document).ready의 주석을 제거합니다.
 $(document).ready(function() {
 	
-	// JSTL을 사용해 dto 객체가 비어있지 않은 경우에만(즉, 유효한 applicationNumber가 있을 때만)
-	// 권한 확인 AJAX 요청을 실행합니다.
 	<c:if test="${not empty dto}">
 	
 		const applicationNumber = "${dto.applicationNumber}";
 		const contextPath = "${pageContext.request.contextPath}";
-		
-		// 페이지 내의 Spring Security <sec:csrfInput/> 태그가 생성한
-		// CSRF 토큰 input의 value를 찾습니다.
-		// (페이지에 'submitForm' 또는 'deleteForm' 등이 이미 존재하므로 토큰을 찾을 수 있습니다.)
 		const csrfToken = $("input[name='_csrf']").val();
 
 		$.ajax({
 			type: "GET",
 			url: contextPath + "/user/check/detail/" + applicationNumber,
 			headers: {
-				'X-CSRF-TOKEN': csrfToken  // GET 요청이라도 Spring Security 설정에 따라 필요할 수 있으므로 전송
+				'X-CSRF-TOKEN': csrfToken 
 			},
 			dataType: "json",
 			success: function(response) {
-				// 컨트롤러에서 success: false 를 반환한 경우 (권한 없음)
 				if (!response.success) {
 					alert(response.message);
 					window.location.href = contextPath + response.redirectUrl;
 				}
-				// success: true 인 경우 (권한 있음)
-				// 아무 동작도 하지 않고 페이지를 그대로 보여줍니다.
 			},
 			error: function(xhr, status, error) {
-				// 500 에러 등 AJAX 호출 자체에 실패한 경우
 				console.error("AJAX Error:", status, error);
 				alert("페이지 권한 확인 중 오류가 발생했습니다. 메인 페이지로 이동합니다.");
-				// 에러 발생 시 안전하게 메인 페이지로 리다이렉트
 				window.location.href = contextPath + "/user/main";
 			}
 		});
 		
+		
+		// --- [추가] PDF 다운로드 버튼 클릭 이벤트 핸들러 ---
+		$('#btn-pdf-download').on('click', function() {
+			const btn = $(this);
+			const originalText = btn.text();
+			
+			btn.prop('disabled', true).text('PDF 생성 중...').addClass('disabled');
+			
+			const target = document.querySelector('.main-container');
+			
+			html2canvas(target, { 
+				scale: 2, 
+				useCORS: true, 
+				onclone: (document) => {
+					const buttonContainer = document.querySelector('.button-container');
+					if (buttonContainer) {
+						buttonContainer.style.visibility = 'hidden';
+					}
+				}
+			}).then((canvas) => {
+				const imgData = canvas.toDataURL('image/png');
+				
+				const { jsPDF } = window.jspdf;
+				const pdf = new jsPDF('p', 'mm', 'a4'); 
+				
+				const margin = 10; 
+				const pdfWidth = 210 - (margin * 2); 
+				const pageHeight = 297; 
+				const pageInnerHeight = pageHeight - (margin * 2); 
+				
+				const imgWidth = canvas.width;
+				const imgHeight = canvas.height;
+				
+				const pdfImgHeight = (imgHeight * pdfWidth) / imgWidth;
+				
+				let heightLeft = pdfImgHeight; 
+				let position = margin; 
+				
+				pdf.addImage(imgData, 'PNG', margin, position, pdfWidth, pdfImgHeight);
+				heightLeft -= pageInnerHeight; 
+				
+				while (heightLeft > 0) {
+					position = -heightLeft + margin; 
+					pdf.addPage(); 
+					pdf.addImage(imgData, 'PNG', margin, position, pdfWidth, pdfImgHeight);
+					heightLeft -= pageInnerHeight;
+				}
+				
+				const filename = `육아휴직_급여신청서_${applicationNumber}.pdf`;
+				pdf.save(filename);
+				
+				btn.prop('disabled', false).text(originalText).removeClass('disabled');
+				
+			}).catch(function(error) {
+				console.error("PDF 생성 오류:", error);
+				alert("PDF 생성 중 오류가 발생했습니다.");
+				btn.prop('disabled', false).text(originalText).removeClass('disabled');
+			});
+		});
+		
 	</c:if>
-}); // 2. 이제 이 닫는 괄호가 1번과 짝을 이룹니다.
+}); 
 </script>
 </body>
 </html>
-

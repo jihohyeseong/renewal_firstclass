@@ -7,6 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>마이페이지</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/global.css">
@@ -103,6 +104,16 @@
    .btn-primary { background-color: var(--primary-color); color: var(--white-color); border-color: var(--primary-color); }
    .btn-primary:hover { background-color: #364ab1; box-shadow: var(--shadow-md); transform: translateY(-2px); }
    
+   /* [수정] 우편번호 검색 영역 스타일 */
+   .zip-search-wrapper {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+    .zip-search-wrapper input {
+        flex: 1;
+    }
+   
    .btn-search {
      padding: 12px 20px;
      background-color: var(--white-color);
@@ -129,6 +140,73 @@
        padding: 20px 0;
        font-size: 14px;
        color: var(--gray-color);
+   }
+
+   /* ---------------------------------- */
+   /* 📱 [추가] 반응형 스타일 */
+   /* ---------------------------------- */
+
+   /* 992px 이하 (태블릿) */
+   @media (max-width: 992px) {
+       .main-container {
+           margin: 30px auto;
+           padding: 30px 35px;
+           max-width: 90%; /* 화면 꽉 차지 않게 */
+       }
+
+       /* [수정] 2열 레이아웃을 1열로 변경 */
+       .form-row {
+           flex-direction: column;
+           gap: 0; /* form-group의 margin-bottom으로 간격 제어 */
+       }
+   }
+
+   /* 768px 이하 (모바일) */
+   @media (max-width: 768px) {
+       .main-container {
+           /* [수정] 모바일에선 카드 스타일 대신 전체 화면 사용 */
+           margin: 0;
+           padding: 25px;
+           border-radius: 0;
+           box-shadow: none;
+           max-width: 100%;
+       }
+
+       h2 {
+           font-size: 24px;
+           margin-bottom: 30px;
+           padding-bottom: 15px;
+       }
+       
+       .form-group {
+            margin-bottom: 20px;
+       }
+
+       /* [수정] 우편번호/주소검색 버튼 쌓기 */
+       .zip-search-wrapper {
+           flex-direction: column;
+           align-items: stretch; /* 버튼이 100% 너비를 갖도록 */
+           gap: 10px; /* 입력창과 버튼 사이 간격 */
+       }
+       
+       .zip-search-wrapper input {
+           flex: none; /* flex:1 해제 */
+           width: 100%;
+       }
+       
+       .zip-search-wrapper button {
+           width: 100%;
+       }
+
+       /* [수정] 주소 수정 버튼 100% 너비 */
+       .submit-button-container .btn-primary {
+           width: 100%;
+       }
+       
+       /* [추가] 모바일에서 iOS 자동 줌인 방지 */
+       input[type="text"] {
+           font-size: 16px;
+       }
    }
 </style>
 </head>
@@ -186,8 +264,8 @@
 
        <div class="form-group">
          <label>우편번호</label>
-         <div style="display: flex; gap: 10px; align-items: center;">
-           <input type="text" id="zipNumber" name="zipNumber" value="${user.zipNumber}" readonly style="flex:1;">
+         <div class="zip-search-wrapper">
+           <input type="text" id="zipNumber" name="zipNumber" value="${user.zipNumber}" readonly>
            <button type="button" class="btn btn-search" onclick="execDaumPostcode()">주소검색</button>
          </div>
        </div>

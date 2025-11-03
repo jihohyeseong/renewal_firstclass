@@ -198,6 +198,160 @@
     .empty-state-box::before { font-family: "Font Awesome 6 Free"; font-weight: 900; content: "\f115"; font-size: 40px; color: var(--primary-color); display: block; margin-bottom: 20px; opacity: 0.6; }
     .empty-state-box h3 { font-size: 22px; color: var(--text-color); margin-top: 0; margin-bottom: 12px; }
     .empty-state-box p { font-size: 16px; color: var(--text-color-light); margin: 0; }
+    
+  /* ---------------------------------- */
+        /* 📱 반응형 스타일 (Tablet & Mobile) */
+        /* ---------------------------------- */
+        @media (max-width: 768px) {
+            .main-container {
+                margin: 10px auto; /* 상하 여백 축소 */
+                padding: 0 10px; /* 좌우 여백 축소 */
+            }
+
+            .content-wrapper {
+                padding: 20px 15px; /* 카드 내부 여백 축소 */
+            }
+
+            /* --- 헤더 [수정] --- */
+            .content-header {
+                flex-direction: column; /* 제목과 버튼을 세로로 쌓음 */
+                align-items: flex-start; /* 좌측 정렬 */
+                gap: 15px; /* 제목과 버튼 영역 사이 간격 */
+                padding-bottom: 20px;
+            }
+
+            .content-header h2 {
+                font-size: 22px; /* 제목 폰트 축소 */
+            }
+
+            .header-actions {
+                flex-direction: row;  /* 버튼은 가로로 유지 */
+                flex-wrap: wrap;      /* 화면 작으면 줄바꿈 */
+                justify-content: flex-end; /* 우측 정렬 */
+                width: 100%;          /* 정렬을 위해 너비 100% */
+                gap: 8px;           /* 버튼 사이 간격 */
+            }
+            
+            .header-actions .tooltip-wrapper,
+            .header-actions form {
+                display: inline-block; /* 버튼들 가로 배치 */
+            }
+            
+            /* [수정] 버튼 크기 줄이기 */
+            .header-actions .btn {
+                 width: auto; /* 100% 너비 제거 */
+                 padding: 8px 14px; /* 패딩 축소 */
+                 font-size: 14px;   /* 폰트 축소 */
+            }
+            
+            .header-actions form {
+                display: inline-block;
+            }
+
+            /* --- 안내 박스 --- */
+            .notice-box {
+                padding: 15px;
+            }
+            .notice-box .title {
+                font-size: 17px;
+            }
+            .notice-box ul {
+                font-size: 13px;
+                padding-left: 18px;
+            }
+
+            /* --- 신청내역 테이블 [수정] --- */
+            .list-table {
+                /* display: block; 와 overflow-x: auto; 제거 */
+                table-layout: fixed; /* 고정 레이아웃 사용 */
+                width: 100%;
+                word-break: break-all; /* 긴 텍스트(신청번호 등) 강제 줄바꿈 */
+            }
+
+            .list-table thead th,
+            .list-table tbody td {
+                white-space: normal; /* [수정] 줄바꿈 허용 */
+                font-size: 14px;
+                padding: 12px 8px; /* 패딩 축소 */
+                vertical-align: middle; /* 세로 중앙 정렬 */
+            }
+            
+            /* [수정] 인라인 스타일 너비를 %로 덮어쓰기 */
+            .list-table th:nth-child(1) { width: 25% !important; } /* 신청번호 */
+            .list-table th:nth-child(2) { width: 25% !important; } /* 신청일 */
+            .list-table th:nth-child(3) { width: 15% !important; } /* 이름 */
+            .list-table th:nth-child(4) { width: 15% !important; } /* 상태 */
+            .list-table th:nth-child(5) { width: 20% !important; } /* 작업 */
+
+            .list-table td.actions {
+                text-align: center; /* 작업 버튼을 중앙 정렬 */
+            }
+            
+            .list-table td.actions .btn {
+                 width: 100%; /* 셀 너비에 꽉 차게 */
+                 max-width: 100px; /* 너무 커지진 않게 */
+                 padding: 6px 8px;
+                 font-size: 12px;
+            }
+            
+            /* --- 툴팁 --- */
+            .custom-tooltip {
+                white-space: normal; /* 툴팁 텍스트가 길면 줄바꿈 허용 */
+                max-width: 80vw; /* 화면 너비보다 커지지 않게 */
+                font-size: 12px;
+            }
+            
+            /* --- 빈 상태 박스 --- */
+            .empty-state-box {
+                padding: 40px 20px;
+            }
+            .empty-state-box h3 {
+                font-size: 20px;
+            }
+            .empty-state-box p {
+                font-size: 15px;
+            }
+        }
+        
+        /* ---------------------------------- */
+        /* 📱 더 작은 화면 (e.g., iPhone SE) */
+        /* ---------------------------------- */
+        @media (max-width: 480px) {
+            .content-wrapper {
+                padding: 15px;
+            }
+            .content-header h2 {
+                font-size: 20px;
+            }
+            
+            .header-actions .btn {
+                font-size: 13px;
+                padding: 8px 10px;
+            }
+
+            .list-table thead th,
+            .list-table tbody td {
+                font-size: 12px; /* 폰트 더 줄이기 */
+                padding: 10px 5px; /* 패딩 더 줄이기 */
+            }
+            
+            .status-badge {
+                font-size: 11px;
+                padding: 4px 8px;
+            }
+            
+            .list-table td.actions .btn {
+                 font-size: 11px;
+                 padding: 5px;
+            }
+
+            .empty-state-box h3 {
+                font-size: 18px;
+            }
+            .empty-state-box p {
+                font-size: 14px;
+            }
+        }
 
 </style>
 </head>
@@ -220,7 +374,7 @@
 
     <div class="content-wrapper">
         <div class="content-header">
-            <h2><sec:authentication property="principal.username" /> 님의 신청 내역</h2>
+            <h2>나의 신청 내역</h2>
             
             <div class="header-actions">
                 
@@ -281,7 +435,7 @@
                                     <span class="status-badge status-${stName}">${stName}</span>
                                 </td>
    
-                                <td class="actions">
+                                <td class="actions" style="text-align: center;">
                                     <a href="${pageContext.request.contextPath}/user/detail/${app.applicationNumber}" class="btn btn-secondary">
                                         상세보기</a>
                                 </td>

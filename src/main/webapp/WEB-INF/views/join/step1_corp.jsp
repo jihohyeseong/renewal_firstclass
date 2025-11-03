@@ -196,6 +196,119 @@
                 transform: translateY(0);
             }
         }
+        /* ---------------------------------- */
+        /* 📱 반응형 스타일 (Mobile) */
+        /* ---------------------------------- */
+        @media (max-width: 768px) {
+            .page-wrapper {
+                padding: 20px 10px; /* 페이지 전체 여백 축소 */
+            }
+
+            .signup-container {
+                padding: 40px 20px; /* 컨테이너 내부 여백 축소 */
+            }
+
+            .main-title {
+                font-size: 26px; /* 메인 타이틀 폰트 크기 축소 */
+                margin-bottom: 30px;
+            }
+
+            .progress-stepper {
+                margin-bottom: 40px;
+            }
+
+            /* 768px 미디어 쿼리 내의 .step 규칙을 이걸로 교체하세요 */
+            .step {
+                font-size: 13px;
+                padding: 10px 5px;      /* [수정] 상하 여백을 주어 텍스트를 중앙 정렬 */
+                height: auto;           /* [수정] 고정 높이 제거 */
+                min-height: 40px;     /* [추가] 화살표 높이(40px)만큼 최소 높이 보장 */
+                line-height: 1.3;     /* [추가] 줄바꿈 시를 대비한 줄간격 */
+                word-break: break-word; /* [수정] 'keep-all' 대신 자연스러운 줄바꿈 허용 */
+                
+                /* [추가] 텍스트를 세로/가로 중앙에 배치하기 위해 flex 사용 */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* 스텝 화살표 크기 및 위치 조정 */
+            .step:not(:last-child)::after {
+                border-top-width: 20px;
+                border-bottom-width: 20px;
+                border-left-width: 10px;
+                right: -10px;
+            }
+
+            .content-box {
+                padding: 20px 0;
+            }
+            
+            .content-box h2 {
+                font-size: 22px; /* 서브 타이틀 폰트 크기 축소 */
+            }
+
+            .auth-description {
+                font-size: 15px;
+                margin-bottom: 30px;
+            }
+
+            .auth-consent {
+                padding: 20px; /* 동의 박스 여백 축소 */
+                /* 체크박스와 라벨을 세로로 쌓음 */
+                flex-direction: column; 
+                text-align: center;
+            }
+
+            .auth-consent input[type="checkbox"] {
+                width: 18px;
+                height: 18px;
+                margin-right: 0; /* 오른쪽 여백 제거 */
+                margin-bottom: 12px; /* 아래쪽 여백 추가 */
+            }
+
+            .auth-consent label {
+                font-size: 15px;
+            }
+
+            .action-buttons {
+                /* 버튼을 세로로 쌓기 */
+                flex-direction: column; 
+                gap: 10px;
+                margin-top: 40px;
+            }
+
+            .btn {
+                width: 100%; /* 버튼 너비를 100%로 설정 */
+                padding-top: 16px; /* 터치하기 쉽도록 버튼 패딩 증가 */
+                padding-bottom: 16px;
+            }
+        }
+
+        /* ---------------------------------- */
+        /* 📱 더 작은 화면 (e.g., iPhone SE) */
+        /* ---------------------------------- */
+        @media (max-width: 375px) {
+            .signup-container {
+                padding: 30px 15px;
+            }
+
+            .main-title {
+                font-size: 24px;
+            }
+
+            .content-box h2 {
+                font-size: 20px;
+            }
+
+            .step {
+                font-size: 12px; /* 스텝 폰트 더 축소 */
+            }
+
+            .auth-consent label {
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>

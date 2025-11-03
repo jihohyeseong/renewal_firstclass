@@ -175,6 +175,84 @@
             text-align: left;
             width: 100%;
         }
+
+        /* ---------------------------------- */
+        /* 📱 [추가] 반응형 스타일 */
+        /* ---------------------------------- */
+
+        /* 992px 이하 (태블릿 및 모바일 공통) */
+        @media (max-width: 992px) {
+            .calculator-container {
+                flex-direction: column; /* [수정] 세로로 쌓기 */
+                gap: 0; /* [수정] 갭은 margin-top으로 개별 제어 */
+            }
+
+            /* [수정] 입력 패널은 항상 100% */
+            .input-panel,
+            .calculator-container.results-shown .input-panel {
+                flex-basis: 100%;
+                width: 100%;
+            }
+
+            /* [수정] 결과 패널의 애니메이션을 'slide-down'으로 변경 */
+            .result-panel {
+                flex-basis: auto; /* flex-basis: 0 대신 auto로 변경 */
+                width: 100%;
+                max-height: 0;  /* [추가] 높이 0으로 숨김 */
+                opacity: 0;
+                overflow: hidden;
+                padding: 0 40px; /* [수정] 상하 패딩 0, 좌우는 유지 (애니메이션 중 텍스트 깨짐 방지) */
+                margin-left: 0;  /* [수정] */
+                margin-top: 0;   /* [추가] */
+                
+                /* [수정] 트랜지션 대상 변경 */
+                transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                            opacity 0.4s 0.2s ease,
+                            padding 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                            margin-top 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            /* [수정] 결과 패널이 나타날 때 (slide-down) */
+            .calculator-container.results-shown .result-panel {
+                flex-basis: auto;
+                max-height: 2000px; /* [수정] 충분한 높이 부여 */
+                opacity: 1;
+                padding: 40px;      /* [수정] 패딩 복원 */
+                margin-top: 30px; /* [수정] gap 대신 margin으로 간격 부여 */
+            }
+        }
+
+        /* 768px 이하 (모바일 화면) */
+        @media (max-width: 768px) {
+            /* [추가] 카드 내부 패딩 축소 */
+            .input-panel,
+            .result-panel,
+            .calculator-container.results-shown .result-panel {
+                padding: 25px;
+            }
+
+            /* [추가] 버튼을 세로로 쌓기 */
+            .button-group {
+                grid-template-columns: 1fr; /* 1열로 변경 */
+                gap: 15px;
+            }
+
+            /* [추가] 테이블 셀 패딩/폰트 축소 */
+            #result-table th, 
+            #result-table td {
+                padding: 12px 8px;
+                font-size: 14px;
+            }
+            #result-table caption { font-size: 1.2rem; }
+            #result-table tfoot td { font-size: 1rem; }
+            
+            /* [추가] 모바일에서 날짜/월급 입력 폰트 크기 강제 (iOS 확대 방지) */
+            .input-group input[type="date"], 
+            .input-group input[type="text"] {
+                font-size: 16px; /* 16px 미만이면 iOS에서 자동 줌인됨 */
+            }
+        }
+
     </style>
     <style>
         /* comp.css의 기본 색상 변수를 파란색(#3f58d4)으로 덮어씁니다. */
@@ -183,9 +261,9 @@
         }
 
         /*
-          [중요] comp.css의 .btn-secondary:hover 규칙에
-          초록색(rgba(36, 169, 96, 0.08))이 하드코딩 되어있어,
-          이것도 파란색 계열로 함께 덮어써야 합니다.
+            [중요] comp.css의 .btn-secondary:hover 규칙에
+            초록색(rgba(36, 169, 96, 0.08))이 하드코딩 되어있어,
+            이것도 파란색 계열로 함께 덮어써야 합니다.
         */
         .btn-secondary:hover {
             /* #3f58d4의 rgb(63, 88, 212) 버전에 투명도 0.08 적용 */
@@ -195,7 +273,7 @@
 </head>
 <body>
 
-	<%@ include file="header.jsp" %>
+    <%@ include file="header.jsp" %>
 
     <main class="main-container">
         <div class="content-wrapper">
@@ -267,6 +345,7 @@
     </footer>
 
     <script>
+        // (JavaScript 코드는 기존과 동일합니다. 수정 없음)
         const calculatorContainer = document.getElementById("calculator-container");
         const startDateInput = document.getElementById("startDate");
         const endDateInput = document.getElementById("endDate");

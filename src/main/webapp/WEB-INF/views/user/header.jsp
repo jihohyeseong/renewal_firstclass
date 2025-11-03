@@ -1,10 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%-- [추가] JSTL core 및 functions 태그 라이브러리를 사용합니다. --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<%-- [추가] 현재 페이지의 URI를 변수에 저장합니다. --%>
 <c:set var="currentURI" value="${pageContext.request.requestURI}" />
 
 <style>
@@ -20,9 +18,15 @@
         position: sticky;
         top: 0;
         z-index: 10;
+        position: relative; 
     }
     .header .logo img { vertical-align: middle; }
-    .header nav { display: flex; align-items: center; gap: 15px; }
+    
+    .header-right-nav { 
+        display: flex; 
+        align-items: center; 
+        gap: 15px; 
+    }
     .header .welcome-msg { font-size: 16px; color: var(--dark-gray-color); }
 
     .header-nav {
@@ -81,30 +85,230 @@
     .btn-logout:hover { background-color: #555; }
     .btn-secondary { background-color: var(--white-color); color: var(--gray-color); border-color: var(--border-color); }
     .btn-secondary:hover { background-color: var(--light-gray-color); color: var(--dark-gray-color); border-color: #ccc; }
+
+
+    /* ---------------------------------- */
+    /* [수정] 햄버거 버튼 (JS 방식) */
+    /* ---------------------------------- */
+    .nav-toggle {
+        display: none; /* 데스크탑에서는 숨김 */
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        z-index: 1001; /* [중요] 메뉴와 오버레이보다 위에 */
+    }
+    .nav-toggle-icon {
+        display: block;
+        width: 24px;
+        height: 2px;
+        background-color: var(--dark-gray-color);
+        position: relative;
+        transition: background-color 0.3s ease;
+    }
+    .nav-toggle-icon::before,
+    .nav-toggle-icon::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        background-color: var(--dark-gray-color);
+        left: 0;
+        transition: transform 0.3s ease, top 0.3s ease;
+    }
+    .nav-toggle-icon::before { top: -7px; }
+    .nav-toggle-icon::after { top: 7px; }
+
+    /* 햄버거 X 모양 (활성화 시) */
+    .nav-toggle.is-active .nav-toggle-icon {
+        background-color: transparent;
+    }
+    .nav-toggle.is-active .nav-toggle-icon::before {
+        transform: rotate(45deg);
+        top: 0;
+    }
+    .nav-toggle.is-active .nav-toggle-icon::after {
+        transform: rotate(-45deg);
+        top: 0;
+    }
+
+    /* ---------------------------------- */
+    /* [추가] 오프캔버스 오버레이 */
+    /* ---------------------------------- */
+    .offcanvas-overlay {
+        display: none; /* 기본 숨김 */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999; /* 메뉴 패널(1000) 바로 뒤 */
+    }
+    .offcanvas-overlay.is-active {
+        display: block; /* 활성화 시 보임 */
+    }
+
+
+    /* ---------------------------------- */
+    /* 📱 반응형 스타일 (Tablet & Mobile) */
+    /* ---------------------------------- */
+    @media (max-width: 992px) {
+        .header {
+            padding: 10px 20px;
+        }
+        .header .logo img {
+            height: 60px;
+        }
+
+        /* [수정] 햄버거 버튼 보이기 (오른쪽 정렬) */
+        .nav-toggle {
+            display: block;
+            order: 3; /* 로고 | 메뉴(숨김) | 버튼 */
+        }
+        
+        /* [수정] 데스크탑 중앙 내비 숨기기 */
+        .header-nav {
+            display: none;
+        }
+
+        /* [대폭 수정] 오프캔버스 메뉴 패널 */
+        .header-right-nav {
+            /* 1. 위치 및 크기 */
+            position: fixed;
+            top: 0;
+            right: 0; /* 오른쪽에 붙임 */
+            width: 300px; /* 패널 너비 */
+            max-width: 80%; /* 화면의 80%는 넘지 않게 */
+            height: 100vh; /* 화면 전체 높이 */
+            background-color: var(--white-color);
+            z-index: 1000; /* 오버레이(999)보다 위 */
+
+            /* 2. 내부 정렬 (세로로) */
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 80px 20px 20px; /* 상단 여백 (버튼 피해서) */
+            
+            /* 3. 애니메이션 (초기 상태: 숨김) */
+            transform: translateX(100%); /* 오른쪽으로 100% 밀어내서 숨김 */
+            transition: transform 0.3s ease-in-out;
+            
+            /* [중요] display:none 대신 flex 유지 (애니메이션을 위해) */
+            display: flex; 
+        }
+
+        /* [수정] 오프캔버스 활성화 시 */
+        .header-right-nav.is-active {
+            transform: translateX(0); /* 제자리(0)로 이동 */
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1); /* 왼쪽에 그림자 */
+        }
+
+        /* [수정] 오프캔버스 내부의 메뉴 링크 (ul) */
+        .header-right-nav .header-nav {
+            display: flex; /* 숨겼던 .header-nav를 다시 보이게 */
+            position: static;
+            transform: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            gap: 10px;
+        }
+        
+        .header-right-nav .header-nav .nav-link {
+            font-size: 16px;
+        }
+        
+        /* [수정] 오프캔버스 내부의 버튼 */
+        .header-right-nav .btn {
+            width: 100%; /* 버튼 너비 100%로 */
+            max-width: 250px;
+            margin-top: 10px;
+        }
+        
+        .header .welcome-msg {
+            display: none;
+        }
+    }
 </style>
 
 <header class="header">
     <a href="${pageContext.request.contextPath}/user/main" class="logo"><img src="${pageContext.request.contextPath}/resources/images/logo.png" alt="Logo" width="auto" height="80"></a>
-    <nav>
+
+    <%-- [수정] 메뉴 컨테이너 (오른쪽 오프캔버스 패널이 됩니다) --%>
+    <nav class="header-right-nav" id="main-nav-menu">
+        <%-- 데스크탑용 중앙 메뉴 (모바일에선 이 안으로 들어옴) --%>
         <ul class="header-nav">
-            <%-- [수정됨] 현재 URI에 '/main'이 포함되어 있으면 'active' 클래스를 추가합니다. --%>
             <li><a class="nav-link ${fn:contains(currentURI, '/main') ? 'active' : ''}" href="${pageContext.request.contextPath}/user/main">신청내역</a></li>
-            <%-- [수정됨] 현재 URI에 '/calc'가 포함되어 있으면 'active' 클래스를 추가합니다. --%>
             <li><a class="nav-link ${fn:contains(currentURI, '/calc') ? 'active' : ''}" href="${pageContext.request.contextPath}/calc/user">모의 계산하기</a></li>
-            <%-- [수정됨] 현재 URI에 '/mypage'가 포함되어 있으면 'active' 클래스를 추가합니다. --%>
             <li><a class="nav-link ${fn:contains(currentURI, '/mypage') ? 'active' : ''}" href="${pageContext.request.contextPath}/mypage">마이페이지</a></li>
         </ul>
+        
+        <%-- 인증 버튼 --%>
         <sec:authorize access="isAnonymous()">
             <a href="${pageContext.request.contextPath}/login" class="btn btn-primary">로그인</a>
         </sec:authorize>
         <sec:authorize access="isAuthenticated()">
-            <span class="welcome-msg">
-                <sec:authentication property="principal.username"/>님, 환영합니다.
-            </span>
             <form id="logout-form" action="${pageContext.request.contextPath}/logout" method="post" style="display: none;">
                 <sec:csrfInput/>
             </form>
             <a href="#" onclick="document.getElementById('logout-form').submit(); return false;" class="btn btn-logout">로그아웃</a>
         </sec:authorize>
     </nav>
+
+    <%-- [추가] 어두운 배경 오버레이 --%>
+    <div class="offcanvas-overlay" id="offcanvas-overlay"></div>
+
+    <%-- [수정] 햄버거 버튼 (체크박스 대신 JS 버튼으로 변경) --%>
+    <button class="nav-toggle" id="nav-toggle-btn" aria-label="메뉴 열기" aria-expanded="false">
+        <span class="nav-toggle-icon"></span>
+    </button>
 </header>
+
+<%-- [수정] 오프캔버스 제어를 위한 JavaScript (DOM 로드 후 실행) --%>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleBtn = document.getElementById('nav-toggle-btn');
+        const navMenu = document.getElementById('main-nav-menu');
+        const overlay = document.getElementById('offcanvas-overlay');
+
+        if (toggleBtn && navMenu && overlay) {
+            
+            // 메뉴 열기 함수
+            function openMenu() {
+                navMenu.classList.add('is-active');
+                toggleBtn.classList.add('is-active');
+                overlay.classList.add('is-active');
+                toggleBtn.setAttribute('aria-expanded', 'true');
+                toggleBtn.setAttribute('aria-label', '메뉴 닫기');
+                // [추가] 스크롤 방지
+                document.body.style.overflow = 'hidden'; 
+            }
+            
+            // 메뉴 닫기 함수
+            function closeMenu() {
+                navMenu.classList.remove('is-active');
+                toggleBtn.classList.remove('is-active');
+                overlay.classList.remove('is-active');
+                toggleBtn.setAttribute('aria-expanded', 'false');
+                toggleBtn.setAttribute('aria-label', '메뉴 열기');
+                // [추가] 스크롤 복구
+                document.body.style.overflow = '';
+            }
+
+            // 1. 햄버거 버튼 클릭 시
+            toggleBtn.addEventListener('click', function() {
+                if (navMenu.classList.contains('is-active')) {
+                    closeMenu();
+                } else {
+                    openMenu();
+                }
+            });
+            
+            // 2. 오버레이(배경) 클릭 시
+            overlay.addEventListener('click', function() {
+                closeMenu();
+            });
+        }
+    });
+</script>

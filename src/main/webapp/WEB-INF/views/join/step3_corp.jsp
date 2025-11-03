@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -55,6 +56,183 @@
         .btn-cancel { background-color: var(--white-color); color: var(--gray-color); }
         .btn-cancel:hover { background-color: var(--light-gray-color); }
         .btn-primary:disabled { background-color: #a0a0a0; border-color: #a0a0a0; cursor: not-allowed; }
+
+        /* ▼▼▼ [추가된 코드] 툴팁 스타일 ▼▼▼ */
+        .tooltip-wrapper {
+            position: relative; /* 툴팁의 absolute 포지셔닝 기준점 */
+        }
+        .custom-tooltip {
+            visibility: hidden; /* 기본 숨김 */
+            opacity: 0;
+            
+            position: absolute;
+            bottom: 125%; /* input 위에 위치 */
+            left: 50%;
+            transform: translateX(-50%); /* 중앙 정렬 */
+            
+            background-color: #333; /* 어두운 배경 */
+            color: var(--white-color); 
+            text-align: center;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap; /* 툴팁 텍스트가 줄바꿈되지 않도록 */
+            
+            z-index: 10;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+        }
+        /* 툴팁 꼬리 (화살표) */
+        .custom-tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%; /* 툴팁 하단 중앙 */
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent; /* 위쪽을 가리키는 삼각형 */
+        }
+        /* hover 뿐만 아니라 focus 시에도 툴팁이 보이도록 개선 */
+        .tooltip-wrapper:hover .custom-tooltip,
+        .tooltip-wrapper input:focus + .custom-tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* ---------------------------------- */
+        /* 📱 반응형 스타일 (Tablet & Mobile) */
+        /* ---------------------------------- */
+        @media (max-width: 768px) {
+            .page-wrapper {
+                padding: 20px 10px; /* 페이지 전체 여백 축소 */
+            }
+
+            .signup-container {
+                padding: 40px 20px; /* 컨테이너 내부 여백 축소 */
+            }
+
+            .main-title {
+                font-size: 26px; /* 메인 타이틀 폰트 축소 */
+                margin-bottom: 30px;
+            }
+
+            .progress-stepper {
+                margin-bottom: 40px;
+            }
+
+           /* 768px 미디어 쿼리 내의 .step 규칙을 이걸로 교체하세요 */
+            .step {
+                font-size: 13px;
+                padding: 10px 5px;      /* [수정] 상하 여백을 주어 텍스트를 중앙 정렬 */
+                height: auto;           /* [수정] 고정 높이 제거 */
+                min-height: 40px;     /* [추가] 화살표 높이(40px)만큼 최소 높이 보장 */
+                line-height: 1.3;     /* [추가] 줄바꿈 시를 대비한 줄간격 */
+                word-break: break-word; /* [수정] 'keep-all' 대신 자연스러운 줄바꿈 허용 */
+                
+                /* [추가] 텍스트를 세로/가로 중앙에 배치하기 위해 flex 사용 */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* 스텝 화살표 크기 및 위치 조정 */
+            .step:not(:last-child)::after {
+                border-top-width: 20px;
+                border-bottom-width: 20px;
+                border-left-width: 10px;
+                right: -10px;
+            }
+
+            .content-box {
+                padding: 20px 0; /* 컨텐츠 박스 여백 축소 */
+            }
+            
+            .content-box h2 {
+                font-size: 22px; /* 서브 타이틀 폰트 축소 */
+                margin-bottom: 30px;
+            }
+            
+            .info-form {
+                max-width: 100%; /* 폼 최대 너비 제한 해제 */
+            }
+
+            .form-group label {
+                font-size: 15px; /* 라벨 폰트 축소 */
+            }
+
+            .form-group input {
+                font-size: 15px; /* 입력 폰트 축소 */
+            }
+
+            /* 사업자번호/휴대폰 입력칸들이 공간을 균등하게 나누도록 설정 */
+            .hyphen-inputs input {
+                flex: 1;
+                min-width: 0; /* flex item이 줄어들 수 있도록 허용 */
+                text-align: center;
+            }
+
+            /* 툴팁이 화면 밖으로 나가지 않도록 수정 */
+            .custom-tooltip {
+                white-space: normal; /* 텍스트 줄바꿈 허용 */
+                max-width: 80vw; /* 툴팁 최대 너비를 뷰포트의 80%로 제한 */
+            }
+
+            /* 하단 버튼 */
+            .action-buttons {
+                flex-direction: column; /* 버튼 세로로 쌓기 */
+                gap: 10px;
+                margin-top: 40px;
+            }
+
+            .btn {
+                width: 100%; /* 버튼 너비를 100%로 설정 */
+                padding-top: 16px;
+                padding-bottom: 16px;
+            }
+        }
+
+        /* ---------------------------------- */
+        /* 📱 더 작은 화면 (e.g., iPhone SE) */
+        /* ---------------------------------- */
+        @media (max-width: 375px) {
+            .signup-container {
+                padding: 30px 15px;
+            }
+
+            .main-title {
+                font-size: 24px;
+            }
+
+            .content-box h2 {
+                font-size: 20px;
+            }
+
+            .step {
+                font-size: 12px; /* 스텝 폰트 더 축소 */
+            }
+            
+            .form-group label {
+                font-size: 14px;
+            }
+
+            .form-group input {
+                font-size: 14px;
+            }
+
+            /* 아이디 중복확인, 주소 검색 버튼 그룹 */
+            .input-group {
+                flex-direction: column; /* 인풋과 버튼을 세로로 쌓기 */
+                gap: 8px;
+            }
+
+            .input-group .btn-sm {
+                width: 100%;
+                padding: 12px; /* 버튼을 크게 만들어 터치하기 쉽게 */
+                font-size: 14px;
+            }
+        }
+        /* ▲▲▲ [추가된 코드] 툴팁 스타일 ▲▲▲ */
     </style>
 </head>
 <body>
@@ -106,11 +284,12 @@
                     <div class="form-group">
                         <label for="brn1">사업자 등록번호</label>
                         <div class="hyphen-inputs">
-                            <input type="text" id="brn1" maxlength="3" required>
+                        	<c:set var="buisinessParts" value="${fn:split(joinDTO.buisinessRegiNumber, '-')}" />
+                            <input type="text" id="brn1" maxlength="3" value="${not empty buisinessParts[0] ? buisinessParts[0] : ''}" required>
                             <span class="hyphen">-</span>
-                            <input type="text" id="brn2" maxlength="2" required>
+                            <input type="text" id="brn2" maxlength="2" value="${not empty buisinessParts[1] ? buisinessParts[1] : ''}" required>
                             <span class="hyphen">-</span>
-                            <input type="text" id="brn3" maxlength="5" required>
+                            <input type="text" id="brn3" maxlength="5" value="${not empty buisinessParts[2] ? buisinessParts[2] : ''}" required>
                         </div>
                         <c:if test="${not empty errors.buisinessRegiNumber}">
                             <p class="message error">${errors.buisinessRegiNumber}</p>
@@ -131,26 +310,37 @@
 
                     <div class="form-group">
                         <label for="password">비밀번호</label>
-                        <input type="password" id="password" name="password" required>
+                        <div class="tooltip-wrapper">
+                            <input type="password" id="password" name="password" value="${joinDTO.password}" required>
+                            <div class="custom-tooltip">
+                                비밀번호는 최소 8자 이상이어야 하며, 특수문자 하나 이상을 포함해야 합니다.
+                            </div>
+                        </div>
                         <c:if test="${not empty errors.password}">
                             <p class="message error">${errors.password}</p>
                         </c:if>
                     </div>
-
                     <div class="form-group">
                         <label for="passwordCheck">비밀번호 확인</label>
-                        <input type="password" id="passwordCheck" required>
+                        <input type="password" id="passwordCheck" value="${joinDTO.password}" required>
                         <p class="message" id="passwordMessage"></p>
                     </div>
 
                     <div class="form-group">
                         <label for="phone1">담당자 휴대폰 번호</label>
                         <div class="hyphen-inputs">
-                            <input type="text" id="phone1" maxlength="3" required>
-                            <span class="hyphen">-</span>
-                            <input type="text" id="phone2" maxlength="4" required>
-                            <span class="hyphen">-</span>
-                            <input type="text" id="phone3" maxlength="4" required>
+                          <c:set var="phoneParts" value="${fn:split(joinDTO.phoneNumber, '-')}" />
+						
+						  <input type="text" id="phone1" maxlength="3" required
+						         value="${not empty phoneParts[0] ? phoneParts[0] : ''}">
+						  <span class="hyphen">-</span>
+						
+						  <input type="text" id="phone2" maxlength="4" required
+						         value="${not empty phoneParts[1] ? phoneParts[1] : ''}">
+						  <span class="hyphen">-</span>
+						
+						  <input type="text" id="phone3" maxlength="4" required
+						         value="${not empty phoneParts[2] ? phoneParts[2] : ''}">
                         </div>
                         <c:if test="${not empty errors.phoneNumber}">
                             <p class="message error">${errors.phoneNumber}</p>

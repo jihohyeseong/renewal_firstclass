@@ -54,7 +54,8 @@ public class UserApplyService {
 		}
 		try {
 			applicationDTO.setRegistrationNumber(aes256Util.decrypt(applicationDTO.getRegistrationNumber()));
-			applicationDTO.setChildResiRegiNumber(aes256Util.decrypt(applicationDTO.getChildResiRegiNumber()));
+			if(applicationDTO.getChildResiRegiNumber() != null)
+				applicationDTO.setChildResiRegiNumber(aes256Util.decrypt(applicationDTO.getChildResiRegiNumber()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

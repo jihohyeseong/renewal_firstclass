@@ -290,6 +290,97 @@
         font-weight: 700;
     }
 
+    /* ---------------------------------- */
+    /* 📱 [추가] 반응형 스타일 */
+    /* ---------------------------------- */
+
+    /* 992px 이하 (태블릿) */
+    @media (max-width: 992px) {
+        .main-container {
+            padding: 0 15px;
+            margin: 15px auto;
+        }
+        .content-wrapper {
+            padding: 20px 24px;
+        }
+        .content-header h2 {
+            font-size: 22px;
+        }
+        /* 카드 최소 너비 줄이기 */
+        .card-list-container {
+             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+             gap: 15px;
+        }
+    }
+
+    /* 768px 이하 (모바일) */
+    @media (max-width: 768px) {
+        .main-container {
+            padding: 0;
+            margin: 0;
+        }
+        .notice-box {
+            border-radius: 0;
+            border-left: none;
+            border-right: none;
+        }
+        .content-wrapper {
+            border-radius: 0;
+            box-shadow: none;
+            padding: 20px 20px;
+        }
+        .content-header h2 {
+            font-size: 20px;
+        }
+
+        /* [수정] 모바일에서 1열로 강제 */
+        .card-list-container {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        
+        /* [수정] 모바일 카드 스타일 */
+        .selectable-card {
+            padding: 18px;
+        }
+        .selectable-card .card-icon {
+            width: 45px;
+            height: 45px;
+            font-size: 20px;
+        }
+        .selectable-card .card-company-name {
+            font-size: 17px;
+        }
+        .card-selection-indicator {
+            font-size: 24px;
+        }
+        .selectable-card .card-info-item {
+            font-size: 15px; /* 14px -> 15px */
+        }
+
+        /* [수정] 빈 상태 박스 패딩 줄이기 */
+        .empty-state-box {
+            padding: 40px 20px;
+        }
+        .empty-state-box h3 {
+             font-size: 20px;
+        }
+        .empty-state-box p {
+             font-size: 15px;
+        }
+
+        /* [수정] 신청하기 버튼 100% 너비 */
+        .submit-area {
+            text-align: center;
+            margin-top: 25px;
+        }
+        .submit-area .btn {
+            width: 100%;
+            padding-top: 12px;
+            padding-bottom: 12px;
+            font-size: 16px;
+        }
+    }
 </style>
 </head>
 <body>
@@ -403,10 +494,8 @@
     </script>
 </c:if>
 
+<%-- (스크립트는 원본과 100% 동일) --%>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
 <script type="text/javascript">
 $(document).ready(function() {
     

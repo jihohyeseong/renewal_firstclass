@@ -78,7 +78,97 @@
         @keyframes wave-animation { from { background-position-x: 0; } to { background-position-x: -1440px; } }
         @keyframes floatUp { from { transform: translateY(0); opacity: 1; } to { transform: translateY(-110vh); opacity: 0; } }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @media (max-width: 900px) { .signup-options-wrapper { flex-direction: column; align-items: center; gap: 25px; } .signup-option-card { width: 100%; max-width: 450px; } }
+        /* ---------------------------------- */
+        /* 📱 반응형 스타일 (Tablet & Mobile) */
+        /* ---------------------------------- */
+
+        /* * 태블릿 (900px 이하) 
+         * - 카드를 세로로 쌓습니다.
+         */
+        @media (max-width: 900px) { 
+            .signup-options-wrapper { 
+                flex-direction: column; 
+                align-items: center; 
+                gap: 25px; 
+            } 
+            .signup-option-card { 
+                width: 100%; 
+                max-width: 450px; /* 태블릿에서는 최대 너비 450px */
+            } 
+        }
+
+        /* * 모바일 (600px 이하) 
+         * - 여백과 폰트 크기를 작은 화면에 맞게 최적화합니다.
+         */
+        @media (max-width: 600px) {
+            .signup-container {
+                padding: 30px 15px; /* 페이지 전체 여백 축소 */
+            }
+            
+            .signup-header {
+                margin-bottom: 30px;
+            }
+
+            .signup-header h1 {
+                font-size: 26px; /* 메인 타이틀 폰트 축소 */
+            }
+
+            .signup-header p {
+                font-size: 14px; /* 부제목 폰트 축소 */
+            }
+
+            .signup-option-card {
+                padding: 20px; /* 카드 내부 여백 축소 */
+                max-width: 100%; /* 모바일에서는 최대 너비 제한 해제 */
+            }
+
+            .icon-wrapper {
+                width: 60px; /* 아이콘 배경 크기 축소 */
+                height: 60px;
+                margin-bottom: 15px;
+            }
+            
+            .icon-wrapper svg {
+                width: 40px; /* SVG 아이콘 크기 조절 */
+                height: 40px;
+            }
+
+            .signup-option-card h2 {
+                font-size: 20px; /* 카드 제목 폰트 축소 */
+                margin-bottom: 20px;
+            }
+
+            .signup-btn {
+                margin-bottom: 25px;
+            }
+
+            .service-info h3 {
+                font-size: 15px;
+            }
+
+            .service-list {
+                font-size: 13px;
+            }
+
+            /* 스텝 인디케이터 텍스트 */
+            .step {
+                font-size: 11px;
+                word-break: keep-all; /* 단어 안 깨지게 */
+            }
+            
+            .step-number {
+                width: 28px;
+                height: 28px;
+            }
+            .signup-options-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            width: 100%;      /* <-- 이 줄 추가 */
+            max-width: 830px; /* <-- 이 줄 추가 */
+        }
+        }
     </style>
 </head>
 <body>
