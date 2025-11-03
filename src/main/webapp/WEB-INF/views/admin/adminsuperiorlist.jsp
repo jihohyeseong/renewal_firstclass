@@ -448,9 +448,11 @@
                     </tbody>
                 </table>
                 <div class="pagination">
-				    <c:if test="${pageDTO.startPage > 1}">
-				        <a href="${pageContext.request.contextPath}/admin/superior?page=${pageDTO.startPage - 1}&keyword=${keyword}&status=${status}&date=${date}">&laquo;</a>
-				    </c:if>
+				    <c:choose><c:when test="${pageDTO.startPage > 1}">
+				        <a href="${pageContext.request.contextPath}/admin/superior?page=${pageDTO.startPage - 1}&keyword=${keyword}&status=${status}&date=${date}">&laquo;</a>
+				    </c:when><c:otherwise>
+				        <span class="disabled">&laquo;</span>
+				    </c:otherwise></c:choose>
 				
 				    <c:forEach begin="${pageDTO.paginationStart}" end="${pageDTO.paginationEnd}" var="p">
 				        <a href="${pageContext.request.contextPath}/admin/superior?page=${p}&keyword=${keyword}&status=${status}&date=${date}" 
@@ -459,9 +461,11 @@
 				        </a>
 				    </c:forEach>
 				
-				    <c:if test="${pageDTO.endPage > pageDTO.paginationEnd}">
-				        <a href="${pageContext.request.contextPath}/admin/superior?page=${pageDTO.paginationEnd + 1}&keyword=${keyword}&status=${status}&date=${date}">&raquo;</a>
-				    </c:if>
+				    <c:choose><c:when test="${pageDTO.endPage > pageDTO.paginationEnd}">
+				        <a href="${pageContext.request.contextPath}/admin/superior?page=${pageDTO.paginationEnd + 1}&keyword=${keyword}&status=${status}&date=${date}">&raquo;</a>
+				    </c:when><c:otherwise>
+				        <span class="disabled">&raquo;</span>
+				    </c:otherwise></c:choose>
 				</div>
             </div>
         </main>

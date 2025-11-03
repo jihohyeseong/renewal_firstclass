@@ -44,7 +44,7 @@
    }
 
    h2 {
-     text-align: center;
+     /* text-align: center; */
      font-size: 28px;
      color: var(--dark-gray-color);
      margin-bottom: 40px;
@@ -103,6 +103,17 @@
    .btn-primary { background-color: var(--primary-color); color: var(--white-color); border-color: var(--primary-color); }
    .btn-primary:hover { background-color: #364ab1; box-shadow: var(--shadow-md); transform: translateY(-2px); }
    
+   /* ◀◀◀ [추가] .btn-secondary 스타일 정의 */
+   .btn-secondary {
+       background-color: var(--white-color);
+       color: var(--dark-gray-color);
+       border: 1px solid var(--border-color);
+   }
+   .btn-secondary:hover {
+       background-color: var(--light-gray-color);
+       border-color: var(--gray-color);
+   }
+   
    .btn-search {
      padding: 12px 20px;
      background-color: var(--white-color);
@@ -116,10 +127,12 @@
    }
 
    .submit-button-container {
-     text-align: center;
+   	 display: flex;
+     justify-content: center;
+     gap: 15px;
      margin-top: 40px;
    }
-   .submit-button-container .btn-primary {
+   .submit-button-container .btn {
        padding: 12px 40px;
        font-size: 16px;
    }
@@ -204,7 +217,9 @@
 
        <div class="submit-button-container">
          <button type="submit" class="btn btn-primary">주소 수정</button>
+         <a href="${pageContext.request.contextPath}/user/main" class="btn bottom-btn btn-secondary">목록으로</a>
        </div>
+       	 
      </form>
    </main>
 

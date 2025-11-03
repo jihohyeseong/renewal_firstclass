@@ -302,6 +302,7 @@
 	    padding: 12px 16px;
 	    border-bottom: 1px solid #e0e0e0;
 	    background: #fff;
+	    gap: 30px;
 	}
 	
 	.dynamic-form-row:hover {
@@ -317,7 +318,7 @@
 	}
 	
 	.payment-input-field {
-	    flex: 1;
+	    flex: 0 0 180px;
 	    display: flex;
 	    align-items: center;
 	    justify-content: flex-end;
@@ -330,6 +331,7 @@
 	.payment-input-field input {
 	    text-align: right;
 	    padding-right: 8px;
+	    width: 100%;
 	}
 	/* 1. 전체 컨테이너 너비 확장 */
 	.main-container {
