@@ -91,15 +91,15 @@
    }
    
     .btn {
-        display: inline-block;
-        padding: 10px 20px;
-        font-size: 15px;
-        font-weight: 500;
-        border-radius: 8px;
-        border: 1px solid var(--border-color);
-        cursor: pointer;
-        transition: all 0.2s ease-in-out;
-        text-align: center;
+         display: inline-block;
+         padding: 10px 20px;
+         font-size: 15px;
+         font-weight: 500;
+         border-radius: 8px;
+         border: 1px solid var(--border-color);
+         cursor: pointer;
+         transition: all 0.2s ease-in-out;
+         text-align: center;
     }
    .btn-primary { background-color: var(--primary-color); color: var(--white-color); border-color: var(--primary-color); }
    .btn-primary:hover { background-color: #364ab1; box-shadow: var(--shadow-md); transform: translateY(-2px); }
@@ -138,7 +138,7 @@
    }
 
    .submit-button-container {
-   	 display: flex;
+    display: flex;
      justify-content: center;
      gap: 15px;
      margin-top: 40px;
@@ -211,9 +211,12 @@
            width: 100%;
        }
 
-       /* [수정] 주소 수정 버튼 100% 너비 */
-       .submit-button-container .btn-primary {
-           width: 100%;
+       /* [수정] 하단 버튼 2개가 동일한 비율(1:1)을 갖도록 수정 
+         .submit-button-container가 display: flex 이므로
+         자식 요소인 .btn에 flex: 1을 주면 1:1 비율로 공간을 나눠 갖게 됩니다.
+       */
+       .submit-button-container .btn {
+           flex: 1;
        }
        
        /* [추가] 모바일에서 iOS 자동 줌인 방지 */
@@ -276,28 +279,28 @@
        <hr style="margin: 35px 0; border: none; border-top: 1px solid var(--border-color);">
 
        <div class="form-group">
-         <label>우편번호</label>
-         <div class="zip-search-wrapper">
-           <input type="text" id="zipNumber" name="zipNumber" value="${user.zipNumber}" readonly>
-           <button type="button" class="btn btn-search" onclick="execDaumPostcode()">주소검색</button>
-         </div>
+        <label>우편번호</label>
+        <div class="zip-search-wrapper">
+          <input type="text" id="zipNumber" name="zipNumber" value="${user.zipNumber}" readonly>
+          <button type="button" class="btn btn-search" onclick="execDaumPostcode()">주소검색</button>
+        </div>
        </div>
 
        <div class="form-group">
-         <label>기본주소</label>
-         <input type="text" id="addressBase" name="addressBase" value="${user.addressBase}" readonly />
+        <label>기본주소</label>
+        <input type="text" id="addressBase" name="addressBase" value="${user.addressBase}" readonly />
        </div>
 
        <div class="form-group">
-         <label>상세주소</label>
-         <input type="text" id="addressDetail" name="addressDetail" value="${user.addressDetail}" />
+        <label>상세주소</label>
+        <input type="text" id="addressDetail" name="addressDetail" value="${user.addressDetail}" />
        </div>
 
        <div class="submit-button-container">
-         <button type="submit" class="btn btn-primary">주소 수정</button>
-         <a href="${pageContext.request.contextPath}/user/main" class="btn bottom-btn btn-secondary">목록으로</a>
+        <button type="submit" class="btn btn-primary">주소 수정</button>
+        <a href="${pageContext.request.contextPath}/user/main" class="btn bottom-btn btn-secondary">목록으로</a>
        </div>
-       	 
+       	 
      </form>
    </main>
 
