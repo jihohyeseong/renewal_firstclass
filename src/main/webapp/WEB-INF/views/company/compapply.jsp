@@ -97,56 +97,8 @@
 </head>
 <body>
 
-<%@ include file="compheader.jsp"%>
-
-<c:if test="${not empty error}">
-	<div class="alert alert-danger">${error}</div>
-</c:if>
-<c:if test="${not empty errors}">
-	<div class="alert alert-warning">
-		<ul>
-			<c:forEach var="e" items="${errors}">
-				<li>${e.key}: ${e.value}</li>
-			</c:forEach>
-		</ul>
-	</div>
-</c:if>
-<c:if test="${not empty message}">
-	<div class="alert alert-success">${message}</div>
-</c:if>
-
-  <div id="client-alerts" style="margin-top:8px;"></div>
-
-
 <main class="main-container">
   <div class="content-wrapper">
-  
-  <!-- ▼ 디버그: 이전 육휴기간 패널 -->
-<div id="prev-periods-panel" style="margin-top:16px; border:1px dashed #cbd3ff; border-radius:8px; padding:12px; background:#f6f8ff; display:none;">
-  <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-    <strong>이전 육아휴직 기간(서버 조회)</strong>
-    <button type="button" id="btn-refresh-periods" class="btn btn-secondary" style="padding:4px 10px;">조회/새로고침</button>
-    <span id="prev-periods-count" style="color:#666;"></span>
-    <span id="prev-periods-note" style="color:#999;">(이름+주민번호 입력 후 조회)</span>
-  </div>
-
-  <div id="prev-periods-empty" style="margin-top:8px; color:#666; display:none;">조회된 기간이 없습니다.</div>
-
-  <table id="prev-periods-table" style="width:100%; border-collapse:collapse; margin-top:8px; background:#fff; border:1px solid #e9ecef; display:none;">
-    <thead>
-      <tr style="background:#eef2ff;">
-        <th style="padding:8px; border-bottom:1px solid #e9ecef; text-align:left;">#</th>
-        <th style="padding:8px; border-bottom:1px solid #e9ecef; text-align:left;">시작일</th>
-        <th style="padding:8px; border-bottom:1px solid #e9ecef; text-align:left;">종료일</th>
-        <th style="padding:8px; border-bottom:1px solid #e9ecef; text-align:left;">현재 선택과 겹침</th>
-      </tr>
-    </thead>
-    <tbody id="prev-periods-tbody"></tbody>
-  </table>
-
-  <div id="prev-periods-raw" style="margin-top:8px; font-size:12px; color:#666; white-space:pre-wrap; display:none;"></div>
-</div>
-<!-- ▲ 디버그 패널 끝 -->
 
     <!-- 기존 .content-header는 숨겼으므로 h1로 통일 -->
     <h1>육아휴직 확인서 제출</h1>

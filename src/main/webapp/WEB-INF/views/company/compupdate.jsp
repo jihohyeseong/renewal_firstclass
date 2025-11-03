@@ -116,7 +116,7 @@
           <label class="field-title" for="employee-name">근로자 성명</label>
           <div class="input-field">
             <input type="text" id="employee-name" name="name"
-                   value="${confirmDTO.name}" placeholder="육아휴직 대상 근로자 성명"/>
+                   value="${confirmDTO.name}" placeholder="이름 검색 버튼을 누르면 자동으로 채워집니다." readonly/>
           </div>
         </div>
         <div class="form-group">
@@ -130,6 +130,9 @@
                    value="${fn:substring(confirmDTO.registrationNumber,6,13)}"
                    placeholder="뒤 7자리" style="flex:1;">
             <input type="hidden" name="registrationNumber" id="employee-rrn-hidden">
+            <button type="button" id="find-employee-btn" class="btn btn-secondary" style="white-space:nowrap;">
+		      	이름 검색
+		    </button>
           </div>
         </div>
       </div>
@@ -415,7 +418,25 @@ document.addEventListener('DOMContentLoaded', function () {
     return nextPeriodStart;
  }
 
- generateBtn.addEventListener('click', function() {
+ generateBtn.addEventListener('click', async function() {
+	 
+	   const ok = await showPrevPeriodAlert();
+	   if (!ok) {
+	     // 진행 차단 + UI 초기화
+	     formsContainer.innerHTML = '';
+	     if (noPaymentWrapper) noPaymentWrapper.style.display = 'none';
+	     if (headerRow) headerRow.style.display = 'none';
+	     return;
+	   }
+	   
+	   // 1) 임신/출산 규칙 가드
+	   if (!guardBeforeGenerate()) {
+	     formsContainer.innerHTML = '';
+	     if (noPaymentWrapper) noPaymentWrapper.style.display = 'none';
+	     if (headerRow) headerRow.style.display = 'none';
+	     return;
+	   }
+	 
     if (!startDateInput.value || !endDateInput.value) {
        alert('육아휴직 시작일과 종료일을 모두 선택해주세요.');
        return;
@@ -681,7 +702,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		}
 
 
-	  // generate 버튼 가드 추가(한 번만 래핑)
+/* 	  // generate 버튼 가드 추가(한 번만 래핑)
 	  if (generateBtn && !generateBtn.dataset.guardApplied) {
 	    const origHandler = generateBtn.onclick;
 	    generateBtn.addEventListener('click', function(e){
@@ -698,7 +719,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	      if (typeof origHandler === 'function') origHandler.call(this, e);
 	    }, true);
 	    generateBtn.dataset.guardApplied = '1';
-	  }
+	  } */
 
 /* 	  // 제출 시 최종 검증(기존 검증에 추가 보강)
 	  const formEl = document.getElementById('confirm-form');
@@ -949,6 +970,8 @@ document.addEventListener('DOMContentLoaded', function () {
        }
      });
    }
+ 
+ 
   // 센터 모달 처리 (신청서 동일)
   const findCenterBtn   = document.getElementById('find-center-btn');
   const centerModal     = document.getElementById('center-modal');
@@ -1007,6 +1030,210 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
+
+//─────────────────────────────────────
+//주민번호로 이름 자동 채우기
+//─────────────────────────────────────
+(function wireFindName(){
+const btn   = document.getElementById('find-employee-btn');
+const aEl   = document.getElementById('employee-rrn-a');
+const bEl   = document.getElementById('employee-rrn-b');
+const nameEl= document.getElementById('employee-name');
+const hidEl = document.getElementById('employee-rrn-hidden');
+
+if (!btn || !aEl || !bEl) return;
+
+function onlyDigits(s){ return (s||'').replace(/[^\d]/g,''); }
+
+const ctx = '${pageContext.request.contextPath}';
+const url = ctx + '/comp/apply/find-name';
+
+btn.addEventListener('click', async function(){
+  const a = onlyDigits(aEl.value);
+  const b = onlyDigits(bEl.value);
+
+  if (a.length !== 6 || b.length !== 7) {
+    alert('근로자 주민등록번호 앞 6자리와 뒤 7자리를 정확히 입력하세요.');
+    (a.length !== 6 ? aEl : bEl).focus();
+    return;
+  }
+
+  const regNo = a + b;
+  if (hidEl) hidEl.value = regNo;
+
+  const csrfInput = document.querySelector('input[name="_csrf"]');
+  const csrfToken = csrfInput ? csrfInput.value : null;
+
+  try {
+    const body = new URLSearchParams({ regNo });
+    if (csrfToken) body.append('_csrf', csrfToken);
+
+    const resp = await fetch(url, {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        ...(csrfToken ? {'X-CSRF-TOKEN': csrfToken} : {})
+      },
+      body
+    });
+
+    const ct = (resp.headers.get('content-type') || '').toLowerCase();
+    if (!resp.ok) {
+      console.error('[find-name] HTTP', resp.status, await resp.text().catch(()=> ''));
+      alert('이름 조회 요청에 실패했습니다. (' + resp.status + ')');
+      return;
+    }
+    if (!ct.includes('application/json')) {
+      console.error('[find-name] not JSON', ct, await resp.text().catch(()=> ''));
+      alert('서버 응답이 JSON이 아닙니다. (로그인 리다이렉트/시큐리티 확인)');
+      return;
+    }
+
+    const data = await resp.json();
+    if (data && data.found && data.name) {
+      nameEl.value = data.name;
+    } else {
+      alert('일치하는 근로자 정보를 찾을 수 없습니다.');
+    }
+  } catch (e) {
+    console.error(e);
+    alert('일시적인 오류로 조회에 실패했습니다.');
+  }
+});
+})();
+
+//─────────────────────────────────────
+//이전 육휴기간(최신 1건) 조회 & 표시
+//─────────────────────────────────────
+//=== 클라이언트 알림 유틸 ===
+function renderClientAlert({ type = 'info', html = '' }) {
+// type: success | warning | danger | info
+const wrap = document.getElementById('client-alerts');
+if (!wrap) return;
+
+// 기존 동일 타입 알림은 한 개만 유지(원하면 누적되게 바꿔도 ok)
+const prev = wrap.querySelector(`.alert.alert-${type}`);
+if (prev) prev.remove();
+
+const div = document.createElement('div');
+div.className = `alert alert-${type}`;
+div.style.marginTop = '10px';
+div.innerHTML = html;
+wrap.prepend(div); // 최신 내용이 항상 위로
+div.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+//=== 이전 기간 조회 후 알림으로 표시 ===
+async function showPrevPeriodAlert() {
+try {
+  const nameEl = document.getElementById('employee-name');
+  const aEl    = document.getElementById('employee-rrn-a');
+  const bEl    = document.getElementById('employee-rrn-b');
+
+  const name  = (nameEl?.value || '').trim();
+  const regNo = ((aEl?.value || '') + (bEl?.value || '')).replace(/[^\d]/g, '');
+
+  if (!name || regNo.length !== 13) {
+    alert('근로자 성명과 주민등록번호(6+7)를 먼저 입력하세요.');
+    window.prevPeriod = { start:null, end:null, overlap:false };
+    return false;
+  }
+
+  const csrfToken = document.querySelector('input[name="_csrf"]')?.value || null;
+  const CTX = '${pageContext.request.contextPath}';
+
+  const resp = await fetch(CTX + '/comp/apply/leave-period', {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+      ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {})
+    },
+    body: JSON.stringify({ name, regNo })
+  });
+
+  if (resp.status === 204) {
+    window.prevPeriod = { start:null, end:null, overlap:false };
+    return true;
+  }
+  const ct = (resp.headers.get('content-type') || '').toLowerCase();
+  if (!ct.includes('application/json')) {
+    window.prevPeriod = { start:null, end:null, overlap:false };
+    return true;
+  }
+
+  const text = await resp.text();
+  if (!resp.ok || !text) {
+    window.prevPeriod = { start:null, end:null, overlap:false };
+    return true;
+  }
+  const data = JSON.parse(text) || {};
+
+    // ---- 파서/유틸 ----
+    function toDateSafe(v){
+      if (v == null) return null;
+      if (typeof v === 'number' || /^\d+$/.test(String(v))) {
+        let n = Number(v);
+        if (String(v).length === 10) n *= 1000;
+        const d = new Date(n);
+        return isNaN(d) ? null : d;
+      }
+      let s = String(v).trim();
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) s += 'T00:00:00';
+      if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(s)) s = s.replace(' ', 'T');
+      const d1 = new Date(s); if (!isNaN(d1)) return d1;
+      const d2 = new Date(s.replace(/-/g,'/')); return isNaN(d2) ? null : d2;
+    }
+    function two(n){ return (n<10?'0':'')+n; }
+    function fmt(d){ return d.getFullYear()+'.'+two(d.getMonth()+1)+'.'+two(d.getDate()); }
+    function parseInputDate(id){
+      const el = document.getElementById(id);
+      return (el && el.value) ? new Date(el.value + 'T00:00:00') : null;
+    }
+    function isOverlap(aStart,aEnd,bStart,bEnd){
+      if (!aStart || !aEnd || !bStart || !bEnd) return false;
+      return aStart <= bEnd && bStart <= aEnd;
+    }
+
+    const startRaw = data.startDate ?? data.STARTDATE ?? data.start_date;
+    const endRaw   = data.endDate   ?? data.ENDDATE   ?? data.end_date;
+
+    const prevS = toDateSafe(startRaw);
+    const prevE = toDateSafe(endRaw);
+
+    // 이전 기간이 없으면 조용히 통과
+    if (!prevS || !prevE) {
+      window.prevPeriod = { start:null, end:null, overlap:false };
+      return true;
+    }
+
+    const curS = parseInputDate('start-date');
+    const curE = parseInputDate('end-date');
+    const overlapped = isOverlap(prevS, prevE, curS, curE);
+
+    window.prevPeriod = { start: prevS, end: prevE, overlap: overlapped };
+
+    if (overlapped) {
+      alert(
+        '해당 근무자는 이미 존재하는 확인서와 육아휴직 기간이 겹칩니다.\n\n' +
+        '이전 확인서: ' + fmt(prevS) + ' ~ ' + fmt(prevE) + '\n' +
+        '현재 입력하신 기간: ' + (curS ? fmt(curS) : '-') + ' ~ ' + (curE ? fmt(curE) : '-')
+      );
+      return false;
+    }
+
+    return true;
+
+  } catch (e) {
+    console.error(e);
+    window.prevPeriod = { start:null, end:null, overlap:false };
+    // 오류도 사용자 방해 없이 진행
+    return true;
+  }
+}
+
+</script>
 </script>
 </body>
 </html>
