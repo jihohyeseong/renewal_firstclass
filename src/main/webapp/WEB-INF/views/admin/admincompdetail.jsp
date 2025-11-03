@@ -634,19 +634,12 @@
                    		</td>
                         <th>주민등록번호</th>
                         <td>
-                        	<div class="rrn-inputs">
-                        	<input type="text" id="employee-rrn-a" maxlength="6"
-				                   value="${fn:substring(confirmDTO.updRegistrationNumber,0,6)}"
-				                   placeholder="앞 6자리" style="flex:1;">
-				            <span class="hyphen">-</span>
-				            <input type="password" id="employee-rrn-b" maxlength="7"
-				                   value="${fn:substring(confirmDTO.updRegistrationNumber,6,13)}"
-				                   placeholder="뒤 7자리" style="flex:1;">
-				            </div>
-				            <input type="hidden" name="updRegistrationNumber" id="employee-rrn-hidden">
-                            <%-- <c:set var="rrnDigits" value="${fn:replace(confirmDTO.registrationNumber, '-', '')}" />
-                            ${fn:substring(rrnDigits,0,6)}-${fn:substring(rrnDigits,6,13)} --%>
-                        </td>
+	                        <input type="text" name="updRegistrationNumber"
+	                               id="edit-rrn"
+	                               placeholder="근로자 주민등록번호 입력 (예: 000000-0000000)"
+	                               class="form-control" style="width: 40%;"
+	                               value="${confirmDTO.updRegistrationNumber != null ? confirmDTO.updRegistrationNumber : ''}">
+	                    </td>
                     </tr>
 	                
 	                <tr><th class="sheet-head" colspan="4">육아휴직 기간 <i class="fa fa-edit" style="color:#007bff;"></i></th></tr>
