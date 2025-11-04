@@ -106,7 +106,7 @@
     <form id="confirm-form"
           action="${pageContext.request.contextPath}/comp/update?confirmNumber=${confirmDTO.confirmNumber}"
           method="post">
-      <input type="hidden" name="confirmNumber" value="${confirmDTO.confirmNumber}"/>
+      <input type="hidden" id="confirm-number" name="confirmNumber" value="${confirmDTO.confirmNumber}"/>
       <sec:csrfInput />
 
       <!-- 근로자 정보 -->
@@ -333,93 +333,161 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  // ─────────────────────────────────────
-  // 공통 유틸 & 입력 바인딩
-  // ─────────────────────────────────────
-  function withCommas(s){ return String(s).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
-  function onlyDigits(s){ return (s||'').replace(/[^\d]/g,''); }
-  function bindDigitsOnly(el){ if(el) el.addEventListener('input', () => { el.value = (el.value || '').replace(/[^\d]/g, ''); }); }
-  function allowDigitsAndCommas(el, maxDigits) {
-    if (!el) return;
-    function format() {
-      const originalValue = onlyDigits(el.value).substring(0, maxDigits);
-      el.value = withCommas(originalValue);
+
+    // ─────────────────────────────────────
+    // 공통 유틸 및 입력 필드 바인딩
+    // ─────────────────────────────────────
+    function withCommas(s){ return String(s).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+    function onlyDigits(s){ return (s||'').replace(/[^\d]/g,''); }
+    function bindDigitsOnly(el){ if(el) el.addEventListener('input', () => { el.value = (el.value || '').replace(/[^\d]/g, ''); }); }
+    
+    function allowDigitsAndCommas(el, maxDigits) {
+        function format() {
+            const originalValue = onlyDigits(el.value).substring(0, maxDigits);
+            el.value = withCommas(originalValue);
+        }
+        el.addEventListener('input', format);
+        format();
     }
-    el.addEventListener('input', format);
-    format();
-  }
-
-  // 제한/바인딩
-  const weeklyEl = document.getElementById('weeklyHours');
-  if (weeklyEl) {
-    weeklyEl.addEventListener('input', () => {
-      weeklyEl.value = (weeklyEl.value || '').replace(/[^\d]/g, '').slice(0, 3);
-    });
-  }
-  function limitYearTo4(el){
-    if (!el) return;
-    el.addEventListener('input', function(){
-      this.value = this.value.replace(/^(\d{4})\d+(-.*)?$/, (m,y,rest)=> y + (rest||''));
-    });
-  }
-  ['child-date','start-date','end-date'].forEach(id => limitYearTo4(document.getElementById(id)));
-
-  allowDigitsAndCommas(document.getElementById('regularWage'), 19);
-  bindDigitsOnly(document.getElementById('weeklyHours'));
-  bindDigitsOnly(document.getElementById('response-phone'));
-  bindDigitsOnly(document.getElementById('employee-rrn-a'));
-  bindDigitsOnly(document.getElementById('employee-rrn-b'));
-  bindDigitsOnly(document.getElementById('child-rrn-a'));
-  bindDigitsOnly(document.getElementById('child-rrn-b'));
-
-  // ─────────────────────────────────────
-  // 출생(예정)일 숨김 필드 동기화
-  // ─────────────────────────────────────
-  (function syncChildDateHidden(){
-    const dateEl = document.getElementById('child-date');
-    const hidden = document.getElementById('childBirthDateHidden');
-    function sync(){ if (hidden) hidden.value = dateEl?.value || ''; }
-    if (dateEl){ dateEl.addEventListener('change', sync); sync(); }
-  })();
-
-  // ────────────────────────────────────
-  // 단위기간 생성 로직 (복원)
-  // ─────────────────────────────────────
- var startDateInput = document.getElementById('start-date');
- var endDateInput = document.getElementById('end-date');
- //var periodInputSection = document.getElementById('period-input-section');
- var generateBtn = document.getElementById('generate-forms-btn');
- var formsContainer = document.getElementById('dynamic-forms-container');
- var noPaymentChk = document.getElementById('no-payment');
- var noPaymentWrapper = document.getElementById('no-payment-wrapper');
- var headerRow = document.getElementById('dynamic-header-row');
-
- function formatDate(date) {
-    var y = date.getFullYear();
-    var m = String(date.getMonth() + 1).padStart(2, '0');
-    var d = String(date.getDate()).padStart(2, '0');
-    return y + '.' + m + '.' + d;
- }
-
- function getPeriodEndDate(originalStart, periodNumber) {
-    let nextPeriodStart = new Date(
-       originalStart.getFullYear(),
-       originalStart.getMonth() + periodNumber,
-       originalStart.getDate()
-    );
-    if (nextPeriodStart.getDate() !== originalStart.getDate()) {
-       nextPeriodStart = new Date(
-          originalStart.getFullYear(),
-          originalStart.getMonth() + periodNumber + 1,
-          1
-       );
+    
+    const weeklyEl = document.getElementById('weeklyHours');
+    if (weeklyEl) {
+      weeklyEl.addEventListener('input', () => {
+        weeklyEl.value = (weeklyEl.value || '').replace(/[^\d]/g, '').slice(0, 3); 
+      });
     }
-    nextPeriodStart.setDate(nextPeriodStart.getDate() - 1);
-    return nextPeriodStart;
- }
+    
+    function limitYearTo4(el){
+    	  if (!el) return;
+    	  el.addEventListener('input', function(){
+    	    this.value = this.value
+    	      .replace(/^(\d{4})\d+(-.*)?$/, (m, y, rest) => y + (rest || ''))
 
- generateBtn.addEventListener('click', async function() {
-	 
+    	  });
+    	}
+    	['child-date','start-date','end-date']
+    	  .forEach(id => limitYearTo4(document.getElementById(id)));
+
+
+    allowDigitsAndCommas(document.getElementById('regularWage'), 19);
+    bindDigitsOnly(document.getElementById('weeklyHours'));
+    bindDigitsOnly(document.getElementById('response-phone'));
+    bindDigitsOnly(document.getElementById('employee-rrn-a'));
+    bindDigitsOnly(document.getElementById('employee-rrn-b'));
+    bindDigitsOnly(document.getElementById('child-rrn-a'));
+    bindDigitsOnly(document.getElementById('child-rrn-b'));
+    bindDigitsOnly(document.getElementById('weeklyHours'));
+    
+ // 🔼 DOMContentLoaded 내부, 하지만 어떤 IIFE 바깥(= 최상위 스코프)
+// 🔁 기존 guardBeforeGenerate() 전부 교체
+function guardBeforeGenerate() {
+  const chkPregnant = document.getElementById('pregnant-leave');
+  const chkNoRRN    = document.getElementById('no-rrn-foreign');
+
+  const childDateEl = document.getElementById('child-date');
+  const childNameEl = document.getElementById('child-name');
+  const rrnA        = document.getElementById('child-rrn-a');
+  const rrnB        = document.getElementById('child-rrn-b');
+
+  const parseDate = s => s ? new Date(s + 'T00:00:00') : null;
+
+  const isPregnant = !!chkPregnant?.checked;
+  const noRRN      = !!chkNoRRN?.checked;
+
+  const childDate  = parseDate(childDateEl?.value);
+  const startDate  = parseDate(startDateInput?.value);
+  const endDate    = parseDate(endDateInput?.value);
+
+  if (!startDate || !endDate) { 
+    alert('육아휴직 시작일과 종료일을 먼저 선택해 주세요.'); 
+    return false; 
+  }
+  if (!childDate) { 
+    alert('출산(예정)일을 먼저 입력해 주세요.'); 
+    return false; 
+  }
+
+  if (isPregnant) {
+    // 임신 중: 종료일 < 출산(예정)일, 시작일도 출산(예정)일 이전
+    if (endDate >= childDate) { 
+      alert('임신 중 육아휴직은 출산(예정)일 전날까지만 가능합니다.'); 
+      return false; 
+    }
+    if (startDate >= childDate) { 
+      alert('임신 중 육아휴직은 출산(예정)일 이전에만 시작할 수 있습니다.'); 
+      return false; 
+    }
+  } else {
+    // 출산 후
+    const nameVal = (childNameEl?.value || '').trim();
+    const a = (rrnA?.value || '').replace(/[^\d]/g,'');
+    const b = (rrnB?.value || '').replace(/[^\d]/g,'');
+
+    if (!nameVal) { 
+      alert('출산 후 신청 시 자녀 이름을 입력해야 합니다.'); 
+      childNameEl?.focus(); 
+      return false; 
+    }
+
+    // ✅ 미발급 체크 시 RRN 필수 아님
+    if (!noRRN) {
+      if (!(a.length === 6 && b.length === 7)) {
+        alert('출산 후 신청 시 자녀 주민등록번호(앞 6자리/뒤 7자리)를 반드시 입력해야 합니다.');
+        (a.length !== 6 ? rrnA : rrnB)?.focus();
+        return false;
+      }
+    }
+
+    if (startDate < childDate) { 
+      alert('출산 후 육아휴직은 출산(예정)일 이후로만 시작할 수 있습니다.'); 
+      return false; 
+    }
+  }
+
+  return true;
+}
+
+
+    
+    // ────────────────────────────────────
+    // 단위기간 생성 로직 (복원)
+    // ─────────────────────────────────────
+   var startDateInput = document.getElementById('start-date');
+   var endDateInput = document.getElementById('end-date');
+   //var periodInputSection = document.getElementById('period-input-section');
+   var generateBtn = document.getElementById('generate-forms-btn');
+   var formsContainer = document.getElementById('dynamic-forms-container');
+   var noPaymentChk = document.getElementById('no-payment');
+   var noPaymentWrapper = document.getElementById('no-payment-wrapper');
+   var headerRow = document.getElementById('dynamic-header-row');
+
+
+   function formatDate(date) {
+      var y = date.getFullYear();
+      var m = String(date.getMonth() + 1).padStart(2, '0');
+      var d = String(date.getDate()).padStart(2, '0');
+      return y + '.' + m + '.' + d;
+   }
+
+   function getPeriodEndDate(originalStart, periodNumber) {
+      let nextPeriodStart = new Date(
+         originalStart.getFullYear(),
+         originalStart.getMonth() + periodNumber,
+         originalStart.getDate()
+      );
+      if (nextPeriodStart.getDate() !== originalStart.getDate()) {
+         nextPeriodStart = new Date(
+            originalStart.getFullYear(),
+            originalStart.getMonth() + periodNumber + 1,
+            1
+         );
+      }
+      nextPeriodStart.setDate(nextPeriodStart.getDate() - 1);
+      return nextPeriodStart;
+   }
+
+   generateBtn.addEventListener('click',  async function() {
+	   
 	   const ok = await showPrevPeriodAlert();
 	   if (!ok) {
 	     // 진행 차단 + UI 초기화
@@ -436,102 +504,103 @@ document.addEventListener('DOMContentLoaded', function () {
 	     if (headerRow) headerRow.style.display = 'none';
 	     return;
 	   }
-	 
-    if (!startDateInput.value || !endDateInput.value) {
-       alert('육아휴직 시작일과 종료일을 모두 선택해주세요.');
-       return;
-    }
 
-    const originalStartDate = new Date(startDateInput.value + 'T00:00:00');
-    const finalEndDate = new Date(endDateInput.value + 'T00:00:00');
+	   
+      if (!startDateInput.value || !endDateInput.value) {
+         alert('육아휴직 시작일과 종료일을 모두 선택해주세요.');
+         return;
+      }
 
-    if (originalStartDate > finalEndDate) {
-       alert('종료일은 시작일보다 빠를 수 없습니다.');
-       return;
-    }
+      const originalStartDate = new Date(startDateInput.value + 'T00:00:00');
+      const finalEndDate = new Date(endDateInput.value + 'T00:00:00');
 
-    // [추가] 최소 1개월 이상이어야 하는 조건 추가
-    const firstPeriodEndDate = getPeriodEndDate(originalStartDate, 1);
-    if (finalEndDate < firstPeriodEndDate) {
-       alert('신청 기간은 최소 1개월 이상이어야 합니다.');
-       return;
-    }
+      if (originalStartDate > finalEndDate) {
+         alert('종료일은 시작일보다 빠를 수 없습니다.');
+         return;
+      }
 
-    let monthCount = (finalEndDate.getFullYear() - originalStartDate.getFullYear()) * 12;
-    monthCount -= originalStartDate.getMonth();
-    monthCount += finalEndDate.getMonth();
-    if (finalEndDate.getDate() >= originalStartDate.getDate()) {
-       monthCount++;
-    }
-    if (monthCount > 12) {
-       alert('최대 12개월까지만 신청 가능합니다. 종료일을 조정해주세요.');
-       return;
-    }
+      // [추가] 최소 1개월 이상이어야 하는 조건 추가
+      const firstPeriodEndDate = getPeriodEndDate(originalStartDate, 1);
+      if (finalEndDate < firstPeriodEndDate) {
+         alert('신청 기간은 최소 1개월 이상이어야 합니다.');
+         return;
+      }
 
-    formsContainer.innerHTML = '';
-    if (noPaymentWrapper) noPaymentWrapper.style.display = 'none';
-    if (headerRow) headerRow.style.display = 'none';
+      let monthCount = (finalEndDate.getFullYear() - originalStartDate.getFullYear()) * 12;
+      monthCount -= originalStartDate.getMonth();
+      monthCount += finalEndDate.getMonth();
+      if (finalEndDate.getDate() >= originalStartDate.getDate()) {
+         monthCount++;
+      }
+      if (monthCount > 12) {
+         alert('최대 12개월까지만 신청 가능합니다. 종료일을 조정해주세요.');
+         return;
+      }
 
-    let currentPeriodStart = new Date(originalStartDate);
-    let monthIdx = 1;
+      formsContainer.innerHTML = '';
+      if (noPaymentWrapper) noPaymentWrapper.style.display = 'none';
+      if (headerRow) headerRow.style.display = 'none';
 
-    while (currentPeriodStart <= finalEndDate && monthIdx <= 12) {
-       const theoreticalEndDate = getPeriodEndDate(originalStartDate, monthIdx);
-       let actualPeriodEnd = new Date(theoreticalEndDate);
-       if (actualPeriodEnd > finalEndDate) {
-          actualPeriodEnd = new Date(finalEndDate);
-       }
-       
-       if (currentPeriodStart > actualPeriodEnd) break;
+      let currentPeriodStart = new Date(originalStartDate);
+      let monthIdx = 1;
 
-       const rangeText = formatDate(currentPeriodStart) + ' ~ ' + formatDate(actualPeriodEnd);
-       var row = document.createElement('div');
-       row.className = 'dynamic-form-row';
-       row.innerHTML =
-     	  '<div class="date-range-display"><div>' + rangeText + '</div></div>' +
-     	'<div class="payment-input-field">' +
-      '<div class="input-field" style="width:70%;">' +
-        '<input type="text" name="monthlyCompanyPay" placeholder="사업장 지급액(원)" autocomplete="off" />' +
-      '</div>' +
-    '</div>';
-       formsContainer.appendChild(row);
-       
-       formsContainer
-       .querySelectorAll('input[name="monthlyCompanyPay"]')
-       .forEach(inp => allowDigitsAndCommas(inp, 19));
+      while (currentPeriodStart <= finalEndDate && monthIdx <= 12) {
+         const theoreticalEndDate = getPeriodEndDate(originalStartDate, monthIdx);
+         let actualPeriodEnd = new Date(theoreticalEndDate);
+         if (actualPeriodEnd > finalEndDate) {
+            actualPeriodEnd = new Date(finalEndDate);
+         }
+         
+         if (currentPeriodStart > actualPeriodEnd) break;
 
-       currentPeriodStart = new Date(actualPeriodEnd);
-       currentPeriodStart.setDate(currentPeriodStart.getDate() + 1);
-       monthIdx++;
-    }
-    
-    if (headerRow) {
-  	    headerRow.style.display = formsContainer.children.length ? 'flex' : 'none';
-  	  }
+         const rangeText = formatDate(currentPeriodStart) + ' ~ ' + formatDate(actualPeriodEnd);
+         var row = document.createElement('div');
+         row.className = 'dynamic-form-row';
+         row.innerHTML =
+       	  '<div class="date-range-display"><div>' + rangeText + '</div></div>' +
+       	'<div class="payment-input-field">' +
+        '<div class="input-field" style="width:70%;">' +
+          '<input type="text" name="monthlyCompanyPay" placeholder="사업장 지급액(원)" autocomplete="off" />' +
+        '</div>' +
+      '</div>';
+         formsContainer.appendChild(row);
+         
+         formsContainer
+         .querySelectorAll('input[name="monthlyCompanyPay"]')
+         .forEach(inp => allowDigitsAndCommas(inp, 19));
 
-    if (noPaymentWrapper) {
-       noPaymentWrapper.style.display = 'flex';
-       applyNoPaymentState();
-    }
- });
- 
- function applyNoPaymentState() {
-    const inputs = formsContainer.querySelectorAll('input[name^="monthlyCompanyPay"]');
-    inputs.forEach(function(inp){
-       if (noPaymentChk && noPaymentChk.checked) {
-          inp.value = 0;
-          inp.readOnly = true;
-          inp.classList.add('readonly-like');
-       } else {
-          inp.readOnly = false;
-          inp.classList.remove('readonly-like');
-          if (inp.value === '0') inp.value = '';
-       }
-    });
- }
- if (noPaymentChk) noPaymentChk.addEventListener('change', applyNoPaymentState);
+         currentPeriodStart = new Date(actualPeriodEnd);
+         currentPeriodStart.setDate(currentPeriodStart.getDate() + 1);
+         monthIdx++;
+      }
+      
+      if (headerRow) {
+    	    headerRow.style.display = formsContainer.children.length ? 'flex' : 'none';
+    	  }
 
- startDateInput.addEventListener('change', function () {
+      if (noPaymentWrapper) {
+         noPaymentWrapper.style.display = 'flex';
+         applyNoPaymentState();
+      }
+   });
+   
+   function applyNoPaymentState() {
+      const inputs = formsContainer.querySelectorAll('input[name^="monthlyCompanyPay"]');
+      inputs.forEach(function(inp){
+         if (noPaymentChk && noPaymentChk.checked) {
+            inp.value = 0;
+            inp.readOnly = true;
+            inp.classList.add('readonly-like');
+         } else {
+            inp.readOnly = false;
+            inp.classList.remove('readonly-like');
+            if (inp.value === '0') inp.value = '';
+         }
+      });
+   }
+   if (noPaymentChk) noPaymentChk.addEventListener('change', applyNoPaymentState);
+
+   startDateInput.addEventListener('change', function () {
 	   if (startDateInput.value) {
 	     endDateInput.min = startDateInput.value;
 	   } else {
@@ -654,7 +723,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	  // generate 버튼 누르기 전에 규칙 위반 차단
 	  // (기존) applyPregnancyRules() 안의 guardBeforeGenerate() 전체를 아래로 교체
-		function guardBeforeGenerate() {
+/* 		function guardBeforeGenerate() {
 		  const isPregnant = !!chkPregnant?.checked;
 		  const childDate  = parseDate(childDateEl?.value);
 		  const startDate  = parseDate(startDateInput?.value);
@@ -700,7 +769,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		  }
 		  return true;
 		}
-
+ */
 
 /* 	  // generate 버튼 가드 추가(한 번만 래핑)
 	  if (generateBtn && !generateBtn.dataset.guardApplied) {
@@ -719,48 +788,8 @@ document.addEventListener('DOMContentLoaded', function () {
 	      if (typeof origHandler === 'function') origHandler.call(this, e);
 	    }, true);
 	    generateBtn.dataset.guardApplied = '1';
-	  } */
-
-/* 	  // 제출 시 최종 검증(기존 검증에 추가 보강)
-	  const formEl = document.getElementById('confirm-form');
-	  if (formEl) {
-	    formEl.addEventListener('submit', function(e){
-	      const isPregnant = !!chkPregnant?.checked;
-	      const childDate  = parseDate(childDateEl?.value);
-	      const startDate  = parseDate(startDateInput?.value);
-	      const endDate    = parseDate(endDateInput?.value);
-
-	      if (!childDate) {
-	        e.preventDefault();
-	        alert('출산(예정)일을 입력해 주세요.');
-	        return;
-	      }
-
-	      if (isPregnant) {
-	        if (!startDate || !endDate || startDate >= childDate || endDate >= childDate) {
-	          e.preventDefault();
-	          alert('임신 중 육아휴직은 출산(예정)일 이전 기간으로만 제출할 수 있습니다.');
-	          return;
-	        }
-	      } else {
-	        if (!startDate || startDate < childDate) {
-	          e.preventDefault();
-	          alert('출산 후 육아휴직은 출산(예정)일 이후로만 시작할 수 있습니다.');
-	          return;
-	        }
-	        const a = (rrnA?.value || '').replace(/[^\d]/g,'');
-	        const b = (rrnB?.value || '').replace(/[^\d]/g,'');
-	        const hasRRN = a.length === 6 && b.length === 7;
-	        const noRRN  = !!chkNoRRN?.checked;
-	        if (!hasRRN && !noRRN) {
-	          e.preventDefault();
-	          alert('자녀 주민등록번호를 입력하거나 "해외자녀… 미발급"을 체크해야 합니다.');
-	          return;
-	        }
-	      }
-	    });
-	  } */
-
+	  }
+ */
 	  // 이벤트 바인딩: 상태 바뀔 때마다 규칙 즉시 반영
 	  function onAnyRuleRelatedChange() {
 	    applyFieldLockByMode();
@@ -826,349 +855,426 @@ document.addEventListener('DOMContentLoaded', function () {
 	  applyFieldLockByMode();
 	  enforceDateBoundsByMode();
 	})();
-	
-	
 
 
     /* ================================
-    저장 버튼 클릭 시 - 누락 항목만 검사
- ================================ */
- (function wireSubmitValidation(){
-   const form = document.getElementById('confirm-form');
-   if (!form) return;
+       출생일 입력 시 
+    ================================== */
+   (function syncChildDateHidden(){
+	   const dateEl = document.getElementById('child-date');
+	   const hidden = document.getElementById('childBirthDateHidden');
+	   function sync(){ if (hidden) hidden.value = dateEl?.value || ''; }
+	   if (dateEl){
+	     dateEl.addEventListener('change', sync);
+	     sync(); // 초기 1회
+	   }
+	 })();
+   /* ================================
+   저장 버튼 클릭 시 - 누락 + 겹침 최종 검사 (async)
+================================ */
+(function wireSubmitValidation(){
+  const form = document.getElementById('confirm-form');
+  if (!form) return;
 
-   const onlyDigits = s => (s || '').replace(/[^\d]/g, '');
+  const onlyDigits = s => (s || '').replace(/[^\d]/g, '');
 
-   form.addEventListener('submit', function(e){
-     const missing = [];
-     let firstBadEl = null;
+  // 중복 제출 방지 플래그
+  let submitting = false;
 
-     // 간단 필수체크 함수
-     function need(el, label){
-       if (!el) return;
-       const v = (el.value||'').trim();
-       if (!v){
-         missing.push(label);
-         if (!firstBadEl) firstBadEl = el;
-       }
-     }
+  form.addEventListener('submit', async function(e){
+    e.preventDefault(); // 비동기 검증을 위해 기본 제출 막기
+    if (submitting) return;
+    submitting = true;
 
-     // 필드 목록
-     const empName   = document.getElementById('employee-name');
-     const empA      = document.getElementById('employee-rrn-a');
-     const empB      = document.getElementById('employee-rrn-b');
-     const startDate = document.getElementById('start-date');
-     const endDate   = document.getElementById('end-date');
-     const weeklyEl  = document.getElementById('weeklyHours');
-     const wageEl    = document.getElementById('regularWage');
-     const childDate = document.getElementById('child-date');
-     const respName  = document.getElementById('response-name');
-     const centerId  = document.getElementById('centerId');
+    try {
+      const missing = [];
+      let firstBadEl = null;
 
-     // === 기본 필수항목 ===
-     need(empName,   '근로자 성명');
-     need(startDate, '육아휴직 시작일');
-     need(endDate,   '육아휴직 종료일');
-     need(weeklyEl,  '월 소정근로시간');
-     need(wageEl,    '통상임금(월)');
-     need(childDate, '출산(예정)일');
-     need(respName,  '담당자 이름');
-
-     if (!centerId || !centerId.value.trim()) {
-       missing.push('처리 센터 선택');
-     }
-
-     // 근로자 주민번호(6+7자리)
-     if (!empA || onlyDigits(empA.value).length !== 6) {
-       missing.push('근로자 주민등록번호(앞 6자리)');
-       if (!firstBadEl) firstBadEl = empA;
-     }
-     if (!empB || onlyDigits(empB.value).length !== 7) {
-       missing.push('근로자 주민등록번호(뒤 7자리)');
-       if (!firstBadEl) firstBadEl = empB;
-     }
-
-     // 출산 후일 경우 자녀 이름 + 주민번호 or 미발급 체크
-     const isPregnant = !!document.getElementById('pregnant-leave')?.checked;
-     if (!isPregnant) {
-       const nameEl = document.getElementById('child-name');
-       const rrnA   = document.getElementById('child-rrn-a');
-       const rrnB   = document.getElementById('child-rrn-b');
-       const noRRN  = !!document.getElementById('no-rrn-foreign')?.checked;
-
-       const nameVal = (nameEl?.value || '').trim();
-       const a = onlyDigits(rrnA?.value);
-       const b = onlyDigits(rrnB?.value);
-
-       if (!nameVal) {
-         missing.push('자녀 이름');
-         if (!firstBadEl) firstBadEl = nameEl;
-       }
-       if (!noRRN && !(a.length === 6 && b.length === 7)) {
-         missing.push('자녀 주민등록번호');
-         if (!firstBadEl) firstBadEl = rrnA || rrnB;
-       }
-     }
-
-     // === 결과 처리 ===
-     if (missing.length){
-       e.preventDefault();
-       const uniq = [...new Set(missing)];
-       alert('모든 필수 항목을 입력해야 저장할 수 있습니다.\n\n누락 항목:\n- ' + uniq.join('\n- '));
-
-       // 첫 누락 항목으로 스크롤 & 포커스
-       if (firstBadEl && typeof firstBadEl.focus === 'function') {
-         firstBadEl.scrollIntoView({behavior:'smooth', block:'center'});
-         setTimeout(()=> firstBadEl.focus(), 200);
-       }
-       return;
-     }
-   });
- })();
- // ─────────────────────────────────────
- // 제출 전 데이터 정리
- // ─────────────────────────────────────
- const form = document.getElementById('confirm-form');
- if (form) {
-     form.addEventListener('submit', function(e) {
-       document.querySelectorAll('#regularWage, input[name^="monthlyCompanyPay"]').forEach(el => {
-         el.value = (el.value || '').replace(/[^\d]/g, '');
-       });
-
-       // 주민번호 합치기
-       const empRrnHidden = document.getElementById('employee-rrn-hidden');
-       empRrnHidden.value =
-         (document.getElementById('employee-rrn-a').value || '').replace(/[^\d]/g,'') +
-         (document.getElementById('employee-rrn-b').value || '').replace(/[^\d]/g,'');
-
-       const childRrnHidden = document.getElementById('child-rrn-hidden');
-       const a = (document.getElementById('child-rrn-a').value || '').replace(/[^\d]/g,'');
-       const b = (document.getElementById('child-rrn-b').value || '').replace(/[^\d]/g,'');
-       childRrnHidden.value = (a.length === 6 && b.length === 7) ? (a + b) : '';
-
-       const hidden = document.getElementById('childBirthDateHidden');
-       if (hidden && !hidden.value) hidden.removeAttribute('name');
-     });
-   }
- // ─────────────────────────────────────
- // 엔터 막기
- // ─────────────────────────────────────
- if (form) {
-     form.addEventListener('keydown', function (e) {
-       if (e.key !== 'Enter') return;
-
-       const el   = e.target;
-       const tag  = el.tagName.toLowerCase();
-       const type = (el.type || '').toLowerCase();
-
-       const isTextArea = tag === 'textarea';
-       const isButton   = tag === 'button' || (tag === 'input' && (type === 'submit' || type === 'button'));
-       const allowAttr  = el.closest('[data-allow-enter="true"]');
-
-       if (!isTextArea && !isButton && !allowAttr) {
-         e.preventDefault();
-       }
-     });
-   }
- 
- 
-  // 센터 모달 처리 (신청서 동일)
-  const findCenterBtn   = document.getElementById('find-center-btn');
-  const centerModal     = document.getElementById('center-modal');
-  const closeModalBtn   = centerModal?.querySelector('.close-modal-btn');
-  const centerListBody  = document.getElementById('center-list-body');
-
-  const centerNameEl    = document.getElementById('center-name-display');
-  const centerPhoneEl   = document.getElementById('center-phone-display');
-  const centerAddressEl = document.getElementById('center-address-display');
-  const centerIdInput   = document.getElementById('centerId');
-
-  function openModal()  { if (centerModal) centerModal.style.display = 'flex'; }
-  function closeModal() { if (centerModal) centerModal.style.display = 'none'; }
-
-  if (findCenterBtn) {
-    findCenterBtn.addEventListener('click', function() {
-      $.getJSON('${pageContext.request.contextPath}/center/list', function(list) {
-        centerListBody.innerHTML = '';
-        if (list && list.length > 0) {
-          list.forEach(center => {
-            const row = document.createElement('tr');
-            const fullAddress = '[' + center.centerZipCode + '] ' + center.centerAddressBase + ' ' + (center.centerAddressDetail || '');
-            row.innerHTML =
-              '<td>' + center.centerName + '</td>' +
-              '<td>' + fullAddress + '</td>' +
-              '<td>' + center.centerPhoneNumber + '</td>' +
-              '<td><button type="button" class="btn btn-primary btn-select-center">선택</button></td>';
-            const selectBtn = row.querySelector('.btn-select-center');
-            selectBtn.dataset.centerId   = center.centerId;
-            selectBtn.dataset.centerName = center.centerName;
-            selectBtn.dataset.centerPhone= center.centerPhoneNumber;
-            selectBtn.dataset.centerAddress = fullAddress;
-            centerListBody.appendChild(row);
-          });
-        } else {
-          centerListBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">검색된 센터 정보가 없습니다.</td></tr>';
+      // 간단 필수체크 함수
+      function need(el, label){
+        if (!el) return;
+        const v = (el.value||'').trim();
+        if (!v){
+          missing.push(label);
+          if (!firstBadEl) firstBadEl = el;
         }
-        openModal();
-      }).fail(function() {
-        alert('센터 목록을 불러오는 데 실패했습니다.');
-      });
-    });
-  }
-  closeModalBtn?.addEventListener('click', closeModal);
-  centerModal?.addEventListener('click', function(e){ if (e.target === centerModal) closeModal(); });
-  centerListBody?.addEventListener('click', function(e){
-    if (e.target.classList.contains('btn-select-center')) {
-      const btn  = e.target;
-      const data = btn.dataset;
-      if (centerNameEl)    centerNameEl.textContent    = data.centerName;
-      if (centerPhoneEl)   centerPhoneEl.textContent   = data.centerPhone;
-      if (centerAddressEl) centerAddressEl.textContent = data.centerAddress;
-      if (centerIdInput)   centerIdInput.value         = data.centerId;
-      document.querySelector('.center-display-box')?.classList.add('filled');
-      closeModal();
+      }
+
+      // 필드 목록
+      const empName   = document.getElementById('employee-name');
+      const empA      = document.getElementById('employee-rrn-a');
+      const empB      = document.getElementById('employee-rrn-b');
+      const startDate = document.getElementById('start-date');
+      const endDate   = document.getElementById('end-date');
+      const weeklyEl  = document.getElementById('weeklyHours');
+      const wageEl    = document.getElementById('regularWage');
+      const childDate = document.getElementById('child-date');
+      const respName  = document.getElementById('response-name');
+      const centerId  = document.getElementById('centerId');
+
+      // === 기본 필수항목 ===
+      need(empName,   '근로자 성명');
+      need(startDate, '육아휴직 시작일');
+      need(endDate,   '육아휴직 종료일');
+      need(weeklyEl,  '월 소정근로시간');
+      need(wageEl,    '통상임금(월)');
+      need(childDate, '출산(예정)일');
+      need(respName,  '담당자 이름');
+
+      if (!centerId || !centerId.value.trim()) {
+        missing.push('처리 센터 선택');
+      }
+
+      // 근로자 주민번호(6+7자리)
+      if (!empA || onlyDigits(empA.value).length !== 6) {
+        missing.push('근로자 주민등록번호(앞 6자리)');
+        if (!firstBadEl) firstBadEl = empA;
+      }
+      if (!empB || onlyDigits(empB.value).length !== 7) {
+        missing.push('근로자 주민등록번호(뒤 7자리)');
+        if (!firstBadEl) firstBadEl = empB;
+      }
+
+      // 출산 후일 경우 자녀 이름 + 주민번호 or 미발급 체크
+      const isPregnant = !!document.getElementById('pregnant-leave')?.checked;
+      if (!isPregnant) {
+        const nameEl = document.getElementById('child-name');
+        const rrnA   = document.getElementById('child-rrn-a');
+        const rrnB   = document.getElementById('child-rrn-b');
+        const noRRN  = !!document.getElementById('no-rrn-foreign')?.checked;
+
+        const nameVal = (nameEl?.value || '').trim();
+        const a = onlyDigits(rrnA?.value);
+        const b = onlyDigits(rrnB?.value);
+
+        if (!nameVal) {
+          missing.push('자녀 이름');
+          if (!firstBadEl) firstBadEl = nameEl;
+        }
+        if (!noRRN && !(a.length === 6 && b.length === 7)) {
+          missing.push('자녀 주민등록번호');
+          if (!firstBadEl) firstBadEl = rrnA || rrnB;
+        }
+      }
+
+      // === 누락 항목이 있으면 중단
+      if (missing.length){
+        const uniq = [...new Set(missing)];
+        alert('모든 필수 항목을 입력해야 저장할 수 있습니다.\n\n누락 항목:\n- ' + uniq.join('\n- '));
+        // 첫 누락 항목으로 스크롤 & 포커스
+        if (firstBadEl && typeof firstBadEl.focus === 'function') {
+          firstBadEl.scrollIntoView({behavior:'smooth', block:'center'});
+          setTimeout(()=> firstBadEl.focus(), 200);
+        }
+        submitting = false;
+        return;
+      }
+
+      const ok = await showPrevPeriodAlert();
+      if (!ok) {
+        // 겹치거나(=false) 조회 오류/조건 미충족으로 막을 때
+        submitting = false;
+        return;
+      }
+
+      // === 여기까지 통과 → 최종 정리 후 실제 제출
+      doFinalNormalizeBeforeSubmit();
+
+      // 이 submit 핸들러가 다시 실행되지 않게 한 번만 제출
+      form.removeEventListener('submit', arguments.callee);
+      form.submit();
+
+    } catch (err) {
+      console.error(err);
+      alert('저장 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      submitting = false;
     }
   });
+})();
+//─────────────────────────────────────
+//최종 제출 직전 데이터 정리 (함수화)
+//─────────────────────────────────────
+function doFinalNormalizeBeforeSubmit() {
+// 금액 필드에서 콤마 제거
+document.querySelectorAll('#regularWage, input[name^="monthlyCompanyPay"]').forEach(el => {
+ el.value = (el.value || '').replace(/[^\d]/g, '');
+});
+
+// 근로자 주민번호 합치기
+const empRrnHidden = document.getElementById('employee-rrn-hidden');
+if (empRrnHidden) {
+ empRrnHidden.value =
+   (document.getElementById('employee-rrn-a').value || '').replace(/[^\d]/g,'') +
+   (document.getElementById('employee-rrn-b').value || '').replace(/[^\d]/g,'');
+}
+
+// 자녀 주민번호 합치기 (미발급이면 공백)
+const childRrnHidden = document.getElementById('child-rrn-hidden');
+if (childRrnHidden) {
+ const a = (document.getElementById('child-rrn-a').value || '').replace(/[^\d]/g,'');
+ const b = (document.getElementById('child-rrn-b').value || '').replace(/[^\d]/g,'');
+ childRrnHidden.value = (a.length === 6 && b.length === 7) ? (a + b) : '';
+}
+
+// 출생(예정)일 hidden name 처리
+const hidden = document.getElementById('childBirthDateHidden');
+if (hidden && !hidden.value) hidden.removeAttribute('name');
+}
+
+    // ─────────────────────────────────────
+    // 엔터 막기
+    // ─────────────────────────────────────
+    {
+  const formEl = document.getElementById('confirm-form');
+  if (formEl) {
+    formEl.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter') return;
+
+      const el   = e.target;
+      const tag  = el.tagName.toLowerCase();
+      const type = (el.type || '').toLowerCase();
+
+      const isTextArea = tag === 'textarea';
+      const isButton   = tag === 'button' || (tag === 'input' && (type === 'submit' || type === 'button'));
+      const allowAttr  = el.closest('[data-allow-enter="true"]');
+
+      if (!isTextArea && !isButton && !allowAttr) {
+        e.preventDefault();
+      }
+    });
+  }
+}
+    // ─────────────────────────────────────
+    // 센터 찾기 모달 처리
+    // ─────────────────────────────────────
+    const findCenterBtn = document.getElementById('find-center-btn');
+    const centerModal = document.getElementById('center-modal');
+    const closeModalBtn = centerModal.querySelector('.close-modal-btn');
+    const centerListBody = document.getElementById('center-list-body');
+
+    const centerNameEl = document.getElementById('center-name-display');
+    const centerPhoneEl = document.getElementById('center-phone-display');
+    const centerAddressEl = document.getElementById('center-address-display');
+    const centerIdInput = document.getElementById('centerId');
+
+    function openModal() {
+      if (centerModal) centerModal.style.display = 'flex';
+    }
+    function closeModal() {
+      if (centerModal) centerModal.style.display = 'none';
+    }
+
+    if (findCenterBtn) {
+      findCenterBtn.addEventListener('click', function() {
+        $.getJSON('${pageContext.request.contextPath}/center/list', function(list) {
+          centerListBody.innerHTML = '';
+
+          if (list && list.length > 0) {
+            list.forEach(center => {
+              const row = document.createElement('tr');
+              const fullAddress = '[' + center.centerZipCode + '] ' + center.centerAddressBase + ' ' + (center.centerAddressDetail || '');
+
+              row.innerHTML = '<td>' + center.centerName + '</td>' +
+                '<td>' + fullAddress + '</td>' +
+                '<td>' + center.centerPhoneNumber + '</td>' +
+                '<td>' +
+                '<button type="button" class="btn btn-primary btn-select-center">선택</button>' +
+                '</td>';
+
+              const selectBtn = row.querySelector('.btn-select-center');
+              selectBtn.dataset.centerId = center.centerId;
+              selectBtn.dataset.centerName = center.centerName;
+              selectBtn.dataset.centerPhone = center.centerPhoneNumber;
+              selectBtn.dataset.centerAddress = fullAddress;
+
+              centerListBody.appendChild(row);
+            });
+          } else {
+            centerListBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">검색된 센터 정보가 없습니다.</td></tr>';
+          }
+          openModal();
+        }).fail(function() {
+          alert('센터 목록을 불러오는 데 실패했습니다.');
+        });
+      });
+      }
+
+    if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+    if (centerModal) {
+      centerModal.addEventListener('click', function(e) {
+          if (e.target === centerModal) {
+              closeModal();
+          }
+      });
+    }
+
+    if (centerListBody) {
+      centerListBody.addEventListener('click', function(e) {
+          if (e.target.classList.contains('btn-select-center')) {
+              const btn = e.target;
+              const data = btn.dataset;
+
+              if (centerNameEl) centerNameEl.textContent = data.centerName;
+              if (centerPhoneEl) centerPhoneEl.textContent = data.centerPhone;
+              if (centerAddressEl) centerAddressEl.textContent = data.centerAddress;
+              if (centerIdInput) centerIdInput.value = data.centerId;
+              
+              document.querySelector('.center-display-box')?.classList.add('filled');
+              
+              closeModal();
+          }
+      });
+    }
+    
 });
 
 //─────────────────────────────────────
 //주민번호로 이름 자동 채우기
 //─────────────────────────────────────
 (function wireFindName(){
-const btn   = document.getElementById('find-employee-btn');
-const aEl   = document.getElementById('employee-rrn-a');
-const bEl   = document.getElementById('employee-rrn-b');
-const nameEl= document.getElementById('employee-name');
-const hidEl = document.getElementById('employee-rrn-hidden');
+  const btn   = document.getElementById('find-employee-btn');
+  const aEl   = document.getElementById('employee-rrn-a');
+  const bEl   = document.getElementById('employee-rrn-b');
+  const nameEl= document.getElementById('employee-name');
+  const hidEl = document.getElementById('employee-rrn-hidden');
 
-if (!btn || !aEl || !bEl) return;
+  if (!btn || !aEl || !bEl) return;
 
-function onlyDigits(s){ return (s||'').replace(/[^\d]/g,''); }
+  function onlyDigits(s){ return (s||'').replace(/[^\d]/g,''); }
 
-const ctx = '${pageContext.request.contextPath}';
-const url = ctx + '/comp/apply/find-name';
+  const ctx = '${pageContext.request.contextPath}';
+  const url = ctx + '/comp/apply/find-name';
 
-btn.addEventListener('click', async function(){
-  const a = onlyDigits(aEl.value);
-  const b = onlyDigits(bEl.value);
+  btn.addEventListener('click', async function(){
+    const a = onlyDigits(aEl.value);
+    const b = onlyDigits(bEl.value);
 
-  if (a.length !== 6 || b.length !== 7) {
-    alert('근로자 주민등록번호 앞 6자리와 뒤 7자리를 정확히 입력하세요.');
-    (a.length !== 6 ? aEl : bEl).focus();
-    return;
-  }
-
-  const regNo = a + b;
-  if (hidEl) hidEl.value = regNo;
-
-  const csrfInput = document.querySelector('input[name="_csrf"]');
-  const csrfToken = csrfInput ? csrfInput.value : null;
-
-  try {
-    const body = new URLSearchParams({ regNo });
-    if (csrfToken) body.append('_csrf', csrfToken);
-
-    const resp = await fetch(url, {
-      method: 'POST',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-        ...(csrfToken ? {'X-CSRF-TOKEN': csrfToken} : {})
-      },
-      body
-    });
-
-    const ct = (resp.headers.get('content-type') || '').toLowerCase();
-    if (!resp.ok) {
-      console.error('[find-name] HTTP', resp.status, await resp.text().catch(()=> ''));
-      alert('이름 조회 요청에 실패했습니다. (' + resp.status + ')');
-      return;
-    }
-    if (!ct.includes('application/json')) {
-      console.error('[find-name] not JSON', ct, await resp.text().catch(()=> ''));
-      alert('서버 응답이 JSON이 아닙니다. (로그인 리다이렉트/시큐리티 확인)');
+    if (a.length !== 6 || b.length !== 7) {
+      alert('근로자 주민등록번호 앞 6자리와 뒤 7자리를 정확히 입력하세요.');
+      (a.length !== 6 ? aEl : bEl).focus();
       return;
     }
 
-    const data = await resp.json();
-    if (data && data.found && data.name) {
-      nameEl.value = data.name;
-    } else {
-      alert('일치하는 근로자 정보를 찾을 수 없습니다.');
+    const regNo = a + b;
+    if (hidEl) hidEl.value = regNo;
+
+    const csrfInput = document.querySelector('input[name="_csrf"]');
+    const csrfToken = csrfInput ? csrfInput.value : null;
+
+    try {
+      const body = new URLSearchParams({ regNo });
+      if (csrfToken) body.append('_csrf', csrfToken);
+
+      const resp = await fetch(url, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+          ...(csrfToken ? {'X-CSRF-TOKEN': csrfToken} : {})
+        },
+        body
+      });
+
+      const ct = (resp.headers.get('content-type') || '').toLowerCase();
+      if (!resp.ok) {
+        console.error('[find-name] HTTP', resp.status, await resp.text().catch(()=> ''));
+        alert('이름 조회 요청에 실패했습니다. (' + resp.status + ')');
+        return;
+      }
+      if (!ct.includes('application/json')) {
+        console.error('[find-name] not JSON', ct, await resp.text().catch(()=> ''));
+        alert('서버 응답이 JSON이 아닙니다. (로그인 리다이렉트/시큐리티 확인)');
+        return;
+      }
+
+      const data = await resp.json();
+      if (data && data.found && data.name) {
+        nameEl.value = data.name;
+      } else {
+        alert('일치하는 근로자 정보를 찾을 수 없습니다.');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('일시적인 오류로 조회에 실패했습니다.');
     }
-  } catch (e) {
-    console.error(e);
-    alert('일시적인 오류로 조회에 실패했습니다.');
-  }
-});
+  });
 })();
 
 //─────────────────────────────────────
 //이전 육휴기간(최신 1건) 조회 & 표시
 //─────────────────────────────────────
-//=== 클라이언트 알림 유틸 ===
+// === 클라이언트 알림 유틸 ===
 function renderClientAlert({ type = 'info', html = '' }) {
-// type: success | warning | danger | info
-const wrap = document.getElementById('client-alerts');
-if (!wrap) return;
+  // type: success | warning | danger | info
+  const wrap = document.getElementById('client-alerts');
+  if (!wrap) return;
 
-// 기존 동일 타입 알림은 한 개만 유지(원하면 누적되게 바꿔도 ok)
-const prev = wrap.querySelector(`.alert.alert-${type}`);
-if (prev) prev.remove();
+  // 기존 동일 타입 알림은 한 개만 유지(원하면 누적되게 바꿔도 ok)
+  const prev = wrap.querySelector(`.alert.alert-${type}`);
+  if (prev) prev.remove();
 
-const div = document.createElement('div');
-div.className = `alert alert-${type}`;
-div.style.marginTop = '10px';
-div.innerHTML = html;
-wrap.prepend(div); // 최신 내용이 항상 위로
-div.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  const div = document.createElement('div');
+  div.className = `alert alert-${type}`;
+  div.style.marginTop = '10px';
+  div.innerHTML = html;
+  wrap.prepend(div); // 최신 내용이 항상 위로
+  div.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-//=== 이전 기간 조회 후 알림으로 표시 ===
+// === 이전 기간 조회 후 알림으로 표시 ===
 async function showPrevPeriodAlert() {
-try {
-  const nameEl = document.getElementById('employee-name');
-  const aEl    = document.getElementById('employee-rrn-a');
-  const bEl    = document.getElementById('employee-rrn-b');
+  try {
+    const nameEl = document.getElementById('employee-name');
+    const aEl    = document.getElementById('employee-rrn-a');
+    const bEl    = document.getElementById('employee-rrn-b');
 
-  const name  = (nameEl?.value || '').trim();
-  const regNo = ((aEl?.value || '') + (bEl?.value || '')).replace(/[^\d]/g, '');
+    const name  = (nameEl?.value || '').trim();
+    const regNo = ((aEl?.value || '') + (bEl?.value || '')).replace(/[^\d]/g, '');
 
-  if (!name || regNo.length !== 13) {
-    alert('근로자 성명과 주민등록번호(6+7)를 먼저 입력하세요.');
-    window.prevPeriod = { start:null, end:null, overlap:false };
-    return false;
-  }
+    if (!name || regNo.length !== 13) {
+      alert('근로자 성명과 주민등록번호(6+7)를 먼저 입력하세요.');
+      window.prevPeriod = { start:null, end:null, overlap:false };
+      return false;
+    }
+    
+    const ncnStr = document.getElementById('confirm-number')?.value;
+    const nowConfirmNumber =
+      (ncnStr != null && ncnStr.trim() !== '' && !Number.isNaN(Number(ncnStr)))
+        ? Number(ncnStr)
+        : null;
 
-  const csrfToken = document.querySelector('input[name="_csrf"]')?.value || null;
-  const CTX = '${pageContext.request.contextPath}';
+    const csrfToken = document.querySelector('input[name="_csrf"]')?.value || null;
+    const CTX = '${pageContext.request.contextPath}';
+    
+    const payload = { name, regNo };
+    if (nowConfirmNumber != null) payload.nowConfirmNumber = nowConfirmNumber;
 
-  const resp = await fetch(CTX + '/comp/apply/leave-period', {
-    method: 'POST',
-    credentials: 'same-origin',
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8',
-      ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {})
-    },
-    body: JSON.stringify({ name, regNo })
-  });
+    const resp = await fetch(CTX + '/comp/apply/leave-period', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+        ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {})
+      },
+      body: JSON.stringify(payload)
+    });
 
-  if (resp.status === 204) {
-    window.prevPeriod = { start:null, end:null, overlap:false };
-    return true;
-  }
-  const ct = (resp.headers.get('content-type') || '').toLowerCase();
-  if (!ct.includes('application/json')) {
-    window.prevPeriod = { start:null, end:null, overlap:false };
-    return true;
-  }
+    if (resp.status === 204) {
+      window.prevPeriod = { start:null, end:null, overlap:false };
+      return true;
+    }
+    const ct = (resp.headers.get('content-type') || '').toLowerCase();
+    if (!ct.includes('application/json')) {
+      window.prevPeriod = { start:null, end:null, overlap:false };
+      return true;
+    }
 
-  const text = await resp.text();
-  if (!resp.ok || !text) {
-    window.prevPeriod = { start:null, end:null, overlap:false };
-    return true;
-  }
-  const data = JSON.parse(text) || {};
+    const text = await resp.text();
+    if (!resp.ok || !text) {
+      window.prevPeriod = { start:null, end:null, overlap:false };
+      return true;
+    }
+    const data = JSON.parse(text) || {};
 
     // ---- 파서/유틸 ----
     function toDateSafe(v){
@@ -1233,7 +1339,6 @@ try {
   }
 }
 
-</script>
 </script>
 </body>
 </html>

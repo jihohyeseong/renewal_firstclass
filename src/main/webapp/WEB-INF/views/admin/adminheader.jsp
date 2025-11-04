@@ -53,9 +53,9 @@
             <a href="${pageContext.request.contextPath}/login" class="btn btn-primary">로그인</a>
         </sec:authorize>
         <sec:authorize access="isAuthenticated()">
-            <span class="welcome-msg">
+<%--             <span class="welcome-msg">
                 <sec:authentication property="principal.username"/>님, 환영합니다.
-            </span>
+            </span> --%>
             <form id="logout-form" action="${pageContext.request.contextPath}/logout" method="post" style="display: none;">
                 <sec:csrfInput/>
             </form>

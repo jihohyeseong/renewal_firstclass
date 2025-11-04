@@ -97,6 +97,8 @@
 </head>
 <body>
 
+<%@ include file="compheader.jsp" %>
+
 <main class="main-container">
   <div class="content-wrapper">
 
@@ -822,7 +824,7 @@ function guardBeforeGenerate() {
 	   }
 	 })();
    /* ================================
-   저장 버튼 클릭 시 - 누락 항목만 검사
+   저장 버튼 클릭 시 - 누락 + 겹침 최종 검사 (async)
 ================================ */
 (function wireSubmitValidation(){
   const form = document.getElementById('confirm-form');
@@ -830,138 +832,172 @@ function guardBeforeGenerate() {
 
   const onlyDigits = s => (s || '').replace(/[^\d]/g, '');
 
-  form.addEventListener('submit', function(e){
-    const missing = [];
-    let firstBadEl = null;
+  // 중복 제출 방지 플래그
+  let submitting = false;
 
-    // 간단 필수체크 함수
-    function need(el, label){
-      if (!el) return;
-      const v = (el.value||'').trim();
-      if (!v){
-        missing.push(label);
-        if (!firstBadEl) firstBadEl = el;
+  form.addEventListener('submit', async function(e){
+    e.preventDefault(); // 비동기 검증을 위해 기본 제출 막기
+    if (submitting) return;
+    submitting = true;
+
+    try {
+      const missing = [];
+      let firstBadEl = null;
+
+      // 간단 필수체크 함수
+      function need(el, label){
+        if (!el) return;
+        const v = (el.value||'').trim();
+        if (!v){
+          missing.push(label);
+          if (!firstBadEl) firstBadEl = el;
+        }
       }
-    }
 
-    // 필드 목록
-    const empName   = document.getElementById('employee-name');
-    const empA      = document.getElementById('employee-rrn-a');
-    const empB      = document.getElementById('employee-rrn-b');
-    const startDate = document.getElementById('start-date');
-    const endDate   = document.getElementById('end-date');
-    const weeklyEl  = document.getElementById('weeklyHours');
-    const wageEl    = document.getElementById('regularWage');
-    const childDate = document.getElementById('child-date');
-    const respName  = document.getElementById('response-name');
-    const centerId  = document.getElementById('centerId');
+      // 필드 목록
+      const empName   = document.getElementById('employee-name');
+      const empA      = document.getElementById('employee-rrn-a');
+      const empB      = document.getElementById('employee-rrn-b');
+      const startDate = document.getElementById('start-date');
+      const endDate   = document.getElementById('end-date');
+      const weeklyEl  = document.getElementById('weeklyHours');
+      const wageEl    = document.getElementById('regularWage');
+      const childDate = document.getElementById('child-date');
+      const respName  = document.getElementById('response-name');
+      const centerId  = document.getElementById('centerId');
 
-    // === 기본 필수항목 ===
-    need(empName,   '근로자 성명');
-    need(startDate, '육아휴직 시작일');
-    need(endDate,   '육아휴직 종료일');
-    need(weeklyEl,  '월 소정근로시간');
-    need(wageEl,    '통상임금(월)');
-    need(childDate, '출산(예정)일');
-    need(respName,  '담당자 이름');
+      // === 기본 필수항목 ===
+      need(empName,   '근로자 성명');
+      need(startDate, '육아휴직 시작일');
+      need(endDate,   '육아휴직 종료일');
+      need(weeklyEl,  '월 소정근로시간');
+      need(wageEl,    '통상임금(월)');
+      need(childDate, '출산(예정)일');
+      need(respName,  '담당자 이름');
 
-    if (!centerId || !centerId.value.trim()) {
-      missing.push('처리 센터 선택');
-    }
-
-    // 근로자 주민번호(6+7자리)
-    if (!empA || onlyDigits(empA.value).length !== 6) {
-      missing.push('근로자 주민등록번호(앞 6자리)');
-      if (!firstBadEl) firstBadEl = empA;
-    }
-    if (!empB || onlyDigits(empB.value).length !== 7) {
-      missing.push('근로자 주민등록번호(뒤 7자리)');
-      if (!firstBadEl) firstBadEl = empB;
-    }
-
-    // 출산 후일 경우 자녀 이름 + 주민번호 or 미발급 체크
-    const isPregnant = !!document.getElementById('pregnant-leave')?.checked;
-    if (!isPregnant) {
-      const nameEl = document.getElementById('child-name');
-      const rrnA   = document.getElementById('child-rrn-a');
-      const rrnB   = document.getElementById('child-rrn-b');
-      const noRRN  = !!document.getElementById('no-rrn-foreign')?.checked;
-
-      const nameVal = (nameEl?.value || '').trim();
-      const a = onlyDigits(rrnA?.value);
-      const b = onlyDigits(rrnB?.value);
-
-      if (!nameVal) {
-        missing.push('자녀 이름');
-        if (!firstBadEl) firstBadEl = nameEl;
+      if (!centerId || !centerId.value.trim()) {
+        missing.push('처리 센터 선택');
       }
-      if (!noRRN && !(a.length === 6 && b.length === 7)) {
-        missing.push('자녀 주민등록번호');
-        if (!firstBadEl) firstBadEl = rrnA || rrnB;
-      }
-    }
 
-    // === 결과 처리 ===
-    if (missing.length){
-      e.preventDefault();
-      const uniq = [...new Set(missing)];
-      alert('모든 필수 항목을 입력해야 저장할 수 있습니다.\n\n누락 항목:\n- ' + uniq.join('\n- '));
-
-      // 첫 누락 항목으로 스크롤 & 포커스
-      if (firstBadEl && typeof firstBadEl.focus === 'function') {
-        firstBadEl.scrollIntoView({behavior:'smooth', block:'center'});
-        setTimeout(()=> firstBadEl.focus(), 200);
+      // 근로자 주민번호(6+7자리)
+      if (!empA || onlyDigits(empA.value).length !== 6) {
+        missing.push('근로자 주민등록번호(앞 6자리)');
+        if (!firstBadEl) firstBadEl = empA;
       }
-      return;
+      if (!empB || onlyDigits(empB.value).length !== 7) {
+        missing.push('근로자 주민등록번호(뒤 7자리)');
+        if (!firstBadEl) firstBadEl = empB;
+      }
+
+      // 출산 후일 경우 자녀 이름 + 주민번호 or 미발급 체크
+      const isPregnant = !!document.getElementById('pregnant-leave')?.checked;
+      if (!isPregnant) {
+        const nameEl = document.getElementById('child-name');
+        const rrnA   = document.getElementById('child-rrn-a');
+        const rrnB   = document.getElementById('child-rrn-b');
+        const noRRN  = !!document.getElementById('no-rrn-foreign')?.checked;
+
+        const nameVal = (nameEl?.value || '').trim();
+        const a = onlyDigits(rrnA?.value);
+        const b = onlyDigits(rrnB?.value);
+
+        if (!nameVal) {
+          missing.push('자녀 이름');
+          if (!firstBadEl) firstBadEl = nameEl;
+        }
+        if (!noRRN && !(a.length === 6 && b.length === 7)) {
+          missing.push('자녀 주민등록번호');
+          if (!firstBadEl) firstBadEl = rrnA || rrnB;
+        }
+      }
+
+      // === 누락 항목이 있으면 중단
+      if (missing.length){
+        const uniq = [...new Set(missing)];
+        alert('모든 필수 항목을 입력해야 저장할 수 있습니다.\n\n누락 항목:\n- ' + uniq.join('\n- '));
+        // 첫 누락 항목으로 스크롤 & 포커스
+        if (firstBadEl && typeof firstBadEl.focus === 'function') {
+          firstBadEl.scrollIntoView({behavior:'smooth', block:'center'});
+          setTimeout(()=> firstBadEl.focus(), 200);
+        }
+        submitting = false;
+        return;
+      }
+
+      const ok = await showPrevPeriodAlert();
+      if (!ok) {
+        // 겹치거나(=false) 조회 오류/조건 미충족으로 막을 때
+        submitting = false;
+        return;
+      }
+
+      // === 여기까지 통과 → 최종 정리 후 실제 제출
+      doFinalNormalizeBeforeSubmit();
+
+      // 이 submit 핸들러가 다시 실행되지 않게 한 번만 제출
+      form.removeEventListener('submit', arguments.callee);
+      form.submit();
+
+    } catch (err) {
+      console.error(err);
+      alert('저장 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      submitting = false;
     }
   });
 })();
-    
-    // ─────────────────────────────────────
-    // 제출 전 데이터 정리
-    // ─────────────────────────────────────
-    const form = document.getElementById('confirm-form');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-          document.querySelectorAll('#regularWage, input[name^="monthlyCompanyPay"]').forEach(el => {
-            el.value = (el.value || '').replace(/[^\d]/g, '');
-          });
+//─────────────────────────────────────
+//최종 제출 직전 데이터 정리 (함수화)
+//─────────────────────────────────────
+function doFinalNormalizeBeforeSubmit() {
+// 금액 필드에서 콤마 제거
+document.querySelectorAll('#regularWage, input[name^="monthlyCompanyPay"]').forEach(el => {
+ el.value = (el.value || '').replace(/[^\d]/g, '');
+});
 
-          // 주민번호 합치기
-          const empRrnHidden = document.getElementById('employee-rrn-hidden');
-          empRrnHidden.value =
-            (document.getElementById('employee-rrn-a').value || '').replace(/[^\d]/g,'') +
-            (document.getElementById('employee-rrn-b').value || '').replace(/[^\d]/g,'');
+// 근로자 주민번호 합치기
+const empRrnHidden = document.getElementById('employee-rrn-hidden');
+if (empRrnHidden) {
+ empRrnHidden.value =
+   (document.getElementById('employee-rrn-a').value || '').replace(/[^\d]/g,'') +
+   (document.getElementById('employee-rrn-b').value || '').replace(/[^\d]/g,'');
+}
 
-          const childRrnHidden = document.getElementById('child-rrn-hidden');
-          const a = (document.getElementById('child-rrn-a').value || '').replace(/[^\d]/g,'');
-          const b = (document.getElementById('child-rrn-b').value || '').replace(/[^\d]/g,'');
-          childRrnHidden.value = (a.length === 6 && b.length === 7) ? (a + b) : '';
+// 자녀 주민번호 합치기 (미발급이면 공백)
+const childRrnHidden = document.getElementById('child-rrn-hidden');
+if (childRrnHidden) {
+ const a = (document.getElementById('child-rrn-a').value || '').replace(/[^\d]/g,'');
+ const b = (document.getElementById('child-rrn-b').value || '').replace(/[^\d]/g,'');
+ childRrnHidden.value = (a.length === 6 && b.length === 7) ? (a + b) : '';
+}
 
-          const hidden = document.getElementById('childBirthDateHidden');
-          if (hidden && !hidden.value) hidden.removeAttribute('name');
-        });
-      }
+// 출생(예정)일 hidden name 처리
+const hidden = document.getElementById('childBirthDateHidden');
+if (hidden && !hidden.value) hidden.removeAttribute('name');
+}
+
     // ─────────────────────────────────────
     // 엔터 막기
     // ─────────────────────────────────────
-    if (form) {
-        form.addEventListener('keydown', function (e) {
-          if (e.key !== 'Enter') return;
+    {
+  const formEl = document.getElementById('confirm-form');
+  if (formEl) {
+    formEl.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter') return;
 
-          const el   = e.target;
-          const tag  = el.tagName.toLowerCase();
-          const type = (el.type || '').toLowerCase();
+      const el   = e.target;
+      const tag  = el.tagName.toLowerCase();
+      const type = (el.type || '').toLowerCase();
 
-          const isTextArea = tag === 'textarea';
-          const isButton   = tag === 'button' || (tag === 'input' && (type === 'submit' || type === 'button'));
-          const allowAttr  = el.closest('[data-allow-enter="true"]');
+      const isTextArea = tag === 'textarea';
+      const isButton   = tag === 'button' || (tag === 'input' && (type === 'submit' || type === 'button'));
+      const allowAttr  = el.closest('[data-allow-enter="true"]');
 
-          if (!isTextArea && !isButton && !allowAttr) {
-            e.preventDefault();
-          }
-        });
+      if (!isTextArea && !isButton && !allowAttr) {
+        e.preventDefault();
       }
+    });
+  }
+}
     // ─────────────────────────────────────
     // 센터 찾기 모달 처리
     // ─────────────────────────────────────

@@ -42,5 +42,8 @@ public interface ConfirmApplyDAO {
     int countConfirmList(@Param("userId") Long userId);
     
     Map<String, Object> findLatestPeriodByPerson(@Param("name") String name,
-            @Param("registrationNumber") String registrationNumber);
+            @Param("registrationNumber") String registrationNumber, 
+            @Param("nowConfirmNumber") Long nowConfirmNumber);
+    
+    int deleteConfirm(@Param("confirmNumber") Long confirmNumber, @Param("userId") Long userId);
 }
