@@ -690,62 +690,84 @@ $(document).ready(function() {
 		
 		// --- [추가] PDF 다운로드 버튼 클릭 이벤트 핸들러 ---
 		$('#btn-pdf-download').on('click', function() {
-			const btn = $(this);
-			const originalText = btn.text();
-			
-			btn.prop('disabled', true).text('PDF 생성 중...').addClass('disabled');
-			
-			const target = document.querySelector('.main-container');
-			
-			html2canvas(target, { 
-				scale: 2, 
-				useCORS: true, 
-				onclone: (document) => {
-					const buttonContainer = document.querySelector('.button-container');
-					if (buttonContainer) {
-						buttonContainer.style.visibility = 'hidden';
-					}
-				}
-			}).then((canvas) => {
-				const imgData = canvas.toDataURL('image/png');
-				
-				const { jsPDF } = window.jspdf;
-				const pdf = new jsPDF('p', 'mm', 'a4'); 
-				
-				const margin = 10; 
-				const pdfWidth = 210 - (margin * 2); 
-				const pageHeight = 297; 
-				const pageInnerHeight = pageHeight - (margin * 2); 
-				
-				const imgWidth = canvas.width;
-				const imgHeight = canvas.height;
-				
-				const pdfImgHeight = (imgHeight * pdfWidth) / imgWidth;
-				
-				let heightLeft = pdfImgHeight; 
-				let position = margin; 
-				
-				pdf.addImage(imgData, 'PNG', margin, position, pdfWidth, pdfImgHeight);
-				heightLeft -= pageInnerHeight; 
-				
-				while (heightLeft > 0) {
-					position = -heightLeft + margin; 
-					pdf.addPage(); 
-					pdf.addImage(imgData, 'PNG', margin, position, pdfWidth, pdfImgHeight);
-					heightLeft -= pageInnerHeight;
-				}
-				
-				const filename = `육아휴직_급여신청서_${applicationNumber}.pdf`;
-				pdf.save(filename);
-				
-				btn.prop('disabled', false).text(originalText).removeClass('disabled');
-				
-			}).catch(function(error) {
-				console.error("PDF 생성 오류:", error);
-				alert("PDF 생성 중 오류가 발생했습니다.");
-				btn.prop('disabled', false).text(originalText).removeClass('disabled');
-			});
-		});
+  const btn = $(this);
+  const originalText = btn.text();
+
+  btn.prop('disabled', true).text('PDF 생성 중...').addClass('disabled');
+
+  const target = document.querySelector('.main-container');
+  const applicationNumber = "${dto.applicationNumber}"; // 파일명
+
+  html2canvas(target, { 
+    scale: 2, 
+    useCORS: true,
+    scrollX: 0,
+    scrollY: -window.scrollY,
+    windowWidth: document.documentElement.scrollWidth,
+    windowHeight: document.documentElement.scrollHeight,
+    onclone: (doc) => {
+      // ✅ 버튼 숨기기
+      const buttonContainer = doc.querySelector('.button-container');
+      if (buttonContainer) {
+        buttonContainer.style.visibility = 'hidden';
+      }
+
+      // ✅ 모든 스크롤 영역 펼치기 (overflow 문제 해결)
+      doc.querySelectorAll('*').forEach(el => {
+        const style = getComputedStyle(el);
+        if (style.overflowY === 'auto' || style.overflowY === 'scroll') {
+          el.style.overflowY = 'visible';
+          el.style.height = 'auto';
+        }
+        if (style.overflowX === 'auto' || style.overflowX === 'scroll') {
+          el.style.overflowX = 'visible';
+          el.style.width = 'auto';
+        }
+      });
+    }
+  }).then((canvas) => {
+    const imgData = canvas.toDataURL('image/png');
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF('p', 'mm', 'a4'); 
+
+    const margin = 10; 
+    const pdfWidth = 210 - (margin * 2); 
+    const pageHeight = 297; 
+    const pageInnerHeight = pageHeight - (margin * 2); 
+
+    const imgWidth = canvas.width;
+    const imgHeight = canvas.height;
+
+    // 이미지 비율 유지한 채 PDF에 맞게 리사이즈
+    const pdfImgHeight = (imgHeight * pdfWidth) / imgWidth;
+
+    let heightLeft = pdfImgHeight;
+    let position = 0;
+
+    // ✅ 첫 페이지 추가
+    pdf.addImage(imgData, 'PNG', margin, margin, pdfWidth, pdfImgHeight);
+    heightLeft -= pageInnerHeight;
+
+    // ✅ 다음 페이지가 남아있을 경우 자동 분할
+    while (heightLeft > 0) {
+      position -= pageInnerHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', margin, position + margin, pdfWidth, pdfImgHeight);
+      heightLeft -= pageInnerHeight;
+    }
+
+    const filename = `육아휴직_급여신청서_${applicationNumber}.pdf`;
+    pdf.save(filename);
+
+    btn.prop('disabled', false).text(originalText).removeClass('disabled');
+
+  }).catch(function(error) {
+    console.error("PDF 생성 오류:", error);
+    alert("PDF 생성 중 오류가 발생했습니다.");
+    btn.prop('disabled', false).text(originalText).removeClass('disabled');
+  });
+});
 		
 	</c:if>
 }); 
