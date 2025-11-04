@@ -7,24 +7,24 @@
 		WHERE username = #{username}
 	</select>
 	<select id="selectSimpleConfirmList" parameterType="map" resultType="SimpleConfirmVO">
-        SELECT
-            c.confirm_number,
-            TO_CHAR(c.apply_dt, 'YYYY-MM-DD') AS applyDt,
-            TO_CHAR(c.start_date, 'YYYY-MM-DD') AS startDate,
-            TO_CHAR(c.end_date, 'YYYY-MM-DD')   AS endDate,
-            u.name,
-            u.phone_number
-        FROM
-            TB_CONFIRM_APPLICATION c
-        INNER JOIN
-            TB_USER u ON c.user_id = u.id
-        WHERE
-            c.delt_at = 'N'
-            AND c.status_code = 'ST_50'
-            AND c.name = #{name}
-            AND c.registration_number = #{registrationNumber}
-            AND u.role = 'ROLE_CORP'
-    </select>
+	    SELECT
+	        c.confirm_number,
+	        TO_CHAR(c.apply_dt, 'YYYY-MM-DD') AS applyDt,
+	        TO_CHAR(c.start_date, 'YYYY-MM-DD') AS startDate,
+	        TO_CHAR(c.end_date, 'YYYY-MM-DD')   AS endDate,
+	        u.name,
+	        u.phone_number
+	    FROM
+	        TB_CONFIRM_APPLICATION c
+	    INNER JOIN
+	        TB_USER u ON c.user_id = u.id
+	    WHERE
+	        c.delt_at = 'N'
+	        AND c.status_code = 'ST_50'
+	        AND COALESCE(c.upd_name, c.name) = #{name}
+	        AND COALESCE(c.upd_registration_number, c.registration_number) = #{registrationNumber}
+	        AND u.role = 'ROLE_CORP'
+	</select>
     <resultMap id="applicationSingleQueryResultMap" type="com.example.renewal_firstclass.domain.ApplicationDTO">
         <id property="confirmNumber" column="app_confirm_number"/>
         <result property="name" column="user_name"/>
@@ -101,9 +101,9 @@
             t.confirm_number AS term_confirm_number
         FROM
             TB_CONFIRM_APPLICATION a
-        -- 1. 신청자 정보 조인
+        -- 1. 신청자 정보 조인 (수정된 부분)
         JOIN
-            TB_USER u1 ON a.registration_number = u1.registration_number
+            TB_USER u1 ON u1.registration_number = COALESCE(a.upd_registration_number, a.registration_number)
         -- 2. 회사 정보 조인
         JOIN
             TB_USER u2 ON a.user_id = u2.id
@@ -154,9 +154,9 @@
             t.gov_payment_update
         FROM
             TB_CONFIRM_APPLICATION a
-        -- 1. 신청자 정보 조인
+        -- 1. 신청자 정보 조인 (수정된 부분)
         JOIN
-            TB_USER u1 ON a.registration_number = u1.registration_number
+            TB_USER u1 ON u1.registration_number = COALESCE(a.upd_registration_number, a.registration_number)
         -- 2. 회사 정보 조인
         JOIN
             TB_USER u2 ON a.user_id = u2.id
@@ -400,7 +400,7 @@
         FROM
             TB_CONFIRM_APPLICATION T_APP
         INNER JOIN
-            TB_USER T_USER ON T_APP.registration_number = T_USER.registration_number
+            TB_USER T_USER ON COALESCE(T_APP.upd_registration_number, T_APP.registration_number) = T_USER.registration_number
         WHERE
             T_APP.confirm_number = #{confirmNumber} AND T_APP.delt_at = 'N'
     </select>

@@ -107,7 +107,7 @@ public class UserApplyController {
 		
 		userApplyService.cancelApply(applicationNumber);
 		
-		return "redirect:/user/main";
+		return "redirect:/user/detail/" + applicationNumber;
 	}
 	
 	// 육아휴직 등록 수정페이지 이동
@@ -139,7 +139,7 @@ public class UserApplyController {
 		}
 		userApplyService.updateApplication(applicationDTO, termIdList, early);
 		
-		return "redirect:/user/main";
+		return "redirect:/user/detail/" + applicationDTO.getApplicationNumber();
 	}
 	
 	// 육아휴직 제출 완료페이지
