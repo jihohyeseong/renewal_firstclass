@@ -58,6 +58,12 @@ public class AdminApprovalService {
             if (originalDto.getChildResiRegiNumber() != null && !originalDto.getChildResiRegiNumber().trim().isEmpty()) {
                 originalDto.setChildResiRegiNumber(aes256Util.decrypt(originalDto.getChildResiRegiNumber()));
             }
+            if (originalDto.getUpdRegistrationNumber() != null && !originalDto.getUpdRegistrationNumber().trim().isEmpty()) {
+                originalDto.setUpdRegistrationNumber(aes256Util.decrypt(originalDto.getUpdRegistrationNumber()));
+            }
+            if (originalDto.getUpdChildResiRegiNumber() != null && !originalDto.getUpdChildResiRegiNumber().trim().isEmpty()) {
+                originalDto.setUpdChildResiRegiNumber(aes256Util.decrypt(originalDto.getUpdChildResiRegiNumber()));
+            }
         } catch (Exception ignore) {}
 
         // 4. 원본 단위기간과 수정된 단위기간을 각각 조회하여 DTO에 설정
@@ -168,6 +174,16 @@ public class AdminApprovalService {
  	// 수정사항 저장
  	@Transactional
  	public boolean saveConfirmEdits(ConfirmApplyDTO dto) {
+ 		// 암호화
+        try {
+            if (dto.getUpdRegistrationNumber() != null && !dto.getUpdRegistrationNumber().trim().isEmpty())
+                dto.setUpdRegistrationNumber(aes256Util.encrypt(dto.getUpdRegistrationNumber()));
+            if (dto.getUpdChildResiRegiNumber() != null && !dto.getUpdChildResiRegiNumber().trim().isEmpty())
+                dto.setUpdChildResiRegiNumber(aes256Util.encrypt(dto.getUpdChildResiRegiNumber()));
+        } catch (Exception e) {
+            throw new IllegalStateException("개인정보 암호화 오류", e);
+        }
+        
  		Long confirmNumber = dto.getConfirmNumber();
 
  		// 1. TB_CONFIRM_APPLICATION 테이블의 upd_ 컬럼들 업데이트

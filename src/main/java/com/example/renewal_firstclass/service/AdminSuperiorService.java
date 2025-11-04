@@ -118,17 +118,4 @@ public class AdminSuperiorService {
     public List<CodeDTO> getRejectCodes() {
         return codeDAO.findAllRejectCode();
     }
-    
-//    @Transactional(readOnly = true)
-//    public void userApplyDetail(long applicationNumber, Model model) {
-//        adminSuperiorDTO appDTO = adminSuperiorDAO.selectAppDetailByAppNo(applicationNumber);
-//        if (appDTO == null) {
-//            model.addAttribute("error", "존재하지 않는 신청입니다.");
-//            return;
-//        }
-//        List<TermAmountDTO> terms = termAmountDAO.selectByConfirmId(appDTO.getConfirmNumber());
-//        model.addAttribute("appDTO", appDTO);
-//        model.addAttribute("terms", terms);
-//    }
-
 }

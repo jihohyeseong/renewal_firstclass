@@ -111,71 +111,6 @@
 	  transform: translateY(-50%);
 	  transition: width 0.4s ease;
 	}
-	
-	/* ===== 반려 사유 카드 개선 ===== */
-	.reject-result {
-	    background: #fff;
-	    border: 1px solid #e9ecef;
-	    border-radius: 12px;
-	    padding: 24px;
-	    margin-bottom: 24px;
-	    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-	}
-	
-	.reject-result .title-section {
-	    display: flex;
-	    align-items: center;
-	    gap: 12px;
-	    margin-bottom: 20px;
-	    padding-bottom: 16px;
-	    border-bottom: 2px solid #f8f9fa;
-	}
-	
-	.reject-result .title-section i {
-	    font-size: 24px;
-	    color: #ff6b6b;
-	}
-	
-	.reject-result .title-section h3 {
-	    margin: 0;
-	    font-size: 18px;
-	    font-weight: 700;
-	    color: #333;
-	}
-	.reject-result .title-section .reason-inline {
-	    display: inline-block;
-	    padding: 6px 16px;
-	    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-	    color: #fff;
-	    border-radius: 20px;
-	    font-weight: 700;
-	    font-size: 14px;
-	    margin-left: 25px;
-	}
-	
-	.reject-result .info-grid {
-	    display: grid;
-	    gap: 16px;
-	}
-	
-	.reject-result .info-item {
-	    display: flex;
-	    gap: 12px;
-	}
-	
-	.reject-result .info-item .label {
-	    min-width: 100px;
-	    font-weight: 600;
-	    color: #666;
-	    font-size: 14px;
-	}
-	
-	.reject-result .info-item .value {
-	    flex: 1;
-	    color: #333;
-	    font-size: 14px;
-	}
-
     
 	  /* ===== 표 전용(초록 테마와 조화) ===== */
 	  .page-title { font-size: 22px; font-weight: 800; margin: 0 0 18px; }
@@ -259,35 +194,275 @@
 	    font-size: 14px;
 	  }
 	
-	  /* ===== 부지급 사유 영역 ===== */
-	  #rejectForm {
-	    display: none;
-	    margin-top: 20px;
+	  /* ===== 반려 사유 카드 개선 ===== */
+	.reject-result {
+	    background: #fff;
+	    border: 1px solid #e9ecef;
+	    border-radius: 12px;
+	    padding: 24px;
+	    margin-bottom: 24px;
+	    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+	}
+	
+	.reject-result .title-section {
+	    display: flex;
+	    align-items: center;
+	    gap: 12px;
 	    margin-bottom: 20px;
-	    border: 1px solid #ccc;
-	    padding: 12px;
-	    border-radius: 8px;
-	    text-align: left;
-	  }
+	    padding-bottom: 16px;
+	    border-bottom: 2px solid #f8f9fa;
+	}
 	
-	  #rejectForm h3 {
-	    margin-bottom: 10px;
-	  }
+	.reject-result .title-section i {
+	    font-size: 24px;
+	    color: #ff6b6b;
+	}
 	
-	  #rejectForm div:first-of-type {
-	    display: grid;
-	    grid-template-columns: repeat(2, 1fr); /* 2열 배치 */
-	    gap: 6px 18px; /* 상하6px, 좌우18px 간격 */
-	  }
-	
-	  #rejectForm label {
+	.reject-result .title-section h3 {
+	    margin: 0;
+	    font-size: 18px;
+	    font-weight: 700;
+	    color: #333;
+	}
+	.reject-result .title-section .reason-inline {
+	    display: inline-block;
+	    padding: 6px 16px;
+	    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+	    color: #fff;
+	    border-radius: 20px;
+	    font-weight: 700;
 	    font-size: 14px;
-	  }
+	    margin-left: 25px;
+	}
 	
-	  #rejectComment {
-	    margin-top: 8px;
-	    width: 80%;
-	  }
+	.reject-result .info-grid {
+	    display: grid;
+	    gap: 16px;
+	}
+	
+	.reject-result .info-item {
+	    display: flex;
+	    gap: 12px;
+	}
+	
+	.reject-result .info-item .label {
+	    min-width: 100px;
+	    font-weight: 600;
+	    color: #666;
+	    font-size: 14px;
+	}
+	
+	.reject-result .info-item .value {
+	    flex: 1;
+	    color: #333;
+	    font-size: 14px;
+	}
+	
+	.radio-group {
+	    display: flex;
+	    gap: 16px;
+	    margin-bottom: 24px;
+	    justify-content: center;
+	}
+	
+	.radio-wrapper {
+	    flex: 0 0 auto;
+	}
+	
+	.radio-wrapper input[type="radio"] {
+	    appearance: none;
+	    width: 20px;
+	    height: 20px;
+	    border: 2px solid #bdbdbd;
+	    border-radius: 50%;
+	    margin-right: 10px;
+	    position: relative;
+	    cursor: pointer;
+	    transition: all 0.3s ease;
+	    vertical-align: middle;
+	}
+	
+	.radio-wrapper input[type="radio"]:checked {
+	    border-color: #4caf50;
+	    background: #4caf50;
+	    box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.1);
+	}
+	
+	.radio-wrapper input[type="radio"]:checked::after {
+	    content: '';
+	    position: absolute;
+	    top: 50%;
+	    left: 50%;
+	    transform: translate(-50%, -50%);
+	    width: 8px;
+	    height: 8px;
+	    background: white;
+	    border-radius: 50%;
+	}
+	
+	.radio-wrapper.reject-radio input[type="radio"]:checked {
+	    border-color: #f44336;
+	    background: #f44336;
+	    box-shadow: 0 0 0 4px rgba(244, 67, 54, 0.1);
+	}
+	
+	.radio-wrapper label {
+	    cursor: pointer;
+	    font-size: 16px;
+	    font-weight: 600;
+	    color: #333;
+	    display: inline-flex;
+	    align-items: center;
+	    padding: 10px 20px;
+	    border-radius: 8px;
+	    transition: all 0.3s ease;
+	}
+	
+	.radio-wrapper label:hover {
+	    background: #f5f5f5;
+	}
+	
+	.radio-wrapper input[type="radio"]:checked + label {
+	    color: #4caf50;
+	}
+	
+	.radio-wrapper.reject-radio input[type="radio"]:checked + label {
+	    color: #f44336;
+	}
+	
+	/* ===== 부지급 사유 영역 (디자인 1) ===== */
+	#rejectForm {
+	    display: none;
+	    background: #fff;
+	    border: 1px solid #fff;
+	    border-radius: 12px;
+	    padding: 20px;
+	    margin-top: 20px;
+	    box-shadow: 0 4px 12px #f9fafb;
+	}
+	
+	#rejectForm.active {
+	    display: block;
+	    animation: fadeInDown 0.3s ease;
+	}
+	
+	#rejectForm h3 {
+	    font-size: 17px;
+	    font-weight: 700;
+	    color: #1f2937;
+	    margin-bottom: 20px;
+	    display: flex;
+	    align-items: center;
+	    gap: 8px;
+	}
+	
+	#rejectForm > div:first-of-type {
+	    display: grid;
+	    grid-template-columns: repeat(2, 1fr); /* 2열로 설정 */
+	    gap: 8px 12px; /* 상하 8px, 좌우 12px 간격 */
+	    margin-bottom: 20px;
+	}
+	
+	.reason-item {
+	    position: relative;
+	    /* width: 20%; */
+	    box-sizing: border-box;
+	}
+	
+	.reason-item label {
+	    display: flex;
+	    align-items: center;
+	    padding: 12px 8px;
+	    border: 2px solid #ffffff;
+	    border-radius: 8px;
+	    cursor: pointer;
+	    transition: all 0.3s ease;
+	    background: #ffffff;
+	    font-size: 14px;
+	}
+	
+	.reason-item input[type="radio"] {
+	    appearance: none;
+	    width: 18px;
+	    height: 18px;
+	    border: 2px solid #bdbdbd;
+	    border-radius: 50%;
+	    margin-right: 10px;
+	    position: relative;
+	    cursor: pointer;
+	    transition: all 0.3s ease;
+	    flex-shrink: 0;
+	}
+	
+	.reason-item input[type="radio"]:checked {
+	    border-color: #f44336;
+	    background: #f44336;
+	}
+	
+	.reason-item input[type="radio"]:checked::after {
+	    content: '';
+	    position: absolute;
+	    top: 50%;
+	    left: 50%;
+	    transform: translate(-50%, -50%);
+	    width: 6px;
+	    height: 6px;
+	    background: white;
+	    border-radius: 50%;
+	}
+	
+	.reason-item label:hover {
+	    border-color: #bdbdbd;
+	    background: #f5f5f5;
+	}
+	
+	.reason-item input[type="radio"]:checked + span {
+	    font-weight: 600;
+	}
+	
+	.comment-wrapper {
+	    margin-top: 16px;
+	}
+	
+	.comment-label {
+	    display: block;
+	    font-weight: 600;
+	    color: #333;
+	    margin-bottom: 8px;
+	    font-size: 18px;
+	    text-align: left;
+	}
+	
+	#rejectComment {
+	    width: 100%;
+	    padding: 10px;
+	    border: 2px solid #e0e0e0;
+	    border-radius: 8px;
+	    font-size: 14px;
+	    resize: vertical;
+	    min-height: 60px;
+	    font-family: inherit;
+	    transition: border-color 0.3s ease;
+	    text-align: left;
+	    display: block; /* 🔹 인라인으로 취급되지 않게 블록화 */
+    	margin: 0; /* 🔹 혹시 남아있던 auto 중앙정렬 제거 */
+	}
+	
+	#rejectComment:focus {
+	    outline: none;
+	    border-color: #f44336;
+	}
+	
+	@keyframes fadeInDown {
+	    from {
+	        opacity: 0;
+	        transform: translateY(-15px);
+	    }
+	    to {
+	        opacity: 1;
+	        transform: translateY(0);
+	    }
+	}
 	  
 	  /* 동적 폼 스타일 */
 	.dynamic-form-container {
@@ -367,7 +542,7 @@
 	.comparison-column.update-form input[type="text"],
 	.comparison-column.update-form input[type="password"],
 	.comparison-column.update-form input[type="date"],
-	.comparison-column.update-form input[type="number"] {
+	.comparison-column.update-form input[type="number"]:not(#edit-weekly-hours):not(#edit-regular-wage) {
 	    width: 100% !important; /* 인라인 스타일(width: 80%)을 덮어쓰고 꽉 채움 */
 	    box-sizing: border-box; 
 	    border-radius: 6px; /* 모서리 둥글게 */
@@ -395,6 +570,26 @@
 	.comparison-column.update-form .sheet-table th {
 	    /* 수정 폼의 th(제목)은 원본보다 연하게 */
 	    background: #fdfdfd; 
+	}
+	
+	/* 빈 테이블 */ 
+	.alignment-spacer {
+		visibility: hidden; /* 공간은 차지하되, 내용물/테두리 모두 숨김 */
+		margin-top: 20px;
+	}
+	
+	/* 스페이서 내부 테이블의 녹색 바 숨기기 */
+	.alignment-spacer .sheet-head::before {
+		display: none;
+	}
+	
+	#edit-weekly-hours,
+	#edit-regular-wage {
+	    width: 50% !important; 
+		box-sizing: border-box; 
+	    border-radius: 6px; /* 모서리 둥글게 */
+	    padding: 8px 10px;  /* 입력칸 내부 여백 */
+	    border: 1px solid #ced4da;
 	}
 	  
 </style>
@@ -617,9 +812,48 @@
         </table>
         </div>
 		<div class="comparison-divider"></div>
-		<!-- 확인서 수정 폼 -->
+		
+		<!-- 오른쪽 확인서 수정 폼 -->
         <div class="comparison-column update-form">
-	
+        	<!-- 테이블 위치 조정을 위해 투명 처리 -->
+			<div class="alignment-spacer" aria-hidden="true">
+				<table class="sheet-table">
+					<colgroup>
+						<col class="w160"><col><col class="w160"><col>
+					</colgroup>
+					<tr><th class="sheet-head" colspan="4">접수 정보</th></tr>
+					<tr>
+						<th>확인서 번호</th><td><c:out value="${confirmDTO.confirmNumber}" /></td>
+						<th>처리 상태</th>
+						<td>
+							<c:choose>
+								<c:when test="${confirmDTO.statusCode == 'ST_20'}"><span class="status-badge status-pending">심사중</span></c:when>
+								<c:when test="${confirmDTO.statusCode == 'ST_30'}"><span class="status-badge status-pending">심사중</span></c:when>
+								<c:when test="${confirmDTO.statusCode == 'ST_50'}"><span class="status-badge status-approved">승인</span></c:when>
+								<c:when test="${confirmDTO.statusCode == 'ST_60'}"><span class="status-badge status-rejected">반려</span></c:when>
+								<c:otherwise><c:out value="${confirmDTO.statusCode}" /></c:otherwise>
+							</c:choose>
+						</td>
+					</tr>
+					<tr>
+						<th>제출일</th>
+						<td colspan="3"><fmt:formatDate value="${confirmDTO.applyDt}" pattern="yyyy-MM-dd" /></td>
+					</tr>
+					<tr>
+						<th>기업명</th>
+						<td colspan="3">${userDTO.name}</td>
+					</tr>
+					<tr>
+						<th>주소</th>
+						<td colspan="3">${userDTO.addressBase} ${userDTO.addressDetail}</td>
+					</tr>
+					<tr>
+						<th>전화번호</th>
+						<td colspan="3">${userDTO.phoneNumber}</td>
+					</tr>
+				</table>
+			</div>
+			
 	        <form id="updateForm">
 	            <input type="hidden" name="confirmNumber" value="${confirmDTO.confirmNumber}">
 	
@@ -627,7 +861,7 @@
 	                <colgroup>
 	                    <col class="w160"><col><col class="w160"><col>
 	                </colgroup>
-					
+	                
 					<tr><th class="sheet-head" colspan="4">근로자 정보 <i class="fa fa-edit" style="color:#007bff;"></i></th></tr>
 	                <tr>
                         <th>성명</th>
@@ -644,7 +878,6 @@
 	                    </td>
                     </tr>
 	                
-	                <tr><th class="sheet-head" colspan="4">육아휴직 기간 <i class="fa fa-edit" style="color:#007bff;"></i></th></tr>
 	                <tr>
 	                    <th>육아휴직 시작일</th>
 	                    <td>
@@ -661,10 +894,26 @@
 	                               value="<fmt:formatDate value='${confirmDTO.updEndDate}' pattern='yyyy-MM-dd' />">
 	                    </td>
 	                </tr>
-	
-	                <tr><th class="sheet-head" colspan="4">단위기간별 지급액 <i class="fa fa-edit" style="color:#007bff;"></i></th></tr>
+					
+					<tr>
+	                    <th>월 소정근로시간</th>
+	                    <td>
+	                        <input type="number" name="updWeeklyHours"
+	                               id="edit-weekly-hours"
+	                               class="form-control"8
+	                               value="${confirmDTO.updWeeklyHours != null ? confirmDTO.updWeeklyHours : ''}"> 시간
+	                    </td>
+	                    <th>통상임금 (월)</th>
+	                    <td>
+	                        <input type="number" name="updRegularWage"
+	                               id="edit-regular-wage"
+	                               class="form-control"
+	                               value="${confirmDTO.updRegularWage != null ? confirmDTO.updRegularWage : ''}"> 원
+	                    </td>
+	                </tr>
+	                
 	                <tr>
-	                    <td colspan="4" style="padding: 20px;">
+	                    <td colspan="4" style="padding: 10px;">
 	                        <div style="margin-bottom: 12px;">
 	                            <button type="button" id="generate-edit-forms-btn" class="btn btn-secondary">
 	                                <i class="fa fa-calendar"></i> 기간 나누기 및 재계산
@@ -677,24 +926,6 @@
 	                        <div id="edit-dynamic-header-row" class="dynamic-form-row" style="display: none; ...">
 	                            </div>
 	                        <div id="edit-dynamic-forms-container" class="dynamic-form-container"></div>
-	                    </td>
-	                </tr>
-	
-	                <tr><th class="sheet-head" colspan="4">근로조건 <i class="fa fa-edit" style="color:#007bff;"></i></th></tr>
-	                <tr>
-	                    <th>월 소정근로시간</th>
-	                    <td>
-	                        <input type="number" name="updWeeklyHours"
-	                               id="edit-weekly-hours"
-	                               class="form-control" style="width: 60%;"
-	                               value="${confirmDTO.updWeeklyHours != null ? confirmDTO.updWeeklyHours : ''}"> 시간
-	                    </td>
-	                    <th>통상임금 (월)</th>
-	                    <td>
-	                        <input type="number" name="updRegularWage"
-	                               id="edit-regular-wage"
-	                               class="form-control" style="width: 60%;"
-	                               value="${confirmDTO.updRegularWage != null ? confirmDTO.updRegularWage : ''}"> 원
 	                    </td>
 	                </tr>
 	
@@ -746,30 +977,82 @@
 				        <c:when test="${confirmDTO.statusCode == 'ST_50' or confirmDTO.statusCode == 'ST_60'}">
 				            <a href="${pageContext.request.contextPath}/admin/list" class="btn btn-secondary">목록으로</a>
 				        </c:when>
-		 
+		 				
 				        <c:otherwise>
-				            <div style="margin-bottom:15px;">
-				                <label><input type="radio" name="judgeOption" value="approve">접수</label>
-				                <label style="margin-left:15px;"><input type="radio" name="judgeOption" value="reject">반려</label>
+				            <div class="radio-group">
+				                <div class="radio-wrapper">
+				                    <input type="radio" name="judgeOption" id="approveOption" value="approve">
+				                    <label for="approveOption">접수</label>
+				                </div>
+				                
+				                <div class="radio-wrapper reject-radio">
+				                    <input type="radio" name="judgeOption" id="rejectOption" value="reject">
+				                    <label for="rejectOption">반려</label>
+				                </div>
 				            </div>
 				            
 				            <div id="rejectForm">
 							    <h3>반려 사유 선택</h3>
 							    <div>
-							        <label><input type="radio" name="reasonCode" value="RJ_10"> 계좌정보 불일치</label><br>
-							        <label><input type="radio" name="reasonCode" value="RJ_20"> 관련서류 미제출</label><br>
-							        <label><input type="radio" name="reasonCode" value="RJ_30"> 신청시기 미도래</label><br>
-							        <label><input type="radio" name="reasonCode" value="RJ_40"> 근속기간 미충족</label><br>
-							        <label><input type="radio" name="reasonCode" value="RJ_50"> 자녀 연령 기준 초과</label><br>
-							        <label><input type="radio" name="reasonCode" value="RJ_60"> 휴직 가능 기간 초과</label><br>
-							        <label><input type="radio" name="reasonCode" value="RJ_70"> 제출서류 정보 불일치</label><br>
-							        <label><input type="radio" name="reasonCode" value="RJ_80"> 신청서 작성 내용 미비</label><br>
-							        <label><input type="radio" name="reasonCode" value="RJ_99"> 기타</label>
+							        <div class="reason-item">
+							            <label>
+							                <input type="radio" name="reasonCode" value="RJ_10">
+							                <span>계좌정보 불일치</span>
+							            </label>
+							        </div>
+							        <div class="reason-item">
+							            <label>
+							                <input type="radio" name="reasonCode" value="RJ_20">
+							                <span>관련서류 미제출</span>
+							            </label>
+							        </div>
+							        <div class="reason-item">
+							            <label>
+							                <input type="radio" name="reasonCode" value="RJ_30">
+							                <span>신청시기 미도래</span>
+							            </label>
+							        </div>
+							        <div class="reason-item">
+							            <label>
+							                <input type="radio" name="reasonCode" value="RJ_40">
+							                <span>근속기간 미충족</span>
+							            </label>
+							        </div>
+							        <div class="reason-item">
+							            <label>
+							                <input type="radio" name="reasonCode" value="RJ_50">
+							                <span>자녀 연령 기준 초과</span>
+							            </label>
+							        </div>
+							        <div class="reason-item">
+							            <label>
+							                <input type="radio" name="reasonCode" value="RJ_60">
+							                <span>휴직 가능 기간 초과</span>
+							            </label>
+							        </div>
+							        <div class="reason-item">
+							            <label>
+							                <input type="radio" name="reasonCode" value="RJ_70">
+							                <span>제출서류 정보 불일치</span>
+							            </label>
+							        </div>
+							        <div class="reason-item">
+							            <label>
+							                <input type="radio" name="reasonCode" value="RJ_80">
+							                <span>신청서 작성 내용 미비</span>
+							            </label>
+							        </div>
+							        <div class="reason-item">
+							            <label>
+							                <input type="radio" name="reasonCode" value="RJ_99">
+							                <span>기타</span>
+							            </label>
+							        </div>
 							    </div> 
 							
-							    <div>
-							        <label>상세 사유:</label><br>
-							        <input type="text" id="rejectComment" class="form-control" placeholder="상세 사유를 입력하세요" style="width:80%;">
+							    <div class="comment-wrapper">
+							        <label class="comment-label">상세 사유</label>
+							        <input type="text" id="rejectComment" class="form-control" placeholder="상세 사유를 입력하세요" style="width:50%;">
 							    </div>
 				
 							</div>
@@ -871,11 +1154,15 @@ document.addEventListener("DOMContentLoaded", function() {
         nextPeriodStart.setDate(nextPeriodStart.getDate() - 1);
         return nextPeriodStart;
     }
-
-    // ===== 접수/반려 처리 =====
+    
+	// ===== 접수/반려 처리 (새 디자인 적용) =====
     document.querySelectorAll('input[name="judgeOption"]').forEach(radio => {
         radio.addEventListener('change', function() {
-            rejectForm.style.display = (this.value === 'reject') ? "block" : "none";
+            if (this.value === 'reject') {
+                rejectForm.classList.add('active');
+            } else {
+                rejectForm.classList.remove('active');
+            }
         });
     });
 
@@ -921,7 +1208,14 @@ document.addEventListener("DOMContentLoaded", function() {
         if (originalStart > finalEnd) { alert('종료일 체크'); return; }
 
         editFormsContainer.innerHTML = '';
-        editHeaderRow.style.display = 'flex';
+     	// ▼▼▼ [REQUEST 3] 기간 나누기 시 헤더 표시 ▼▼▼
+		editHeaderRow.innerHTML = 
+			'<div class="col-term-no" style="font-weight:bold; margin-right:75px;">회차</div>' +
+			'<div class="col-term-period" style="font-weight:bold; margin-right:20px;">기간</div>' +
+			// (정렬을 위해 input과 동일한 클래스 및 스타일 적용)
+			'<div class="payment-input-field col-term-company" style="font-weight:bold; justify-content: flex-end; margin-right: 50px;">사업장 지급액</div>';
+			//'<div class="col-term-gov" style="font-weight:bold; text-align: right; padding-right: 15px;">정부 지급액</div>';
+        editHeaderRow.style.display = 'flex';
 
         let currentStart = new Date(originalStart);
         let idx = 1;
@@ -944,7 +1238,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 '<div class="col-term-no">' + idx + '개월차</div>' +
                 '<div class="col-term-period">' + rangeText + '</div>' +
                 '<div class="payment-input-field col-term-company">' +
-                '<input type="text" name="editMonthlyCompanyPay" class="form-control" placeholder="사업장 지급액(원)">' +
+                '<input type="text" name="editMonthlyCompanyPay" class="form-control" placeholder="사업장 지급액(원)" value="0">' +
                 '</div>' +
                 // 정부 지급액 필드는 빈 값으로 생성
                 '<div class="col-term-gov" style="text-align: right; padding-right: 15px;"><span>-</span></div>'; 
@@ -1046,8 +1340,14 @@ document.addEventListener("DOMContentLoaded", function() {
 		    const editFormsContainer = document.getElementById('edit-dynamic-forms-container');
 		    editFormsContainer.innerHTML = '';
 		    
-		    // 헤더 노출
-		    document.getElementById('edit-dynamic-header-row').style.display = 'flex'; 
+		    // 저장후 헤더 표시
+			editHeaderRow.innerHTML = 
+				'<div class="col-term-no" style="font-weight:bold; margin-right:75px;">회차</div>' +
+				'<div class="col-term-period" style="font-weight:bold; margin-right:20px;">기간</div>' +
+				// (정렬을 위해 input과 동일한 클래스 및 스타일 적용)
+				'<div class="payment-input-field col-term-company" style="font-weight:bold; justify-content: flex-end; margin-right: 50px;">사업장 지급액</div>' +
+				'<div class="col-term-gov" style="font-weight:bold; text-align: right; padding-right: 15px;">정부 지급액</div>';
+		    editHeaderRow.style.display = 'flex';
 		
 		    termAmounts.forEach((term, index) => {
 		        const row = document.createElement('div');
