@@ -196,272 +196,299 @@
 	
 	  /* ===== 반려 사유 카드 개선 ===== */
 	.reject-result {
-	    background: #fff;
-	    border: 1px solid #e9ecef;
-	    border-radius: 12px;
-	    padding: 24px;
-	    margin-bottom: 24px;
-	    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+	  background: #fff;
+	  border: 1px solid #e9ecef;
+	  border-radius: 12px;
+	  padding: 24px;
+	  margin-bottom: 24px;
+	  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 	}
 	
 	.reject-result .title-section {
-	    display: flex;
-	    align-items: center;
-	    gap: 12px;
-	    margin-bottom: 20px;
-	    padding-bottom: 16px;
-	    border-bottom: 2px solid #f8f9fa;
+	  display: flex;
+	  align-items: center;
+	  gap: 12px;
+	  margin-bottom: 20px;
+	  padding-bottom: 16px;
+	  border-bottom: 2px solid #f8f9fa;
 	}
 	
 	.reject-result .title-section i {
-	    font-size: 24px;
-	    color: #ff6b6b;
+	  font-size: 24px;
+	  color: #ff6b6b;
 	}
 	
 	.reject-result .title-section h3 {
-	    margin: 0;
-	    font-size: 18px;
-	    font-weight: 700;
-	    color: #333;
+	  margin: 0;
+	  font-size: 18px;
+	  font-weight: 700;
+	  color: #333;
 	}
+	
 	.reject-result .title-section .reason-inline {
-	    display: inline-block;
-	    padding: 6px 16px;
-	    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-	    color: #fff;
-	    border-radius: 20px;
-	    font-weight: 700;
-	    font-size: 14px;
-	    margin-left: 25px;
+	  display: inline-block;
+	  padding: 6px 16px;
+	  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+	  color: #fff;
+	  border-radius: 20px;
+	  font-weight: 700;
+	  font-size: 14px;
+	  margin-left: 25px;
 	}
 	
 	.reject-result .info-grid {
-	    display: grid;
-	    gap: 16px;
+	  display: grid;
+	  gap: 16px;
 	}
 	
 	.reject-result .info-item {
-	    display: flex;
-	    gap: 12px;
+	  display: flex;
+	  gap: 12px;
 	}
 	
 	.reject-result .info-item .label {
-	    min-width: 100px;
-	    font-weight: 600;
-	    color: #666;
-	    font-size: 14px;
+	  min-width: 100px;
+	  font-weight: 600;
+	  color: #666;
+	  font-size: 14px;
 	}
 	
 	.reject-result .info-item .value {
-	    flex: 1;
-	    color: #333;
-	    font-size: 14px;
+	  flex: 1;
+	  color: #333;
+	  font-size: 14px;
 	}
 	
+	/* ===== 접수/반려 라디오 그룹 ===== */
 	.radio-group {
-	    display: flex;
-	    gap: 16px;
-	    margin-bottom: 24px;
-	    justify-content: center;
+	  display: flex;
+	  gap: 16px;
+	  margin-bottom: 24px;
+	  justify-content: center;
 	}
 	
 	.radio-wrapper {
-	    flex: 0 0 auto;
+	  flex: 0 0 auto;
 	}
 	
 	.radio-wrapper input[type="radio"] {
-	    appearance: none;
-	    width: 20px;
-	    height: 20px;
-	    border: 2px solid #bdbdbd;
-	    border-radius: 50%;
-	    margin-right: 10px;
-	    position: relative;
-	    cursor: pointer;
-	    transition: all 0.3s ease;
-	    vertical-align: middle;
+	  appearance: none;
+	  width: 20px;
+	  height: 20px;
+	  border: 2px solid #bdbdbd;
+	  border-radius: 50%;
+	  margin-right: 10px;
+	  position: relative;
+	  cursor: pointer;
+	  transition: all 0.3s ease;
+	  vertical-align: middle;
 	}
 	
 	.radio-wrapper input[type="radio"]:checked {
-	    border-color: #4caf50;
-	    background: #4caf50;
-	    box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.1);
+	  border-color: #4caf50;
+	  background: #4caf50;
+	  box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.1);
 	}
 	
 	.radio-wrapper input[type="radio"]:checked::after {
-	    content: '';
-	    position: absolute;
-	    top: 50%;
-	    left: 50%;
-	    transform: translate(-50%, -50%);
-	    width: 8px;
-	    height: 8px;
-	    background: white;
-	    border-radius: 50%;
+	  content: '';
+	  position: absolute;
+	  top: 50%;
+	  left: 50%;
+	  transform: translate(-50%, -50%);
+	  width: 8px;
+	  height: 8px;
+	  background: white;
+	  border-radius: 50%;
 	}
 	
 	.radio-wrapper.reject-radio input[type="radio"]:checked {
-	    border-color: #f44336;
-	    background: #f44336;
-	    box-shadow: 0 0 0 4px rgba(244, 67, 54, 0.1);
+	  border-color: #f44336;
+	  background: #f44336;
+	  box-shadow: 0 0 0 4px rgba(244, 67, 54, 0.1);
 	}
 	
 	.radio-wrapper label {
-	    cursor: pointer;
-	    font-size: 16px;
-	    font-weight: 600;
-	    color: #333;
-	    display: inline-flex;
-	    align-items: center;
-	    padding: 10px 20px;
-	    border-radius: 8px;
-	    transition: all 0.3s ease;
+	  cursor: pointer;
+	  font-size: 16px;
+	  font-weight: 600;
+	  color: #333;
+	  display: inline-flex;
+	  align-items: center;
+	  padding: 10px 20px;
+	  border-radius: 8px;
+	  transition: all 0.3s ease;
 	}
 	
 	.radio-wrapper label:hover {
-	    background: #f5f5f5;
+	  background: #f5f5f5;
 	}
 	
 	.radio-wrapper input[type="radio"]:checked + label {
-	    color: #4caf50;
+	  color: #4caf50;
 	}
 	
 	.radio-wrapper.reject-radio input[type="radio"]:checked + label {
-	    color: #f44336;
+	  color: #f44336;
 	}
 	
-	/* ===== 부지급 사유 영역 (디자인 1) ===== */
+	/* ===== 부지급 사유 영역 (디자인 3 스타일) ===== */
 	#rejectForm {
-	    display: none;
-	    background: #fff;
-	    border: 1px solid #fff;
-	    border-radius: 12px;
-	    padding: 20px;
-	    margin-top: 20px;
-	    box-shadow: 0 4px 12px #f9fafb;
+	  display: none;
+	  background: #fff;
+	  border: 1px solid #e5e7eb;
+	  border-radius: 12px;
+	  padding: 24px;
+	  margin-top: 20px;
+	  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 	}
 	
 	#rejectForm.active {
-	    display: block;
-	    animation: fadeInDown 0.3s ease;
+	  display: block;
+	  animation: fadeInDown 0.3s ease;
+	  margin-bottom: 10px;
 	}
 	
 	#rejectForm h3 {
-	    font-size: 17px;
-	    font-weight: 700;
-	    color: #1f2937;
-	    margin-bottom: 20px;
-	    display: flex;
-	    align-items: center;
-	    gap: 8px;
+	  font-size: 18px;
+	  font-weight: 700;
+	  color: #1f2937;
+	  margin-bottom: 24px;
+	  padding-bottom: 12px;
+	  border-bottom: 2px solid #f3f4f6;
 	}
 	
+	/* 반려 사유 그리드 (2열 레이아웃) */
 	#rejectForm > div:first-of-type {
-	    display: grid;
-	    grid-template-columns: repeat(2, 1fr); /* 2열로 설정 */
-	    gap: 8px 12px; /* 상하 8px, 좌우 12px 간격 */
-	    margin-bottom: 20px;
+	  display: flex;
+	  flex-wrap: wrap;
+	  gap: 14px;
+	  justify-content: flex-start;
+	  margin-bottom: 24px;
 	}
 	
 	.reason-item {
-	    position: relative;
-	    /* width: 20%; */
-	    box-sizing: border-box;
-	}
-	
-	.reason-item label {
-	    display: flex;
-	    align-items: center;
-	    padding: 12px 8px;
-	    border: 2px solid #ffffff;
-	    border-radius: 8px;
-	    cursor: pointer;
-	    transition: all 0.3s ease;
-	    background: #ffffff;
-	    font-size: 14px;
+	  position: relative;
+	  box-sizing: border-box;
+	  flex: 0 0 calc(50% - 12px); 
+  	  max-width: 220px;           
 	}
 	
 	.reason-item input[type="radio"] {
-	    appearance: none;
-	    width: 18px;
-	    height: 18px;
-	    border: 2px solid #bdbdbd;
-	    border-radius: 50%;
-	    margin-right: 10px;
-	    position: relative;
-	    cursor: pointer;
-	    transition: all 0.3s ease;
-	    flex-shrink: 0;
+	  position: absolute;
+	  opacity: 0;
+	  pointer-events: none;
 	}
 	
-	.reason-item input[type="radio"]:checked {
-	    border-color: #f44336;
-	    background: #f44336;
+	.reason-item label {
+	  display: flex;
+	  align-items: center;
+	  padding: 12px 10px;
+	  background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+	  border: 2px solid transparent;
+	  border-radius: 10px;
+	  cursor: pointer;
+	  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	  font-size: 14px;
+	  font-weight: 500;
+	  color: #4b5563;
+	  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+	  position: relative;
 	}
 	
-	.reason-item input[type="radio"]:checked::after {
-	    content: '';
-	    position: absolute;
-	    top: 50%;
-	    left: 50%;
-	    transform: translate(-50%, -50%);
-	    width: 6px;
-	    height: 6px;
-	    background: white;
-	    border-radius: 50%;
+	.reason-item label::after {
+	  content: '';
+	  position: absolute;
+	  right: 18px;
+	  top: 50%;
+	  transform: translateY(-50%) scale(0);
+	  width: 20px;
+	  height: 20px;
+	  background: #ef4444;
+	  border-radius: 50%;
+	  transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+	}
+	
+	.reason-item label::before {
+	  content: '✓';
+	  position: absolute;
+	  right: 24px;
+	  top: 50%;
+	  transform: translateY(-50%) scale(0);
+	  color: white;
+	  font-size: 12px;
+	  font-weight: bold;
+	  z-index: 1;
+	  transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.05s;
 	}
 	
 	.reason-item label:hover {
-	    border-color: #bdbdbd;
-	    background: #f5f5f5;
+	  transform: translateY(-3px);
+	  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+	  border-color: #e5e7eb;
 	}
 	
-	.reason-item input[type="radio"]:checked + span {
-	    font-weight: 600;
+	.reason-item label:has(input[type="radio"]:checked) {
+	  /* background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); */
+	  border-color: #f9fafb;
+	  color: #991b1b;
+	  font-weight: 600;
+	  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.2);
+	  padding-right: 55px;
 	}
 	
+	.reason-item label:has(input[type="radio"]:checked)::after {
+	  transform: translateY(-50%) scale(1);
+	}
+	
+	.reason-item label:has(input[type="radio"]:checked)::before {
+	  transform: translateY(-50%) scale(1);
+	}
+	
+	/* 상세 사유 입력 */
 	.comment-wrapper {
-	    margin-top: 16px;
+	  margin-top: 24px;
 	}
 	
 	.comment-label {
-	    display: block;
-	    font-weight: 600;
-	    color: #333;
-	    margin-bottom: 8px;
-	    font-size: 18px;
-	    text-align: left;
+	  display: block;
+	  font-weight: 600;
+	  color: #333;
+	  margin-bottom: 8px;
+	  font-size: 15px;
+	  text-align: left;
 	}
 	
 	#rejectComment {
-	    width: 100%;
-	    padding: 10px;
-	    border: 2px solid #e0e0e0;
-	    border-radius: 8px;
-	    font-size: 14px;
-	    resize: vertical;
-	    min-height: 60px;
-	    font-family: inherit;
-	    transition: border-color 0.3s ease;
-	    text-align: left;
-	    display: block; /* 🔹 인라인으로 취급되지 않게 블록화 */
-    	margin: 0; /* 🔹 혹시 남아있던 auto 중앙정렬 제거 */
+	  width: 100%;
+	  padding: 12px;
+	  border: 2px solid #e0e0e0;
+	  border-radius: 8px;
+	  font-size: 14px;
+	  resize: vertical;
+	  min-height: 80px;
+	  font-family: inherit;
+	  transition: all 0.3s ease;
+	  text-align: left;
+	  display: block;
+	  margin: 0;
 	}
 	
 	#rejectComment:focus {
-	    outline: none;
-	    border-color: #f44336;
+	  outline: none;
+	  border-color: #f44336;
+	  box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.1);
 	}
 	
 	@keyframes fadeInDown {
-	    from {
-	        opacity: 0;
-	        transform: translateY(-15px);
-	    }
-	    to {
-	        opacity: 1;
-	        transform: translateY(0);
-	    }
+	  from {
+	    opacity: 0;
+	    transform: translateY(-10px);
+	  }
+	  to {
+	    opacity: 1;
+	    transform: translateY(0);
+	  }
 	}
 	  
 	  /* 동적 폼 스타일 */
