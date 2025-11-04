@@ -534,6 +534,7 @@
                   </c:otherwise>
              </c:choose>
 
+			 <button type="button" id="start-review-btn">ⓘ</button>
              <c:choose>
                   <c:when test="${not empty applicationDetailDTO}">
                         <form id="main-form" action="${pageContext.request.contextPath}/user/update" method="post">
@@ -849,7 +850,7 @@
                                            inputmode="numeric" autocomplete="off" placeholder="'-' 없이 숫자만"
                                            value="${applicationDetailDTO.accountNumber}" />
                               </div>
-                        </div>
+                        </div></div>
                         <div class="form-section">
                               <h2>접수 센터 선택</h2>
                               <div class="form-group">
@@ -887,7 +888,7 @@
                                     </div>
                               </div>
                         </div>
-                   </div>
+                   
 
                    <div class="form-section">
                         <div class="notice-box">
@@ -909,17 +910,18 @@
                    </div>
 
                    <div class="submit-button-container" style="display:flex; gap:10px; justify-content:center;">
-                        <a href="${pageContext.request.contextPath}/user/main" class="btn submit-button" style="background:#6c757d; border-color:#6c757d;">목록으로 돌아가기</a>
-                        
-                        <c:choose>
-                              <c:when test="${not empty applicationDetailDTO}">
-                                    <button type="submit" name="action" value="update" class="btn submit-button">신청서 수정</button>
-                              </c:when>
-                              <c:otherwise>
-                                    <button type="submit" name="action" value="submit" class="btn submit-button">신청서 저장</button>
-                              </c:otherwise>
-                        </c:choose>
-                   </div>
+    
+					    <a href="${pageContext.request.contextPath}/user/main" class="btn submit-button" style="background:#6c757d; border-color:#6c757d;">목록으로 돌아가기</a>
+					    
+					    <c:choose>
+					        <c:when test="${not empty applicationDetailDTO}">
+					            <button type="submit" name="action" value="update" class="btn submit-button">신청서 수정</button>
+					        </c:when>
+					        <c:otherwise>
+					            <button type="submit" name="action" value="submit" class="btn submit-button">신청서 저장</button>
+					        </c:otherwise>
+					    </c:choose>
+					</div>
              </form>
          
         </div> </main>
@@ -927,6 +929,352 @@
     <footer class="footer">
       <p>&copy; 2025 육아휴직 서비스. All Rights Reserved.</p>
     </footer>
+    <!-- ▼▼▼ [수정] 폼 검토하기 툴팁 시스템 (CSS, HTML, JS) ▼▼▼ -->
+
+<!-- ▼▼▼ [수정] 폼 검토하기 툴팁 시스템 (CSS, HTML, JS) ▼▼▼ -->
+
+<!-- 1. 툴팁 가이드용 CSS -->
+<style>
+	#start-review-btn {
+    /* 1. 모양: 동그란 물음표 아이콘 */
+    width: 36px;
+    height: 36px;
+    border-radius: 50%; /* 원으로 만들기 */
+    border: none;
+    background-color: #3f58d4; /* 파란색 배경 */
+    color: white; /* 흰색 '?' */
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    
+    /* 2. 위치: 오른쪽 상단 고정 */
+    position: absolute;
+    top: 25px;  /* 상단에서의 거리 (h1과 맞춤) */
+    right: 30px; /* 우측에서의 거리 */
+    z-index: 100; /* 다른 요소들 위에 표시 */
+
+    /* 3. '?' 글자 정중앙 정렬 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1; /* 글자 세로 정렬을 위함 */
+}
+
+#start-review-btn:hover {
+    background-color: #0056b3; /* 마우스 오버 시 색상 */
+}
+
+/* 중요: 버튼의 position: absolute 기준점이 될 
+   .content-wrapper에 이 스타일이 꼭 필요합니다! 
+*/
+.content-wrapper {
+    position: relative;
+    /* .content-wrapper의 기존 padding이나 width는 그대로 둡니다 */
+}
+    #review-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 9998;
+        display: none;
+        cursor: pointer;
+    }
+
+    #review-tooltip {
+        position: absolute;
+        background: #333;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        z-index: 10000; /* 오버레이와 하이라이트보다 위에 */
+        display: none;
+        width: 320px;
+        max-width: 90%;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    /* 툴팁 꼬리 (방향 자동) */
+    #review-tooltip::after {
+        content: '';
+        position: absolute;
+        top: 25px; 
+        margin-top: -10px; 
+        border-style: solid;
+    }
+    #review-tooltip.tooltip-tail-right::after {
+        left: 100%; 
+        border-width: 10px 0 10px 10px; 
+        border-color: transparent transparent transparent #333; 
+    }
+    #review-tooltip.tooltip-tail-left::after {
+        right: 100%; 
+        border-width: 10px 10px 10px 0; 
+        border-color: transparent #333 transparent transparent; 
+    }
+
+
+    #review-tooltip-content {
+        margin-bottom: 15px;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+    
+    #review-tooltip-content strong {
+        color: #55d9b1; /* 강조 색상 */
+    }
+
+    #review-tooltip-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center; 
+    }
+
+    #review-tooltip-nav button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+    }
+    #review-tooltip-nav #review-close {
+        background: #aaa;
+    }
+
+    /* ▼▼▼ [수정] .form-section 강조 스타일 (문제 1: 빛나는 패딩) ▼▼▼ */
+    div.form-section.review-highlight {
+        position: relative; 
+        z-index: 9999;
+        background: #ffffff; /* 1. DIV 자체를 하얗게 */
+        border-radius: 12px; 
+        transition: all 0.2s ease-in-out;
+        
+        /* [문제 1 수정] 
+           box-shadow를 중첩하여 '빛나는 패딩' 효과 구현
+           - 1. 8px짜리 하얀색(패딩) 그림자
+           - 2. 10px짜리 파란색(테두리) 그림자 (하얀 그림자 밖으로 2px 보임)
+        */
+        box-shadow: 0 0 0 25px #ffffff, 0 0 0 10px #007bff;
+    }
+    
+    /* ▼▼▼ [수정] 중첩 하이라이트 방지 (문제 2) ▼▼▼ */
+    /* 하이라이트된 섹션 내부의 자식 섹션은 다시 원래대로 돌림 */
+    div.form-section.review-highlight > div.form-section {
+        background: none; /* 배경색 없음 */
+        border-radius: 0; /* 둥근 모서리 없음 */
+        box-shadow: none; /* [문제 2 수정] 부모로부터 받은 box-shadow 제거 */
+    }
+    /* ▲▲▲ [수정] 여기까지 ▲▲▲ */
+</style>
+
+<!-- 2. 툴팁 가이드용 HTML -->
+<div id="review-overlay"></div>
+<div id="review-tooltip">
+    <div id="review-tooltip-content"></div>
+    <div id="review-tooltip-nav">
+        <button type="button" id="review-close">종료</button>
+        <div style="display: flex; gap: 8px;">
+            <button type="button" id="review-prev" style="display: none;">이전</button>
+            <button type="button" id="review-next">다음</button>
+        </div>
+    </div>
+</div>
+
+<!-- 3. 툴팁 가이드용 JavaScript (jQuery 필요) -->
+<script>
+$(document).ready(function() {
+    
+    // 1-1. 기본 대상 목록 (h2, h3)을 배열로 변환
+    let reviewTargets = $('.form-section h2, .form-section h3').toArray();
+    
+    // 1-2. 기본 툴팁 내용
+    let tooltips = [
+        "**신청인 정보**: 회원님의 가입 정보를 기반으로 자동 입력됩니다. 수정이 필요한 경우, '회원정보 수정' 메뉴를 이용해주세요.",
+        "**사업장 정보**: 회원님이 '육아휴직 확인서'를 통해 승인받은 사업장의 정보입니다.",
+        "**급여 신청 기간**: 사업주에게 승인받은 총 휴직 기간 중, 이번에 급여를 신청할 기간을 선택하는 항목입니다. 아래 표에서 신청할 기간의 체크박스를 선택해주세요.",
+        // (여기에 조기복직 툴팁이 동적으로 삽입될 예정)
+        "**자녀 정보**: 육아휴직 대상 자녀의 정보를 입력하는 곳입니다. 주민등록번호 13자리를 정확하게 입력해야 합니다.",
+        "**급여 입금 계좌정보**: 급여를 지급받을 본인 명의의 계좌를 입력합니다. 은행과 계좌번호를 정확히 입력해주세요.",
+        "**접수 센터 선택**: 신청서를 제출할 고용센터를 선택하는 항목입니다. '센터 찾기' 버튼을 눌러 사업장 주소 기준의 관할 센터를 찾아주세요.",
+        "**행정정보 공동이용 동의서**: 신청에 필요한 서류를 담당 공무원이 행정정보망을 통해 열람할 수 있도록 동의하는 항목입니다. '동의합니다'를 선택하는 것을 권장합니다.",
+        "**부정수급 안내**: 중요 안내사항입니다. 내용을 반드시 읽고, 동의하시면 하단의 체크박스를 선택해주세요. 이 체크박스는 신청서 제출/수정을 위한 필수 항목입니다."
+    ];
+
+ // 1-3. "급여 신청 기간" h2의 인덱스 찾기
+    let h2_급여 = $('h2:contains("급여 신청 기간")');
+    let insertIndex = -1;
+    
+    if (h2_급여.length > 0) {
+        let h2_element = h2_급여[0];
+        for (let i = 0; i < reviewTargets.length; i++) {
+            if (reviewTargets[i] === h2_element) {
+                insertIndex = i + 1; // "급여 신청 기간" h2 *다음* 인덱스
+                break;
+            }
+        }
+    }
+
+    // 1-4. 찾은 인덱스에 "조기복직" 툴팁과 대상(label) 삽입
+    if (insertIndex > -1) {
+        let checkboxLabel = $('label[for="early-return-chk"]');
+        if (checkboxLabel.length > 0) {
+            reviewTargets.splice(insertIndex, 0, checkboxLabel[0]); 
+            let newTooltipText = "**조기복직(종료일 변경)**: 이 항목을 체크하면 육아휴직 종료일을 변경할 수 있습니다.<br>" +
+            "※ 예정된 수급신청기간보다 빨리 복직하게된 경우에는 조기복직을 선택해주세요.<br>" +
+            	"※ 조기복직일이 2024.09.24 인 경우 급여 신청기간은 2024.09.23 까지입니다.<br>" +
+            	"※ 육아휴직 급여 신청은 해당 회차 종료일 이후부터 신청이 가능합니다.<br>" +
+            	"※ 육아휴직을 시작한 날 이후 매 1개월이 종료된 이후에 비용 신청 가능합니다.";
+            tooltips.splice(insertIndex, 0, newTooltipText); 
+        }
+    }
+
+
+    let currentStep = -1;
+    let lastHighlightedSection = null;
+
+    // 2. '폼 검토하기' 버튼 클릭 이벤트
+    $('#start-review-btn').on('click', function() {
+        if (reviewTargets.length === 0 || tooltips.length === 0) {
+            alert('검토할 항목이 없습니다.');
+            return;
+        }
+        currentStep = 0;
+        $('#review-overlay').show();
+        showTooltip(currentStep);
+    });
+
+    // ▼▼▼ [수정] 3. "다음" 버튼 이벤트 (기존과 동일) ▼▼▼
+    $('#review-next').on('click', function() {
+        if (currentStep < reviewTargets.length - 1) {
+            currentStep++;
+            showTooltip(currentStep);
+        } else {
+            // 마지막 단계에서 "완료" 버튼을 누르면 종료
+            endReview();
+        }
+    });
+
+    // ▼▼▼ [추가] 3-B. "이전" 버튼 이벤트 ▼▼▼
+    $('#review-prev').on('click', function() {
+        if (currentStep > 0) {
+            currentStep--;
+            showTooltip(currentStep);
+        }
+    });
+    // ▲▲▲ [추가] 3-B. "이전" 버튼 이벤트 (여기까지) ▲▲▲
+
+
+    // 4. 툴팁 '종료' 및 오버레이 클릭 이벤트
+    $('#review-close, #review-overlay').on('click', function() {
+        endReview();
+    });
+
+    // 5. 툴팁 보여주기 함수
+    function showTooltip(index) {
+        if (index >= reviewTargets.length) {
+            endReview();
+            return;
+        }
+
+        // 1. 하이라이트 처리
+        const targetElement = $(reviewTargets[index]);
+        const newSection = targetElement.closest('.form-section');
+
+        if (lastHighlightedSection && !newSection.is(lastHighlightedSection)) {
+            lastHighlightedSection.removeClass('review-highlight');
+        }
+        newSection.addClass('review-highlight');
+        lastHighlightedSection = newSection; 
+
+        // 2. 툴팁 내용 설정
+        let content = tooltips[index].replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        $('#review-tooltip-content').html(content);
+
+        // 3. 위치 계산 로직
+        const tooltip = $('#review-tooltip');
+        const targetOffset = targetElement.offset();
+        const sectionOffset = newSection.offset();
+        const sectionWidth = newSection.outerWidth();
+        
+        tooltip.css({'display': 'block', 'visibility': 'hidden'});
+        const tooltipWidth = tooltip.outerWidth();
+        tooltip.css({'display': 'none', 'visibility': 'visible'}); 
+        
+        const spacing = 15;
+        tooltip.removeClass('tooltip-tail-left tooltip-tail-right');
+
+        let tooltipTop = targetOffset.top;
+        let tooltipLeft;
+
+        if (targetElement.is('label[for="early-return-chk"]')) {
+            tooltipLeft = targetOffset.left + targetElement.outerWidth() + spacing;
+            tooltip.addClass('tooltip-tail-left');
+        } else {
+            tooltipLeft = sectionOffset.left - tooltipWidth - spacing;
+            if (tooltipLeft < 10) {
+                tooltipLeft = sectionOffset.left + sectionWidth + spacing;
+                tooltip.addClass('tooltip-tail-left');
+            } else {
+                tooltip.addClass('tooltip-tail-right');
+            }
+        }
+
+        tooltip.css({
+            'display': 'block',
+            'top': tooltipTop,
+            'left': tooltipLeft
+        });
+
+        // ▼▼▼ [수정] 4. 네비게이션 버튼 상태 관리 ▼▼▼
+        
+        // "이전" 버튼
+        if (index === 0) {
+            $('#review-prev').hide();
+        } else {
+            $('#review-prev').show();
+        }
+
+        // "다음" / "완료" 버튼
+        if (index === reviewTargets.length - 1) {
+            $('#review-next').text('완료');
+        } else {
+            $('#review-next').text('다음');
+        }
+        // ▲▲▲ [수정] 4. 네비게이션 버튼 상태 관리 (여기까지) ▲▲▲
+
+        // 5. 스크롤
+        $('html, body').animate({
+            scrollTop: targetOffset.top - 100
+        }, 300);
+    }
+
+    // ▼▼▼ [수정] 6. 투어 종료 함수 (버튼 초기화) ▼▼▼
+    function endReview() {
+        $('#review-overlay, #review-tooltip').hide();
+        
+        if (lastHighlightedSection) {
+            lastHighlightedSection.removeClass('review-highlight');
+        }
+        
+        currentStep = -1;
+        lastHighlightedSection = null;
+        
+        // 버튼 텍스트와 상태 초기화
+        $('#review-next').text('다음');
+        $('#review-prev').hide(); 
+    }
+});
+</script>
+
+<!-- ▲▲▲ [수정] 폼 검토하기 툴팁 시스템 ▲▲▲ -->
+
+
+<!-- ▲▲▲ [수정] 폼 검토하기 툴팁 시스템 ▲▲▲ -->
+
 
 <%-- (모달 JSP는 변경 없음) --%>
 <%@ include file="/WEB-INF/views/conponent/centerModal.jsp" %>
