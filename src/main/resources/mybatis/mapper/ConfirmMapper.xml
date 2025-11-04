@@ -222,11 +222,23 @@
   FROM TB_CONFIRM_APPLICATION
   WHERE name = #{name}
     AND registration_number = #{registrationNumber}
-    AND NVL(delt_at, 'N') = 'N'
+    AND delt_at = 'N'
+  <if test="nowConfirmNumber != null">
+    AND confirm_number != #{nowConfirmNumber}
+  </if>
     AND status_code != 'ST_60'
   ORDER BY apply_dt DESC
   FETCH FIRST 1 ROWS ONLY
 </select>
+
+<update id="deleteConfirm">
+  UPDATE TB_CONFIRM_APPLICATION
+     SET delt_at = 'Y'
+   WHERE confirm_number = #{confirmNumber}
+     AND user_id = #{userId}
+     AND delt_at = 'N'
+     AND status_code NOT IN ('ST_50','ST_60')
+</update>
 
 
 </mapper>

@@ -235,6 +235,15 @@
 		</form>
         <h5>제출 후 처리가 완료되기 전까지 회수가 가능합니다.</h5>
       </c:if>
+      <c:if test="${confirmDTO.statusCode != 'ST_50' and confirmDTO.statusCode != 'ST_60'}">
+  	<form method="post" action="${pageContext.request.contextPath}/comp/delete" style="display:inline;">
+    <input type="hidden" name="confirmNumber" value="${confirmDTO.confirmNumber}" />
+    <sec:csrfInput/>
+    <button type="submit" class="btn btn-danger" onclick="return confirm('이 확인서를 삭제하시겠습니까?\n삭제한 신청서는 되돌릴 수 없습니다.');">
+      	삭제
+    </button>
+  </form>
+</c:if>
     </div>
   </div>
 </main>

@@ -271,18 +271,27 @@ public class CompanyApplyService {
 	return confirmApplyDAO.countConfirmList(userId);
 	}
 	
-	public Map<String, Object> findLatestPeriodByPerson(String name, String registrationNumber) {
+	public Map<String, Object> findLatestPeriodByPerson(String name, String registrationNumber, Long nowConfirmNumber) {
 	    if (name == null || registrationNumber == null) {
 	        return java.util.Collections.emptyMap();
 	    }
 
 	    try {
 	        String regNoEnc = aes256Util.encrypt(registrationNumber);
-	        Map<String, Object> row = confirmApplyDAO.findLatestPeriodByPerson(name, regNoEnc);
+	        Map<String, Object> row = confirmApplyDAO.findLatestPeriodByPerson(name, regNoEnc, nowConfirmNumber);
 	        return (row != null) ? row : java.util.Collections.emptyMap();
 	    } catch (Exception e) {
 	        throw new IllegalStateException("주민번호 암호화 실패", e);
 	    }
+	}
+	
+	@Transactional
+	public int deleteConfirm(Long confirmNumber, Long userId) {
+	    int affected = confirmApplyDAO.deleteConfirm(confirmNumber, userId);
+	    if (affected > 0) {
+	        termAmountDAO.deleteTermsByConfirmId(confirmNumber);
+	    }
+	    return affected;
 	}
 
 

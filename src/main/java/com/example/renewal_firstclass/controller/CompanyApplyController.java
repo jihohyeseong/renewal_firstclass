@@ -197,10 +197,20 @@ public class CompanyApplyController {
     public ResponseEntity<Map<String, Object>> leavePeriod(@RequestBody Map<String, String> body) {
         String name = (body != null) ? body.get("name") : null;
         String regNo = (body != null) ? body.get("regNo") : null;
+        Long nowConfirmNumber = null;
+        if (body != null) {
+            String s = body.get("nowConfirmNumber");
+            if (s != null) {
+                s = s.trim();
+                if (!s.isEmpty() && !"null".equalsIgnoreCase(s)) {
+                    try { nowConfirmNumber = Long.parseLong(s); } catch (NumberFormatException ignore) {}
+                }
+            }
+        }
+        
 
-        Map<String, Object> res = companyApplyService.findLatestPeriodByPerson(name, regNo);
-
-        return ResponseEntity.ok(res == null || res.isEmpty() ? null : res);
+        Map<String, Object> res = companyApplyService.findLatestPeriodByPerson(name, regNo, nowConfirmNumber);
+        return ResponseEntity.ok((res == null || res.isEmpty()) ? null : res);
     }
 
 
@@ -409,6 +419,20 @@ public class CompanyApplyController {
         }
         return "redirect:/comp/detail?confirmNumber=" + confirmNumber;
     }
+    
+    @PostMapping("/comp/delete")
+    public String delete(@RequestParam Long confirmNumber,
+                         RedirectAttributes ra) {
+        UserDTO login = currentUserOrNull();
+        if (login == null) return "redirect:/login";
 
+        int affected = companyApplyService.deleteConfirm(confirmNumber, login.getId());
+        if (affected > 0) {
+            ra.addFlashAttribute("success", "확인서를 삭제했습니다.");
+        } else {
+            ra.addFlashAttribute("error", "삭제할 수 없거나 권한이 없습니다.");
+        }
+        return "redirect:/comp/main";
+    }
 
 }
