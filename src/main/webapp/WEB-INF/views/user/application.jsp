@@ -62,6 +62,12 @@
         padding: 40px; 
         margin: 0 auto; 
     }
+    .footer {
+       text-align: center;
+       padding: 20px 0;
+       font-size: 14px;
+       color: var(--gray-color);
+   }
     h1 { text-align: center; margin-bottom: 30px; font-size: 28px; }
     h2 {
      color: var(--primary-color); border-bottom: 2px solid var(--primary-light-color);

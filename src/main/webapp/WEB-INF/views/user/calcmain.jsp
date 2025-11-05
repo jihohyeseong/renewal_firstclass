@@ -253,6 +253,12 @@
                 font-size: 16px; /* 16px 미만이면 iOS에서 자동 줌인됨 */
             }
         }
+        .footer {
+       text-align: center;
+       padding: 20px 0;
+       font-size: 14px;
+       color: var(--gray-color);
+   }
 
     </style>
     <style>

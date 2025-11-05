@@ -305,7 +305,7 @@
    </main>
 
    <footer class="footer">
-     <p>© 2025 FirstClass. All rights reserved.</p>
+     <p>© 2025 육아휴직서비스. All rights reserved.</p>
    </footer>
 
    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>

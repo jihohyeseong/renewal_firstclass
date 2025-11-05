@@ -157,6 +157,12 @@ h2{
     padding: 2px 6px;
     border-radius: 4px;
 }
+.footer {
+       text-align: center;
+       padding: 20px 0;
+       font-size: 14px;
+       color: var(--gray-color);
+   }
 
 
 /* ---------------------------------- */
@@ -283,9 +289,7 @@ h2{
 </style>
 </head>
 <body>
-<%-- 헤더 include --%>
 <c:set var="role" value="${user.role}" />
-<%-- ✅ [오류 수정 1] <c:choose>와 <c:when>, <c:otherwise> 사이의 모든 공백/특수문자 제거 --%>
 <c:choose><c:when test="${role == 'ROLE_CORP'}">
     <jsp:include page="../company/compheader.jsp"/>
     <style>
@@ -300,12 +304,10 @@ h2{
 	  .detail-btn:hover { background-color: var(--primary-light-color); }
     </style>
   </c:when><c:otherwise>
-    <jsp:include page="header.jsp"/>
+<jsp:include page="header.jsp"/>
   </c:otherwise></c:choose>
-
 	<main class="main-container">
-	<h1>육아휴직 급여 신청서 상세 보기</h1>
-	
+	<h1>육아휴직 급여 신청서 상세 보기</h1>	
 	<c:if test="${empty dto}">
 		<p style="text-align:center; font-size:18px; color:var(--gray-color);">신청서 정보를 불러올 수 없습니다.</p>
 	</c:if>
@@ -572,7 +574,7 @@ h2{
 			<c:when test="${dto.statusCode == 'ST_10'}">
 				<div class="button-container" style="display: flex; align-items: center; width: 100%;">
 					<div style="display: flex; gap: 8px;">
-						<a href="${pageContext.request.contextPath}/user/main" class="btn bottom-btn btn-secondary">목록으로 돌아가기</a>
+						<a href="${pageContext.request.contextPath}/user/main" class="btn bottom-btn btn-secondary" style="margin: 0;">목록으로 돌아가기</a>
 						<form action="${pageContext.request.contextPath}/user/application/update/${dto.applicationNumber}" 
 							  method="post" 
 							  style="display: contents;">
