@@ -383,7 +383,7 @@
                         <label>주민등록번호</label>
                         <c:set var="rrnRaw" value="${user.registrationNumber}" />
                         <c:set var="rrnDigits" value="${fn:replace(rrnRaw, '-', '')}" />
-                        <input type="text" value="${fn:substring(rrnDigits,0,6)}-${fn:substring(rrnDigits,6,7)}******" readonly>
+                        <input type="text" value="${fn:substring(rrnDigits,0,6)}-${fn:substring(rrnDigits,6,13)}" readonly>
                     </div>
                     <div class="form-group">
                         <label>아이디</label>
