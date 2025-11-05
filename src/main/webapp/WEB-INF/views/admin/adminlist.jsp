@@ -9,29 +9,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <style>
-  		.header-nav {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-		}
-	
-		.header-nav .nav-link {
-            display: block;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 500;
-            color: #495057;
-            transition: all 0.3s ease-in-out;
-		}
-		.header-nav .nav-link:hover {
-            color: #3f58d4;
-            transform: translateY(-3px);
-            box-shadow: 0 4px 10px rgba(63, 88, 212, 0.3);
-		}
+
+body {
+    margin: 0;
+}
     /* ==== 기존 스타일 그대로 (필요한 부분만 축약) ==== */
     :root{--primary-color:#3f58d4;--primary-light-color:#f0f2ff;--white-color:#fff;--border-color:#dee2e6;--success-color:#28a745;--danger-color:#dc3545;}
     body{font-family:'Noto Sans KR',sans-serif;background:#f8f9fa;color:#343a40;}
@@ -69,12 +50,11 @@
 @media (max-width: 900px){
   .stat-cards{ grid-template-columns:repeat(2,1fr); }
 }
-  </style>
+</style>
 </head>
 <body>
 <div class="content-container">
-  <%@ include file="adminheader.jsp" %>
-
+<%@ include file="adminheader.jsp" %>
   <main class="main-content">
     <h2 class="page-title">관리자 신청/확인서 목록</h2>
     

@@ -38,49 +38,10 @@
         }
         a { text-decoration: none; color: inherit; }
 	
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            font-size: 15px;
-            font-weight: 500;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            text-align: center;
-        }
-        .btn-primary { background-color: var(--primary-color); color: var(--white-color); border-color: var(--primary-color); }
-        .btn-primary:hover { background-color: #364ab1; box-shadow: var(--shadow-md); transform: translateY(-2px); }
-        .btn-logout { background-color: var(--dark-gray-color); color: var(--white-color); border: none; }
-        .btn-logout:hover { background-color: #555; }
-        .btn-secondary { background-color: var(--white-color); color: var(--gray-color); border-color: var(--border-color); }
-        .btn-secondary:hover { background-color: var(--light-gray-color); color: var(--dark-gray-color); border-color: #ccc; }
         
         /* 헤더 관련 CSS는 header.jsp로 이동하여 여기서는 삭제됨 */
 		
-		.header-nav {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-		}
 	
-		.header-nav .nav-link {
-            display: block;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 500;
-            color: #495057;
-            transition: all 0.3s ease-in-out;
-		}
-		.header-nav .nav-link:hover {
-            color: #3f58d4;
-            transform: translateY(-3px);
-            box-shadow: 0 4px 10px rgba(63, 88, 212, 0.3);
-		}
         
         /* 레이아웃 */
         .content-container {
