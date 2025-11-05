@@ -106,7 +106,7 @@
     <h1>육아휴직 확인서 제출</h1>
 
       
-      <form id="confirm-form" action="${pageContext.request.contextPath}/comp/apply/save" method="post">
+      <form id="confirm-form" action="${pageContext.request.contextPath}/comp/apply/save" method="post" enctype="multipart/form-data">
       <sec:csrfInput/>
 
       <!-- 근로자 정보 -->
@@ -269,12 +269,68 @@
           <div class="input-field"><input type="text" id="response-phone" name="responsePhoneNumber" value="${userDTO.phoneNumber}" readonly></div>
         </div>
       </div>
+      
+<!-- 첨부파일 -->
+<div class="form-section">
+  <h2>첨부파일</h2>
+
+  <!-- 1) 통상임금 증명자료 -->
+  <div class="form-group">
+    <label class="field-title">통상임금을 확인할 수 있는 증명자료</label>
+    <div class="input-field">
+      <!-- ✅ fileTypes 먼저 선언해야 files와 순서 맞음 -->
+      <input type="hidden" name="fileTypes" value="WAGE_PROOF">
+      <input type="file" name="files" id="files_WAGE_PROOF" multiple
+             accept=".pdf,.jpg,.jpeg,.png,.heic,.gif,.bmp,.tif,.tiff,.hwp,.hwpx,.doc,.docx,.xls,.xlsx">
+      <small style="color:#666; display:block; margin-top:8px;">예: 임금대장, 근로계약서 등</small>
+      <div id="list_WAGE_PROOF" class="info-box" style="margin-top:8px; min-height:40px;">선택된 파일 없음</div>
+    </div>
+  </div>
+
+  <!-- 2) 사업주 금품 지급 확인 자료 -->
+  <div class="form-group">
+    <label class="field-title">사업주로부터 금품 지급 확인 자료</label>
+    <div class="input-field">
+      <input type="hidden" name="fileTypes" value="PAYMENT_FROM_EMPLOYER">
+      <input type="file" name="files" id="files_PAYMENT_FROM_EMPLOYER" multiple
+             accept=".pdf,.jpg,.jpeg,.png,.heic,.gif,.bmp,.tif,.tiff,.hwp,.hwpx,.doc,.docx,.xls,.xlsx">
+      <small style="color:#666; display:block; margin-top:8px;">예: 지급명세, 통장사본 등</small>
+      <div id="list_PAYMENT_FROM_EMPLOYER" class="info-box" style="margin-top:8px; min-height:40px;">선택된 파일 없음</div>
+    </div>
+  </div>
+
+  <!-- 3) 기타 자료 -->
+  <div class="form-group">
+    <label class="field-title">기타 자료</label>
+    <div class="input-field">
+      <input type="hidden" name="fileTypes" value="OTHER">
+      <input type="file" name="files" id="files_OTHER" multiple
+             accept=".pdf,.jpg,.jpeg,.png,.heic,.gif,.bmp,.tif,.tiff,.hwp,.hwpx,.doc,.docx,.xls,.xlsx">
+      <div id="list_OTHER" class="info-box" style="margin-top:8px; min-height:40px;">선택된 파일 없음</div>
+    </div>
+  </div>
+
+  <!-- 4) 배우자/한부모/장애아동 확인 자료 -->
+  <div class="form-group">
+    <label class="field-title">배우자/한부모/장애아동 확인 자료</label>
+    <div class="input-field">
+      <input type="hidden" name="fileTypes" value="ELIGIBILITY_PROOF">
+      <input type="file" name="files" id="files_ELIGIBILITY_PROOF" multiple
+             accept=".pdf,.jpg,.jpeg,.png,.heic,.gif,.bmp,.tif,.tiff,.hwp,.hwpx,.doc,.docx,.xls,.xlsx">
+      <small style="color:#666; display:block; margin-top:8px;">예: 가족관계증명서, 휴직확인서 등</small>
+      <div id="list_ELIGIBILITY_PROOF" class="info-box" style="margin-top:8px; min-height:40px;">선택된 파일 없음</div>
+    </div>
+  </div>
+</div>
+
 
       <div class="submit-button-container">
         <a href="${pageContext.request.contextPath}/comp/main" class="btn submit-button" style="background:#6c757d; border-color:#6c757d; color:#fff;">목록으로</a>
         <button type="submit" class="btn btn-primary submit-button">저장하기</button>
       </div>
     </form>
+    
+    
   </div>
 </main>
 
@@ -311,16 +367,25 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
     
-    function limitYearTo4(el){
+    function normalizeDate(el){
     	  if (!el) return;
-    	  el.addEventListener('input', function(){
-    	    this.value = this.value
-    	      .replace(/^(\d{4})\d+(-.*)?$/, (m, y, rest) => y + (rest || ''))
-
+    	  el.addEventListener('blur', () => {
+    	    const raw = el.value || '';
+    	    const digits = raw.replace(/[^\d]/g, '');
+    	    if (digits.length >= 8) {
+    	      const y = digits.slice(0,4);
+    	      const m = digits.slice(4,6);
+    	      const d = digits.slice(6,8);
+    	      const next = `${y}-${m}-${d}`;
+    	      if (/^\d{4}-\d{2}-\d{2}$/.test(next)) el.value = next;
+    	    }
     	  });
     	}
-    	['child-date','start-date','end-date']
-    	  .forEach(id => limitYearTo4(document.getElementById(id)));
+    	normalizeDate(document.getElementById('child-date'));
+    	normalizeDate(document.getElementById('start-date'));
+    	normalizeDate(document.getElementById('end-date'));
+
+
 
 
     allowDigitsAndCommas(document.getElementById('regularWage'), 19);
@@ -331,9 +396,7 @@ document.addEventListener('DOMContentLoaded', function () {
     bindDigitsOnly(document.getElementById('child-rrn-a'));
     bindDigitsOnly(document.getElementById('child-rrn-b'));
     bindDigitsOnly(document.getElementById('weeklyHours'));
-    
- // 🔼 DOMContentLoaded 내부, 하지만 어떤 IIFE 바깥(= 최상위 스코프)
-// 🔁 기존 guardBeforeGenerate() 전부 교체
+
 function guardBeforeGenerate() {
   const chkPregnant = document.getElementById('pregnant-leave');
   const chkNoRRN    = document.getElementById('no-rrn-foreign');
@@ -362,7 +425,7 @@ function guardBeforeGenerate() {
   }
 
   if (isPregnant) {
-    // 임신 중: 종료일 < 출산(예정)일, 시작일도 출산(예정)일 이전
+    // 임신 중
     if (endDate >= childDate) { 
       alert('임신 중 육아휴직은 출산(예정)일 전날까지만 가능합니다.'); 
       return false; 
@@ -383,7 +446,6 @@ function guardBeforeGenerate() {
       return false; 
     }
 
-    // ✅ 미발급 체크 시 RRN 필수 아님
     if (!noRRN) {
       if (!(a.length === 6 && b.length === 7)) {
         alert('출산 후 신청 시 자녀 주민등록번호(앞 6자리/뒤 7자리)를 반드시 입력해야 합니다.');
@@ -931,10 +993,28 @@ function guardBeforeGenerate() {
         return;
       }
 
-      // === 여기까지 통과 → 최종 정리 후 실제 제출
+   	  // === 여기까지 통과 → 최종 정리 후 실제 제출
       doFinalNormalizeBeforeSubmit();
 
-      // 이 submit 핸들러가 다시 실행되지 않게 한 번만 제출
+      // 파일 먼저 업로드
+      const fileId = await uploadAllFilesBeforeSubmit();
+      if (!fileId) {
+        alert('파일 업로드 중 오류가 발생했습니다.');
+        submitting = false;
+        return;
+      }
+
+      // 업로드 성공 시 fileId를 hidden 필드로 추가
+      let hidden = form.querySelector('input[name="fileId"]');
+      if (!hidden) {
+        hidden = document.createElement('input');
+        hidden.type = 'hidden';
+        hidden.name = 'fileId';
+        form.appendChild(hidden);
+      }
+      hidden.value = fileId;
+
+      // 이제 실제 폼 제출
       form.removeEventListener('submit', arguments.callee);
       form.submit();
 
@@ -1283,6 +1363,74 @@ async function showPrevPeriodAlert() {
     return true;
   }
 }
+
+
+//파일 업로드 후 fileId를 폼에 저장하기
+async function uploadAllFilesBeforeSubmit() {
+  const groups = [
+    { id: 'files_WAGE_PROOF', type: 'WAGE_PROOF' },
+    { id: 'files_PAYMENT_FROM_EMPLOYER', type: 'PAYMENT_FROM_EMPLOYER' },
+    { id: 'files_OTHER', type: 'OTHER' },
+    { id: 'files_ELIGIBILITY_PROOF', type: 'ELIGIBILITY_PROOF' }
+  ];
+
+  const fd = new FormData();
+  groups.forEach(g => {
+    const input = document.getElementById(g.id);
+    if (input?.files?.length) {
+      for (const f of input.files) {
+        fd.append('files', f);
+        fd.append('fileTypes', g.type); // files와 1:1 페어링
+      }
+    }
+  });
+
+  const CTX = '${pageContext.request.contextPath}';
+  const csrf = document.querySelector('input[name="_csrf"]')?.value;
+
+  const resp = await fetch(CTX + '/file/upload', {
+    method: 'POST',
+    body: fd,
+    credentials: 'same-origin',
+    headers: csrf ? {'X-CSRF-TOKEN': csrf} : {}
+  });
+
+  if (!resp.ok) {
+    console.error('[upload] HTTP', resp.status, await resp.text().catch(()=> ''));
+    return null;
+  }
+  const ct = (resp.headers.get('content-type') || '').toLowerCase();
+  if (!ct.includes('application/json')) {
+    console.error('[upload] Not JSON', ct, await resp.text().catch(()=> ''));
+    return null;
+  }
+  const data = await resp.json().catch(()=> null);
+  return data?.fileId || null;
+}
+
+
+
+(function filePreview(){
+	  function bind(id, outId){
+	    const inp = document.getElementById(id);
+	    const out = document.getElementById(outId);
+	    if(!inp || !out) return;
+	    inp.addEventListener('change', ()=>{
+	      if(!inp.files || !inp.files.length){
+	        out.textContent = '선택된 파일 없음';
+	        return;
+	      }
+	      out.innerHTML = Array.from(inp.files).map(function(f){
+	        var mb = (f.size/1024/1024).toFixed(1);
+	        return '<div>' + f.name + ' (' + mb + 'MB)</div>';
+	      }).join('');
+	    });
+	  }
+	  bind('files_WAGE_PROOF', 'list_WAGE_PROOF');
+	  bind('files_PAYMENT_FROM_EMPLOYER', 'list_PAYMENT_FROM_EMPLOYER');
+	  bind('files_OTHER', 'list_OTHER');
+	  bind('files_ELIGIBILITY_PROOF', 'list_ELIGIBILITY_PROOF');
+	})();
 
 </script>
 

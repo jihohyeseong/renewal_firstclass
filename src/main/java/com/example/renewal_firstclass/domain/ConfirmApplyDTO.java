@@ -23,6 +23,8 @@ public class ConfirmApplyDTO {
     private Date childBirthDate;            // 출생(예정)일
     private String registrationNumber;      // 근로자 주민등록번호
     private String name;                    // 근로자 성명
+    private Long fileId;
+    
 
     // 담당자
     private String responseName;            // 담당자 이름

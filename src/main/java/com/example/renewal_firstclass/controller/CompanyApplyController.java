@@ -22,12 +22,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.renewal_firstclass.domain.ConfirmApplyDTO;
 import com.example.renewal_firstclass.domain.ConfirmListDTO;
 import com.example.renewal_firstclass.domain.CustomUserDetails; // 프로젝트 경로 맞게
 import com.example.renewal_firstclass.domain.UserDTO;
+import com.example.renewal_firstclass.service.AttachedFileService;
 import com.example.renewal_firstclass.service.CompanyApplyService;
 import com.example.renewal_firstclass.service.UserService;
 
@@ -39,6 +41,7 @@ public class CompanyApplyController {
 
     private final CompanyApplyService companyApplyService;
     private final UserService userService;
+    private final AttachedFileService fileService;
 
     
 /*     메인 
@@ -220,7 +223,8 @@ public class CompanyApplyController {
                             BindingResult binding,
                             java.security.Principal principal,
                             RedirectAttributes ra, 
-                            @RequestParam(name="monthlyCompanyPay", required=false) List<String> monthlyCompanyPayRaw) {
+                            @RequestParam(name="monthlyCompanyPay", required=false) List<String> monthlyCompanyPayRaw,
+                            @RequestParam(name="fileId", required=false) Long fileId) {
         if (principal == null) {
             ra.addFlashAttribute("error", "로그인이 필요합니다.");
             return "redirect:/login";
@@ -254,6 +258,7 @@ public class CompanyApplyController {
         }
 
         try {
+            form.setFileId(fileId);
             Long confirmNumber = companyApplyService.createConfirm(form,monthlyCompanyPay);
             ra.addFlashAttribute("message", "임시저장 완료 (확인서 ID: " + confirmNumber + ")");
             return "redirect:/comp/detail?confirmNumber=" + confirmNumber;

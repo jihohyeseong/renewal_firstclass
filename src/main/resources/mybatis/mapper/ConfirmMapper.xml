@@ -13,14 +13,14 @@
     child_name, child_resi_regi_number, child_birth_date,
     registration_number, name,
     response_name, response_phone_number,
-    status_code, center_id, user_id
+    status_code, center_id, user_id, file_id
   ) VALUES (
     #{startDate}, #{endDate},
     #{weeklyHours}, #{regularWage},
     #{childName}, #{childResiRegiNumber}, #{childBirthDate},
     #{registrationNumber}, #{name},
     #{responseName}, #{responsePhoneNumber},
-    'ST_10', #{centerId}, #{userId}
+    'ST_10', #{centerId}, #{userId}, #{fileId}
   )
 </insert>
 
