@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -34,23 +36,31 @@ public class UserApplyController {
 	
 	// 유저 메인페이지
 	@GetMapping("/user/main")
-	public String userMain(Principal principal, Model model) {
+	public String userMain(Principal principal, Model model, HttpSession session) {
 		
 		String username = principal.getName();
 		SimpleUserInfoVO simpleUserInfoVO = userApplyService.getUserInfo(username);
 		List<ApplyListDTO> list = userApplyService.getApplyList(username);
 		model.addAttribute("simpleUserInfoVO", simpleUserInfoVO);
 		model.addAttribute("list", list);
+		session.removeAttribute("simpleConfirmList");
 		
 		return "user/main";
 	}
 	
-	// 회사가 승인한 신청들 보여주는 페이지
+	// 회사가 승인한 신청들 요청
 	@PostMapping("/user/confirms")
-	public String companyConfirmsPage(@RequestParam String name, @RequestParam String registrationNumber, Model model) {
+	public String companyConfirmsPage(@RequestParam String name, @RequestParam String registrationNumber, HttpSession session) {
 		
 		List<SimpleConfirmVO> simpleConfirmList = userApplyService.selectSimpleConfirmList(name, registrationNumber);
-		model.addAttribute("simpleConfirmList", simpleConfirmList);
+		session.setAttribute("simpleConfirmList", simpleConfirmList);
+		
+		return "redirect:/user/confirms/list";
+	}
+	
+	// 회사가 승인한 신청들 보여주는 페이지
+	@GetMapping("/user/confirms/list")
+	public String companyConfirmListsPage() {
 		
 		return "user/confirm_list";
 	}

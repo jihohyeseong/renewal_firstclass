@@ -574,7 +574,7 @@ h2{
 			<c:when test="${dto.statusCode == 'ST_10'}">
 				<div class="button-container" style="display: flex; align-items: center; width: 100%;">
 					<div style="display: flex; gap: 8px;">
-						<a href="${pageContext.request.contextPath}/user/main" class="btn bottom-btn btn-secondary" style="margin: 0;">목록으로 돌아가기</a>
+						<a href="${pageContext.request.contextPath}/user/main" class="btn bottom-btn btn-secondary">목록으로 돌아가기</a>
 						<form action="${pageContext.request.contextPath}/user/application/update/${dto.applicationNumber}" 
 							  method="post" 
 							  style="display: contents;">
