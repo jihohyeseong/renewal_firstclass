@@ -81,8 +81,48 @@
     }
     .btn-primary { background-color: var(--primary-color); color: var(--white-color); border-color: var(--primary-color); }
     .btn-primary:hover { background-color: #364ab1; box-shadow: var(--shadow-md); transform: translateY(-2px); }
-    .btn-logout { background-color: var(--dark-gray-color); color: var(--white-color); border: none; }
-    .btn-logout:hover { background-color: #555; }
+    
+    /* [수정] 로그아웃 버튼 스타일 (부드러운 회색 배경) */
+    .btn-logout {
+        /* 1. 아이콘 + 텍스트 정렬 */
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important; /* 아이콘과 텍스트 사이 간격 */
+        
+        /* 2. 디자인 변경 (투명 배경) */
+        background-color: transparent !important;
+        color: var(--gray-color, #6c757d) !important; /* 기본은 회색 텍스트 */
+        border: none !important; /* 테두리 없음 */
+        outline: none !important; /* 포커스 테두리도 없음 */
+        
+        /* 3. 기본 .btn 스타일 적용 (패딩, 폰트 등) */
+        padding: 10px 20px !important;
+        font-size: 15px !important;
+        font-weight: 500 !important;
+        border-radius: 8px !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease-in-out !important;
+        text-align: center !important;
+    }
+    .btn-logout:hover,
+    .btn-logout:focus {
+        background-color: var(--light-gray-color, #f8f9fa) !important; /* 호버 시 연한 회색 배경 */
+        color: var(--dark-gray-color, #343a40) !important; /* 호버 시 진한 텍스트 */
+        box-shadow: none !important;
+        transform: none !important;
+        border: none !important; /* 호버 시에도 테두리 없음 */
+        outline: none !important; /* 포커스 테두리 없음 */
+    }
+    
+    /* [추가] 로그아웃 버튼 내부 SVG 아이콘 */
+    .btn-logout .btn-icon {
+         width: 16px !important;
+         height: 16px !important;
+         fill: currentColor !important; /* 버튼의 color 값을 따라감 */
+         transition: fill 0.2s ease-in-out !important;
+    }
+
     .btn-secondary { background-color: var(--white-color); color: var(--gray-color); border-color: var(--border-color); }
     .btn-secondary:hover { background-color: var(--light-gray-color); color: var(--dark-gray-color); border-color: #ccc; }
 
@@ -252,7 +292,14 @@
             <form id="logout-form" action="${pageContext.request.contextPath}/logout" method="post" style="display: none;">
                 <sec:csrfInput/>
             </form>
-            <a href="#" onclick="document.getElementById('logout-form').submit(); return false;" class="btn btn-logout">로그아웃</a>
+            
+            <a href="#" onclick="document.getElementById('logout-form').submit(); return false;" class="btn btn-logout">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="btn-icon" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2.5a.5.5 0 0 0 1 0v-2.5a1.5 1.5 0 0 0-1.5-1.5h-8A1.5 1.5 0 0 0 0 4.5v9A1.5 1.5 0 0 0 1.5 15h8a1.5 1.5 0 0 0 1.5-1.5v-2.5a.5.5 0 0 0-1 0v2.5z"/>
+                    <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                </svg>
+                로그아웃
+            </a>
         </sec:authorize>
     </nav>
 

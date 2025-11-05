@@ -62,6 +62,12 @@
         padding: 40px; 
         margin: 0 auto; 
     }
+    .footer {
+       text-align: center;
+       padding: 20px 0;
+       font-size: 14px;
+       color: var(--gray-color);
+   }
     h1 { text-align: center; margin-bottom: 30px; font-size: 28px; }
     h2 {
      color: var(--primary-color); border-bottom: 2px solid var(--primary-light-color);
@@ -963,6 +969,55 @@
 #start-review-btn:hover {
     background-color: #0056b3; /* 마우스 오버 시 색상 */
 }
+#start-review-btn::after {
+    content: '폼 작성 안내사항'; /* 툴팁에 표시될 텍스트 */
+    position: absolute;
+    top: 48px; /* 버튼 높이 36px + 화살표 5px + 여백 7px */
+    right: 0; /* 버튼 오른쪽에 정렬 */
+    
+    background-color: #333; /* 검정 배경 */
+    color: white; /* 흰색 글씨 */
+    padding: 6px 10px;
+    border-radius: 4px;
+    z-index: 101; /* 폼 검토 툴팁보다 위에 표시 */
+    
+    /* 폰트 스타일 리셋 (버튼의 'i' 스타일 상속 방지) */
+    font-size: 13px; 
+    font-weight: normal;
+    font-style: normal;
+    font-family: Arial, sans-serif;
+    white-space: nowrap; /* 줄바꿈 방지 */
+    
+    /* 숨김/표시 트랜지션 */
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+/* 툴팁 화살표 (::before) */
+#start-review-btn::before {
+    content: '';
+    position: absolute;
+    top: 42px; /* 버튼 높이 36px + 여백 6px (텍스트 박스보다 6px 위에) */
+    right: 13px; /* 버튼 중앙 (너비 36px/2 - 화살표폭 5px) = 13px */
+    
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #333 transparent; /* 위쪽을 가리키는 삼각형 */
+    z-index: 101;
+
+    /* 숨김/표시 트랜지션 */
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+/* 'i' 버튼에 마우스 호버 시 툴팁과 화살표 표시 */
+#start-review-btn:hover::before,
+#start-review-btn:hover::after {
+    visibility: visible;
+    opacity: 1;
+}
 
 /* 중요: 버튼의 position: absolute 기준점이 될 
    .content-wrapper에 이 스타일이 꼭 필요합니다! 
@@ -1078,8 +1133,8 @@
     <div id="review-tooltip-nav">
         <button type="button" id="review-close">종료</button>
         <div style="display: flex; gap: 8px;">
-            <button type="button" id="review-prev" style="display: none;">이전</button>
-            <button type="button" id="review-next">다음</button>
+            <button type="button" id="review-prev" style="display: none; background-color:#3f58d4;">이전</button>
+            <button type="button" id="review-next" style="background-color:#3f58d4;">다음</button>
         </div>
     </div>
 </div>
@@ -1093,15 +1148,15 @@ $(document).ready(function() {
     
     // 1-2. 기본 툴팁 내용
     let tooltips = [
-        "**신청인 정보**: 회원님의 가입 정보를 기반으로 자동 입력됩니다. 수정이 필요한 경우, '회원정보 수정' 메뉴를 이용해주세요.",
-        "**사업장 정보**: 회원님이 '육아휴직 확인서'를 통해 승인받은 사업장의 정보입니다.",
-        "**급여 신청 기간**: 사업주에게 승인받은 총 휴직 기간 중, 이번에 급여를 신청할 기간을 선택하는 항목입니다. 아래 표에서 신청할 기간의 체크박스를 선택해주세요.",
+        "**신청인 정보**<br>회원님의 가입 정보를 기반으로 자동 입력됩니다. 수정이 필요한 경우, '회원정보 수정' 메뉴를 이용해주세요.",
+        "**사업장 정보**<br>회원님이 '육아휴직 확인서'를 통해 승인받은 사업장의 정보입니다.",
+        "**급여 신청 기간**<br>사업주에게 승인받은 총 휴직 기간 중, 이번에 급여를 신청할 기간을 선택하는 항목입니다. 아래 표에서 신청할 기간의 체크박스를 선택해주세요.",
         // (여기에 조기복직 툴팁이 동적으로 삽입될 예정)
-        "**자녀 정보**: 육아휴직 대상 자녀의 정보를 입력하는 곳입니다. 주민등록번호 13자리를 정확하게 입력해야 합니다.",
-        "**급여 입금 계좌정보**: 급여를 지급받을 본인 명의의 계좌를 입력합니다. 은행과 계좌번호를 정확히 입력해주세요.",
-        "**접수 센터 선택**: 신청서를 제출할 고용센터를 선택하는 항목입니다. '센터 찾기' 버튼을 눌러 사업장 주소 기준의 관할 센터를 찾아주세요.",
-        "**행정정보 공동이용 동의서**: 신청에 필요한 서류를 담당 공무원이 행정정보망을 통해 열람할 수 있도록 동의하는 항목입니다. '동의합니다'를 선택하는 것을 권장합니다.",
-        "**부정수급 안내**: 중요 안내사항입니다. 내용을 반드시 읽고, 동의하시면 하단의 체크박스를 선택해주세요. 이 체크박스는 신청서 제출/수정을 위한 필수 항목입니다."
+        "**자녀 정보**<br>육아휴직 대상 자녀의 정보를 입력하는 곳입니다. 주민등록번호 13자리를 정확하게 입력해야 합니다.",
+        "**급여 입금 계좌정보**<br>급여를 지급받을 본인 명의의 계좌를 입력합니다. 은행과 계좌번호를 정확히 입력해주세요.",
+        "**접수 센터 선택**<br>신청서를 제출할 고용센터를 선택하는 항목입니다. '센터 찾기' 버튼을 눌러 사업장 주소 기준의 관할 센터를 찾아주세요.",
+        "**행정정보 공동이용 동의서**<br>신청에 필요한 서류를 담당 공무원이 행정정보망을 통해 열람할 수 있도록 동의하는 항목입니다. '동의합니다'를 선택하는 것을 권장합니다.",
+        "**부정수급 안내**<br>중요 안내사항입니다. 내용을 반드시 읽고, 동의하시면 하단의 체크박스를 선택해주세요. 이 체크박스는 신청서 제출/수정을 위한 필수 항목입니다."
     ];
 
  // 1-3. "급여 신청 기간" h2의 인덱스 찾기
@@ -1123,7 +1178,7 @@ $(document).ready(function() {
         let checkboxLabel = $('label[for="early-return-chk"]');
         if (checkboxLabel.length > 0) {
             reviewTargets.splice(insertIndex, 0, checkboxLabel[0]); 
-            let newTooltipText = "**조기복직(종료일 변경)**: 이 항목을 체크하면 육아휴직 종료일을 변경할 수 있습니다.<br>" +
+            let newTooltipText = "**조기복직(종료일 변경)**<br>이 항목을 체크하면 육아휴직 종료일을 변경할 수 있습니다.<br>" +
             "※ 예정된 수급신청기간보다 빨리 복직하게된 경우에는 조기복직을 선택해주세요.<br>" +
             	"※ 조기복직일이 2024.09.24 인 경우 급여 신청기간은 2024.09.23 까지입니다.<br>" +
             	"※ 육아휴직 급여 신청은 해당 회차 종료일 이후부터 신청이 가능합니다.<br>" +

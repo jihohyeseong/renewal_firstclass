@@ -38,6 +38,7 @@
         }
         a { text-decoration: none; color: inherit; }
 	
+<<<<<<< HEAD
         .btn {
             display: inline-block;
             padding: 10px 20px;
@@ -55,30 +56,12 @@
         .btn-logout:hover { background-color: #555; }
         .btn-secondary { background-color: var(--white-color); color: var(--gray-color); border-color: var(--border-color); }
         .btn-secondary:hover { background-color: var(--light-gray-color); color: var(--dark-gray-color); border-color: #ccc; }
+=======
+        
+        /* 헤더 관련 CSS는 header.jsp로 이동하여 여기서는 삭제됨 */
+>>>>>>> 9a12f1d62884b25d6b176c6c998231b2efbdbc41
 		
-		.header-nav {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-		}
 	
-		.header-nav .nav-link {
-            display: block;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 500;
-            color: #495057;
-            transition: all 0.3s ease-in-out;
-		}
-		.header-nav .nav-link:hover {
-            color: #3f58d4;
-            transform: translateY(-3px);
-            box-shadow: 0 4px 10px rgba(63, 88, 212, 0.3);
-		}
         
         /* 레이아웃 */
         .content-container {

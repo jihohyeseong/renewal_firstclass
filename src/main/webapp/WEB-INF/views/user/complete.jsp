@@ -88,6 +88,12 @@ h2.section-title {
     border-bottom: 2px solid var(--border-color);
     width: fit-content;
 }
+.footer {
+       text-align: center;
+       padding: 20px 0;
+       font-size: 14px;
+       color: var(--gray-color);
+   }
 
 .info-table {
     width: 100%;

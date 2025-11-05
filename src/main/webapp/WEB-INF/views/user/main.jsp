@@ -352,6 +352,12 @@
                 font-size: 14px;
             }
         }
+        .footer {
+       text-align: center;
+       padding: 20px 0;
+       font-size: 14px;
+       color: var(--gray-color);
+   }
 
 </style>
 </head>

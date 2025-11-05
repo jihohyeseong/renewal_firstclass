@@ -14,17 +14,108 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/global.css">
+    <%-- global.css는 comp.css가 이미 포함하고 있다면 생략 가능 --%>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/global.css"> 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/comp.css">
     
     <style>
-        /* [수정됨] content-wrapper를 카드 대신 컨테이너로 사용하기 위해 일부 스타일을 초기화합니다. */
+        /* --- [수정] 테마 색상 (녹색 계열) --- */
+        :root {
+            --primary-color: #24A960; /* [수정] 메인 녹색 */
+            --primary-color-dark: #1F8A4D; /* [수정] 더 어두운 녹색 */
+            --primary-color-light: #f0f9f3; /* [수정] 아주 연한 녹색 */
+            
+            --status-approved: #24A960; /* [수정] 승인 (메인 녹색) */
+            --status-pending: #f59e0b;  /* 대기 (황색) */
+            --status-rejected: #ef4444; /* 반려 (적색) */
+            
+            --text-color: #333;
+            --text-color-light: #555;
+            --border-color: #e0e0e0;
+            --bg-color-soft: #f9fafb; /* 연한 회색 배경 */
+            --white: #ffffff;
+
+            /* comp.css의 변수도 녹색으로 덮어쓰기 */
+            --primary-light-color: #f0f9f3; /* [수정] */
+            --gray-color: #868e96;
+            --dark-gray-color: #343a40;
+            --light-gray-color: #f8f9fa;
+        }
+
+        /* --- [추가] body 스타일 (첫 번째 JSP와 동일하게) --- */
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: var(--bg-color-soft); /* 전체 페이지 배경색 */
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        /* --- [신규] main-container (myList.jsp와 동일하게) --- */
+        .main-container {
+            max-width: 1100px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        /* [수정됨] content-wrapper를 카드 대신 컨테이너로 사용 */
         .content-wrapper {
             background: none;
             border: none;
             box-shadow: none;
             padding: 0;
+            margin-top: 0px; /* .notice-box와의 간격 */
         }
+
+        /* --- [신규] 안내 상자 (첫 번째 JSP에서 복사) --- */
+        .notice-box { 
+            background-color: var(--primary-color-light); 
+            border: 1px solid var(--primary-color); 
+            border-left-width: 5px; 
+            border-radius: 8px; 
+            padding: 20px; 
+        }
+        .notice-box .title { 
+            display: flex; 
+            align-items: center; 
+            font-size: 18px; 
+            font-weight: 700; 
+            color: var(--primary-color-dark); 
+            margin-bottom: 12px; 
+        }
+        .notice-box .title .fa-solid { 
+            margin-right: 10px; 
+            font-size: 20px; 
+        }
+        .notice-box ul { 
+            margin: 0; 
+            padding-left: 20px; 
+            color: var(--text-color-light); 
+            font-size: 14px; 
+        }
+        .notice-box li { margin-bottom: 6px; }
+        .notice-box li:last-child { margin-bottom: 0; }
+
+
+        /* --- [신규] 카드 내부 헤더 (첫 번째 JSP에서 복사) --- */
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 16px;
+        }
+        .content-header h2 {
+            margin: 0;
+            color: #111;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        /* 아이콘 색상 강제 지정 (comp.css 오버라이드 대비) */
+         .content-header h2 .fa-solid {
+             color: var(--primary-color);
+         }
+
 
         /* [수정됨] 두 개의 카드를 담을 flex 컨테이너 설정 */
         .calculator-container {
@@ -36,12 +127,11 @@
         /* [수정됨] 왼쪽 입력창을 카드로 스타일링 */
         .input-panel {
             flex: 1 1 100%; /* 초기 상태: 너비 100% */
-            background-color: #fff;
-            padding: 40px;
-            border-radius: 16px;
-            border: 1px solid var(--border-color, #dee2e6);
-            box-shadow: var(--shadow-md, 0 4px 12px rgba(0,0,0,0.08));
-            transition: flex-basis 0.6s cubic-bezier(0.4, 0, 0.2, 1); /* 부드러운 크기 조절 애니메이션 */
+            background-color: var(--white);
+            padding: 24px 30px; /* [수정] myList.jsp와 동일한 패딩 */
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: flex-basis 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
         }
 
         /* [수정됨] 오른쪽 결과 카드의 초기 상태 (완전히 숨겨짐) */
@@ -49,14 +139,13 @@
             flex-basis: 0; /* 너비 0 */
             opacity: 0;    /* 투명 */
             overflow: hidden;
-            padding: 40px 0; /* 좌우 패딩을 없애서 완전히 사라지게 함 */
-            margin-left: -30px; /* gap을 무시하고 붙어있도록 설정 */
+            padding: 24px 0; /* [수정] 상하 패딩 24px, 좌우 0 */
+            margin-left: -30px; 
             
             /* 카드 스타일 적용 */
-            background-color: #fff;
-            border-radius: 16px;
-            border: 1px solid var(--border-color, #dee2e6);
-            box-shadow: var(--shadow-md, 0 4px 12px rgba(0,0,0,0.08));
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             
             /* 부드러운 등장 애니메이션 설정 */
             transition: flex-basis 0.6s cubic-bezier(0.4, 0, 0.2, 1),
@@ -74,7 +163,7 @@
         .calculator-container.results-shown .result-panel {
             flex-basis: 48%; /* 오른쪽 카드가 나타나며 공간 차지 */
             opacity: 1;
-            padding: 40px; /* 원래 패딩으로 복원 */
+            padding: 24px 30px; /* [수정] myList.jsp와 동일한 패딩 */
             margin-left: 0;  /* 원래 간격으로 복원 */
         }
         
@@ -82,28 +171,38 @@
         .result-placeholder {
             text-align: center;
             color: var(--gray-color, #868e96);
+            padding: 20px 0; 
         }
         .result-placeholder .icon {
             font-size: 48px;
             margin-bottom: 15px;
-            color: var(--primary-light-color, #f0f2ff);
+            color: var(--primary-light-color);
         }
-        .info-text {
-            font-size: 14px;
-            line-height: 1.6;
-            color: var(--gray-color, #868e96);
-            background-color: var(--light-gray-color, #f8f9fa);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-        }
+        
         .input-group { margin-bottom: 20px; }
+        
+        /* [수정] 라벨 스타일 (mypage.jsp와 동일하게) */
         .input-group label {
             display: block;
             margin-bottom: 8px;
             font-weight: 500;
             color: #495057;
+            position: relative; /* ::before 포지셔닝 기준 */
+            padding-left: 12px; /* 바가 들어갈 공간 확보 */
         }
+        /* [신규] 라벨 왼쪽 파란색 바 */
+        .input-group label::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 16px; 
+            background-color: var(--primary-color);
+            border-radius: 2px;
+        }
+
         .input-group input[type="date"], .input-group input[type="text"] {
             width: 100%;
             padding: 12px 15px;
@@ -115,7 +214,7 @@
         .input-group input:focus {
             outline: none;
             border-color: var(--primary-color, #3f58d4);
-            box-shadow: 0 0 0 3px var(--primary-light-color, #f0f2ff);
+            box-shadow: 0 0 0 3px var(--primary-light-color);
         }
         .button-group {
             display: grid;
@@ -175,24 +274,173 @@
             text-align: left;
             width: 100%;
         }
+        .footer {
+           text-align: center;
+           padding: 20px 0;
+           font-size: 14px;
+           color: var(--gray-color);
+           margin-top: 20px;
+        }
+
+        /* ---------------------------------- */
+        /* 📱 [수정] 반응형 스타일 */
+        /* ---------------------------------- */
+
+        /* 992px 이하 (태블릿 및 모바일 공통) */
+        @media (max-width: 992px) {
+            .calculator-container {
+                flex-direction: column; /* [수정] 세로로 쌓기 */
+                gap: 0; /* [수정] 갭은 margin-top으로 개별 제어 */
+            }
+
+            /* [수정] 입력 패널은 항상 100% */
+            .input-panel,
+            .calculator-container.results-shown .input-panel {
+                flex-basis: 100%;
+                width: 100%;
+            }
+
+            /* [수정] 결과 패널의 애니메이션을 'slide-down'으로 변경 */
+            .result-panel {
+                flex-basis: auto; /* flex-basis: 0 대신 auto로 변경 */
+                width: 100%;
+                max-height: 0;  /* [추가] 높이 0으로 숨김 */
+                opacity: 0;
+                overflow: hidden;
+                padding: 0 30px; /* [수정] 상하 패딩 0, 좌우는 유지 */
+                margin-left: 0;  /* [수정] */
+                margin-top: 0;    /* [추가] */
+                
+                /* [수정] 트랜지션 대상 변경 */
+                transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                            opacity 0.4s 0.2s ease,
+                            padding 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                            margin-top 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            /* [수정] 결과 패널이 나타날 때 (slide-down) */
+            .calculator-container.results-shown .result-panel {
+                flex-basis: auto;
+                max-height: 2000px; /* [수정] 충분한 높이 부여 */
+                opacity: 1;
+                padding: 30px;      /* [수정] 패딩 복원 */
+                margin-top: 30px; /* [수정] gap 대신 margin으로 간격 부여 */
+            }
+            
+            /* [참고] 모바일 패딩은 768px 블록에서 덮어씁니다. */
+        }
+
+        /* 768px 이하 (모바일 화면) */
+        @media (max-width: 768px) {
+            /* --- [신규] main-container 반응형 (myList.jsp와 동일하게) --- */
+            .main-container {
+                margin: 10px auto; /* 상하 여백 축소 */
+                padding: 0 10px; /* 좌우 여백 축소 */
+            }
+        
+            /* [수정] 카드 내부 패딩 (myList.jsp와 동일하게) */
+            .input-panel,
+            .calculator-container.results-shown .result-panel {
+                padding: 20px 15px;
+            }
+
+            /* [수정] 결과 패널(숨김)의 애니메이션 기준 패딩 */
+            .result-panel {
+                 padding: 0 15px;
+            }
+
+            /* [추가] 안내 박스 패딩 축소 */
+            .notice-box {
+                padding: 15px;
+            }
+            .notice-box .title {
+                font-size: 17px;
+            }
+            .notice-box ul {
+                font-size: 13px;
+                padding-left: 18px;
+            }
+
+            /* [추가] 카드 내부 제목 */
+            .content-header {
+                padding-bottom: 16px;
+                margin-bottom: 20px;
+            }
+            .content-header h2 {
+                font-size: 22px;
+            }
+
+            /* [추가] 버튼을 세로로 쌓기 */
+            .button-group {
+                grid-template-columns: 1fr; /* 1열로 변경 */
+                gap: 15px;
+            }
+
+            /* [추가] 테이블 셀 패딩/폰트 축소 */
+            #result-table th, 
+            #result-table td {
+                padding: 12px 8px;
+                font-size: 14px;
+            }
+            #result-table caption { font-size: 1.2rem; }
+            #result-table tfoot td { font-size: 1rem; }
+            
+            /* [추가] 모바일에서 날짜/월급 입력 폰트 크기 강제 (iOS 확대 방지) */
+            .input-group input[type="date"], 
+            .input-group input[type="text"] {
+                font-size: 16px; /* 16px 미만이면 iOS에서 자동 줌인됨 */
+            }
+        }
+        
+        /* 480px 이하 */
+        @media (max-width: 480px) {
+             /* [수정] 카드 내부 패딩 (myList.jsp와 동일하게) */
+             .input-panel,
+             .calculator-container.results-shown .result-panel {
+                padding: 15px;
+             }
+             .result-panel { /* 숨김 상태 */
+                 padding: 0 15px;
+             }
+             
+             .content-header h2 {
+                font-size: 20px;
+             }
+        }
+
+        /* [수정] btn-secondary:hover 색상 변경 (녹색) */
+        .btn-secondary:hover {
+            /* #24A960의 rgb(36, 169, 96) 버전에 투명도 0.08 적용 */
+            background-color: rgba(36, 169, 96, 0.08);
+        }
     </style>
 </head>
 <body>
 
-	<%@ include file="compheader.jsp" %>
+    <%@ include file="compheader.jsp" %>
 
     <main class="main-container">
-        <div class="content-wrapper">
-            <div class="content-header">
-                <h2><i class="fa-solid fa-calculator"></i> 육아휴직 급여 모의계산</h2>
+    
+        <div class="notice-box"> 
+            <div class="title">
+                <i class="fa-solid fa-circle-info"></i>
+                <span>모의계산 안내</span>
             </div>
+            <ul>
+                <li>본 계산은 사용자가 입력한 값을 토대로 계산되므로 실제 수급액과 차이가 있을 수 있습니다.</li>
+                <li>통상임금은 세전 금액을 기준으로 입력해주세요.</li>
+                <li>정확한 내용은 가까운 고용센터로 문의하시기 바랍니다.</li>
+            </ul>
+        </div>
+        
+        <div class="content-wrapper">
             
             <div class="calculator-container" id="calculator-container">
 
                 <div class="input-panel">
-                    <div class="info-text">
-                        사용자가 입력한 값을 토대로 계산되므로 실제 수급액과 차이가 있을 수 있습니다.<br>
-                        정확한 내용은 가까운 고용센터로 문의하시기 바랍니다.
+                
+                    <div class="content-header">
+                        <h2><i class="fa-solid fa-calculator"></i> 육아휴직 급여 모의계산</h2>
                     </div>
                     
                     <div class="input-group">
@@ -251,6 +499,7 @@
     </footer>
 
     <script>
+        // (JavaScript 코드는 기존과 동일합니다. 수정 없음)
         const calculatorContainer = document.getElementById("calculator-container");
         const startDateInput = document.getElementById("startDate");
         const endDateInput = document.getElementById("endDate");

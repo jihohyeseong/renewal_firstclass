@@ -128,6 +128,12 @@
         border-radius: 10px;
         border: 1px dashed var(--border-color);
     }
+    .footer {
+       text-align: center;
+       padding: 20px 0;
+       font-size: 14px;
+       color: var(--gray-color);
+   }
     .empty-state-box::before {
         font-family: "Font Awesome 6 Free";
         font-weight: 900;
