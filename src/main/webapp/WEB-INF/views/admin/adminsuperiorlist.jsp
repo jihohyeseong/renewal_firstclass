@@ -55,8 +55,6 @@
         .btn-logout:hover { background-color: #555; }
         .btn-secondary { background-color: var(--white-color); color: var(--gray-color); border-color: var(--border-color); }
         .btn-secondary:hover { background-color: var(--light-gray-color); color: var(--dark-gray-color); border-color: #ccc; }
-        
-        /* 헤더 관련 CSS는 header.jsp로 이동하여 여기서는 삭제됨 */
 		
 		.header-nav {
             position: absolute;

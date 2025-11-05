@@ -48,6 +48,7 @@
 
     		</li>
     		<li><a class="nav-link" href="${pageContext.request.contextPath}/main">추가지급</a></li>
+    		<li><a class="nav-link" href="${pageContext.request.contextPath}/admin/childsearch">동일 영아 조회</a></li>
     	</ul>
         <sec:authorize access="isAnonymous()">
             <a href="${pageContext.request.contextPath}/login" class="btn btn-primary">로그인</a>

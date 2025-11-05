@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.renewal_firstclass.dao.AdminChildSearchDAO">
+  
+<select id="selectChildSearch"
+        parameterType="com.example.renewal_firstclass.domain.CompSearchDTO"
+        resultType="com.example.renewal_firstclass.domain.AdminChildListDTO">
+  SELECT
+    ca.name,
+    ca.child_name,
+    ca.child_birth_date,
+    ca.child_resi_regi_number,
+    ca.start_date,
+    ca.end_date,
+    ca.confirm_number,
+    
+    pa.status_code,
+    pa.application_number,
+    
+    c.name AS statusName
+    
+  FROM TB_CONFIRM_APPLICATION ca
+  LEFT JOIN TB_PARENTAL_LEAVE_APPLICATION pa ON pa.confirm_number = ca.confirm_number
+  LEFT JOIN TB_CODE   c  ON c.code  = pa.status_code
+
+  WHERE pa.status_code IN ('ST_20', 'ST_30', 'ST_40', 'ST_50')
+    AND NVL(pa.delt_at, 'N') = 'N'
+    AND NVL(ca.delt_at, 'N') = 'N'
+    
+  
+  <if test="status != null and status != '' and status != 'ALL'">
+    AND pa.status_code = #{status}
+  </if>
+
+  <!-- 자녀 이름 검색 -->
+  <if test="nameKeyword != null and nameKeyword != ''">
+    AND UPPER(ca.child_name) LIKE '%' || UPPER(#{nameKeyword}) || '%'
+  </if>
+
+  <!-- 자녀 주민등록번호 검색 -->
+  <if test="regNoKeyword != null and regNoKeyword != ''">
+    AND ca.child_resi_regi_number = #{regNoKeyword}
+  </if>
+
+  AND NVL(ca.delt_at, 'N') = 'N'
+  ORDER BY
+    CASE pa.status_code
+      WHEN 'ST_20' THEN 1
+      WHEN 'ST_30' THEN 2
+      WHEN 'ST_40' THEN 3
+      WHEN 'ST_50' THEN 4
+      ELSE 5
+    END,
+    pa.application_number DESC
+  OFFSET #{pageDTO.startList} ROWS FETCH NEXT #{pageDTO.listSize} ROWS ONLY
+</select>
+
+<!-- 신청서 개수 카운팅 -->
+<select id="countChildSearch"
+        parameterType="com.example.renewal_firstclass.domain.CompSearchDTO"
+        resultType="int">
+  SELECT COUNT(*)
+  FROM TB_CONFIRM_APPLICATION ca
+  LEFT JOIN TB_PARENTAL_LEAVE_APPLICATION pa ON pa.confirm_number = ca.confirm_number
+  LEFT JOIN TB_CODE   c  ON c.code  = pa.status_code
+  
+  WHERE pa.status_code IN ('ST_20', 'ST_30', 'ST_40', 'ST_50')
+      AND NVL(pa.delt_at, 'N') = 'N'
+      AND NVL(ca.delt_at, 'N') = 'N'
+      
+  <if test="status != null and status != '' and status != 'ALL'">
+    AND pa.status_code = #{status}
+  </if>
+
+  <!-- 자녀 이름 검색 -->
+  <if test="nameKeyword != null and nameKeyword != ''">
+    AND UPPER(ca.child_name) LIKE '%' || UPPER(#{nameKeyword}) || '%'
+  </if>
+
+  <!-- 자녀 주민등록번호 검색 -->
+  <if test="regNoKeyword != null and regNoKeyword != ''">
+    AND ca.child_resi_regi_number = #{regNoKeyword}
+  </if>
+
+</select>
+<!-- 
+<select id="selectOriginalTermAmounts" 
+        parameterType="long" 
+        resultType="com.example.renewal_firstclass.domain.TermAmountDTO">
+	    SELECT *
+	    FROM TB_TERM_AMOUNT
+	    WHERE confirm_number = #{confirmNumber}
+	    AND update_at = 'N'
+</select>
+	
+<select id="selectUpdatedTermAmounts" 
+	        parameterType="long" 
+	        resultType="com.example.renewal_firstclass.domain.TermAmountDTO">
+	    SELECT *
+	    FROM TB_TERM_AMOUNT
+	    WHERE confirm_number = #{confirmNumber}
+	    AND update_at = 'Y'
+</select> -->
+
+</mapper>

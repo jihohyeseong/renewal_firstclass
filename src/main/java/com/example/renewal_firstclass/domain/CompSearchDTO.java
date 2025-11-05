@@ -7,4 +7,5 @@ public class CompSearchDTO {
     private String status;
     private String nameKeyword;
     private String regNoKeyword;
+    private PageDTO pageDTO;
 }
