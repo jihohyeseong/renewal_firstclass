@@ -17,6 +17,7 @@ import com.example.renewal_firstclass.domain.ApplicationSearchDTO;
 import com.example.renewal_firstclass.domain.CodeDTO;
 import com.example.renewal_firstclass.domain.PageDTO;
 import com.example.renewal_firstclass.domain.TermAmountDTO;
+import com.example.renewal_firstclass.util.AES256Util;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +29,7 @@ public class AdminSuperiorService {
     private final TermAmountDAO termAmountDAO;
     private final CodeDAO codeDAO;
     private final AdminSuperiorDAO adminSuperiorDAO;
+    private final AES256Util aes256Util;
     
     public Long getCenterIdByUsername(String username) {
     	return adminSuperiorDAO.selectCenterIdByUsername(username);
@@ -80,6 +82,29 @@ public class AdminSuperiorService {
     public void userApplyDetail(long applicationNumber, Model model) {
         // 진입 시 검토중 전환 
         adminSuperiorDAO.whenOpenChangeState(applicationNumber);
+        
+        AdminUserApprovalDTO dto = adminSuperiorDAO.selectAppDetailByAppNo(applicationNumber);
+        try {
+            if (dto.getApplicantResiRegiNumber() != null && !dto.getApplicantResiRegiNumber().trim().isEmpty()) {
+                dto.setApplicantResiRegiNumber(aes256Util.decrypt(dto.getApplicantResiRegiNumber()));
+            }
+        } catch (Exception ignore) {}
+
+        try {
+            if (dto.getChildResiRegiNumber() != null && !dto.getChildResiRegiNumber().trim().isEmpty()) {
+                dto.setChildResiRegiNumber(aes256Util.decrypt(dto.getChildResiRegiNumber()));
+            }
+        } catch (Exception ignore) {}
+        try {
+            if (dto.getUpdChildResiRegiNumber() != null && !dto.getUpdChildResiRegiNumber().trim().isEmpty()) {
+                dto.setUpdChildResiRegiNumber(aes256Util.decrypt(dto.getUpdChildResiRegiNumber()));
+            }
+        } catch (Exception ignore) {}
+        try {
+            if (dto.getUpdAccountNumber() != null && !dto.getUpdAccountNumber().trim().isEmpty()) {
+                dto.setUpdAccountNumber(aes256Util.decrypt(dto.getUpdAccountNumber()));
+            }
+        } catch (Exception ignore) {}
 
         // 상세 조회
         AdminUserApprovalDTO appDTO = adminSuperiorDAO.selectAppDetailByAppNo(applicationNumber);

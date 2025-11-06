@@ -38,28 +38,8 @@
         }
         a { text-decoration: none; color: inherit; }
 	
-<<<<<<< HEAD
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            font-size: 15px;
-            font-weight: 500;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            text-align: center;
-        }
-        .btn-primary { background-color: var(--primary-color); color: var(--white-color); border-color: var(--primary-color); }
-        .btn-primary:hover { background-color: #364ab1; box-shadow: var(--shadow-md); transform: translateY(-2px); }
-        .btn-logout { background-color: var(--dark-gray-color); color: var(--white-color); border: none; }
-        .btn-logout:hover { background-color: #555; }
-        .btn-secondary { background-color: var(--white-color); color: var(--gray-color); border-color: var(--border-color); }
-        .btn-secondary:hover { background-color: var(--light-gray-color); color: var(--dark-gray-color); border-color: #ccc; }
-=======
         
         /* 헤더 관련 CSS는 header.jsp로 이동하여 여기서는 삭제됨 */
->>>>>>> 9a12f1d62884b25d6b176c6c998231b2efbdbc41
 		
 	
         
@@ -351,7 +331,7 @@
             <div class="table-wrapper">
                 <div class="table-header">
                     <h4>모든 육아휴직 신청서</h4>
-                    <button class="table-btn btn-refresh" id="btnReset"><i class="bi bi-arrow-clockwise"></i></button>
+                    <!-- <button class="table-btn btn-refresh" id="btnReset"><i class="bi bi-arrow-clockwise"></i></button> -->
                 </div>
 
                 <form id="searchForm" action="${pageContext.request.contextPath}/admin/superior" method="get" class="table-filters">
