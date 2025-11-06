@@ -93,11 +93,11 @@ public class AttachedFileService {
     }
 
 
-    public boolean canDownload(Long fileId, Long requesterUserId, boolean isAdmin) {
+/*    public boolean canDownload(Long fileId, Long requesterUserId, boolean isAdmin) {
         if (isAdmin) return true;
         Long owner = fileDAO.findOwnerUserIdByFileId(fileId);
         return owner != null && owner.equals(requesterUserId);
-    }
+    }*/
 
     public ResponseEntity<org.springframework.core.io.Resource> buildDownloadResponse(AttachedFileDTO meta) {
         try {
