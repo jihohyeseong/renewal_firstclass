@@ -36,6 +36,7 @@ public class ApplicationDTO {
 	private String childResiRegiNumber;
 	private String bankCode;
 	private String accountNumber;
+	private Long fileId;
 	private Long centerId;
 	private String govInfoAgree;
 }

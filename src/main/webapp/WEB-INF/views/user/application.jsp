@@ -1863,123 +1863,206 @@ document.addEventListener('DOMContentLoaded', function () {
     return true; // 모든 검사 통과
   }
 
-  // ─────────────────────────────────────
-  // [★★ 요청사항 반영 ★★] 폼 제출 이벤트 리스너 수정
-  // ─────────────────────────────────────
-  if (form) {
-    form.addEventListener('submit', function(e) {
-         
-      // 1. 유효성 검사 실행
-      if (!validateAndFocus()) {
-           e.preventDefault(); 
-           return; 
-      }
+//─────────────────────────────────────
+    // [★★ 요청사항 반영 ★★] 폼 제출 이벤트 리스너 수정 (AJAX 파일 선처리)
+    // ─────────────────────────────────────
 
-      // 2. [★★ 신규 로직 ★★]
-      //    체크된 항목을 찾아서 Spring List 바인딩에 맞게 'name' 속성을 부여합니다.
-      let newPeriodIndex = 0; // 0-based index for Spring list binding
-      const periodRows = form.querySelectorAll('#dynamic-forms-container .dynamic-form-row');
+    // 1. 폼 제출 전, 필드 정리 및 전송 준비 (기존 로직을 별도 함수로 분리)
+    function processAndSubmitForm(submitter) {
+      try {
+          // --- (기존 2~5번 로직 시작) ---
+          // 2. 체크된 항목을 찾아서 Spring List 바인딩에 맞게 'name' 속성을 부여합니다.
+          let newPeriodIndex = 0; // 0-based index for Spring list binding
+          const periodRows = form.querySelectorAll('#dynamic-forms-container .dynamic-form-row');
 
-      periodRows.forEach(row => {
-           const checkbox = row.querySelector('.period-checkbox');
-           
-           // 이 행의 모든 관련 input을 class로 찾습니다.
-           const startDateInput = row.querySelector('.period-start-date-hidden');
-           const endDateInput = row.querySelector('.period-end-date-hidden');
-           const termIdInput = row.querySelector('.period-term-id'); // [★★ termId 추가 ★★]
-           const govInput = row.querySelector('.period-gov-payment');
-           const companyInput = row.querySelector('.period-company-payment');
+          periodRows.forEach(row => {
+              const checkbox = row.querySelector('.period-checkbox');
+              
+              // 이 행의 모든 관련 input을 class로 찾습니다.
+              const startDateInput = row.querySelector('.period-start-date-hidden');
+              const endDateInput = row.querySelector('.period-end-date-hidden');
+              const termIdInput = row.querySelector('.period-term-id');
+              const govInput = row.querySelector('.period-gov-payment');
+              const companyInput = row.querySelector('.period-company-payment');
 
-           if (checkbox && checkbox.checked) {
-                // 2-1. 이 행이 '체크된' 경우:
-                //    'disabled' 해제, 콤마 제거, 'name' 속성 부여
-                
-                if (startDateInput) {
-                     startDateInput.disabled = false;
-                     startDateInput.name = 'list[' + newPeriodIndex + '].startMonthDate';
-                }
-                if (endDateInput) {
-                     endDateInput.disabled = false;
-                     endDateInput.name = 'list[' + newPeriodIndex + '].endMonthDate';
-                }
-                
-                // [★★ termId 추가 ★★]
-                if (termIdInput) {
-                     termIdInput.disabled = false;
-                     termIdInput.name = 'list[' + newPeriodIndex + '].termId';
-                }
-                
-                if (govInput) {
-                     govInput.disabled = false;
-                     govInput.value = onlyDigits(govInput.value); // 콤마 제거
-                     govInput.name = 'list[' + newPeriodIndex + '].govPayment';
-                }
-                if (companyInput) {
-                     companyInput.disabled = false;
-                     companyInput.value = onlyDigits(companyInput.value); // 콤마 제거
-                     companyInput.name = 'list[' + newPeriodIndex + '].companyPayment';
-                }
+              if (checkbox && checkbox.checked) {
+                  // 2-1. 이 행이 '체크된' 경우:
+                  if (startDateInput) {
+                      startDateInput.disabled = false;
+                      startDateInput.name = 'list[' + newPeriodIndex + '].startMonthDate';
+                  }
+                  if (endDateInput) {
+                      endDateInput.disabled = false;
+                      endDateInput.name = 'list[' + newPeriodIndex + '].endMonthDate';
+                  }
+                  if (termIdInput) {
+                      termIdInput.disabled = false;
+                      termIdInput.name = 'list[' + newPeriodIndex + '].termId';
+                  }
+                  if (govInput) {
+                      govInput.disabled = false;
+                      govInput.value = onlyDigits(govInput.value); // 콤마 제거
+                      govInput.name = 'list[' + newPeriodIndex + '].govPayment';
+                  }
+                  if (companyInput) {
+                      companyInput.disabled = false;
+                      companyInput.value = onlyDigits(companyInput.value); // 콤마 제거
+                      companyInput.name = 'list[' + newPeriodIndex + '].companyPayment';
+                  }
+                  newPeriodIndex++;
+              } else {
+                  // 2-2. 이 행이 '체크되지 않은' 경우:
+                  if (startDateInput) startDateInput.removeAttribute('name');
+                  if (endDateInput) endDateInput.removeAttribute('name');
+                  if (termIdInput) termIdInput.removeAttribute('name');
+                  if (govInput) govInput.removeAttribute('name');
+                  if (companyInput) companyInput.removeAttribute('name');
+              }
+          });
+          // --- [★★ 신규 로직 끝 ★★] ---
 
-                // '체크된' 항목에 대해서만 인덱스를 증가시킵니다.
-                newPeriodIndex++;
+          // 3. '신청 기간' 외의 'disabled' 필드를 활성화합니다.
+          const otherDisabledElements = form.querySelectorAll('input:disabled, select:disabled, textarea:disabled');
+          otherDisabledElements.forEach(el => {
+              // 'dynamic-forms-container' *내부*에 있는 필드는 위에서 처리했으므로 건드리지 않습니다.
+              if (!el.closest('#dynamic-forms-container')) {
+                  el.disabled = false;
+              }
+          });
+          
+          // 4. '신청 기간' 외의 콤마/서식 필드를 처리합니다.
+          if (wageEl) wageEl.value = onlyDigits(wageEl.value);
+          if (weeklyEl) weeklyEl.value = onlyDigits(weeklyEl.value);
+          if (brnEl) brnEl.value = onlyDigits(brnEl.value);
+          if (accEl) accEl.value = onlyDigits(accEl.value);
+          
+          // 5. 자녀 주민번호 합치기
+          if (rrnHidden) {
+              const a = onlyDigits(rrnAEl ? rrnAEl.value : '');
+              const b = onlyDigits(rrnBEl ? rrnBEl.value : '');
+              if (a.length === 6 && b.length === 7) {
+                  rrnHidden.value = a + b;
+                  rrnHidden.name = 'childResiRegiNumber';
+              } else {
+                  const originalRRN = "${applicationDTO.childResiRegiNumber}";
+                  if (originalRRN && originalRRN.length === 13) {
+                      rrnHidden.value = originalRRN;
+                      rrnHidden.name = 'childResiRegiNumber';
+                  } else {
+                      rrnHidden.removeAttribute('name');
+                  }
+              }
+          }
+          // --- (기존 2~5번 로직 끝) ---
+          
+          // 6. 성공 알림
+          const action = (submitter && submitter.name === 'action') ? submitter.value : null;
+          if (action === 'submit') {
+              alert('신청서가 저장되었습니다');
+          } else if (action === 'update') {
+              alert('신청서가 수정되었습니다');
+          }
 
-           } else {
-                // 2-2. 이 행이 '체크되지 않은' 경우:
-                //    'name' 속성을 제거합니다. (disabled 상태는 유지)
-                if (startDateInput) startDateInput.removeAttribute('name');
-                if (endDateInput) endDateInput.removeAttribute('name');
-                if (termIdInput) termIdInput.removeAttribute('name'); // [★★ termId 추가 ★★]
-                if (govInput) govInput.removeAttribute('name');
-                if (companyInput) companyInput.removeAttribute('name');
-           }
-      });
-      // --- [★★ 신규 로직 끝 ★★] ---
+          // 7. 폼을 실제로 제출합니다.
+          // (form.submit()은 'submit' 이벤트를 다시 트리거하지 않으므로 무한 루프에 빠지지 않습니다)
+          form.submit();
 
-  
-      // 3. '신청 기간' 외의 'disabled' 필드를 활성화합니다.
-      const otherDisabledElements = form.querySelectorAll('input:disabled, select:disabled, textarea:disabled');
-      otherDisabledElements.forEach(el => {
-        // 'dynamic-forms-container' *내부*에 있는 필드는 위에서 처리했으므로 건드리지 않습니다.
-        if (!el.closest('#dynamic-forms-container')) {
-             el.disabled = false;
-        }
-      });
-      
-      // 4. '신청 기간' 외의 콤마/서식 필드를 처리합니다.
-      if (wageEl) wageEl.value = onlyDigits(wageEl.value);
-      if (weeklyEl) weeklyEl.value = onlyDigits(weeklyEl.value);
-      if (brnEl) brnEl.value = onlyDigits(brnEl.value);
-      if (accEl) accEl.value = onlyDigits(accEl.value);
-      
-      // 5. 자녀 주민번호 합치기
-      if (rrnHidden) {
-        const a = onlyDigits(rrnAEl ? rrnAEl.value : '');
-        const b = onlyDigits(rrnBEl ? rrnBEl.value : '');
-        if (a.length === 6 && b.length === 7) {
-          rrnHidden.value = a + b;
-          rrnHidden.name  = 'childResiRegiNumber';
-        } else {
-         const originalRRN = "${applicationDTO.childResiRegiNumber}";
-         if(originalRRN && originalRRN.length === 13) {
-            rrnHidden.value = originalRRN;
-            rrnHidden.name  = 'childResiRegiNumber';
-         } else {
-            rrnHidden.removeAttribute('name');
-         }
-        }
-      }
+      } catch (err) {
+          console.error("Form processing error:", err);
+          alert("폼 제출 처리 중 오류가 발생했습니다.");
+          if (submitter) submitter.disabled = false; // 오류 시 버튼 복원
+      }
+    }
 
-      // 6. 성공 알림
-      const action = (e.submitter && e.submitter.name === 'action') ? e.submitter.value : null;
-      if (action === 'submit') {
-           alert('신청서가 저장되었습니다');
-      } else if (action === 'update') {
-           alert('신청서가 수정되었습니다');
-      }
 
-      // 7. 폼이 정상적으로 제출됩니다.
-    });
-  }
+    // 2. 메인 폼 이벤트 리스너 (AJAX 로직 추가)
+    if (form) {
+      form.addEventListener('submit', function(e) {
+          
+          // [공통] 0. 기본 폼 제출을 무조건 막습니다 (AJAX로 제어)
+          e.preventDefault();
+          const submitter = e.submitter; // 클릭된 버튼 (submit/update)
+
+          // [공통] 1. 유효성 검사 실행
+          if (!validateAndFocus()) {
+              return; // 유효성 검사 실패
+          }
+          
+          // [공통] 2. 제출 버튼 비활성화 (중복 클릭 방지)
+          if (submitter) submitter.disabled = true;
+
+          // [AJAX] 3. 파일 데이터 준비
+          const fileInputConfirm = document.getElementById('file-confirm');
+          const fileInputOther = document.getElementById('file-other');
+
+          const formData = new FormData();
+
+          let hasFiles = false;
+          
+          // '육아휴직 확인서' 파일 추가
+          if (fileInputConfirm.files.length > 0) {
+              formData.append('files', fileInputConfirm.files[0]);
+              formData.append('fileTypes', 'CONFIRM'); // "확인서" 타입
+              hasFiles = true;
+          }
+
+          // '기타 증빙서류' 파일들 추가
+          if (fileInputOther.files.length > 0) {
+              Array.from(fileInputOther.files).forEach(file => {
+                  formData.append('files', file);
+                  formData.append('fileTypes', 'OTHER'); // "기타" 타입
+              });
+              hasFiles = true;
+          }
+
+          // [AJAX] 4. 파일 업로드 분기
+          if (hasFiles) {
+              // 4-A. 업로드할 파일이 있는 경우 (AJAX 실행)
+              $.ajax({
+                  url: '${pageContext.request.contextPath}/file/upload',
+                  type: 'POST',
+                  data: formData,
+                  processData: false, // jQuery가 FormData를 쿼리 문자열로 변환하지 않음
+                  contentType: false, // jQuery가 Content-Type 헤더를 설정하지 않음 (boundary 자동 생성)
+                  success: function(response) {
+                      if (response && response.fileId) {
+                          // 5. fileId를 hidden input으로 폼에 추가
+                          const fileIdInput = document.createElement('input');
+                          fileIdInput.type = 'hidden';
+                          fileIdInput.name = 'fileId'; 
+                          fileIdInput.value = response.fileId;
+                          form.appendChild(fileIdInput);
+
+                          // 6. 기존 폼 처리 로직 실행 및 폼 제출
+                          processAndSubmitForm(submitter);
+                      } else {
+                          alert('파일 ID를 받지 못했습니다. 업로드에 실패했습니다.');
+                          if (submitter) submitter.disabled = false; // 버튼 복원
+                      }
+                  },
+                  error: function(xhr, status, error) {
+                      console.error("File upload failed:", status, error);
+                      let errorMsg = '파일 업로드 중 오류가 발생했습니다.';
+                      if (xhr.responseText) {
+                          try {
+                              // Spring 예외 메시지(JSON) 파싱 시도
+                              const err = JSON.parse(xhr.responseText);
+                              errorMsg += '\n' + (err.message || err.error || '서버 오류');
+                          } catch(e) {
+                              errorMsg += '\n서버 응답을 처리할 수 없습니다.';
+                          }
+                      }
+                      alert(errorMsg);
+                      if (submitter) submitter.disabled = false; // 버튼 복원
+                  }
+              });
+          } else {
+              // 4-B. 업로드할 파일이 없는 경우 (AJAX 스킵)
+              // 6. 기존 폼 처리 로직 실행 및 폼 제출
+              processAndSubmitForm(submitter);
+          }
+      });
+    }
   
   // ─────────────────────────────────────
   // Enter로 인한 오제출 방지 (변경 없음)
