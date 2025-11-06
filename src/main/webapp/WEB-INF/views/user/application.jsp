@@ -513,6 +513,78 @@
             width: 100%; /* 버튼 100% 너비 */
             font-size: 16px;
         }
+        .file-display-box {
+    flex-grow: 1; /* 남은 공간 차지 */
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: #fcfcfd; /* 약간 다른 배경색 */
+    font-size: 15px;
+    min-height: 42px; /* input 높이와 비슷하게 */
+    position: relative; /* 삭제 버튼 위치 기준 */
+    line-height: 1.6;
+}
+
+/* 단일 파일 (확인서) 표시 영역 */
+#file-confirm-display {
+    display: flex;
+    justify-content: space-between; /* 파일명과 X버튼 양쪽 정렬 */
+    align-items: center;
+}
+
+#file-confirm-display span {
+    /* 긴 파일명 ... 처리 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-right: 10px; /* X버튼과 여백 */
+    font-weight: 500;
+}
+
+/* 다중 파일 (기타) 표시 영역 */
+#file-other-display ul {
+    list-style-type: none;
+    padding: 0 25px 0 5px; /* X버튼과 겹치지 않게 오른쪽 여백 */
+    margin: 0;
+    max-height: 150px; /* 너무 길어지면 스크롤 */
+    overflow-y: auto;
+}
+
+#file-other-display li {
+    font-size: 14px;
+    padding: 2px 0;
+    border-bottom: 1px dashed #eee;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+#file-other-display li:last-child {
+    border-bottom: none;
+}
+
+/* 파일 삭제(X) 버튼 공통 스타일 */
+.btn-delete-file {
+    background: none;
+    border: none;
+    color: var(--gray-color);
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0 5px;
+    line-height: 1;
+    flex-shrink: 0; /* 줄어들지 않음 (단일파일용) */
+}
+
+.btn-delete-file:hover {
+    color: var(--dark-gray-color);
+}
+
+/* 다중 파일용 X 버튼 (우측 상단 고정) */
+#file-other-display .btn-delete-file {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
     }
 </style>
 </head>
@@ -874,6 +946,50 @@
                               </div>
                               <input type="hidden" name="centerId" id="centerId" value="${applicationDetailDTO.centerId}">
                         </div>
+                        <div class="form-section">
+    <h2>증빙서류 첨부</h2>
+    
+    <div class="form-group">
+        <label class="field-title" for="btn-add-confirm-file">육아휴직 확인서</label>
+        <div class="input-field" style="display: flex; align-items: center; gap: 10px;">
+            <input type="file" name="confirmFile" id="file-confirm" style="display: none;" 
+                   accept=".pdf,.jpg,.jpeg,.png,.gif,.hwp,.zip">
+            
+            <button type="button" class="btn btn-secondary" id="btn-add-confirm-file">파일 찾기</button>
+            
+            <div class="file-display-box" id="file-confirm-display" style="display: none;">
+                </div>
+            
+            <span id="file-confirm-placeholder" style="color: var(--gray-color); font-size: 15px;">
+                필수) 선택된 파일이 없습니다.
+            </span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="field-title" for="btn-add-other-file">기타 증빙서류</label>
+        <div class="input-field" style="display: flex; align-items: center; gap: 10px;">
+            <input type="file" name="otherFiles" id="file-other" style="display: none;" multiple 
+                   accept=".pdf,.jpg,.jpeg,.png,.gif,.hwp,.zip">
+            
+            <button type="button" class="btn btn-secondary" id="btn-add-other-file">파일 찾기</button>
+            
+            <div class="file-display-box" id="file-other-display" style="display: none;">
+                </div>
+            
+             <span id="file-other-placeholder" style="color: var(--gray-color); font-size: 15px;">
+                선택) 파일 없음 (여러 개 가능)
+            </span>
+        </div>
+    </div>
+    
+    <div class="info-box" style="font-size: 14px; margin-top: 10px;">
+         <strong>※ 첨부파일 안내</strong><br>
+         - 육아휴직 확인서는 필수 첨부 서류입니다. (PDF, JPG, PNG, HWP, ZIP 형식 권장)<br>
+         - 기타 증빙이 필요한 경우, '기타 증빙서류'로 여러 개의 파일을 첨부할 수 있습니다.<br>
+         - 파일명에 특수문자( \ / : * ? " < > | )는 사용할 수 없습니다.
+    </div>
+</div>
                         <div class="form-section">
                               <h2>행정정보 공동이용 동의서</h2>
                               
@@ -1399,7 +1515,110 @@ $(function () {
 // 페이지 로드 후 실행되는 메인 스크립트
 // ─────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function () {
+	
+	function escapeHTML(str) {
+	    if (!str) return '';
+	    return str.replace(/[&<>"']/g, function(match) {
+	        return {
+	            '&': '&amp;',
+	            '<': '&lt;',
+	            '>': '&gt;',
+	            '"': '&quot;',
+	            "'": '&#39;'
+	        }[match];
+	    });
+	}
 
+	// --- [1] 육아휴직 확인서 (단일 파일) ---
+	const btnConfirm = document.getElementById('btn-add-confirm-file');
+	const inputConfirm = document.getElementById('file-confirm');
+	const displayConfirm = document.getElementById('file-confirm-display');
+	const placeholderConfirm = document.getElementById('file-confirm-placeholder');
+
+	if (btnConfirm && inputConfirm && displayConfirm && placeholderConfirm) {
+	    
+	    // "파일 찾기" 버튼 클릭 시, 숨겨진 input 클릭
+	    btnConfirm.addEventListener('click', function() {
+	        inputConfirm.click();
+	    });
+
+	    // 파일이 선택되었을 때
+	    inputConfirm.addEventListener('change', function() {
+	        if (this.files && this.files.length > 0) {
+	            const file = this.files[0];
+	            // 파일명 표시 (삭제 버튼과 함께)
+	            displayConfirm.innerHTML = '<span>' + escapeHTML(file.name) + '</span>' +
+	                                       '<button type="button" class="btn-delete-file" data-target="file-confirm">×</button>';
+	            displayConfirm.style.display = 'flex';
+	            placeholderConfirm.style.display = 'none';
+	        } else {
+	            // (파일 선택 '취소' 시)
+	            inputConfirm.value = ''; // 값 초기화
+	            displayConfirm.innerHTML = '';
+	            displayConfirm.style.display = 'none';
+	            placeholderConfirm.style.display = 'inline';
+	        }
+	    });
+
+	    // 파일 삭제 버튼 (이벤트 위임)
+	    displayConfirm.addEventListener('click', function(e) {
+	        if (e.target.classList.contains('btn-delete-file')) {
+	            e.preventDefault();
+	            inputConfirm.value = ''; // 파일 선택 초기화
+	            displayConfirm.innerHTML = '';
+	            displayConfirm.style.display = 'none';
+	            placeholderConfirm.style.display = 'inline';
+	        }
+	    });
+	}
+
+	// --- [2] 기타 증빙서류 (다중 파일) ---
+	const btnOther = document.getElementById('btn-add-other-file');
+	const inputOther = document.getElementById('file-other');
+	const displayOther = document.getElementById('file-other-display');
+	const placeholderOther = document.getElementById('file-other-placeholder');
+
+	if (btnOther && inputOther && displayOther && placeholderOther) {
+	    
+	    // "파일 찾기" 버튼 클릭
+	    btnOther.addEventListener('click', function() {
+	        inputOther.click();
+	    });
+
+	    // 파일이 선택되었을 때 (multiple)
+	    inputOther.addEventListener('change', function() {
+	        if (this.files && this.files.length > 0) {
+	            let fileListHTML = '<ul>';
+	            Array.from(this.files).forEach(file => {
+	                fileListHTML += '<li>' + escapeHTML(file.name) + '</li>';
+	            });
+	            fileListHTML += '</ul>';
+	            
+	            // 삭제 버튼을 먼저 추가 (CSS에서 position: absolute로 배치)
+	            displayOther.innerHTML = '<button type="button" class="btn-delete-file" data-target="file-other">×</button>' + fileListHTML;
+	            displayOther.style.display = 'block'; 
+	            placeholderOther.style.display = 'none';
+	            
+	        } else {
+	            // (파일 선택 '취소' 시)
+	            inputOther.value = ''; // 모든 파일 선택 초기화
+	            displayOther.innerHTML = '';
+	            displayOther.style.display = 'none';
+	            placeholderOther.style.display = 'inline';
+	        }
+	    });
+	    
+	    // 파일 삭제 버튼 (이벤트 위임)
+	    displayOther.addEventListener('click', function(e) {
+	        if (e.target.classList.contains('btn-delete-file')) {
+	            e.preventDefault();
+	            inputOther.value = ''; // 모든 파일 선택 초기화
+	            displayOther.innerHTML = '';
+	            displayOther.style.display = 'none';
+	            placeholderOther.style.display = 'inline';
+	        }
+	    });
+	}
   // ─────────────────────────────────────
   // 공통 유틸 함수
   // ─────────────────────────────────────

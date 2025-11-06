@@ -227,11 +227,11 @@
 
     <nav class="header-right-nav" id="main-nav-menu">
         <ul class="header-nav">
-            <li><a class="nav-link ${fn:contains(currentURI, 'admin/list') ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/list">전체 민원 보기</a></li>
+            <li><a class="nav-link ${fn:contains(currentURI, 'adminlist') ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/list">전체 민원 보기</a></li>
             <li>
                 <c:choose>
                     <c:when test="${not empty adminCheck && adminCheck.centerPosition eq 'leader'}">
-                        <a class="nav-link ${fn:contains(currentURI, 'admin/superior') ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/superior">2차 신청서 보기</a>
+                        <a class="nav-link ${fn:contains(currentURI, 'superior') ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/superior">2차 신청서 보기</a>
                     </c:when>
                     <c:otherwise>
                         <a class="nav-link " href="#" onclick="alert('권한이 없습니다.'); return false;">2차 신청서 보기</a>
@@ -239,18 +239,8 @@
                 </c:choose>
             </li>
             <li><a class="nav-link ${fn:contains(currentURI, '/main') ? 'active' : ''}" href="${pageContext.request.contextPath}/main">추가지급</a></li>
-        </ul>
-
-<<<<<<< HEAD
-    		</li>
-    		<li><a class="nav-link" href="${pageContext.request.contextPath}/main">추가지급</a></li>
-    		<li><a class="nav-link" href="${pageContext.request.contextPath}/admin/childsearch">동일 영아 조회</a></li>
+    		<li><a class="nav-link ${fn:contains(currentURI, 'childsearch') ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/childsearch">동일 영아 조회</a></li>
     	</ul>
-=======
->>>>>>> 9a12f1d62884b25d6b176c6c998231b2efbdbc41
-        <sec:authorize access="isAnonymous()">
-            <a href="${pageContext.request.contextPath}/login" class="btn btn-primary">로그인</a>
-        </sec:authorize>
         <sec:authorize access="isAuthenticated()">
             <form id="logout-form" action="${pageContext.request.contextPath}/logout" method="post" style="display:none;">
                 <sec:csrfInput/>
