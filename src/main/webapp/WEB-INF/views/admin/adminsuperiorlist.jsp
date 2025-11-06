@@ -369,7 +369,7 @@ a { text-decoration: none; color: inherit; }
             <h2 class="page-title">급여 최종 결재 목록</h2>
 
             <div class="stat-cards-container">
-                <a href="${pageContext.request.contextPath}/admin/superior">
+                <a class="js-status-card" data-status="" style="cursor: pointer;">
 	                <div class="stat-card ${empty status ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
@@ -380,7 +380,7 @@ a { text-decoration: none; color: inherit; }
 	                </div>
                 </a>
 
-                <a href="${pageContext.request.contextPath}/admin/superior?status=PENDING">
+                <a class="js-status-card" data-status="PENDING" style="cursor: pointer;">
 	                <div class="stat-card ${status == 'PENDING' ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
@@ -391,7 +391,7 @@ a { text-decoration: none; color: inherit; }
 	                </div>
 	            </a>
 
-                <a href="${pageContext.request.contextPath}/admin/superior?status=APPROVED">
+                <a class="js-status-card" data-status="APPROVED" style="cursor: pointer;">
 	                <div class="stat-card ${status == 'APPROVED' ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
@@ -402,7 +402,7 @@ a { text-decoration: none; color: inherit; }
 	                </div>
                 </a>
                 
-                <a href="${pageContext.request.contextPath}/admin/superior?status=REJECTED">
+                <a class="js-status-card" data-status="REJECTED" style="cursor: pointer;">
 	                <div class="stat-card ${status == 'REJECTED' ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
@@ -420,7 +420,9 @@ a { text-decoration: none; color: inherit; }
                     <!-- <button class="table-btn btn-refresh" id="btnReset"><i class="bi bi-arrow-clockwise"></i></button> -->
                 </div>
 
-                <form id="searchForm" action="${pageContext.request.contextPath}/admin/superior" method="get" class="table-filters">
+                <form id="searchForm" action="${pageContext.request.contextPath}/admin/superior" method="post" class="table-filters">
+                    
+                    <input type="hidden" name="page" value="${pageDTO.pageNum}">
                     
                     <div class="search-box">
                         <input type="text" name="keyword" placeholder="신청자 이름 또는 신청번호로 검색..." value="${keyword}">
@@ -430,7 +432,7 @@ a { text-decoration: none; color: inherit; }
                     </div>
                     <%-- 처리 상태 필터 --%>
                     <select name="status" id="statusSelect" onchange="this.form.submit()">
-                        <option value="">모든 상태</option>
+                        <option value="">전체</option>
                         <option value="PENDING" ${status == 'PENDING' ? 'selected' : ''}>대기</option>
     					<option value="APPROVED" ${status == 'APPROVED' ? 'selected' : ''}>승인</option>
     					<option value="REJECTED" ${status == 'REJECTED' ? 'selected' : ''}>반려</option>
@@ -495,24 +497,33 @@ a { text-decoration: none; color: inherit; }
                     </tbody>
                 </table>
                 <div class="pagination">
-				    <c:choose><c:when test="${pageDTO.startPage > 1}">
-				        <a href="${pageContext.request.contextPath}/admin/superior?page=${pageDTO.startPage - 1}&keyword=${keyword}&status=${status}&date=${date}">&laquo;</a>
-				    </c:when><c:otherwise>
-				        <span class="disabled">&laquo;</span>
-				    </c:otherwise></c:choose>
+				    <c:choose>
+				    	<c:when test="${pageDTO.startPage > 1}">
+				        	<a class="js-page-link" data-page="${pageDTO.startPage - 1}" style="cursor: pointer;">&laquo;</a>
+				    	</c:when>
+						<c:otherwise>
+				        	<span class="disabled">&laquo;</span>
+				    	</c:otherwise>
+					</c:choose>
 				
 				    <c:forEach begin="${pageDTO.paginationStart}" end="${pageDTO.paginationEnd}" var="p">
-				        <a href="${pageContext.request.contextPath}/admin/superior?page=${p}&keyword=${keyword}&status=${status}&date=${date}" 
-				           class="${p == pageDTO.pageNum ? 'active' : ''}">
-				            ${p}
-				        </a>
+				        <c:choose>
+				            <c:when test="${p == pageDTO.pageNum}">
+				                <span class="active">${p}</span> </c:when>
+				            <c:otherwise>
+				                <a class="js-page-link" data-page="${p}" style="cursor: pointer;">${p}</a>
+				            </c:otherwise>
+				        </c:choose>
 				    </c:forEach>
 				
-				    <c:choose><c:when test="${pageDTO.endPage > pageDTO.paginationEnd}">
-				        <a href="${pageContext.request.contextPath}/admin/superior?page=${pageDTO.paginationEnd + 1}&keyword=${keyword}&status=${status}&date=${date}">&raquo;</a>
-				    </c:when><c:otherwise>
-				        <span class="disabled">&raquo;</span>
-				    </c:otherwise></c:choose>
+				    <c:choose>
+				    	<c:when test="${pageDTO.endPage > pageDTO.paginationEnd}">
+				        	<a class="js-page-link" data-page="${pageDTO.paginationEnd + 1}" style="cursor: pointer;">&raquo;</a>
+				    	</c:when>
+						<c:otherwise>
+					        <span class="disabled">&raquo;</span>
+					    </c:otherwise>
+					</c:choose>
 				</div>
             </div>
         </main>
@@ -520,12 +531,14 @@ a { text-decoration: none; color: inherit; }
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
 	document.addEventListener("DOMContentLoaded", () => { 
-	    const select = document.getElementById("statusSelect");
 	    const current = "${status}"; 
 	    const dateBtn = document.getElementById('selectDate');
 	    const form = document.getElementById("searchForm");
+	    const statusSelect = document.getElementById("statusSelect");
+	    const keywordInput = form.querySelector('input[name="keyword"]');
+	    const pageInput = form.querySelector('input[name="page"]');
 	    
-	    if (current) select.value = current; 
+	    if (current) statusSelect.value = current; 
 
 	 	// flatpickr 달력 초기화
 	    const fp = flatpickr(dateBtn, {
@@ -548,7 +561,44 @@ a { text-decoration: none; color: inherit; }
 	        },
 	        allowInput: false
 	    });
-	 // 달력 버튼 클릭 시 달력 열기
+	 	
+	    document.querySelectorAll('.js-status-card').forEach(card => {
+	        card.addEventListener('click', (e) => {
+	            e.preventDefault();
+	            const newStatus = card.dataset.status;
+
+	            statusSelect.value = newStatus;
+	            
+	            keywordInput.value = ''; 
+	            pageInput.value = '1';   
+	            fp.clear(); 
+	    
+	            const hiddenDate = form.querySelector('input[name="date"]');
+	            if (hiddenDate) {
+	                hiddenDate.value = '';
+	            }
+
+	            form.submit();
+	        });
+	    });
+
+	    // ---------------------------------------------
+	    // ▼ [추가] 페이징 링크 클릭 시 POST 전송
+	    // ---------------------------------------------
+	    document.querySelectorAll('.js-page-link').forEach(link => {
+	        link.addEventListener('click', (e) => {
+	            e.preventDefault();
+	            const newPage = link.dataset.page;
+	            
+	            // 1. 폼의 페이지(page) 값 변경
+	            pageInput.value = newPage;
+	            
+	            // 2. 폼 POST 전송
+	            form.submit();
+	        });
+	    });
+	    
+	 	// 달력 버튼 클릭 시 달력 열기
 	    dateBtn.addEventListener("click", (e) => {
 	        e.preventDefault();
 	        e.stopPropagation(); 

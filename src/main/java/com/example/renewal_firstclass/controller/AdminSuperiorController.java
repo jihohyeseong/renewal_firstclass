@@ -11,6 +11,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -34,7 +36,7 @@ public class AdminSuperiorController {
     private final AdminSuperiorService adminSuperiorService;
     
     //목록 조회
-    @GetMapping("/admin/superior")
+    @RequestMapping(value="/admin/superior", method= {RequestMethod.GET, RequestMethod.POST})
     public String showSuperiorPage(Authentication authentication, 
     		@RequestParam(value= "page", defaultValue="1") int page,
             @RequestParam(value = "keyword", required = false) String keyword,
