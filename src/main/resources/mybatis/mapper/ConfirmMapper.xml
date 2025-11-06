@@ -78,6 +78,7 @@
     ca.center_id,
     ca.user_id,
     ca.reject_comment,
+    ca.file_id,
 
     -- 상태 코드 이름
     sc.name  AS statusName,
@@ -239,6 +240,15 @@
      AND delt_at = 'N'
      AND status_code NOT IN ('ST_50','ST_60')
 </update>
+
+<select id="findFileIdByConfirmNumber"
+        parameterType="long"
+        resultType="long">
+  SELECT file_id
+  FROM TB_CONFIRM_APPLICATION
+  WHERE confirm_number = #{confirmNumber}
+    AND delt_at = 'N'
+</select>
 
 
 </mapper>

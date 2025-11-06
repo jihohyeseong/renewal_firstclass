@@ -26,6 +26,7 @@ public class CompanyApplyService {
     private final ConfirmApplyDAO confirmApplyDAO;
     private final TermAmountDAO termAmountDAO;
     private final AES256Util aes256Util;
+    private final AttachedFileService attachedFileService;
 
 
     /*신규 저장 */
@@ -287,8 +288,12 @@ public class CompanyApplyService {
 	
 	@Transactional
 	public int deleteConfirm(Long confirmNumber, Long userId) {
+		Long fileId = confirmApplyDAO.findFileIdByConfirmNumber(confirmNumber);
 	    int affected = confirmApplyDAO.deleteConfirm(confirmNumber, userId);
 	    if (affected > 0) {
+	        if (fileId != null) {
+	            attachedFileService.deleteByFileId(fileId, true);
+	        }
 	        termAmountDAO.deleteTermsByConfirmId(confirmNumber);
 	    }
 	    return affected;

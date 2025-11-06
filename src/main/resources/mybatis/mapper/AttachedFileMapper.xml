@@ -19,4 +19,56 @@
     WHERE file_id = #{fileId}
   </select>
   
+    <select id="selectOneByFileIdAndSeq"
+          parameterType="map"
+          resultType="com.example.renewal_firstclass.domain.AttachedFileDTO">
+    SELECT
+      file_id,
+      sequence,
+      file_type,
+      file_url
+    FROM TB_ATTACHED_FILE
+    WHERE file_id = #{fileId}
+      AND sequence = #{sequence}
+  </select>
+
+  <select id="findOwnerUserIdByFileId"
+          parameterType="long"
+          resultType="long">
+    SELECT user_id
+    FROM TB_CONFIRM_APPLICATION
+    WHERE file_id = #{fileId}
+      AND NVL(delt_at,'N') = 'N'
+    FETCH FIRST 1 ROWS ONLY
+  </select>
+  
+  
+  <select id="selectFilesByFileId"
+        parameterType="long"
+        resultType="com.example.renewal_firstclass.domain.AttachedFileDTO">
+  SELECT
+    file_id,
+    sequence,
+    file_type,
+    file_url
+  FROM TB_ATTACHED_FILE
+  WHERE file_id = #{fileId}
+  ORDER BY file_type, sequence
+</select>
+
+
+<delete id="deleteByFileId" parameterType="long">
+  DELETE FROM TB_ATTACHED_FILE
+  WHERE file_id = #{fileId}
+</delete>
+
+<!-- 특정 시퀀스만 삭제 -->
+<delete id="deleteOne" parameterType="map">
+  DELETE FROM TB_ATTACHED_FILE
+  WHERE file_id = #{fileId}
+    AND sequence = #{sequence}
+</delete>
+
+
+
 </mapper>

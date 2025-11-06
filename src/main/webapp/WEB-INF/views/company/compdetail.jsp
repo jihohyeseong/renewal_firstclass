@@ -214,6 +214,59 @@
   </c:otherwise>
 </c:choose>
 
+<!-- 첨부파일 -->
+<tr><th class="sheet-head" colspan="4">첨부파일</th></tr>
+<tr>
+  <td colspan="4" class="vtop" style="padding:12px 14px;">
+    <c:choose>
+      <c:when test="${not empty files}">
+        <ul style="list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:8px;">
+          <c:forEach var="f" items="${files}">
+            <li style="border:1px solid var(--border-color); border-radius:10px; padding:10px 12px; background:#fff;">
+              <div style="font-size:12px; color:#666; margin-bottom:6px;">
+                <span style="display:inline-block; padding:2px 8px; border-radius:999px; background:var(--light-gray-color);">
+                  <c:out value="${f.fileType}" />
+                </span>
+                <span style="margin-left:8px; color:#999;">SEQ <c:out value="${f.sequence}"/></span>
+              </div>
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+                <div style="flex:1; min-width:0;">
+                  <!-- 파일명은 경로에서 마지막 이름만 보여주기 -->
+					<c:set var="parts1" value="${fn:split(f.fileUrl, '/')}"/>
+					<c:choose>
+					  <c:when test="${fn:length(parts1) > 1}">
+					    <c:set var="displayName" value="${parts1[fn:length(parts1)-1]}"/>
+					  </c:when>
+					  <c:otherwise>
+					    <!-- 백슬래시는 HTML 엔티티 사용 -->
+					    <c:set var="parts2" value="${fn:split(f.fileUrl, '&#92;')}"/>
+					    <c:set var="displayName" value="${parts2[fn:length(parts2)-1]}"/>
+					  </c:otherwise>
+					</c:choose>
+
+                  <a href="<c:url value='/file/download'><c:param name='fileId' value='${f.fileId}'/><c:param name='seq' value='${f.sequence}'/></c:url>"
+					   style="text-decoration:none; color:var(--primary-color); word-break:break-all;">
+					  <c:out value="${displayName}" />
+					</a>
+                </div>
+                <a
+                  class="btn btn-secondary"
+                  href="<c:url value='/file/download'><c:param name='fileId' value='${f.fileId}'/><c:param name='seq' value='${f.sequence}'/></c:url>">
+                  다운로드
+                </a>
+              </div>
+            </li>
+          </c:forEach>
+        </ul>
+      </c:when>
+      <c:otherwise>
+        <div style="color:var(--gray-color);">등록된 첨부파일이 없습니다.</div>
+      </c:otherwise>
+    </c:choose>
+  </td>
+</tr>
+
+
       
     </table>
 

@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.renewal_firstclass.domain.AttachedFileDTO;
 import com.example.renewal_firstclass.domain.ConfirmApplyDTO;
 import com.example.renewal_firstclass.domain.ConfirmListDTO;
 import com.example.renewal_firstclass.domain.CustomUserDetails; // 프로젝트 경로 맞게
@@ -334,8 +335,12 @@ public class CompanyApplyController {
                 ra.addFlashAttribute("error", "확인서를 찾을 수 없습니다.");
                 return "redirect:/comp/main";
             }
+            List<AttachedFileDTO> files = fileService.getFiles(confirmDTO.getFileId());
+            
+            
             model.addAttribute("termList", dto.getTermAmounts()); 
             model.addAttribute("confirmDTO", confirmDTO);
+            model.addAttribute("files", files);
             return "company/compdetail";
 
         } catch (Exception e) {
