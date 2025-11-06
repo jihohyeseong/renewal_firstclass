@@ -231,10 +231,10 @@
             <li>
                 <c:choose>
                     <c:when test="${not empty adminCheck && adminCheck.centerPosition eq 'leader'}">
-                        <a class="nav-link ${fn:contains(currentURI, 'superior') ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/superior">2차 신청서 보기</a>
+                        <a class="nav-link ${fn:contains(currentURI, 'superior') ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/superior">급여 최종 결재</a>
                     </c:when>
                     <c:otherwise>
-                        <a class="nav-link " href="#" onclick="alert('권한이 없습니다.'); return false;">2차 신청서 보기</a>
+                        <a class="nav-link " href="#" onclick="alert('권한이 없습니다.'); return false;">급여 최종 결재</a>
                     </c:otherwise>
                 </c:choose>
             </li>
