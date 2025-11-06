@@ -223,4 +223,11 @@ public class UserApplyService {
 		return userApplyDAO.countByConfirmNumber(confirmNumber);
 	}
 
+	public boolean completeCheck(Long confirmNumber) {
+		
+		int num = userApplyDAO.completeCheckByConfirmNumber(confirmNumber);
+		
+		return num > 0 ? true : false;
+	}
+
 }

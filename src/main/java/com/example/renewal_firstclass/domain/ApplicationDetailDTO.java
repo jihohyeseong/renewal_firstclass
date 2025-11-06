@@ -30,6 +30,7 @@ public class ApplicationDetailDTO {
 	private Date endDate;
 	private List<TermAmountDTO> list;
 	private Long regularWage;
+	private List<AttachedFileDTO> files;
 	private Long weeklyHours;
 	private String childName;
 	private Date childBirthDate;

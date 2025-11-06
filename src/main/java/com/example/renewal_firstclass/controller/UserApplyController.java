@@ -189,6 +189,25 @@ public class UserApplyController {
 		
 	}
 	
+	// 신청서 AJAX 완료검증
+	@GetMapping("user/check/{confirmNumber}/complete")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> isCompleteCheck(@PathVariable Long confirmNumber){
+		
+		Map<String, Object> response = new HashMap<>();
+		boolean isComplete = userApplyService.completeCheck(confirmNumber);
+		if(isComplete) {
+			response.put("success", false);
+			response.put("message", "완료된 신청입니다.");
+			response.put("redirectUrl", "/user/main");
+		}
+		else {
+			response.put("success", true);
+		}
+		
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
+	
 	// 상세보기 AJAX 본인검증
 	@GetMapping("/user/check/detail/{applicationNumber}")
 	@ResponseBody
@@ -208,6 +227,7 @@ public class UserApplyController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 		
 	}
+	
 	
 	// 진행중인 신청 있는지 확인 AJAX
 	@GetMapping("/user/check/confirm/{confirmNumber}")

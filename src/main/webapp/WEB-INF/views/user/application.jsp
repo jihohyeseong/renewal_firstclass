@@ -305,6 +305,61 @@
             min-width: 600px; 
         }
     }
+    .other-file-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+/* '파일 찾기' 버튼 */
+.other-file-row .btn-find-other-file {
+    flex-shrink: 0; /* 버튼 크기 유지 */
+}
+
+/* '파일 없음' 플레이스홀더 */
+.other-file-row .other-file-placeholder {
+    flex-grow: 1; /* 남은 공간 차지 (파일 없을 때) */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* [★★ 디자인 요청 ★★] 파일명 표시 박스 (확인서 박스와 유사하게) */
+.other-file-row .file-display-other {
+    flex-grow: 1; /* 남은 공간 차지 (파일 있을 때) */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* .file-display-box의 기존 스타일 상속 */
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: #fcfcfd;
+}
+
+.other-file-row .file-display-other span {
+    /* 긴 파일명 ... 처리 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-right: 10px; /* X버튼과 여백 */
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+/* 행 삭제 버튼 (X) */
+.other-file-row .btn-delete-other-row {
+    flex-shrink: 0;
+    color: #dc3545; /* 빨간색 */
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.other-file-row .btn-delete-other-row:hover {
+    color: #a71d2a;
+}
 
     /* 768px 이하 (모바일) */
     @media (max-width: 768px) {
@@ -313,6 +368,27 @@
             margin: 0 !important;
             padding: 0 !important;
         }
+        .other-file-row {
+        flex-wrap: wrap; /* 모바일에서 줄바꿈 허용 */
+    }
+    .other-file-row .btn-find-other-file {
+        /* '파일찾기' 버튼이 100% 너비를 차지하지 않도록 */
+        width: auto; 
+        flex-basis: auto;
+    }
+    .other-file-row .btn-delete-other-row {
+         margin-left: auto; /* 삭제 버튼을 오른쪽으로 밀기 */
+    }
+    .other-file-row .file-display-other,
+    .other-file-row .other-file-placeholder {
+        /* 파일명/플레이스홀더는 100% 너비 차지 (버튼 아래로) */
+        width: 100%;
+        flex-basis: 100%;
+        order: 2; /* 순서 변경 */
+        margin-left: 0;
+    }
+    .other-file-row .btn-find-other-file { order: 1; }
+    .other-file-row .btn-delete-other-row { order: 1; }
         .content-wrapper {
             border-radius: 0;
             box-shadow: none;
@@ -541,23 +617,7 @@
     font-weight: 500;
 }
 
-/* 다중 파일 (기타) 표시 영역 */
-#file-other-display ul {
-    list-style-type: none;
-    padding: 0 25px 0 5px; /* X버튼과 겹치지 않게 오른쪽 여백 */
-    margin: 0;
-    max-height: 150px; /* 너무 길어지면 스크롤 */
-    overflow-y: auto;
-}
 
-#file-other-display li {
-    font-size: 14px;
-    padding: 2px 0;
-    border-bottom: 1px dashed #eee;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
 #file-other-display li:last-child {
     border-bottom: none;
 }
@@ -961,31 +1021,46 @@
                 </div>
             
             <span id="file-confirm-placeholder" style="color: var(--gray-color); font-size: 15px;">
-                필수) 선택된 파일이 없습니다.
+                선택) 선택된 파일이 없습니다.
             </span>
         </div>
     </div>
 
     <div class="form-group">
-        <label class="field-title" for="btn-add-other-file">기타 증빙서류</label>
-        <div class="input-field" style="display: flex; align-items: center; gap: 10px;">
-            <input type="file" name="otherFiles" id="file-other" style="display: none;" multiple 
-                   accept=".pdf,.jpg,.jpeg,.png,.gif,.hwp,.zip">
+    <label class="field-title">기타 증빙서류</label>
+    <div class="input-field">
+        <div id="other-files-list-container">
             
-            <button type="button" class="btn btn-secondary" id="btn-add-other-file">파일 찾기</button>
+            <div class="other-file-row">
+                <input type="file" name="otherFiles" class="other-file-input" style="display: none;" 
+                       accept=".pdf,.jpg,.jpeg,.png,.gif,.hwp,.zip">
+                
+                <button type="button" class="btn btn-secondary btn-find-other-file">파일 찾기</button>
+                
+                <div class="file-display-box file-display-other" style="display: none;">
+                    </div>
+                
+                <span class="other-file-placeholder" style="color: var(--gray-color); font-size: 15px;">
+                    선택) 선택된 파일이 없습니다.
+                </span>
+                
+                <button type="button" class="btn-delete-file btn-delete-other-row" 
+                        style="font-size: 28px; line-height: 1; padding: 0 5px; margin-left: 5px; color: #dc3545;" 
+                        title="이 행 삭제">×</button>
+            </div>
             
-            <div class="file-display-box" id="file-other-display" style="display: none;">
-                </div>
-            
-             <span id="file-other-placeholder" style="color: var(--gray-color); font-size: 15px;">
-                선택) 파일 없음 (여러 개 가능)
-            </span>
         </div>
+        
+        <button type="button" id="btn-add-other-row" class="btn btn-secondary" 
+                style="margin-top: 10px; background-color: var(--primary-light-color); color: var(--primary-color); border-color: #d1d9ff; font-weight: 500;">
+            + 파일 추가
+        </button>
     </div>
+</div>
     
     <div class="info-box" style="font-size: 14px; margin-top: 10px;">
          <strong>※ 첨부파일 안내</strong><br>
-         - 육아휴직 확인서는 필수 첨부 서류입니다. (PDF, JPG, PNG, HWP, ZIP 형식 권장)<br>
+         - 육아휴직 확인서는 확인서가 변경된 경우에만 첨부합니다. (PDF, JPG, PNG, HWP, ZIP 형식 권장)<br>
          - 기타 증빙이 필요한 경우, '기타 증빙서류'로 여러 개의 파일을 첨부할 수 있습니다.<br>
          - 파일명에 특수문자( \ / : * ? " < > | )는 사용할 수 없습니다.
     </div>
@@ -1267,10 +1342,10 @@ $(document).ready(function() {
         "**신청인 정보**<br>회원님의 가입 정보를 기반으로 자동 입력됩니다. 수정이 필요한 경우, '회원정보 수정' 메뉴를 이용해주세요.",
         "**사업장 정보**<br>회원님이 '육아휴직 확인서'를 통해 승인받은 사업장의 정보입니다.",
         "**급여 신청 기간**<br>사업주에게 승인받은 총 휴직 기간 중, 이번에 급여를 신청할 기간을 선택하는 항목입니다. 아래 표에서 신청할 기간의 체크박스를 선택해주세요.",
-        // (여기에 조기복직 툴팁이 동적으로 삽입될 예정)
         "**자녀 정보**<br>육아휴직 대상 자녀의 정보를 입력하는 곳입니다. 주민등록번호 13자리를 정확하게 입력해야 합니다.",
         "**급여 입금 계좌정보**<br>급여를 지급받을 본인 명의의 계좌를 입력합니다. 은행과 계좌번호를 정확히 입력해주세요.",
         "**접수 센터 선택**<br>신청서를 제출할 고용센터를 선택하는 항목입니다. '센터 찾기' 버튼을 눌러 사업장 주소 기준의 관할 센터를 찾아주세요.",
+        "**증빙서류 첨부**<br>증빙서류를 첨부할 수 있습니다. 특이사항 / 해당사항이 없다면 첨부 없이 진행해주세요.",
         "**행정정보 공동이용 동의서**<br>신청에 필요한 서류를 담당 공무원이 행정정보망을 통해 열람할 수 있도록 동의하는 항목입니다. '동의합니다'를 선택하는 것을 권장합니다.",
         "**부정수급 안내**<br>중요 안내사항입니다. 내용을 반드시 읽고, 동의하시면 하단의 체크박스를 선택해주세요. 이 체크박스는 신청서 제출/수정을 위한 필수 항목입니다."
     ];
@@ -1508,6 +1583,32 @@ $(function () {
             }
         });
     }
+    if (!isUpdatePage) {
+        const confirmNumberForUpdate = "${confirmNumber}";
+        if (confirmNumberForUpdate) {
+            $.ajax({
+                type: "GET",
+                url: `${pageContext.request.contextPath}/user/check/\${confirmNumberForUpdate}/complete`, // 요청하신 API 엔드포인트
+                dataType: "json",
+                success: function(response) {
+                    // API 응답에서 success가 false이면 (즉, 완료된 신청이면)
+                    if (response.success === false) { 
+                        // 1. 메시지 띄우기
+                        alert(response.message); 
+                        // 2. redirectUrl로 이동
+                        window.location.href = contextPath + (response.redirectUrl || "/user/main");
+                    }
+                    // response.success === true 이면 (완료되지 않은 신청이면)
+                    // 아무 일도 하지 않고 페이지에 머무릅니다.
+                },
+                error: function(xhr, status, error) {
+                    // API 호출 자체에 실패한 경우 (서버 오류 등)
+                    console.error("Complete check failed:", status, error);
+                    alert("신청서 완료 상태 확인 중 오류가 발생했습니다. 관리자에게 문의하세요.");
+                }
+            });
+        }
+    }
 });
 
 
@@ -1573,52 +1674,103 @@ document.addEventListener('DOMContentLoaded', function () {
 	}
 
 	// --- [2] 기타 증빙서류 (다중 파일) ---
-	const btnOther = document.getElementById('btn-add-other-file');
-	const inputOther = document.getElementById('file-other');
-	const displayOther = document.getElementById('file-other-display');
-	const placeholderOther = document.getElementById('file-other-placeholder');
+	// --- [★★ 수정] 기타 증빙서류 (동적 행 추가) ---
+const filesContainer = document.getElementById('other-files-list-container');
+const btnAddRow = document.getElementById('btn-add-other-row');
 
-	if (btnOther && inputOther && displayOther && placeholderOther) {
-	    
-	    // "파일 찾기" 버튼 클릭
-	    btnOther.addEventListener('click', function() {
-	        inputOther.click();
-	    });
+// 1. 새 파일 행을 생성하는 함수
+function createOtherFileRow() {
+    const row = document.createElement('div');
+    row.className = 'other-file-row';
+    
+    // (escapeHTML은 이미 스크립트 상단에 정의되어 있음)
+    row.innerHTML = `
+        <input type="file" name="otherFiles" class="other-file-input" style="display: none;" 
+               accept=".pdf,.jpg,.jpeg,.png,.gif,.hwp,.zip">
+        
+        <button type="button" class="btn btn-secondary btn-find-other-file">파일 찾기</button>
+        
+        <div class="file-display-box file-display-other" style="display: none;">
+            </div>
+        
+        <span class="other-file-placeholder" style="color: var(--gray-color); font-size: 15px;">
+            선택) 선택된 파일이 없습니다.
+        </span>
+        
+        <button type="button" class="btn-delete-file btn-delete-other-row" 
+                style="font-size: 28px; line-height: 1; padding: 0 5px; margin-left: 5px; color: #dc3545;" 
+                title="이 행 삭제">×</button>
+    `;
+    return row;
+}
 
-	    // 파일이 선택되었을 때 (multiple)
-	    inputOther.addEventListener('change', function() {
-	        if (this.files && this.files.length > 0) {
-	            let fileListHTML = '<ul>';
-	            Array.from(this.files).forEach(file => {
-	                fileListHTML += '<li>' + escapeHTML(file.name) + '</li>';
-	            });
-	            fileListHTML += '</ul>';
-	            
-	            // 삭제 버튼을 먼저 추가 (CSS에서 position: absolute로 배치)
-	            displayOther.innerHTML = '<button type="button" class="btn-delete-file" data-target="file-other">×</button>' + fileListHTML;
-	            displayOther.style.display = 'block'; 
-	            placeholderOther.style.display = 'none';
-	            
-	        } else {
-	            // (파일 선택 '취소' 시)
-	            inputOther.value = ''; // 모든 파일 선택 초기화
-	            displayOther.innerHTML = '';
-	            displayOther.style.display = 'none';
-	            placeholderOther.style.display = 'inline';
-	        }
-	    });
-	    
-	    // 파일 삭제 버튼 (이벤트 위임)
-	    displayOther.addEventListener('click', function(e) {
-	        if (e.target.classList.contains('btn-delete-file')) {
-	            e.preventDefault();
-	            inputOther.value = ''; // 모든 파일 선택 초기화
-	            displayOther.innerHTML = '';
-	            displayOther.style.display = 'none';
-	            placeholderOther.style.display = 'inline';
-	        }
-	    });
-	}
+// 2. "+ 파일 추가" 버튼 클릭 이벤트
+if (btnAddRow && filesContainer) {
+    btnAddRow.addEventListener('click', function() {
+        const newRow = createOtherFileRow();
+        filesContainer.appendChild(newRow);
+    });
+}
+
+// 3. 컨테이너에 이벤트 위임 (동적으로 생성된 행 처리)
+if (filesContainer) {
+    filesContainer.addEventListener('click', function(e) {
+        const target = e.target;
+        const row = target.closest('.other-file-row');
+        if (!row) return;
+
+        // 3-1. "파일 찾기" 버튼 클릭
+        if (target.classList.contains('btn-find-other-file')) {
+            const fileInput = row.querySelector('.other-file-input');
+            if (fileInput) fileInput.click();
+        }
+        
+        // 3-2. "이 행 삭제" (빨간 X) 버튼 클릭
+        if (target.classList.contains('btn-delete-other-row')) {
+            row.remove();
+        }
+        
+        // 3-3. "파일명 옆 X" (파일 초기화) 버튼 클릭 (display-box 안에 있는 버튼)
+        const displayBox = row.querySelector('.file-display-other');
+        if (displayBox && displayBox.contains(target) && target.classList.contains('btn-delete-file')) {
+            e.preventDefault(); 
+            const fileInput = row.querySelector('.other-file-input');
+            const placeholder = row.querySelector('.other-file-placeholder');
+            
+            if (fileInput) fileInput.value = ''; // 파일 선택 초기화
+            displayBox.innerHTML = '';
+            displayBox.style.display = 'none';
+            if (placeholder) placeholder.style.display = 'inline';
+        }
+    });
+
+    // 4. 'change' 이벤트 위임 (파일 선택 시)
+    filesContainer.addEventListener('change', function(e) {
+        const target = e.target;
+        if (target.classList.contains('other-file-input')) {
+            const row = target.closest('.other-file-row');
+            if (!row) return;
+            
+            const displayBox = row.querySelector('.file-display-other');
+            const placeholder = row.querySelector('.other-file-placeholder');
+            
+            if (target.files && target.files.length > 0) {
+                const file = target.files[0];
+                displayBox.innerHTML = '<span>' + escapeHTML(file.name) + '</span>' +
+                                     '<button type="button" class="btn-delete-file">×</button>';
+                displayBox.style.display = 'flex';
+                if (placeholder) placeholder.style.display = 'none';
+            } else {
+                // (파일 선택 '취소' 시)
+                if (target) target.value = ''; // 값 초기화
+                displayBox.innerHTML = '';
+                displayBox.style.display = 'none';
+                if (placeholder) placeholder.style.display = 'inline';
+            }
+        }
+    });
+}
+// --- [★★ 수정] 기타 증빙서류 로직 끝 ---
   // ─────────────────────────────────────
   // 공통 유틸 함수
   // ─────────────────────────────────────
@@ -1993,7 +2145,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
           // [AJAX] 3. 파일 데이터 준비
           const fileInputConfirm = document.getElementById('file-confirm');
-          const fileInputOther = document.getElementById('file-other');
+          const otherFileInputs = document.querySelectorAll('.other-file-input');
 
           const formData = new FormData();
 
@@ -2007,13 +2159,13 @@ document.addEventListener('DOMContentLoaded', function () {
           }
 
           // '기타 증빙서류' 파일들 추가
-          if (fileInputOther.files.length > 0) {
-              Array.from(fileInputOther.files).forEach(file => {
-                  formData.append('files', file);
-                  formData.append('fileTypes', 'OTHER'); // "기타" 타입
-              });
-              hasFiles = true;
-          }
+          otherFileInputs.forEach(input => {
+	    if (input.files.length > 0) {
+	        formData.append('files', input.files[0]); // 각 input의 단일 파일
+	        formData.append('fileTypes', 'OTHER'); // "기타" 타입
+	        hasFiles = true;
+	    }
+	});
 
           // [AJAX] 4. 파일 업로드 분기
           if (hasFiles) {

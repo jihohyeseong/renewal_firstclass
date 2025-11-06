@@ -345,7 +345,7 @@ textarea.form-control { resize: vertical; }
           <c:if test="${not empty appDTO.applicantResiRegiNumber}">
             <c:set var="rrnRaw" value="${appDTO.applicantResiRegiNumber}" />
             <c:set var="rrnDigits" value="${fn:replace(fn:replace(fn:trim(rrnRaw), '-', ''), ' ', '')}" />
-            ${fn:substring(rrnDigits,0,6)}-${fn:substring(rrnDigits,6,7)}******
+            ${fn:substring(rrnDigits,0,6)}-${fn:substring(rrnDigits,6,13)}
           </c:if>
           <c:if test="${empty appDTO.applicantResiRegiNumber}">
             <span class="highlight-warning">미입력</span>
@@ -451,11 +451,11 @@ textarea.form-control { resize: vertical; }
 
 
 		<div class="info-table-container">
-			<h2 class="section-title">급여 신청 기간 및 월별 내역</h2>
+			<h2 class="section-title">급여 신청 기간</h2>
 			<table class="info-table">
 				<tbody>
 					<tr>
-						<th>육아휴직 기간</th>
+						<th>총 육아휴직 기간</th>
 						<td id="total-leave-period">
 							<fmt:formatDate value="${dto.startDate}" pattern="yyyy-MM-dd" /> ~ <fmt:formatDate value="${dto.endDate}" pattern="yyyy-MM-dd" />
 						</td>
@@ -463,7 +463,7 @@ textarea.form-control { resize: vertical; }
 				</tbody>
 			</table>
 	
-			<h3 class="section-title" style="font-size: 16px; margin-top: 25px;">월별 지급 내역</h3>
+			<h3 class="section-title" style="font-size: 16px; margin-top: 25px;">급여 신청 내역</h3>
 			<table class="info-table">
 				<thead>
 					<tr>
@@ -560,64 +560,6 @@ textarea.form-control { resize: vertical; }
 				</tbody>
 			</table>
 		</div>
-
-
-
-
-
-<!-- 급여 신청 기간 및 월별 내역 -->
-<div class="info-table-container">
-  <h2 class="section-title">급여 신청 기간 및 월별 내역</h2>
-  <table class="info-table table-4col">
-    <tbody>
-      <tr>
-        <th>육아휴직 <br>시작일</th>
-        <td>
-          <c:if test="${empty appDTO.startDate}"><span class="highlight-warning">미입력</span></c:if>
-          <c:if test="${not empty appDTO.startDate}">${appDTO.startDate}</c:if>
-        </td>
-        <th>총 휴직 기간</th>
-        <td id="total-leave-period">(${empty appDTO.startDate ? '미입력' : appDTO.startDate}
-          ~ ${empty appDTO.endDate ? '미입력' : appDTO.endDate})</td>
-      </tr>
-      <tr>
-        <th>월별 분할 <br>신청 여부</th>
-        <td colspan="3">아니오 (일괄 신청)</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <h3 class="section-title" style="font-size: 16px; margin-top: 25px;">월별 지급 내역</h3>
-  <table class="info-table table-4col">
-    <thead>
-      <tr>
-        <th>회차</th>
-        <th>기간</th>
-        <th>사업장 지급액</th>
-        <th>정부 지급액</th>
-        <th>지급예정일</th>
-      </tr>
-    </thead>
-    <tbody>
-      <c:forEach var="t" items="${terms}" varStatus="st">
-        <tr>
-          <td><c:out value="${st.index + 1}" />개월차</td>
-          <td><c:out value="${t.startMonthDate}" /> ~ <c:out value="${t.endMonthDate}" /></td>
-          <td><fmt:formatNumber value="${t.companyPayment}" type="number" /></td>
-          <td><fmt:formatNumber value="${t.govPayment}" type="number" /></td>
-          <td><c:out value="${t.paymentDate}" /></td>
-        </tr>
-      </c:forEach>
-
-      <c:if test="${empty terms}">
-        <tr>
-          <td colspan="5" style="text-align: center; color: #888;">단위기간 내역이 없습니다.</td>
-        </tr>
-      </c:if>
-    </tbody>
-  </table>
-</div>
-
 <!-- 자녀 정보 -->
 <div class="info-table-container">
   <h2 class="section-title">자녀 정보 (육아 대상)</h2>
@@ -644,8 +586,7 @@ textarea.form-control { resize: vertical; }
     </tbody>
   </table>
 
-
-
+<br>
 <!-- 계좌정보 -->
 <div class="info-table-container">
   <h2 class="section-title">급여 입금 계좌정보</h2>
