@@ -36,7 +36,7 @@
         SELECT
             p.application_number AS applicationNumber,
             p.user_id AS userId,
-            u.name AS name,
+            ca.name AS applicantName,
             p.status_code AS statusCode,
             TO_CHAR(p.submitted_dt, 'YYYY-MM-DD') AS submittedDate,
             p.payment_result AS paymentResult,
@@ -46,10 +46,9 @@
                 WHEN p.status_code = 'ST_60' THEN '반려'
                 ELSE '기타'
             END AS statusName
-        FROM
-            TB_PARENTAL_LEAVE_APPLICATION p
-        JOIN
-            TB_User u ON p.user_id = u.id
+        FROM TB_PARENTAL_LEAVE_APPLICATION p
+        JOIN TB_User u ON p.user_id = u.id
+        JOIN TB_CONFIRM_APPLICATION ca ON ca.confirm_number = p.confirm_number
         <include refid="searchCondition"/>
         ORDER BY
             p.application_number DESC
@@ -116,7 +115,7 @@
     c.child_name,
     c.child_resi_regi_number,
     c.child_birth_date,
-    c.registration_number        AS applicantResiRegiNumber, -- 근로자 주민번호(확인서에 저장됨)
+    c.registration_number        AS applicantResiRegiNumber,  -- 근로자 주민번호(확인서에 저장됨)
     c.name                       AS applicantNameFromCA,     -- 근로자 이름(확인서에 저장)
     c.response_name,
     c.response_phone_number,
@@ -126,6 +125,9 @@
     /* ===== 신청자(USER, from PLA.user_id) ===== */
     au.name                      AS applicantName,           -- 신청자 이름(사용자 테이블)
     au.phone_number              AS applicantPhoneNumber,
+    au.zip_number				 AS applicantZipNumber,
+    au.address_base              AS applicantAddrBase,
+    au.address_detail            AS applicantAddrDetail,
 
     /* ===== 회사(USER, from CA.user_id) ===== */
     cu.name                      AS businessName,            -- 회사명

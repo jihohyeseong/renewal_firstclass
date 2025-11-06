@@ -13,286 +13,352 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <style>
-        :root {
-            --primary-color: #3f58d4;
-            --primary-light-color: #f0f2ff;
-            --white-color: #ffffff;
-            --light-gray-color: #f8f9fa;
-            --gray-color: #868e96;
-            --dark-gray-color: #343a40;
-            --border-color: #dee2e6;
-            --success-color: #28a745;
-            --danger-color: #dc3545;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-            --shadow-md: 0 4px 8px rgba(0,0,0,0.07);
-        }
+   <style>
+/* ==== 기본 및 변수 ==== */
+:root {
+  --primary-color: #3f58d4;
+  --primary-light-color: #f0f2ff;
+  --white-color: #fff;
+  --border-color: #dee2e6;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --text-color: #343a40;
+  --text-muted: #6c757d;
+  --bg-light: #f8f9fa;
+  --border-light: #f0f2f5;
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, .05);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, .06);
+}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { height: 100%; }
-        body {
-            display: flex; flex-direction: column; min-height: 100vh;
-            font-family: 'Noto Sans KR', sans-serif;
-            background-color: var(--light-gray-color);
-            color: var(--dark-gray-color);
-        }
-        a { text-decoration: none; color: inherit; }
-	
-<<<<<<< HEAD
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            font-size: 15px;
-            font-weight: 500;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            text-align: center;
-        }
-        .btn-primary { background-color: var(--primary-color); color: var(--white-color); border-color: var(--primary-color); }
-        .btn-primary:hover { background-color: #364ab1; box-shadow: var(--shadow-md); transform: translateY(-2px); }
-        .btn-logout { background-color: var(--dark-gray-color); color: var(--white-color); border: none; }
-        .btn-logout:hover { background-color: #555; }
-        .btn-secondary { background-color: var(--white-color); color: var(--gray-color); border-color: var(--border-color); }
-        .btn-secondary:hover { background-color: var(--light-gray-color); color: var(--dark-gray-color); border-color: #ccc; }
-=======
-        
-        /* 헤더 관련 CSS는 header.jsp로 이동하여 여기서는 삭제됨 */
->>>>>>> 9a12f1d62884b25d6b176c6c998231b2efbdbc41
-		
-	
-        
-        /* 레이아웃 */
-        .content-container {
-            margin-left: 0px;
-            width: 100%;
-        }
-        .main-content {
-            padding: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { height: 100%; }
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: 'Noto Sans KR', sans-serif;
+  background-color: var(--bg-light);
+  color: var(--text-color);
+}
+a { text-decoration: none; color: inherit; }
 
-		/* 검색바 */
-		.search-box {
-            position: relative;
-            width: 400px;
-            margin-right: 1.5rem;
-		}
-        .search-box input {
-            width: 100%;
-            padding: 0.5rem 0.75rem;
-            border: 1px solid #ced4da;
-            border-radius: 0.375rem;
-        }
-        .search-box .bi-search {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #6c757d;
-        }
+/* ==== 레이아웃 ==== */
+.content-container {
+  margin-left: 0px; /* 사이드바 고려 (현재 0) */
+  width: 100%;
+}
+.main-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
 
-        /* 메인 콘텐츠 */
-        .page-title {
-            margin-bottom: 1.5rem;
-            font-weight: 700;
-        }
+/* ==== 페이지 타이틀 ==== */
+.page-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
 
-        /* 처리상태 카드 */
-        .stat-cards-container {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            box-sizing: border-box;
-            gap: 0.7rem;
-            margin-bottom: 3rem;
-        }
-        .stat-card {
-            flex: 1;
-            min-width: 0;
-            background-color: #fff;
-            padding: 2rem;
-            border: 1px solid #e9ecef;
-            border-radius: 0.75rem;
-            transition: all 0.2s ease-in-out;
-        }
-        .stat-cards-container > a {
-            flex: 1;
-            min-width: 0;
-            text-decoration: none;
-            color: inherit;
-		}
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-        .stat-card.active {
-            border-left: 5px solid #3f58d4;
-        }
-        .stat-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-        .stat-card h6 {
-            color: #6c757d;
-            font-weight: 700;
-            font-size: 0.9rem;
-        }
-        .stat-card h1 {
-            color: #3f58d4;
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin: 0.5rem 0;
-        }
-        .stat-card small {
-            color: #6c757d;
-            font-size: 0.85rem;
-        }
-        .stat-card .bi {
-            font-size: 1.8rem;
-            color: #adb5bd;
-        }
+/* ==== 처리상태 카드 (디자인 교체) ==== */
+.stat-cards-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4개 카드 */
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.stat-card {
+  background: var(--white-color);
+  border: 1px solid #e9ecef;
+  border-radius: .75rem;
+  padding: 1.25rem 1.25rem 1rem;
+  transition: transform .15s ease, box-shadow .2s ease;
+  cursor: pointer;
+}
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+.stat-card.active {
+  outline: 2px solid var(--primary-color);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  border-left: none; /* 기존 스타일 제거 */
+}
+.stat-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.stat-card h6 { /* stat-title */
+  font-size: .9rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+.stat-card h1 { /* stat-num */
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--primary-color);
+  line-height: 1.2;
+  margin: .35rem 0 .15rem;
+}
+.stat-card small { /* stat-desc */
+  font-size: .85rem;
+  color: var(--text-muted);
+}
+.stat-card .bi {
+  font-size: 1.4rem;
+  color: #adb5bd;
+}
 
-        /* Table Wrapper */
-        .table-wrapper {
-            background-color: #fff;
-            padding: 1.5rem;
-            border-radius: 0.75rem;
-            border: 1px solid #e9ecef;
-            box-sizing: border-box;
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .table-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        .table-header h4 {
-            font-weight: 700;
-            margin: 0;
-        }
-        .table-filters {
-            display: flex;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
-        .table-filters input, .table-filters select {
-            padding: 0.5rem 0.75rem;
-            border: 1px solid #ced4da;
-            border-radius: 0.375rem;
-            font-size: 0.9rem;
-        }
-        .table-filters input { flex: 2; }
-        .table-filters select { flex: 1; }
+/* ==== 테이블 래퍼 (디자인 개선) ==== */
+.table-wrapper {
+  background: var(--white-color);
+  border: none;
+  border-radius: .75rem;
+  padding: 1.5rem 2rem;
+  box-shadow: var(--shadow-sm);
+  max-width: 1200px; /* main-content와 동일하게 */
+  margin: 0 auto;
+}
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+.table-header h4 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.btn-refresh {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--border-color);
+  background: var(--white-color);
+  font-size: 1.2rem;
+  cursor: pointer;
+  border-radius: .375rem;
+  color: var(--text-muted);
+  transition: all .15s ease;
+}
+.btn-refresh:hover {
+  background-color: var(--bg-light);
+  color: var(--primary-color);
+}
 
-        /* Table */
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-        .data-table th, .data-table td {
-            padding: 1rem;
-            vertical-align: middle;
-            border-bottom: 1px solid #dee2e6;
-        }
-        .data-table thead th {
-            background-color: #f8f9fa;
-            font-weight: 700;
-            color: #495057;
-        }
-        .data-table tbody tr:hover {
-            background-color: #f1f3f5;
-        }
-        /* 달력 버튼&조회 */
-        button {
-            border: none; 
-            background-color: transparent;
-            cursor: pointer; 
-            padding: 0;
-            vertical-align: middle;
-		}
+/* ==== 필터 (디자인 개선) ==== */
+.table-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+  margin-bottom: 1.5rem;
+}
+.table-filters input[type="text"],
+.table-filters select {
+  padding: .5rem .75rem;
+  border: 1px solid var(--border-color);
+  border-radius: .375rem;
+  background: #fdfdfd;
+  height: 40px;
+  box-sizing: border-box;
+  font-size: .9rem;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.table-filters input[type="text"]:focus,
+.table-filters select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px var(--primary-light-color);
+}
+.table-filters select {
+  flex: 1;
+}
 
-		button:hover {
-            opacity: 0.7; 
-            transform: scale(1.1);
-		}
-		
-        /* 재사용 컴포넌트 */
-        .badge {
-            display: inline-block;
-            padding: 0.4em 0.7em;
-            font-size: 0.8rem;
-            font-weight: 500;
-            border-radius: 50rem;
-            color: #fff;
-        }
-        .badge-wait { background-color: var(--primary-color); }
-        .badge-approved { background-color: var(--success-color); }
-        .badge-rejected { background-color: var(--gray-color); }
+/* 검색창 */
+.search-box {
+  position: relative;
+  flex: 2; /* 기존 스타일 유지 */
+  min-width: 250px;
+}
+.search-box input {
+  width: 100%;
+  padding-right: 2.5rem !important; /* 아이콘 버튼 공간 */
+}
+.search-box button { /* 검색창 내부 버튼 */
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: 1.1rem;
+}
+.search-box .bi-search { /* 혹시 i태그일 경우 대비 */
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+}
 
-        .table-btn {
-            display: inline-block;
-            padding: 0.375rem 0.75rem;
-            border: 1px solid #ced4da;
-            border-radius: 0.375rem;
-            background-color: #fff;
-            cursor: pointer;
-            text-align: center;
-            transition: background-color 0.15s ease-in-out;
-        }
-        .table-btn:hover {
-            background-color: #e9ecef;
-        }
-        .btn-refresh {
-            border: none;
-            background: none;
-            font-size: 1.2rem;
-        }
-        /* 페이징 네비게이션 스타일 */
-		.pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 2rem;
-            gap: 0.5rem;
-		}
-		.pagination a, .pagination span {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 38px;
-            height: 38px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background-color: var(--white-color);
-            color: var(--dark-gray-color);
-            font-weight: 500;
-            transition: all 0.2s ease-in-out;
-		}
-		.pagination a:hover {
-            background-color: var(--primary-light-color);
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-		}
-		.pagination .active {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-            color: var(--white-color);
-            cursor: default;
-		}
-		.pagination .disabled {
-            color: #ced4da;
-            background-color: #f8f9fa;
-            pointer-events: none;
-		}
-    </style>
+/* ==== 테이블 (디자인 개선) ==== */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  text-align: left; /* 기본 정렬 */
+}
+.data-table th,
+.data-table td {
+  padding: .9rem 1rem;
+  border-bottom: 1px solid var(--border-light); /* 더 연한 보더 */
+  vertical-align: middle;
+  font-size: .9rem;
+}
+.data-table thead th {
+  background: var(--white-color);
+  font-weight: 600;
+  color: #888;
+  font-size: .8rem;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  border-bottom: 2px solid #e9ecef;
+  border-top: 1px solid #e9ecef;
+}
+.data-table tbody tr:hover {
+  background-color: #fcfdff; /* 매우 연한 호버 효과 */
+}
+.data-table tbody td {
+  color: var(--text-color);
+}
+
+/* 빈 데이터 메시지 */
+.data-table tbody td[colspan] {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 3rem 1rem;
+  font-size: .95rem;
+}
+
+/* 테이블 헤더 내 날짜 버튼 */
+.data-table th button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  vertical-align: middle;
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  transition: color .15s ease;
+}
+.data-table th button:hover {
+  color: var(--primary-color);
+  opacity: 1;
+  transform: none;
+}
+.data-table th span {
+  font-size: 0.85em;
+  color: #666;
+  font-weight: 500;
+}
+
+
+/* ==== 재사용 컴포넌트 ==== */
+.badge {
+  display: inline-block;
+  padding: .35em .65em;
+  border-radius: 999px;
+  color: var(--white-color);
+  font-size: .8rem;
+  font-weight: 600;
+}
+.badge-wait { background-color: var(--primary-color); }
+.badge-approved { background-color: var(--success-color); }
+.badge-rejected { background-color: var(--text-muted); }
+
+/* 상세보기 버튼 (테이블 내부) */
+.table-btn {
+  display: inline-block;
+  padding: .25rem .75rem;
+  border-radius: 999px;
+  background: var(--primary-light-color);
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: .8rem;
+  font-weight: 600;
+  transition: all .15s ease;
+  border: 1px solid transparent; /* 크기 유지 */
+}
+.table-btn:hover {
+  background: var(--primary-color);
+  color: var(--white-color);
+  transform: translateY(-1px);
+}
+.table-btn.btn-secondary { /* 기존 클래스 호환 */
+  background: #f1f3f5;
+  color: #555;
+  border-color: #f1f3f5;
+}
+.table-btn.btn-secondary:hover {
+  background: #e9ecef;
+  color: #333;
+}
+
+
+/* ==== 페이지네이션 (디자인 개선) ==== */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: .5rem;
+  margin-top: 2rem;
+}
+.pagination a,
+.pagination span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--border-color);
+  border-radius: 999px; /* 원형 버튼 */
+  background: var(--white-color);
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: .9rem;
+  font-weight: 500;
+  transition: all .15s ease;
+}
+.pagination a:hover {
+  background: var(--primary-light-color);
+  border-color: var(--primary-light-color);
+  color: var(--primary-color);
+}
+.pagination .active {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--white-color);
+  font-weight: 600;
+  cursor: default;
+}
+.pagination .active:hover {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--white-color);
+}
+.pagination .disabled {
+  background: var(--bg-light);
+  color: #ced4da;
+  pointer-events: none;
+}
+</style>
 </head>
 <body>
 
@@ -300,10 +366,10 @@
     <%@ include file="adminheader.jsp" %>
 
         <main class="main-content">
-            <h2 class="page-title">관리자 신청서 목록</h2>
+            <h2 class="page-title">급여 최종 결재 목록</h2>
 
             <div class="stat-cards-container">
-                <a href="${pageContext.request.contextPath}/admin/superior">
+                <a class="js-status-card" data-status="" style="cursor: pointer;">
 	                <div class="stat-card ${empty status ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
@@ -314,7 +380,7 @@
 	                </div>
                 </a>
 
-                <a href="${pageContext.request.contextPath}/admin/superior?status=PENDING">
+                <a class="js-status-card" data-status="PENDING" style="cursor: pointer;">
 	                <div class="stat-card ${status == 'PENDING' ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
@@ -325,7 +391,7 @@
 	                </div>
 	            </a>
 
-                <a href="${pageContext.request.contextPath}/admin/superior?status=APPROVED">
+                <a class="js-status-card" data-status="APPROVED" style="cursor: pointer;">
 	                <div class="stat-card ${status == 'APPROVED' ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
@@ -336,7 +402,7 @@
 	                </div>
                 </a>
                 
-                <a href="${pageContext.request.contextPath}/admin/superior?status=REJECTED">
+                <a class="js-status-card" data-status="REJECTED" style="cursor: pointer;">
 	                <div class="stat-card ${status == 'REJECTED' ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
@@ -351,10 +417,12 @@
             <div class="table-wrapper">
                 <div class="table-header">
                     <h4>모든 육아휴직 신청서</h4>
-                    <button class="table-btn btn-refresh" id="btnReset"><i class="bi bi-arrow-clockwise"></i></button>
+                    <!-- <button class="table-btn btn-refresh" id="btnReset"><i class="bi bi-arrow-clockwise"></i></button> -->
                 </div>
 
-                <form id="searchForm" action="${pageContext.request.contextPath}/admin/superior" method="get" class="table-filters">
+                <form id="searchForm" action="${pageContext.request.contextPath}/admin/superior" method="post" class="table-filters">
+                    
+                    <input type="hidden" name="page" value="${pageDTO.pageNum}">
                     
                     <div class="search-box">
                         <input type="text" name="keyword" placeholder="신청자 이름 또는 신청번호로 검색..." value="${keyword}">
@@ -364,7 +432,7 @@
                     </div>
                     <%-- 처리 상태 필터 --%>
                     <select name="status" id="statusSelect" onchange="this.form.submit()">
-                        <option value="">모든 상태</option>
+                        <option value="">전체</option>
                         <option value="PENDING" ${status == 'PENDING' ? 'selected' : ''}>대기</option>
     					<option value="APPROVED" ${status == 'APPROVED' ? 'selected' : ''}>승인</option>
     					<option value="REJECTED" ${status == 'REJECTED' ? 'selected' : ''}>반려</option>
@@ -429,24 +497,33 @@
                     </tbody>
                 </table>
                 <div class="pagination">
-				    <c:choose><c:when test="${pageDTO.startPage > 1}">
-				        <a href="${pageContext.request.contextPath}/admin/superior?page=${pageDTO.startPage - 1}&keyword=${keyword}&status=${status}&date=${date}">&laquo;</a>
-				    </c:when><c:otherwise>
-				        <span class="disabled">&laquo;</span>
-				    </c:otherwise></c:choose>
+				    <c:choose>
+				    	<c:when test="${pageDTO.startPage > 1}">
+				        	<a class="js-page-link" data-page="${pageDTO.startPage - 1}" style="cursor: pointer;">&laquo;</a>
+				    	</c:when>
+						<c:otherwise>
+				        	<span class="disabled">&laquo;</span>
+				    	</c:otherwise>
+					</c:choose>
 				
 				    <c:forEach begin="${pageDTO.paginationStart}" end="${pageDTO.paginationEnd}" var="p">
-				        <a href="${pageContext.request.contextPath}/admin/superior?page=${p}&keyword=${keyword}&status=${status}&date=${date}" 
-				           class="${p == pageDTO.pageNum ? 'active' : ''}">
-				            ${p}
-				        </a>
+				        <c:choose>
+				            <c:when test="${p == pageDTO.pageNum}">
+				                <span class="active">${p}</span> </c:when>
+				            <c:otherwise>
+				                <a class="js-page-link" data-page="${p}" style="cursor: pointer;">${p}</a>
+				            </c:otherwise>
+				        </c:choose>
 				    </c:forEach>
 				
-				    <c:choose><c:when test="${pageDTO.endPage > pageDTO.paginationEnd}">
-				        <a href="${pageContext.request.contextPath}/admin/superior?page=${pageDTO.paginationEnd + 1}&keyword=${keyword}&status=${status}&date=${date}">&raquo;</a>
-				    </c:when><c:otherwise>
-				        <span class="disabled">&raquo;</span>
-				    </c:otherwise></c:choose>
+				    <c:choose>
+				    	<c:when test="${pageDTO.endPage > pageDTO.paginationEnd}">
+				        	<a class="js-page-link" data-page="${pageDTO.paginationEnd + 1}" style="cursor: pointer;">&raquo;</a>
+				    	</c:when>
+						<c:otherwise>
+					        <span class="disabled">&raquo;</span>
+					    </c:otherwise>
+					</c:choose>
 				</div>
             </div>
         </main>
@@ -454,12 +531,14 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
 	document.addEventListener("DOMContentLoaded", () => { 
-	    const select = document.getElementById("statusSelect");
 	    const current = "${status}"; 
 	    const dateBtn = document.getElementById('selectDate');
 	    const form = document.getElementById("searchForm");
+	    const statusSelect = document.getElementById("statusSelect");
+	    const keywordInput = form.querySelector('input[name="keyword"]');
+	    const pageInput = form.querySelector('input[name="page"]');
 	    
-	    if (current) select.value = current; 
+	    if (current) statusSelect.value = current; 
 
 	 	// flatpickr 달력 초기화
 	    const fp = flatpickr(dateBtn, {
@@ -482,7 +561,44 @@
 	        },
 	        allowInput: false
 	    });
-	 // 달력 버튼 클릭 시 달력 열기
+	 	
+	    document.querySelectorAll('.js-status-card').forEach(card => {
+	        card.addEventListener('click', (e) => {
+	            e.preventDefault();
+	            const newStatus = card.dataset.status;
+
+	            statusSelect.value = newStatus;
+	            
+	            keywordInput.value = ''; 
+	            pageInput.value = '1';   
+	            fp.clear(); 
+	    
+	            const hiddenDate = form.querySelector('input[name="date"]');
+	            if (hiddenDate) {
+	                hiddenDate.value = '';
+	            }
+
+	            form.submit();
+	        });
+	    });
+
+	    // ---------------------------------------------
+	    // ▼ [추가] 페이징 링크 클릭 시 POST 전송
+	    // ---------------------------------------------
+	    document.querySelectorAll('.js-page-link').forEach(link => {
+	        link.addEventListener('click', (e) => {
+	            e.preventDefault();
+	            const newPage = link.dataset.page;
+	            
+	            // 1. 폼의 페이지(page) 값 변경
+	            pageInput.value = newPage;
+	            
+	            // 2. 폼 POST 전송
+	            form.submit();
+	        });
+	    });
+	    
+	 	// 달력 버튼 클릭 시 달력 열기
 	    dateBtn.addEventListener("click", (e) => {
 	        e.preventDefault();
 	        e.stopPropagation(); 

@@ -186,7 +186,8 @@
     		confirm_number,
     		user_id,
     		gov_info_agree,
-    		center_id
+    		center_id,
+    		file_id
     	) VALUES(
     		#{dto.bankCode},
     		#{dto.accountNumber},
@@ -194,7 +195,8 @@
     		#{dto.confirmNumber},
     		#{userId},
     		#{dto.govInfoAgree},
-    		#{dto.centerId}
+    		#{dto.centerId},
+    		#{dto.fileId}
     	)
     </insert>
     <update id="updateConfirmApply" parameterType="com.example.renewal_firstclass.domain.ApplicationDTO">

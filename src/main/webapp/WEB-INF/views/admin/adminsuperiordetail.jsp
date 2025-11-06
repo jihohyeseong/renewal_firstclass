@@ -16,199 +16,220 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/global.css">
 
 <style>
-:root{
-	--primary-color:#3f58d4;
-	--primary-light-color:#f0f2ff;
-	--white-color:#ffffff;
-	--light-gray-color:#f8f9fa;
-	--gray-color:#868e96;
-	--dark-gray-color:#343a40;
-	--border-color:#dee2e6;
-	--success-color:#28a745;
-	--warning-bg-color:#fff3cd;
-	--warning-border-color:#ffeeba;
-	--warning-text-color:#856404;
-	--shadow-sm:0 1px 3px rgba(0,0,0,0.05);
-	--shadow-md:0 4px 8px rgba(0,0,0,0.07);
-}
-
-/* 기본 스타일 */
-*{margin:0;padding:0;box-sizing:border-box}
-html{height:100%}
-body{
-	display:flex;flex-direction:column;min-height:100vh;
-	font-family:'Noto Sans KR',sans-serif;background-color:var(--light-gray-color);
-	color:var(--dark-gray-color);
-}
-a{text-decoration:none;color:inherit}
-
-.header,.footer{
-	background-color:var(--white-color);padding:15px 40px;border-bottom:1px solid var(--border-color);box-shadow:var(--shadow-sm);
-}
-.footer{border-top:1px solid var(--border-color);border-bottom:none;text-align:center;padding:20px 0;margin-top:auto}
-.header{display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
-.header nav{display:flex;align-items:center;gap:15px}
-.header .welcome-msg{font-size:16px}
-
-.main-container{
-	flex-grow:1;width:100%;max-width:850px;margin:40px auto;padding:40px;
-	background-color:var(--white-color);border-radius:12px;box-shadow:var(--shadow-md);
-}
-
-h1{text-align:center;margin-bottom:10px;font-size:28px}
-h2{
-	color:var(--primary-color);border-bottom:2px solid var(--primary-light-color);
-	padding-bottom:10px;margin-bottom:25px;font-size:20px;
-}
-
-/* 섹션 타이틀 */
-.section-title{
-	font-size:20px;font-weight:700;color:var(--dark-gray-color);
-	margin-bottom:15px;border-left:4px solid var(--primary-color);padding-left:10px;
-}
-
-/* 테이블 */
-.info-table-container{margin-bottom:30px}
-.info-table{
-	width:100%;border-collapse:collapse;
-	border-top:2px solid var(--border-color);
-	border-left:none;border-right:none;
-}
-.info-table th,.info-table td{
-	padding:12px 15px;border:1px solid var(--border-color);
-	text-align:left;font-size:15px;
-}
-.info-table th{
-	background-color:var(--light-gray-color);
-	font-weight:500;width:150px;color:var(--dark-gray-color);
-}
-.info-table td{background-color:var(--white-color);color:#333}
-.info-table.table-4col th{width:120px;background-color:var(--light-gray-color)}
-.info-table.table-4col td{width:auto}
-.info-table.table-4col th,.info-table.table-4col td{border-top:none}
-.info-table tr:first-child th,.info-table tr:first-child td{border-top:1px solid var(--border-color)}
-
-/* 버튼 */
-.btn{
-	display:inline-block;padding:10px 20px;font-size:15px;font-weight:500;
-	border-radius:8px;border:1px solid var(--border-color);cursor:pointer;
-	transition:all .2s ease-in-out;text-align:center;
-}
-.btn-primary{background-color:var(--primary-color);color:#fff;border-color:var(--primary-color)}
-.btn-primary:hover{background-color:#364ab1;box-shadow:var(--shadow-md);transform:translateY(-2px)}
-.btn-secondary{background-color:var(--white-color);color:var(--gray-color);border-color:var(--border-color)}
-.btn-secondary:hover{background-color:var(--light-gray-color);color:var(--dark-gray-color);border-color:#ccc}
-.btn-logout{background-color:var(--dark-gray-color);color:#fff;border:none}
-.btn-logout:hover{background-color:#555}
-
-/* 하단 버튼 컨테이너 */
-.button-container{text-align:center;margin-top:50px}
-.bottom-btn{padding:12px 30px;font-size:1.1em}
-#edit-btn{background-color:var(--primary-color);color:#fff;border-color:var(--primary-color)}
-#edit-btn:hover{background-color:#364ab1;border-color:#364ab1;transform:translateY(-2px)}
-
-.data-title{font-weight:500}
-.detail-btn{
-	border:1px solid var(--primary-color);color:var(--primary-color);
-	background-color:var(--white-color);padding:3px 8px;font-size:14px;
-	margin-left:10px;border-radius:4px;cursor:pointer;transition:background-color .1s;
-}
-.detail-btn:hover{background-color:var(--primary-light-color)}
-.success-text{color:var(--success-color);font-weight:500}
-
-/* 모달 스타일 */
-.modal-overlay{
-	position:fixed;top:0;left:0;width:100%;height:100%;
-	background-color:rgba(0,0,0,0.5);display:flex;
-	justify-content:center;align-items:center;z-index:1000;
-	transition: opacity 0.2s ease-in-out;
-}
-.modal-content {
-	background-color:var(--white-color);padding:30px 40px;
-	border-radius:12px;width:100%;max-width:500px;
-	box-shadow:var(--shadow-md);
-	transform: scale(0.95);
-	transition: transform 0.2s ease-in-out;
-}
-.modal-overlay.visible .modal-content { transform: scale(1); }
-.modal-content h2 {
-	margin-top:0;text-align:center;color:var(--dark-gray-color);
-	border-bottom:none;padding-bottom:0;margin-bottom:25px;
-	font-size: 22px;
-}
-.form-group {margin-bottom:20px}
-.form-group label {
-	display:block;font-weight:500;margin-bottom:8px;font-size:16px;
-}
-.form-control {
-	width:100%;padding:10px;font-size:15px;
-	border:1px solid var(--border-color);border-radius:8px;
-	font-family: 'Noto Sans KR', sans-serif;
-}
-textarea.form-control { resize: vertical; }
-.modal-buttons {
-	display:flex;justify-content:flex-end;gap:10px;margin-top:30px;
-}
-/* [추가] 하이라이팅을 위한 CSS 클래스 */
-.highlight-warning {
-	background-color: #f8d7da; /* 부드러운 빨간색 배경 */
-	color: var(--danger-color); /* 진한 빨간색 텍스트 */
-	font-weight: 700;
-	padding: 2px 6px;
-	border-radius: 4px;
-}
-
-/* ===== 진행 상태 카드 (Step Progress Bar) - Blue Theme (5단계) ===== */
-.progress-card {
-	background: #fff;
-	border: 1px solid var(--border-color);
-	border-radius: 14px;
-	padding: 20px;
-	margin-bottom: 24px;
-}
-.stepper-wrapper {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	position: relative;
-	padding: 0 6%;
-	margin: 6px 0 2px;
-}
-.stepper-wrapper::before {
-	content: '';
-	position: absolute;
-	top: 50%;
-	left: 6%;
-	right: 6%;
-	height: 8px;
-	border-radius: 8px;
-	background-color: #dbe4ff; /* 연파랑 */
-	z-index: 1;
-	transform: translateY(-50%);
-}
-.stepper-item { position: relative; z-index: 2; text-align: center; flex: 1; }
-.step-counter {
-	width: 36px; height: 36px; border-radius: 50%;
-	background-color: #b6ccff; color: #fff; font-weight: 700;
-	margin: 18px auto 6px; display:flex; align-items:center; justify-content:center;
-	transition: background-color .25s ease, box-shadow .25s ease;
-}
-.step-name { font-size: 13px; color: #334155; }
-.stepper-item.completed .step-counter {
-	background-color: #5c7cfa; box-shadow: inset 0 0 0 5px rgba(92,124,250,.22);
-}
-.stepper-item.current .step-counter {
-	background-color: var(--primary-color); /* #3f58d4 */
-	box-shadow: 0 0 0 4px rgba(63,88,212,.18);
-}
-.stepper-wrapper .progress-line {
-	position: absolute; top: 50%; left: 6%;
-	height: 8px; border-radius: 8px; background-color: var(--primary-color);
-	z-index: 1; transform: translateY(-50%);
-	width: 0%; transition: width .35s ease;
-}
-
-#rejectForm { display: none; }
+	:root{
+		--primary-color:#3f58d4;
+		--primary-light-color:#f0f2ff;
+		--white-color:#ffffff;
+		--light-gray-color:#f8f9fa;
+		--gray-color:#868e96;
+		--dark-gray-color:#343a40;
+		--border-color:#dee2e6;
+		--success-color:#28a745;
+		--warning-bg-color:#fff3cd;
+		--warning-border-color:#ffeeba;
+		--warning-text-color:#856404;
+		--shadow-sm:0 1px 3px rgba(0,0,0,0.05);
+		--shadow-md:0 4px 8px rgba(0,0,0,0.07);
+	}
+	
+	/* 기본 스타일 */
+	*{margin:0;padding:0;box-sizing:border-box}
+	html{height:100%}
+	body{
+		display:flex;flex-direction:column;min-height:100vh;
+		font-family:'Noto Sans KR',sans-serif;background-color:var(--light-gray-color);
+		color:var(--dark-gray-color);
+	}
+	a{text-decoration:none;color:inherit}
+	
+	.header,.footer{
+		background-color:var(--white-color);padding:15px 40px;border-bottom:1px solid var(--border-color);box-shadow:var(--shadow-sm);
+	}
+	.footer{border-top:1px solid var(--border-color);border-bottom:none;text-align:center;padding:20px 0;margin-top:auto}
+	.header{display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+	.header nav{display:flex;align-items:center;gap:15px}
+	.header .welcome-msg{font-size:16px}
+	
+	.main-container{
+		flex-grow:1;width:100%;max-width:850px;margin:40px auto;padding:40px;
+		background-color:var(--white-color);border-radius:12px;box-shadow:var(--shadow-md);
+	}
+	
+	h1{text-align:center;margin-bottom:10px;font-size:28px}
+	h2{
+		color:var(--primary-color);border-bottom:2px solid var(--primary-light-color);
+		padding-bottom:10px;margin-bottom:25px;font-size:20px;
+	}
+	
+	/* 섹션 타이틀 */
+	.section-title{
+		font-size:20px;font-weight:700;color:var(--dark-gray-color);
+		margin-bottom:15px;border-left:4px solid var(--primary-color);padding-left:10px;
+	}
+	
+	/* 테이블 */
+	.info-table-container{margin-bottom:30px}
+	.info-table{
+		width:100%;border-collapse:collapse;
+		border-top:2px solid var(--border-color);
+		border-left:none;border-right:none;
+	}
+	.info-table th,.info-table td{
+		padding:12px 15px;border:1px solid var(--border-color);
+		text-align:left;font-size:15px;
+	}
+	.info-table th{
+		background-color:var(--light-gray-color);
+		font-weight:500;width:150px;color:var(--dark-gray-color);
+	}
+	.info-table td{background-color:var(--white-color);color:#333}
+	.info-table.table-4col th{width:120px;background-color:var(--light-gray-color)}
+	.info-table.table-4col td{width:auto}
+	.info-table.table-4col th,.info-table.table-4col td{border-top:none}
+	.info-table tr:first-child th,.info-table tr:first-child td{border-top:1px solid var(--border-color)}
+	
+	/* 버튼 */
+	.btn{
+		display:inline-block;padding:10px 20px;font-size:15px;font-weight:500;
+		border-radius:8px;border:1px solid var(--border-color);cursor:pointer;
+		transition:all .2s ease-in-out;text-align:center;
+	}
+	.btn-primary{background-color:var(--primary-color);color:#fff;border-color:var(--primary-color)}
+	.btn-primary:hover{background-color:#364ab1;box-shadow:var(--shadow-md);transform:translateY(-2px)}
+	.btn-secondary{background-color:var(--white-color);color:var(--gray-color);border-color:var(--border-color)}
+	.btn-secondary:hover{background-color:var(--light-gray-color);color:var(--dark-gray-color);border-color:#ccc}
+	.btn-logout{background-color:var(--dark-gray-color);color:#fff;border:none}
+	.btn-logout:hover{background-color:#555}
+	
+	/* 하단 버튼 컨테이너 */
+	.button-container{text-align:center;margin-top:50px}
+	.bottom-btn{padding:12px 30px;font-size:1.1em}
+	#edit-btn{background-color:var(--primary-color);color:#fff;border-color:var(--primary-color)}
+	#edit-btn:hover{background-color:#364ab1;border-color:#364ab1;transform:translateY(-2px)}
+	
+	.data-title{font-weight:500}
+	.detail-btn{
+		border:1px solid var(--primary-color);color:var(--primary-color);
+		background-color:var(--white-color);padding:3px 8px;font-size:14px;
+		margin-left:10px;border-radius:4px;cursor:pointer;transition:background-color .1s;
+	}
+	.detail-btn:hover{background-color:var(--primary-light-color)}
+	.success-text{color:var(--success-color);font-weight:500}
+	
+	/* 모달 스타일 */
+	.modal-overlay{
+		position:fixed;top:0;left:0;width:100%;height:100%;
+		background-color:rgba(0,0,0,0.5);display:flex;
+		justify-content:center;align-items:center;z-index:1000;
+		transition: opacity 0.2s ease-in-out;
+	}
+	.modal-content {
+		background-color:var(--white-color);padding:30px 40px;
+		border-radius:12px;width:100%;max-width:500px;
+		box-shadow:var(--shadow-md);
+		transform: scale(0.95);
+		transition: transform 0.2s ease-in-out;
+	}
+	.modal-overlay.visible .modal-content { transform: scale(1); }
+	.modal-content h2 {
+		margin-top:0;text-align:center;color:var(--dark-gray-color);
+		border-bottom:none;padding-bottom:0;margin-bottom:25px;
+		font-size: 22px;
+	}
+	.form-group {margin-bottom:20px}
+	.form-group label {
+		display:block;font-weight:500;margin-bottom:8px;font-size:16px;
+	}
+	.form-control {
+		width:100%;padding:10px;font-size:15px;
+		border:1px solid var(--border-color);border-radius:8px;
+		font-family: 'Noto Sans KR', sans-serif;
+	}
+	textarea.form-control { resize: vertical; }
+	.modal-buttons {
+		display:flex;justify-content:flex-end;gap:10px;margin-top:30px;
+	}
+	/* [추가] 하이라이팅을 위한 CSS 클래스 */
+	.highlight-warning {
+		background-color: #f8d7da; /* 부드러운 빨간색 배경 */
+		color: var(--danger-color); /* 진한 빨간색 텍스트 */
+		font-weight: 700;
+		padding: 2px 6px;
+		border-radius: 4px;
+	}
+	
+	/* ===== 진행 상태 카드 (Step Progress Bar) - Blue Theme (5단계) ===== */
+	.progress-card {
+		background: #fff;
+		border: 1px solid var(--border-color);
+		border-radius: 14px;
+		padding: 20px;
+		margin-bottom: 24px;
+	}
+	.stepper-wrapper {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		position: relative;
+		padding: 0 6%;
+		margin: 6px 0 2px;
+	}
+	.stepper-wrapper::before {
+		content: '';
+		position: absolute;
+		top: 50%;
+		left: 6%;
+		right: 6%;
+		height: 8px;
+		border-radius: 8px;
+		background-color: #dbe4ff; /* 연파랑 */
+		z-index: 1;
+		transform: translateY(-50%);
+	}
+	.stepper-item { position: relative; z-index: 2; text-align: center; flex: 1; }
+	.step-counter {
+		width: 36px; height: 36px; border-radius: 50%;
+		background-color: #b6ccff; color: #fff; font-weight: 700;
+		margin: 18px auto 6px; display:flex; align-items:center; justify-content:center;
+		transition: background-color .25s ease, box-shadow .25s ease;
+	}
+	.step-name { font-size: 13px; color: #334155; }
+	.stepper-item.completed .step-counter {
+		background-color: #5c7cfa; box-shadow: inset 0 0 0 5px rgba(92,124,250,.22);
+	}
+	.stepper-item.current .step-counter {
+		background-color: var(--primary-color); /* #3f58d4 */
+		box-shadow: 0 0 0 4px rgba(63,88,212,.18);
+	}
+	.stepper-wrapper .progress-line {
+		position: absolute; top: 50%; left: 6%;
+		height: 8px; border-radius: 8px; background-color: var(--primary-color);
+		z-index: 1; transform: translateY(-50%);
+		width: 0%; transition: width .35s ease;
+	}
+	
+	/* ===== 버튼 영역 수정 ===== */
+	  .button-container {
+	    text-align: center;
+	    margin-top: 20px;
+	    padding-bottom: 20px;
+	  }
+	
+	  .judge-actions .btn {
+	    justify-content: center;
+	    gap: 12px;
+	    margin-bottom: 25px; /* 목록 버튼과 간격 증가 */
+	    padding: 6px 14px;
+	  }
+	  
+	  .btn-primary, .btn-secondary {
+	    padding: 6px 14px; /* 패딩 축소 */
+	    font-size: 14px;
+	  }
+	  
+	#rejectForm { 
+		display: none; 
+	}
 
 </style>
 </head>
@@ -309,12 +330,12 @@ textarea.form-control { resize: vertical; }
 			<tr>
 				<th>주민등록번호</th>
 				<td colspan="3">
-					<c:if test="${not empty userDTO.registrationNumber}">
-						<c:set var="rrnRaw" value="${userDTO.registrationNumber}" />
+					<c:if test="${not empty appDTO.applicantResiRegiNumber}">
+						<c:set var="rrnRaw" value="${appDTO.applicantResiRegiNumber}" />
 						<c:set var="rrnDigits" value="${fn:replace(fn:replace(fn:trim(rrnRaw), '-', ''), ' ', '')}" />
 						${fn:substring(rrnDigits,0,6)}-${fn:substring(rrnDigits,6,12)}
 					</c:if>
-					<c:if test="${empty userDTO.registrationNumber}">
+					<c:if test="${empty appDTO.applicantResiRegiNumber}">
 						<span class="highlight-warning">미입력</span>
 					</c:if>
 				</td>
@@ -322,10 +343,10 @@ textarea.form-control { resize: vertical; }
 			<tr>
 				<th>휴대전화번호</th>
 				<td colspan="3">
-					<c:if test="${not empty userDTO.phoneNumber}">
-						<c:out value="${userDTO.phoneNumber}" />
+					<c:if test="${not empty appDTO.applicantPhoneNumber}">
+						<c:out value="${appDTO.applicantPhoneNumber}" />
 					</c:if>
-					<c:if test="${empty userDTO.phoneNumber}">
+					<c:if test="${empty appDTO.applicantPhoneNumber}">
 						<span class="highlight-warning">미입력</span>
 					</c:if>
 				</td>
@@ -334,13 +355,13 @@ textarea.form-control { resize: vertical; }
 				<th>주소</th>
 				<td colspan="3">
 					<c:choose>
-						<c:when test="${empty userDTO.zipNumber and empty userDTO.addressBase}">
+						<c:when test="${empty appDTO.applicantZipNumber and empty appDTO.applicantAddrBase}">
 							<span class="highlight-warning">미입력</span>
 						</c:when>
 						<c:otherwise>
-							<c:if test="${not empty userDTO.zipNumber}">(${userDTO.zipNumber})&nbsp;</c:if>
-							<c:out value="${userDTO.addressBase}" />
-							<c:if test="${not empty userDTO.addressDetail}">&nbsp;<c:out value="${userDTO.addressDetail}" /></c:if>
+							<c:if test="${not empty appDTO.applicantZipNumber}">(${appDTO.applicantZipNumber})&nbsp;</c:if>
+							<c:out value="${appDTO.applicantAddrBase}" />
+							<c:if test="${not empty appDTO.applicantAddrDetail}">&nbsp;<c:out value="${appDTO.applicantAddrDetail}" /></c:if>
 						</c:otherwise>
 					</c:choose>
 				</td>
@@ -506,14 +527,7 @@ textarea.form-control { resize: vertical; }
 				</c:otherwise>
 			</c:choose>
 		</tbody>
-		<tr><th class="sheet-head" colspan="4">신청서 담당자 정보</th></tr>
-						<tr>
-							<th>담당자 이름</th><td><c:out value="${confirmDTO.responseName}" /></td>
-							<th>담당자 연락처</th>
-							<td>
-								<c:out value="${confirmDTO.responsePhoneNumber}" />
-							</td>
-						</tr>
+		
 	</table>
 </div>
 
@@ -659,9 +673,11 @@ textarea.form-control { resize: vertical; }
 			</div>
 
 			<div class="judge-actions">
-				<button type="button" id="confirmBtn" class="btn btn-primary">확인</button>
-				<a href="${pageContext.request.contextPath}/admin/superior" class="btn btn-secondary">취소</a>
+				<button type="button" id="confirmBtn" class="btn btn-primary btn-sm">확인</button>
+				<a href="${pageContext.request.contextPath}/admin/superior" class="btn btn-secondary btn-sm">취소</a>
 			</div>
+			<a href="${pageContext.request.contextPath}/admin/superior" class="btn btn-secondary"
+					style="margin: 5px;">목록으로</a>
 		</c:otherwise>
 	</c:choose>
 </div>
