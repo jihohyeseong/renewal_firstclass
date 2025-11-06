@@ -250,5 +250,13 @@
     AND delt_at = 'N'
 </select>
 
+<select id="findUserIdByConfirmNumber"
+        parameterType="long"
+        resultType="long">
+  SELECT user_id
+  FROM TB_CONFIRM_APPLICATION
+  WHERE confirm_number = #{confirmNumber}
+    AND delt_at = 'N'
+</select>
 
 </mapper>

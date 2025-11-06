@@ -142,7 +142,7 @@ public class AdminUserApprovalController {
          adminUserApprovalService.approveLevel1ToSecondReview(applicationNumber, processorId);
 
          resp.put("message", "2차 심사로 전환되었습니다.");
-         resp.put("redirectUrl", "/admin/user/apply");
+         resp.put("redirectUrl", "/admin/list");
          resp.put("success", true);
      } catch (IllegalStateException e) {
          resp.put("message", e.getMessage());

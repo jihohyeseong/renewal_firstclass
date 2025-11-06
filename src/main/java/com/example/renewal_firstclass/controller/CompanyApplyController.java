@@ -320,15 +320,23 @@ public class CompanyApplyController {
     /* 상세 화면*/
     @GetMapping("/comp/detail")
     public String compDetail(@RequestParam("confirmNumber") Long confirmNumber,
-                             @AuthenticationPrincipal CustomUserDetails me,
                              Model model,
                              RedirectAttributes ra) {
+    	
+        UserDTO me = currentUserOrNull();
+        
         if (me == null) {
             ra.addFlashAttribute("error", "로그인이 필요합니다.");
             return "redirect:/login";
         }
 
         try {
+            // 소유자 검증 
+            boolean mine = companyApplyService.compDetailCheck(confirmNumber, me.getId());
+            if (!mine) {
+                ra.addFlashAttribute("error", "접근 권한이 없습니다.");
+                return "redirect:/comp/main";
+            }
             ConfirmApplyDTO confirmDTO = companyApplyService.findByConfirmNumber(confirmNumber);
             ConfirmApplyDTO dto = companyApplyService.findByConfirmNumber(confirmNumber);
             if (confirmDTO == null) {
@@ -351,9 +359,11 @@ public class CompanyApplyController {
     
     @GetMapping("/comp/update")
     public String compUpdate(@RequestParam("confirmNumber") Long confirmNumber,
-                             @AuthenticationPrincipal CustomUserDetails me,
                              Model model,
                              RedirectAttributes ra) {
+    	
+    	UserDTO me = currentUserOrNull();
+    	
         if (me == null) {
             ra.addFlashAttribute("error", "로그인이 필요합니다.");
             return "redirect:/login";

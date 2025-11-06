@@ -298,6 +298,13 @@ public class CompanyApplyService {
 	    }
 	    return affected;
 	}
+    
+    public boolean compDetailCheck(Long confirmNumber, Long currentUserId) {
+        if (confirmNumber == null || currentUserId == null) return false;
+        Long ownerId = confirmApplyDAO.findUserIdByConfirmNumber(confirmNumber);
+        return ownerId != null && ownerId.equals(currentUserId);
+    }
+
 
 
 }

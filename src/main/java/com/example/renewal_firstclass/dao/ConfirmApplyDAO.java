@@ -48,4 +48,6 @@ public interface ConfirmApplyDAO {
     int deleteConfirm(@Param("confirmNumber") Long confirmNumber, @Param("userId") Long userId);
     
     Long findFileIdByConfirmNumber(Long confirmNumber);
+    
+    Long findUserIdByConfirmNumber(Long confirmNumber);
 }
