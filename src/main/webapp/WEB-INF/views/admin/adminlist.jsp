@@ -8,47 +8,375 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <style>
+<style>
+/* ==== 기본 및 변수 ==== */
+:root {
+  --primary-color: #3f58d4;
+  --primary-light-color: #f0f2ff;
+  --white-color: #fff;
+  --border-color: #dee2e6;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --text-color: #343a40;
+  --text-muted: #6c757d;
+  --bg-light: #f8f9fa;
+  --border-light: #f0f2f5;
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, .05);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, .06);
+}
 
 body {
-    margin: 0;
+  margin: 0;
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--bg-light);
+  color: var(--text-color);
 }
-    /* ==== 기존 스타일 그대로 (필요한 부분만 축약) ==== */
-    :root{--primary-color:#3f58d4;--primary-light-color:#f0f2ff;--white-color:#fff;--border-color:#dee2e6;--success-color:#28a745;--danger-color:#dc3545;}
-    body{font-family:'Noto Sans KR',sans-serif;background:#f8f9fa;color:#343a40;}
-    .main-content{max-width:1200px;margin:0 auto;padding:2rem;}
-    .table-wrapper{background:#fff;border:1px solid #e9ecef;border-radius:.75rem;padding:1.5rem}
-    .table-filters{display:flex;gap:.75rem;margin-bottom:1rem}
-    .table-filters input,.table-filters select{padding:.5rem .75rem;border:1px solid #ced4da;border-radius:.375rem}
-    .search-box{position:relative;width:360px}
-    .search-box .bi-search{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:#6c757d}
-    table{width:100%;border-collapse:collapse}
-    th,td{padding:1rem;border-bottom:1px solid #dee2e6}
-    thead th{background:#f8f9fa;font-weight:700}
-    .badge{display:inline-block;padding:.35em .65em;border-radius:999px;color:#fff;font-size:.8rem}
-    .badge-wait{background:var(--primary-color)}
-    .badge-approved{background:var(--success-color)}
-    .badge-rejected{background:#6c757d}
-    .doc-chip{display:inline-flex;align-items:center;gap:.4rem;padding:.25rem .55rem;border-radius:999px;border:1px solid var(--border-color);font-size:.75rem;background:#fff}
-    .doc-chip i{font-size:1rem}
-    .pagination{display:flex;justify-content:center;gap:.5rem;margin-top:1.25rem}
-    .pagination a,.pagination span{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border:1px solid var(--border-color);border-radius:8px;background:#fff}
-    .pagination .active{background:var(--primary-color);border-color:var(--primary-color);color:#fff}
-    .btn-refresh{border:none;background:none;font-size:1.2rem;cursor:pointer}
-    /* ==== 요약 카드 ==== */
-.stat-cards .stat-card{
-  background:#fff;border:1px solid #e9ecef;border-radius:.75rem;padding:1.25rem 1.25rem 1rem;
-  transition:transform .15s ease, box-shadow .2s ease; cursor:pointer;
+
+/* ==== 레이아웃 ==== */
+.main-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
 }
-.stat-cards .stat-card:hover{ transform:translateY(-4px); box-shadow:0 6px 18px rgba(0,0,0,.06); }
-.stat-cards .stat-card.active{ outline:2px solid var(--primary-color); }
-.stat-cards .stat-head{ display:flex; align-items:center; justify-content:space-between; }
-.stat-cards .stat-title{ font-size:.9rem; font-weight:700; color:#6c757d; }
-.stat-cards .bi{ font-size:1.4rem; color:#adb5bd; }
-.stat-cards .stat-num{ font-size:2.2rem; font-weight:800; color:var(--primary-color); line-height:1.2; margin:.35rem 0 .15rem; }
-.stat-cards .stat-desc{ font-size:.85rem; color:#6c757d; }
-@media (max-width: 900px){
-  .stat-cards{ grid-template-columns:repeat(2,1fr); }
+
+.page-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+/* ==== 요약 카드 (기존 스타일 유지) ==== */
+.stat-cards .stat-card {
+  background: var(--white-color);
+  border: 1px solid #e9ecef;
+  border-radius: .75rem;
+  padding: 1.25rem 1.25rem 1rem;
+  transition: transform .15s ease, box-shadow .2s ease;
+  cursor: pointer;
+}
+
+.stat-cards .stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.stat-cards .stat-card.active {
+  outline: 2px solid var(--primary-color);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.stat-cards .stat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stat-cards .stat-title {
+  font-size: .9rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.stat-cards .bi {
+  font-size: 1.4rem;
+  color: #adb5bd;
+}
+
+.stat-cards .stat-num {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--primary-color);
+  line-height: 1.2;
+  margin: .35rem 0 .15rem;
+}
+
+.stat-cards .stat-desc {
+  font-size: .85rem;
+  color: var(--text-muted);
+}
+
+@media (max-width: 900px) {
+  .stat-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ==== 테이블 래퍼 (디자인 개선) ==== */
+.table-wrapper {
+  background: var(--white-color);
+  border: none;
+  border-radius: .75rem;
+  padding: 1.5rem 2rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.table-header h4 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+/* ==== 필터 (디자인 개선) ==== */
+.table-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+  margin-bottom: 1.5rem;
+}
+
+.table-filters input[type="text"],
+.table-filters select {
+  padding: .5rem .75rem;
+  border: 1px solid var(--border-color);
+  border-radius: .375rem;
+  background: #fdfdfd;
+  height: 40px;
+  box-sizing: border-box;
+  font-size: .9rem;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.table-filters input[type="text"]:focus,
+.table-filters select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px var(--primary-light-color);
+}
+
+.search-box {
+  position: relative;
+  flex: 1 1 300px; /* 유연한 너비 */
+  min-width: 250px;
+}
+
+.search-box input {
+  width: 100%;
+  padding-right: 2.5rem !important;
+}
+
+.search-box .bi-search {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+}
+
+/* ==== 필터 버튼 (디자인 개선) ==== */
+.table-filters button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 .75rem;
+  height: 40px;
+  min-width: 40px;
+  border: 1px solid var(--border-color);
+  border-radius: .375rem;
+  background: var(--white-color);
+  color: #555;
+  cursor: pointer;
+  font-size: .9rem;
+  font-weight: 500;
+  transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+}
+
+.table-filters button:hover {
+  background-color: #f8f9fa;
+}
+
+#btnSearch {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--white-color);
+  padding: 0 1.25rem;
+}
+
+#btnSearch:hover {
+  background: #334abf;
+  border-color: #334abf;
+  color: var(--white-color);
+}
+
+#btnDate {
+  font-size: 1.1rem;
+}
+
+.btn-refresh {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--border-color);
+  background: var(--white-color);
+  font-size: 1.2rem;
+  cursor: pointer;
+  border-radius: .375rem;
+  color: var(--text-muted);
+  transition: all .15s ease;
+}
+
+.btn-refresh:hover {
+  background-color: var(--bg-light);
+  color: var(--primary-color);
+}
+
+/* ==== 테이블 (디자인 개선) ==== */
+table.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+table.data-table th,
+table.data-table td {
+  padding: .9rem 1rem;
+  border-bottom: 1px solid var(--border-light); /* 더 연한 보더 */
+  vertical-align: middle;
+  font-size: .9rem;
+  text-align: left;
+}
+
+table.data-table thead th {
+  background: var(--white-color);
+  font-weight: 600;
+  color: #888;
+  font-size: .8rem;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  border-bottom: 2px solid #e9ecef;
+  border-top: 1px solid #e9ecef;
+}
+
+table.data-table tbody tr:hover {
+  background-color: #fcfdff; /* 매우 연한 호버 효과 */
+}
+
+table.data-table tbody td {
+  color: var(--text-color);
+}
+
+/* 빈 데이터 메시지 */
+table.data-table tbody tr:first-child td[colspan] {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 3rem 1rem;
+  font-size: .95rem;
+}
+
+/* 상세보기 버튼 (테이블 내부) */
+.table-btn {
+  display: inline-block;
+  padding: .25rem .75rem;
+  border-radius: 999px;
+  background: var(--primary-light-color);
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: .8rem;
+  font-weight: 600;
+  transition: all .15s ease;
+}
+
+.table-btn:hover {
+  background: var(--primary-color);
+  color: var(--white-color);
+  transform: translateY(-1px);
+}
+
+/* ==== 뱃지 및 칩 (기존 스타일 유지) ==== */
+.badge {
+  display: inline-block;
+  padding: .35em .65em;
+  border-radius: 999px;
+  color: var(--white-color);
+  font-size: .8rem;
+  font-weight: 600;
+}
+
+.badge-wait {
+  background: var(--primary-color);
+}
+
+.badge-approved {
+  background: var(--success-color);
+}
+
+.badge-rejected {
+  background: var(--text-muted);
+}
+
+.doc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .25rem .55rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-color);
+  font-size: .75rem;
+  font-weight: 500;
+  background: var(--white-color);
+  color: #555;
+}
+
+.doc-chip i {
+  font-size: 1rem;
+  color: var(--primary-color);
+}
+.doc-chip .bi-patch-check {
+  color: var(--success-color);
+}
+
+
+/* ==== 페이지네이션 (디자인 개선) ==== */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: .5rem;
+  margin-top: 2rem;
+}
+
+.pagination a,
+.pagination span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--border-color);
+  border-radius: 999px; /* 원형 버튼 */
+  background: var(--white-color);
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: .9rem;
+  font-weight: 500;
+  transition: all .15s ease;
+}
+
+.pagination a:hover {
+  background: var(--primary-light-color);
+  border-color: var(--primary-light-color);
+  color: var(--primary-color);
+}
+
+.pagination .active {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--white-color);
+  font-weight: 600;
+}
+
+.pagination .active:hover {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--white-color);
 }
 </style>
 </head>
