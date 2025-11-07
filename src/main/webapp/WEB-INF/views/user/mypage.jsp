@@ -359,7 +359,7 @@
             </div>
     
             <!-- [수정] 폼 액션 및 버튼 텍스트 변경 -->
-            <form action="${pageContext.request.contextPath}/mypage/updateInfo" method="post">
+            <form action="${pageContext.request.contextPath}/mypage/updateAddress" method="post" onsubmit="return confirm('수정하시겠습니까?');">
                 
                 <input type="hidden" name="id" value="${user.id}" />
                 

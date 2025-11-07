@@ -290,6 +290,13 @@
             <result property="earlyReturnDate" column="early_return_date"/>
             <result property="govPaymentUpdate" column="gov_payment_update"/>
         </collection>
+        
+        <collection property="files" ofType="com.example.renewal_firstclass.domain.AttachedFileDTO">
+	        <id property="fileId" column="af_file_id"/>
+	        <id property="sequence" column="af_sequence"/>	        
+	        <result property="fileType" column="af_file_type"/>
+	        <result property="fileUrl" column="af_file_url"/>
+    	</collection>
     </resultMap>
 
 	<select id="findApplicationDetailByApplicationNumber" resultMap="applicationDetailResultMap" parameterType="long">
@@ -339,7 +346,12 @@
 	        T.end_month_date,
 	        T.confirm_number AS term_confirm_number,
 	        T.early_return_date,
-	        T.gov_payment_update
+	        T.gov_payment_update,
+	        
+	        AF.file_id AS af_file_id,
+	        AF.file_type AS af_file_type,
+	        AF.file_url AS af_file_url,
+	        AF.sequence AS af_sequence
 	        
 	    FROM 
 	        TB_PARENTAL_LEAVE_APPLICATION A
@@ -366,6 +378,10 @@
 	        -- 5. 월별 급여 정보 조인
 	        LEFT JOIN TB_TERM_AMOUNT T
 	            ON A.confirm_number = T.confirm_number AND T.application_number = #{applicationNumber}
+	        
+	        -- 6. 첨부파일 조인 (공백 수정됨)
+	        LEFT JOIN TB_ATTACHED_FILE AF 
+	            ON A.file_id = AF.file_id
 	            
 	    WHERE
 	        -- 1. 파라미터 필터링
@@ -456,5 +472,11 @@
 		SELECT application_number
 		FROM TB_PARENTAL_LEAVE_APPLICATION
 		WHERE confirm_number = #{confirmNumber} AND delt_at = 'N' AND status_code IN ('ST_10', 'ST_20', 'ST_30', 'ST_40')
+	</select>
+	
+	<select id="completeCheckByConfirmNumber" parameterType="long" resultType="int">
+		SELECT COUNT(*)
+		FROM TB_PARENTAL_LEAVE_APPLICATION
+		WHERE confirm_number = #{confirmNumber} AND delt_at = 'N' AND status_code IN('ST_10', 'ST_20', 'ST_30')
 	</select>
 </mapper>

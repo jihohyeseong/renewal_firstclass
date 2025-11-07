@@ -366,7 +366,7 @@ a { text-decoration: none; color: inherit; }
     <%@ include file="adminheader.jsp" %>
 
         <main class="main-content">
-            <h2 class="page-title">급여 최종 결재 목록</h2>
+            <h2 class="page-title" style="margin-top: 30px;">급여 최종 결재 목록</h2>
 
             <div class="stat-cards-container">
                 <a class="js-status-card" data-status="" style="cursor: pointer;">

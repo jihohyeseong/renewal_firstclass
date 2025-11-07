@@ -163,7 +163,22 @@ h2{
        font-size: 14px;
        color: var(--gray-color);
    }
-
+.file-download-link {
+    color: var(--primary-color); /* 테마 색상 적용 */
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px; /* 아이콘과 텍스트 간격 */
+}
+.file-download-link:hover {
+    text-decoration: underline;
+}
+.file-download-link::before {
+    content: '📎'; /* 첨부파일 아이콘 */
+    font-size: 1.1em;
+    color: var(--gray-color); /* 아이콘 색상 */
+}
 
 /* ---------------------------------- */
 /* 📱 반응형 스타일 */
@@ -527,45 +542,56 @@ h2{
 			</div>
 		
 			<div class="info-table-container">
-				<h2 class="section-title">접수 처리 센터 정보</h2>
-				<table class="info-table">
-					<tbody>
-						<tr>
-							<th>관할센터</th>
-							<td>
-								<c:out value="${dto.centerName}"/>
-								<a href="<c:out value='${dto.centerUrl}'/>" target="_blank" class="detail-btn">자세히 보기</a>
-							</td>
-							<th>대표전화</th>
-							<td><c:out value="${dto.centerPhoneNumber}"/></td>
-						</tr>
-						<tr>
-							<th>주소</th>
-							<td colspan="3">(${dto.centerZipCode}) ${dto.centerAddressBase} ${dto.centerAddressDetail}</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		
-			<div class="info-table-container">
-				<h2 class="section-title">행정정보 공동이용 동의</h2>
-				<table class="info-table">
-					<tbody>
-						<tr>
-							<th>동의 여부</th>
-							<td colspan="3">
-								<c:choose>
-									<c:when test="${dto.govInfoAgree == 'Y'}">예</c:when>
-									<c:otherwise><span class="highlight-warning">아니요</span></c:otherwise>
-								</c:choose>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			
-		<%-- ✅ 2페이지 캡처 영역 끝 --%>
-		</div>
+                <h2 class="section-title">행정정보 공동이용 동의</h2>
+                <table class="info-table">
+                    <tbody>
+                    <tr>
+                    <th>동의 여부</th>
+                    <td colspan="3">
+                    <c:choose>
+                    	<c:when test="${dto.govInfoAgree == 'Y'}">예</c:when>
+                    	<c:otherwise><span class="highlight-warning">아니요</span></c:otherwise>
+                    </c:choose>
+                    </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        
+            <div class="info-table-container">
+                <h2 class="section-title">첨부파일</h2>
+                <table class="info-table">
+                    <tbody>
+                        <c:if test="${empty dto.files}">
+                            <tr>
+                                <th style="width: 150px;">파일 목록</th>
+                                <td>첨부된 파일이 없습니다.</td>
+                            </tr>
+                        </c:if>
+                        
+                        <c:if test="${not empty dto.files}">
+                            <c:forEach var="file" items="${dto.files}" varStatus="status">
+                                <tr>
+                                    <%-- 파일이 여러 개일 때 첫 번째 행에만 '파일 목록' th를 생성 (rowspan) --%>
+                                    <c:if test="${status.first}">
+                                        <th rowspan="${fn:length(dto.files)}" style="width: 150px;">파일 목록</th>
+                                    </c:if>
+                                    
+                                    <td>
+                                        <a href="${pageContext.request.contextPath}/file/download?fileId=${file.fileId}&seq=${file.sequence}" 
+                                           class="file-download-link">
+                                            <c:set var="parts" value="${fn:split(file.fileUrl, '\\\\')}" />
+  											${parts[fn:length(parts) - 1]}
+                                        </a>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </c:if>
+                    </tbody>
+                </table>
+            </div>
+            <%-- ✅ 2페이지 캡처 영역 끝 --%>
+        </div>
 		
 	
 		<%-- 버튼 컨테이너 (캡처 영역 밖) --%>

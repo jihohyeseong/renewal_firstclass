@@ -60,4 +60,6 @@ public interface UserApplyDAO {
 
 	Long countByConfirmNumber(Long confirmNumber);
 
+	int completeCheckByConfirmNumber(Long confirmNumber);
+
 }
