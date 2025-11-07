@@ -292,6 +292,13 @@
   outline: none;
 }
 
+.keyword-form .input-text{
+  height: 40px;       /* 기존 40px → 48px */
+  padding: 0 16px;    /* 좌우 여백 확대 */
+  font-size: 16px;    /* 글자 크기 살짝 키움 */
+  border-radius: 12px;
+  border: 1px solid var(--border-color, #dee2e6);
+}
 </style>
 </head>
 <body>
