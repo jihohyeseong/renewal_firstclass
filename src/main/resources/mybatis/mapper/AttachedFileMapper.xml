@@ -32,17 +32,6 @@
       AND sequence = #{sequence}
   </select>
 
-<!--   <select id="findOwnerUserIdByFileId"
-          parameterType="long"
-          resultType="long">
-    SELECT user_id
-    FROM TB_CONFIRM_APPLICATION
-    WHERE file_id = #{fileId}
-      AND NVL(delt_at,'N') = 'N'
-    FETCH FIRST 1 ROWS ONLY
-  </select> -->
-  
-  
   <select id="selectFilesByFileId"
         parameterType="long"
         resultType="com.example.renewal_firstclass.domain.AttachedFileDTO">

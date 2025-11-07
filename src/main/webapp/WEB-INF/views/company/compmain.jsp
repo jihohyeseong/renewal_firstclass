@@ -312,38 +312,51 @@
     </div>
 
 	<div class="content-wrapper">
-		<div class="content-header">
-			<h2>${userDTO.name}님의신청 내역</h2>
+<div class="content-header">
+  <h2>${userDTO.name}님의신청 내역</h2>
 
-			<div class="content-header-right">
-				<form id="statusForm" class="status-form" method="post"
-					action="${pageContext.request.contextPath}/comp/search">
-					 <input type="text" name="nameKeyword" placeholder="근로자 이름" value="${nameKeyword}" maxlength="50"/>
-  					 <c:set var="regNoRaw" value="${empty regNoKeyword ? '' : regNoKeyword}" />
+  <div class="content-header-right">
+    <!-- 상태 전용 폼: 상태 변경 시 즉시 제출 -->
+    <form id="statusForm" class="status-form" method="post"
+          action="${pageContext.request.contextPath}/comp/search">
+      <label for="status" class="sr-only">상태 선택</label>
+      <select id="status" name="status" onchange="this.form.submit()" class="status-select">
+        <option value="ALL" ${status=='ALL'  ? 'selected' : ''}>전체</option>
+        <option value="ST_10" ${status=='ST_10' ? 'selected' : ''}>등록(임시저장)</option>
+        <option value="ST_20" ${status=='ST_20' ? 'selected' : ''}>제출</option>
+        <option value="ST_30" ${status=='ST_30' ? 'selected' : ''}>심사중</option>
+        <option value="ST_50" ${status=='ST_50' ? 'selected' : ''}>승인완료</option>
+        <option value="ST_60" ${status=='ST_60' ? 'selected' : ''}>반려처리</option>
+      </select>
+      <input type="hidden" name="page" value="1" />
+      <input type="hidden" name="size" value="${size}" />
+    </form>
 
-<!-- 전송용: 숫자만 -->
-<input type="hidden" name="regNoKeyword" id="regNoRaw" value="${regNoRaw}" />
+    <a href="${pageContext.request.contextPath}/comp/apply" class="btn btn-primary">새로 신청하기</a>
+  </div>
+</div>
 
-<!-- 표시용: 하이픈 포함(보여주기만) -->
-<input type="text" id="regNoDisplay"
-       placeholder="주민등록번호(숫자13자리)" value="" maxlength="14"/>
-					<label for="status" class="sr-only">상태 선택</label> <select
-						id="status" name="status" onchange="this.form.submit()" class="status-select">
-						<option value="ALL" ${status=='ALL'  ? 'selected' : ''}>전체</option>
-						<option value="ST_10" ${status=='ST_10' ? 'selected' : ''}>등록(임시저장)</option>
-						<option value="ST_20" ${status=='ST_20' ? 'selected' : ''}>제출</option>
-						<option value="ST_30" ${status=='ST_30' ? 'selected' : ''}>심사중</option>
-						<option value="ST_50" ${status=='ST_50' ? 'selected' : ''}>승인완료</option>
-						<option value="ST_60" ${status=='ST_60' ? 'selected' : ''}>반려처리</option>
-					</select> <input type="hidden" name="page" value="1" /> <input type="hidden"
-						name="size" value="${size}" />
-						<button type="submit">검색</button>
-				</form>
+<!-- ▼▼▼ 상태 줄 아래: 키워드 검색 줄 ▼▼▼ -->
+<div class="filters-row">
+  <form id="keywordForm" class="keyword-form" method="post"
+        action="${pageContext.request.contextPath}/comp/search">
+    <!-- 현재 상태 유지 전달 -->
+    <input type="hidden" name="status" value="${status}" />
+    <input type="hidden" name="page" value="1" />
+    <input type="hidden" name="size" value="${size}" />
 
-				<a href="${pageContext.request.contextPath}/comp/apply"
-					class="btn btn-primary">새로 신청하기</a>
-			</div>
-		</div>
+    <input type="text" name="nameKeyword" placeholder="근로자 이름" value="${nameKeyword}" maxlength="50" class="input-text"/>
+
+    <c:set var="regNoRaw" value="${empty regNoKeyword ? '' : regNoKeyword}" />
+    <!-- 전송용(숫자만) -->
+    <input type="hidden" name="regNoKeyword" id="regNoRaw" value="${regNoRaw}" />
+    <!-- 표시용(하이픈 포함) -->
+    <input type="text" id="regNoDisplay" class="input-text"
+           placeholder="주민등록번호(숫자13자리)" value="" maxlength="14"/>
+
+    <button type="submit" class="btn btn-secondary">검색</button>
+  </form>
+</div>
 
 		<c:choose>
 			<c:when test="${empty confirmList}">
@@ -455,6 +468,9 @@
 	  const form = document.getElementById('statusForm');
 	  if (!raw || !disp || !form) return;
 
+	  // ★ 이름 입력
+	  const nameInput = form.querySelector('input[name="nameKeyword"]');
+
 	  const onlyDigits = s => String(s||'').replace(/\D/g,'').slice(0,13);
 	  const fmt = d => d.length<=6 ? d : d.slice(0,6)+'-'+d.slice(6);
 
@@ -473,15 +489,22 @@
 	  });
 
 	  form.addEventListener('submit', () => {
+	    // 주민등록번호 hidden
 	    const d = onlyDigits(disp.value);
 	    if (d.length === 0) {
-	      raw.disabled = true;     // ★ 전송에서 제외
+	      raw.disabled = true;     // 전송 제외
 	    } else {
 	      raw.disabled = false;
-	      raw.value = d;           // 숫자만
+	      raw.value = d;
+	    }
+
+	    // ★ 이름 입력 비어있으면 전송 제외
+	    if (nameInput && !nameInput.value.trim()) {
+	      nameInput.disabled = true;
 	    }
 	  });
 	})();
+
 
 
 </script>

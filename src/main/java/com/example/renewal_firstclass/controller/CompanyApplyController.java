@@ -85,7 +85,6 @@ public class CompanyApplyController {
             return "redirect:/login";
         }
 
-        // 기본 목록용 (검색조건 없음)
         int total = companyApplyService.countConfirmList(user.getId());
         int totalPages = (int) Math.ceil((double) total / Math.max(1, size));
         if (page < 1) page = 1;
@@ -95,9 +94,12 @@ public class CompanyApplyController {
 
         model.addAttribute("confirmList", list);
         model.addAttribute("userDTO", user);
+
+        // 기본값 유지
         model.addAttribute("status", "ALL");
         model.addAttribute("nameKeyword", null);
         model.addAttribute("regNoKeyword", null);
+
         model.addAttribute("page", page);
         model.addAttribute("size", size);
         model.addAttribute("total", total);
@@ -105,7 +107,15 @@ public class CompanyApplyController {
 
         return "company/compmain";
     }
-    /*메인에서검색*/
+
+    /* 유틸: 공백/빈문자 -> null */
+    private String normalize(String s) {
+        if (s == null) return null;
+        String t = s.trim();
+        return t.isEmpty() ? null : t;
+    }
+
+    /* 메인에서 검색 */
     @PostMapping("/comp/search")
     public String search(@RequestParam(defaultValue = "ALL") String status,
                          @RequestParam(required = false) String nameKeyword,
@@ -119,18 +129,25 @@ public class CompanyApplyController {
             return "redirect:/login";
         }
 
-        boolean hasKeyword = (nameKeyword != null) ||
-                             (regNoKeyword != null);
+        // ★ 빈문자 -> null로 정규화
+        nameKeyword = normalize(nameKeyword);
+        regNoKeyword = normalize(regNoKeyword);
+        status = (status == null || status.trim().isEmpty()) ? "ALL" : status.trim();
 
         int total;
         List<ConfirmListDTO> list;
 
-        if (hasKeyword) {
-            total = companyApplyService.countConfirmList(user.getId(), status, nameKeyword, regNoKeyword);
-            list = companyApplyService.getConfirmList(user.getId(), status, nameKeyword, regNoKeyword, page, size);
-        } else {
+        // ★ 조건 분기: 상태/키워드 중 하나라도 있으면 조건검색, 전부 없으면 전체
+        boolean onlyStatusAll = "ALL".equals(status) && nameKeyword == null && regNoKeyword == null;
+
+        if (onlyStatusAll) {
+            // 전체
             total = companyApplyService.countConfirmList(user.getId());
-            list = companyApplyService.getConfirmList(user.getId(), page, size);
+            list  = companyApplyService.getConfirmList(user.getId(), page, size);
+        } else {
+            // 상태는 항상 전달(ALL이면 Mapper에서 무시), 키워드는 null이면 Mapper에서 무시
+            total = companyApplyService.countConfirmList(user.getId(), status, nameKeyword, regNoKeyword);
+            list  = companyApplyService.getConfirmList(user.getId(), status, nameKeyword, regNoKeyword, page, size);
         }
 
         int totalPages = (int) Math.ceil((double) total / Math.max(1, size));
@@ -139,9 +156,11 @@ public class CompanyApplyController {
 
         model.addAttribute("confirmList", list);
         model.addAttribute("userDTO", user);
+
         model.addAttribute("status", status);
         model.addAttribute("nameKeyword", nameKeyword);
         model.addAttribute("regNoKeyword", regNoKeyword);
+
         model.addAttribute("page", page);
         model.addAttribute("size", size);
         model.addAttribute("total", total);
