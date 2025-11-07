@@ -716,8 +716,8 @@
                         <th>처리 상태</th>
                         <td>
                              <c:choose>
-                                <c:when test="${confirmDTO.statusCode == 'ST_20'}"><span class="status-badge status-pending">심사중</span></c:when>
-                                <c:when test="${confirmDTO.statusCode == 'ST_30'}"><span class="status-badge status-pending">심사중</span></c:when>
+                                <c:when test="${confirmDTO.statusCode == 'ST_20'}"><span class="status-badge status-pending">제출</span></c:when>
+                                <c:when test="${confirmDTO.statusCode == 'ST_30'}"><span class="status-badge status-pending">제출</span></c:when>
                                 <c:when test="${confirmDTO.statusCode == 'ST_50'}"><span class="status-badge status-approved">승인</span></c:when>
                                 <c:when test="${confirmDTO.statusCode == 'ST_60'}"><span class="status-badge status-rejected">반려</span></c:when>
                                 <c:otherwise><c:out value="${confirmDTO.statusCode}" /></c:otherwise>
@@ -1114,7 +1114,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const generateEditBtn = document.getElementById('generate-edit-forms-btn');
     const editFormsContainer = document.getElementById('edit-dynamic-forms-container');
     const editHeaderRow = document.getElementById('edit-dynamic-header-row');
-	
+
     const initialData = {
             // gson.toJson이 JSON 배열 문자열("[]" 또는 "[{...}]")이나 "null"을 직접 출력
             termAmounts: ${gson.toJson(confirmDTO.updatedTermAmounts)} || [],

@@ -171,10 +171,10 @@ public class AdminApprovalController {
             }
             
             // 제출 상태일 경우 심사중으로 변경
-            if ("ST_20".equals(confirmDTO.getStatusCode())) {
+            /*if ("ST_20".equals(confirmDTO.getStatusCode())) {
                 adminApprovalService.updateStatusCode(confirmNumber);
                 confirmDTO.setStatusCode("ST_30");
-            }
+            }*/
 
             model.addAttribute("gson", gson);
             model.addAttribute("confirmDTO", confirmDTO);

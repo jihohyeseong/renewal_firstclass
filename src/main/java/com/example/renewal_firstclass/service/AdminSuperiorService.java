@@ -81,7 +81,7 @@ public class AdminSuperiorService {
     @Transactional
     public void userApplyDetail(long applicationNumber, Model model) {
         // 진입 시 검토중 전환 
-        adminSuperiorDAO.whenOpenChangeState(applicationNumber);
+        //adminSuperiorDAO.whenOpenChangeState(applicationNumber);
         
         AdminUserApprovalDTO dto = adminSuperiorDAO.selectAppDetailByAppNo(applicationNumber);
         try {

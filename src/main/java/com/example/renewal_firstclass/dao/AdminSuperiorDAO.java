@@ -39,7 +39,7 @@ public interface AdminSuperiorDAO {
     AdminUserApprovalDTO selectAppDetailByAppNo(@Param("applicationNumber") long applicationNumber);
 
     /** 관리자 상세 진입 시 심사중상태로*/
-    int whenOpenChangeState(@Param("applicationNumber") long applicationNumber);
+    //int whenOpenChangeState(@Param("applicationNumber") long applicationNumber);
 
     /** 최종 지급 확정*/
     int approveApplicationLevel2(@Param("applicationNumber") long applicationNumber,
