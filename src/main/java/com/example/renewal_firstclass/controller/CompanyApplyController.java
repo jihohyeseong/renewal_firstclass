@@ -259,8 +259,10 @@ public class CompanyApplyController {
         }
 
         try {
-            form.setFileId(fileId);
-            Long confirmNumber = companyApplyService.createConfirm(form,monthlyCompanyPay);
+            if (fileId != null) {
+                form.setFileId(fileId);
+            }
+            Long confirmNumber = companyApplyService.createConfirm(form, monthlyCompanyPay);
             ra.addFlashAttribute("message", "임시저장 완료 (확인서 ID: " + confirmNumber + ")");
             return "redirect:/comp/detail?confirmNumber=" + confirmNumber;
         } catch (Exception e) {
