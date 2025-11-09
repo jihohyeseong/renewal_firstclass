@@ -64,18 +64,37 @@ public class AttachedFileController {
         if (meta == null) {
             return ResponseEntity.notFound().build();
         }
-
-/*        var auth = org.springframework.security.core.context.SecurityContextHolder
-                .getContext().getAuthentication();
-        boolean isAdmin = auth != null && auth.getAuthorities() != null &&
-                auth.getAuthorities().stream().anyMatch(a -> "ROLE_ADMIN".equals(a.getAuthority()));
-
-        if (!fileService.canDownload(fileId, me.getId(), isAdmin)) {
-            return ResponseEntity.status(403).build();
-        }*/
-
         ResponseEntity<org.springframework.core.io.Resource> resp = fileService.buildDownloadResponse(meta);
         return (resp != null) ? resp : ResponseEntity.internalServerError().build();
+    }
+    
+    /** 수정시 새 첨부파일 추가*/
+    @PostMapping("/file/append")
+    @ResponseBody
+    public Map<String, Object> append(@RequestParam("fileId") Long fileId,
+                                      @RequestParam("files") MultipartFile[] files,
+                                      @RequestParam(value="fileTypes", required=false) List<String> fileTypes) {
+        try {
+            fileService.append(fileId, files, fileTypes);
+            java.util.Map<String, Object> res = new java.util.HashMap<>();
+            res.put("ok", true);
+            res.put("fileId", fileId);
+            return res;
+        } catch (IOException e) {
+            throw new RuntimeException("파일 추가 실패: " + e.getMessage(), e);
+        }
+    }
+
+    /** 수정시 특정 시퀀스 하나 삭제 */
+    @PostMapping("/file/delete-one")
+    @ResponseBody
+    public Map<String, Object> deleteOne(@RequestParam("fileId") Long fileId,
+                                         @RequestParam("sequence") Integer sequence,
+                                         @RequestParam(value="removePhysical", defaultValue="true") boolean removePhysical) {
+        int affected = fileService.deleteOne(fileId, sequence, removePhysical);
+        java.util.Map<String, Object> res = new java.util.HashMap<>();
+        res.put("deleted", affected);
+        return res;
     }
     
     private UserDTO currentUserOrNull() {
@@ -87,50 +106,5 @@ public class AttachedFileController {
         return userService.findByUsername(ud.getUsername());
     }
     
-
-
-/*
-        @GetMapping("/file/download")
-        public ResponseEntity<org.springframework.core.io.Resource> download(
-                @RequestParam(required = true) Long fileId,
-                @RequestParam(required = true) Integer seq,
-                @AuthenticationPrincipal CustomUserDetails me) {
-
-            // 0) 인증 체크
-            if (me == null) return ResponseEntity.status(401).build();
-
-            // 1) 메타 조회
-            var meta = fileService.getMeta(fileId, seq);
-            if (meta == null) return ResponseEntity.status(404).build();
-
-            // 2) 요청자 userId 안전 조회
-            Long requesterUserId = null;
-            UserDTO.us
-            try {
-                var user = userService.findId(me.getId());
-                if (user != null) requesterUserId = user.getId();
-            } catch (Exception ignore) {}
-            if (requesterUserId == null) {
-                // 사용자 정보 없음 → 권한 없음 처리
-                return ResponseEntity.status(403).build();
-            }
-
-            // 3) 관리자 여부 (authorities null 가드)
-            boolean isAdmin = false;
-            var auths = me.getAuthorities();
-            if (auths != null) {
-                isAdmin = auths.stream().anyMatch(a -> "ROLE_ADMIN".equals(a.getAuthority()));
-            }
-
-            // 4) 소유자 또는 관리자만 허용
-            if (!fileService.canDownload(fileId, requesterUserId, isAdmin)) {
-                return ResponseEntity.status(403).build();
-            }
-
-            // 5) 실제 파일 응답 (서비스에서 헤더/파일명/MIME 처리)
-            return fileService.buildDownloadResponse(meta);
-        }*/
-
-
 }
 

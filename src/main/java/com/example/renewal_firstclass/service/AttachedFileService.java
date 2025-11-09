@@ -183,7 +183,7 @@ public class AttachedFileService {
     
     @Transactional
     public void append(Long fileId, MultipartFile[] files, List<String> fileTypes) throws IOException {
-        int maxSeq = fileDAO.selectNextSequence(fileId); // MAX(seq)
+        int maxSeq = fileDAO.selectNextSequence(fileId);
         int i = 0;
         for (MultipartFile f : files) {
             if (f == null || f.isEmpty()) continue;

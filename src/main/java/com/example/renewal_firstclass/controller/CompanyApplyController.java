@@ -397,6 +397,9 @@ public class CompanyApplyController {
                 ra.addFlashAttribute("error", "확인서를 찾을 수 없습니다.");
                 return "redirect:/comp/main";
             }
+            List<AttachedFileDTO> files = fileService.getFiles(confirmDTO.getFileId());
+
+            model.addAttribute("files", files);
             model.addAttribute("termList", dto.getTermAmounts()); 
             model.addAttribute("confirmDTO", confirmDTO);
             return "company/compupdate";
@@ -412,6 +415,7 @@ public class CompanyApplyController {
     public String compUpdateSave(@RequestParam("confirmNumber") Long confirmNumber,
                                  @ModelAttribute ConfirmApplyDTO dto,
                                  @RequestParam(value="monthlyCompanyPay", required=false) List<String> monthlyCompanyPayRaw,
+                                 @RequestParam(value="fileId", required=false) Long fileId,
                                  RedirectAttributes ra) {
         UserDTO me = currentUserOrNull();
         if (me == null) {
@@ -421,6 +425,7 @@ public class CompanyApplyController {
 
         dto.setConfirmNumber(confirmNumber);
         dto.setUserId(me.getId());
+        if (fileId != null) dto.setFileId(fileId);
 
         List<Long> monthlyCompanyPay = null;
         if (monthlyCompanyPayRaw != null) {
@@ -441,6 +446,7 @@ public class CompanyApplyController {
             return "redirect:/comp/detail?confirmNumber=" + confirmNumber;
         }
     }
+
     
     @PostMapping("/comp/recall")
     public String recall(@RequestParam Long confirmNumber,

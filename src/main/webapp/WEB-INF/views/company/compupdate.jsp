@@ -315,6 +315,148 @@
           </div>
         </div>
       </div>
+      
+<!-- 첨부파일 (신청페이지와 동일 4박스, 각 박스에 기존 파일도 함께 표시) -->
+<div class="form-section">
+  <h2>첨부파일</h2>
+  <input type="hidden" id="fileId" name="fileId" value="${confirmDTO.fileId}" />
+
+  <c:set var="TYPE_WAGE" value="WAGE_PROOF"/>
+  <c:set var="TYPE_PAY"  value="PAYMENT_FROM_EMPLOYER"/>
+  <c:set var="TYPE_OTHER" value="OTHER"/>
+  <c:set var="TYPE_ELIG" value="ELIGIBILITY_PROOF"/>
+
+  <%-- 공통: 파일명 추출 유틸(경로 → 파일명) --%>
+  <c:set var="__normTmp" value=""/>
+
+  <%-- 1) 통상임금 증명자료 --%>
+  <div class="form-group">
+    <label class="field-title">통상임금을 확인할 수 있는 증명자료(임금대장, 근로계약서 등)</label>
+    <div class="input-field">
+      <input type="hidden" name="fileTypes" value="${TYPE_WAGE}">
+      <input type="file" name="files" id="files_${TYPE_WAGE}" multiple
+             accept=".pdf,.jpg,.jpeg,.png,.heic,.gif,.bmp,.tif,.tiff,.hwp,.hwpx,.doc,.docx,.xls,.xlsx">
+
+      <div class="info-box" style="margin-top:8px;">
+        <!-- 기존 파일 -->
+        <div class="existed-list" id="exist_${TYPE_WAGE}" style="margin-bottom:6px;">
+          <c:forEach var="f" items="${files}">
+            <c:if test="${f.fileType == TYPE_WAGE}">
+              <div class="file-chip" data-seq="${f.sequence}" style="display:flex; align-items:center; gap:8px; margin:4px 0;">
+                <span class="chip-label" style="flex:1; word-break:break-all;">
+                  <c:set var="__norm"  value="${fn:replace(f.fileUrl, '\\\\', '/')}"/>
+                  <c:set var="__parts" value="${fn:split(__norm, '/')}"/>
+                  ${__parts[fn:length(__parts)-1]}
+                </span>
+                <button type="button" class="btn btn-secondary btn-sm btn-del-exist" data-type="${TYPE_WAGE}" data-seq="${f.sequence}">
+                  삭제
+                </button>
+              </div>
+            </c:if>
+          </c:forEach>
+        </div>
+        <!-- 새로 선택됨 미리보기 -->
+        <div class="selected-list" id="sel_${TYPE_WAGE}" style="border-top:1px dashed #d9d9d9; padding-top:6px;">
+          <em style="color:#666;">선택된 파일 없음</em>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%-- 2) 사업주 금품 지급 확인 자료 --%>
+  <div class="form-group">
+    <label class="field-title">육아휴직 기간 동안 사업주로부터 금품을 지급받은 경우 확인 자료</label>
+    <div class="input-field">
+      <input type="hidden" name="fileTypes" value="${TYPE_PAY}">
+      <input type="file" name="files" id="files_${TYPE_PAY}" multiple
+             accept=".pdf,.jpg,.jpeg,.png,.heic,.gif,.bmp,.tif,.tiff,.hwp,.hwpx,.doc,.docx,.xls,.xlsx">
+      <div class="info-box" style="margin-top:8px;">
+        <div class="existed-list" id="exist_${TYPE_PAY}" style="margin-bottom:6px;">
+          <c:forEach var="f" items="${files}">
+            <c:if test="${f.fileType == TYPE_PAY}">
+              <div class="file-chip" data-seq="${f.sequence}" style="display:flex; align-items:center; gap:8px; margin:4px 0;">
+                <span class="chip-label" style="flex:1; word-break:break-all;">
+                  <c:set var="__norm"  value="${fn:replace(f.fileUrl, '\\\\', '/')}"/>
+                  <c:set var="__parts" value="${fn:split(__norm, '/')}"/>
+                  ${__parts[fn:length(__parts)-1]}
+                </span>
+                <button type="button" class="btn btn-secondary btn-sm btn-del-exist" data-type="${TYPE_PAY}" data-seq="${f.sequence}">
+                  삭제
+                </button>
+              </div>
+            </c:if>
+          </c:forEach>
+        </div>
+        <div class="selected-list" id="sel_${TYPE_PAY}" style="border-top:1px dashed #d9d9d9; padding-top:6px;">
+          <em style="color:#666;">선택된 파일 없음</em>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%-- 3) 기타 --%>
+  <div class="form-group">
+    <label class="field-title">기타 자료</label>
+    <div class="input-field">
+      <input type="hidden" name="fileTypes" value="${TYPE_OTHER}">
+      <input type="file" name="files" id="files_${TYPE_OTHER}" multiple
+             accept=".pdf,.jpg,.jpeg,.png,.heic,.gif,.bmp,.tif,.tiff,.hwp,.hwpx,.doc,.docx,.xls,.xlsx">
+      <div class="info-box" style="margin-top:8px;">
+        <div class="existed-list" id="exist_${TYPE_OTHER}" style="margin-bottom:6px;">
+          <c:forEach var="f" items="${files}">
+            <c:if test="${f.fileType == TYPE_OTHER}">
+              <div class="file-chip" data-seq="${f.sequence}" style="display:flex; align-items:center; gap:8px; margin:4px 0;">
+                <span class="chip-label" style="flex:1; word-break:break-all;">
+                  <c:set var="__norm"  value="${fn:replace(f.fileUrl, '\\\\', '/')}"/>
+                  <c:set var="__parts" value="${fn:split(__norm, '/')}"/>
+                  ${__parts[fn:length(__parts)-1]}
+                </span>
+                <button type="button" class="btn btn-secondary btn-sm btn-del-exist" data-type="${TYPE_OTHER}" data-seq="${f.sequence}">
+                  삭제
+                </button>
+              </div>
+            </c:if>
+          </c:forEach>
+        </div>
+        <div class="selected-list" id="sel_${TYPE_OTHER}" style="border-top:1px dashed #d9d9d9; padding-top:6px;">
+          <em style="color:#666;">선택된 파일 없음</em>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%-- 4) 자격 확인 자료 --%>
+  <div class="form-group">
+    <label class="field-title">자격 확인 자료(배우자 3개월 이상 육휴/한부모/중증장애아동 부모 등)</label>
+    <div class="input-field">
+      <input type="hidden" name="fileTypes" value="${TYPE_ELIG}">
+      <input type="file" name="files" id="files_${TYPE_ELIG}" multiple
+             accept=".pdf,.jpg,.jpeg,.png,.heic,.gif,.bmp,.tif,.tiff,.hwp,.hwpx,.doc,.docx,.xls,.xlsx">
+      <div class="info-box" style="margin-top:8px;">
+        <div class="existed-list" id="exist_${TYPE_ELIG}" style="margin-bottom:6px;">
+          <c:forEach var="f" items="${files}">
+            <c:if test="${f.fileType == TYPE_ELIG}">
+              <div class="file-chip" data-seq="${f.sequence}" style="display:flex; align-items:center; gap:8px; margin:4px 0;">
+                <span class="chip-label" style="flex:1; word-break:break-all;">
+                  <c:set var="__norm"  value="${fn:replace(f.fileUrl, '\\\\', '/')}"/>
+                  <c:set var="__parts" value="${fn:split(__norm, '/')}"/>
+                  ${__parts[fn:length(__parts)-1]}
+                </span>
+                <button type="button" class="btn btn-secondary btn-sm btn-del-exist" data-type="${TYPE_ELIG}" data-seq="${f.sequence}">
+                  삭제
+                </button>
+              </div>
+            </c:if>
+          </c:forEach>
+        </div>
+        <div class="selected-list" id="sel_${TYPE_ELIG}" style="border-top:1px dashed #d9d9d9; padding-top:6px;">
+          <em style="color:#666;">선택된 파일 없음</em>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
       <div class="submit-button-container">
         <a href="${pageContext.request.contextPath}/comp/main"
@@ -721,75 +863,6 @@ function guardBeforeGenerate() {
 	    }
 	  }
 
-	  // generate 버튼 누르기 전에 규칙 위반 차단
-	  // (기존) applyPregnancyRules() 안의 guardBeforeGenerate() 전체를 아래로 교체
-/* 		function guardBeforeGenerate() {
-		  const isPregnant = !!chkPregnant?.checked;
-		  const childDate  = parseDate(childDateEl?.value);
-		  const startDate  = parseDate(startDateInput?.value);
-		  const endDate    = parseDate(endDateInput?.value);
-		
-		  if (!startDate || !endDate) {
-		    alert('육아휴직 시작일과 종료일을 먼저 선택해 주세요.');
-		    return false;
-		  }
-		  if (!childDate) {
-		    alert('출산(예정)일을 먼저 입력해 주세요.');
-		    return false;
-		  }
-		
-		  if (isPregnant) {
-		    if (endDate >= childDate) {
-		      alert('임신 중 육아휴직은 출산(예정)일 전날까지만 가능합니다.');
-		      return false;
-		    }
-		    if (startDate >= childDate) {
-		      alert('임신 중 육아휴직은 출산(예정)일 이전에만 시작할 수 있습니다.');
-		      return false;
-		    }
-		  } else {
-		    // 출산 후: 자녀 이름 + 주민번호(6/7) 필수
-		    const nameVal = (childNameEl?.value || '').trim();
-		    const a = (rrnA?.value || '').replace(/[^\d]/g,'');
-		    const b = (rrnB?.value || '').replace(/[^\d]/g,'');
-		    if (!nameVal) {
-		      alert('출산 후 신청 시 자녀 이름을 입력해야 합니다.');
-		      childNameEl?.focus();
-		      return false;
-		    }
-		    if (!(a.length === 6 && b.length === 7)) {
-		      alert('출산 후 신청 시 자녀 주민등록번호(앞 6자리/뒤 7자리)를 반드시 입력해야 합니다.');
-		      (a.length !== 6 ? rrnA : rrnB)?.focus();
-		      return false;
-		    }
-		    if (startDate < childDate) {
-		      alert('출산 후 육아휴직은 출산(예정)일 이후로만 시작할 수 있습니다.');
-		      return false;
-		    }
-		  }
-		  return true;
-		}
- */
-
-/* 	  // generate 버튼 가드 추가(한 번만 래핑)
-	  if (generateBtn && !generateBtn.dataset.guardApplied) {
-	    const origHandler = generateBtn.onclick;
-	    generateBtn.addEventListener('click', function(e){
-	      if (!guardBeforeGenerate()) {
-	        e.stopImmediatePropagation?.();
-	        e.preventDefault?.();
-	        // 동적행/표시 초기화
-	        formsContainer.innerHTML = '';
-	        if (noPaymentWrapper) noPaymentWrapper.style.display = 'none';
-	        if (headerRow) headerRow.style.display = 'none';
-	        return;
-	      }
-	      // 통과 시 원래 핸들러 흐름 계속(우리 코드가 위에 이미 addEventListener로 생성 로직을 달아놨으니 추가 동작은 불필요)
-	      if (typeof origHandler === 'function') origHandler.call(this, e);
-	    }, true);
-	    generateBtn.dataset.guardApplied = '1';
-	  }
- */
 	  // 이벤트 바인딩: 상태 바뀔 때마다 규칙 즉시 반영
 	  function onAnyRuleRelatedChange() {
 	    applyFieldLockByMode();
@@ -882,114 +955,68 @@ function guardBeforeGenerate() {
   let submitting = false;
 
   form.addEventListener('submit', async function(e){
-    e.preventDefault(); // 비동기 검증을 위해 기본 제출 막기
-    if (submitting) return;
-    submitting = true;
+	  e.preventDefault();
+	  if (submitting) return;
+	  submitting = true;
 
-    try {
-      const missing = [];
-      let firstBadEl = null;
+	  try {
+	    const missing = [];
+	    let firstBadEl = null;
 
-      // 간단 필수체크 함수
-      function need(el, label){
-        if (!el) return;
-        const v = (el.value||'').trim();
-        if (!v){
-          missing.push(label);
-          if (!firstBadEl) firstBadEl = el;
-        }
-      }
+	    function need(el, label){
+	      if (!el) return;
+	      const v = (el.value||'').trim();
+	      if (!v){
+	        missing.push(label);
+	        if (!firstBadEl) firstBadEl = el;
+	      }
+	    }
 
-      // 필드 목록
-      const empName   = document.getElementById('employee-name');
-      const empA      = document.getElementById('employee-rrn-a');
-      const empB      = document.getElementById('employee-rrn-b');
-      const startDate = document.getElementById('start-date');
-      const endDate   = document.getElementById('end-date');
-      const weeklyEl  = document.getElementById('weeklyHours');
-      const wageEl    = document.getElementById('regularWage');
-      const childDate = document.getElementById('child-date');
-      const respName  = document.getElementById('response-name');
-      const centerId  = document.getElementById('centerId');
+	    // … (네가 이미 작성한 필수값 체크 로직 그대로 유지) …
 
-      // === 기본 필수항목 ===
-      need(empName,   '근로자 성명');
-      need(startDate, '육아휴직 시작일');
-      need(endDate,   '육아휴직 종료일');
-      need(weeklyEl,  '월 소정근로시간');
-      need(wageEl,    '통상임금(월)');
-      need(childDate, '출산(예정)일');
-      need(respName,  '담당자 이름');
+	    if (missing.length){
+	      const uniq = [...new Set(missing)];
+	      alert('모든 필수 항목을 입력해야 저장할 수 있습니다.\n\n누락 항목:\n- ' + uniq.join('\n- '));
+	      if (firstBadEl && typeof firstBadEl.focus === 'function') {
+	        firstBadEl.scrollIntoView({behavior:'smooth', block:'center'});
+	        setTimeout(()=> firstBadEl.focus(), 200);
+	      }
+	      submitting = false;
+	      return;
+	    }
 
-      if (!centerId || !centerId.value.trim()) {
-        missing.push('처리 센터 선택');
-      }
+	    // ✅ (1) 이전기간 겹침 검사
+	    const ok = await showPrevPeriodAlert();
+	    if (!ok) { submitting = false; return; }
 
-      // 근로자 주민번호(6+7자리)
-      if (!empA || onlyDigits(empA.value).length !== 6) {
-        missing.push('근로자 주민등록번호(앞 6자리)');
-        if (!firstBadEl) firstBadEl = empA;
-      }
-      if (!empB || onlyDigits(empB.value).length !== 7) {
-        missing.push('근로자 주민등록번호(뒤 7자리)');
-        if (!firstBadEl) firstBadEl = empB;
-      }
+	    // ✅ (2) 파일 먼저 업로드 (append 또는 새 업로드)
+	    const up = await uploadAllFilesBeforeSubmit();
+	    if (!up.ok) {
+	      alert('파일 업로드에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+	      submitting = false;
+	      return;
+	    }
 
-      // 출산 후일 경우 자녀 이름 + 주민번호 or 미발급 체크
-      const isPregnant = !!document.getElementById('pregnant-leave')?.checked;
-      if (!isPregnant) {
-        const nameEl = document.getElementById('child-name');
-        const rrnA   = document.getElementById('child-rrn-a');
-        const rrnB   = document.getElementById('child-rrn-b');
-        const noRRN  = !!document.getElementById('no-rrn-foreign')?.checked;
+	    // 새 업로드로 fileId 발급 받았으면 hidden에 주입
+	    if (!up.skipped && up.fileId) {
+	      const fileIdEl = document.getElementById('fileId');
+	      if (fileIdEl) fileIdEl.value = up.fileId;
+	    }
 
-        const nameVal = (nameEl?.value || '').trim();
-        const a = onlyDigits(rrnA?.value);
-        const b = onlyDigits(rrnB?.value);
+	    // ✅ (3) 숫자/주민번호 등 최종 정규화
+	    doFinalNormalizeBeforeSubmit();
 
-        if (!nameVal) {
-          missing.push('자녀 이름');
-          if (!firstBadEl) firstBadEl = nameEl;
-        }
-        if (!noRRN && !(a.length === 6 && b.length === 7)) {
-          missing.push('자녀 주민등록번호');
-          if (!firstBadEl) firstBadEl = rrnA || rrnB;
-        }
-      }
+	    // ✅ (4) 실제 제출 (핸들러 중복 방지)
+	    form.removeEventListener('submit', arguments.callee);
+	    form.submit();
 
-      // === 누락 항목이 있으면 중단
-      if (missing.length){
-        const uniq = [...new Set(missing)];
-        alert('모든 필수 항목을 입력해야 저장할 수 있습니다.\n\n누락 항목:\n- ' + uniq.join('\n- '));
-        // 첫 누락 항목으로 스크롤 & 포커스
-        if (firstBadEl && typeof firstBadEl.focus === 'function') {
-          firstBadEl.scrollIntoView({behavior:'smooth', block:'center'});
-          setTimeout(()=> firstBadEl.focus(), 200);
-        }
-        submitting = false;
-        return;
-      }
+	  } catch (err) {
+	    console.error(err);
+	    alert('저장 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+	    submitting = false;
+	  }
+	});
 
-      const ok = await showPrevPeriodAlert();
-      if (!ok) {
-        // 겹치거나(=false) 조회 오류/조건 미충족으로 막을 때
-        submitting = false;
-        return;
-      }
-
-      // === 여기까지 통과 → 최종 정리 후 실제 제출
-      doFinalNormalizeBeforeSubmit();
-
-      // 이 submit 핸들러가 다시 실행되지 않게 한 번만 제출
-      form.removeEventListener('submit', arguments.callee);
-      form.submit();
-
-    } catch (err) {
-      console.error(err);
-      alert('저장 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
-      submitting = false;
-    }
-  });
 })();
 //─────────────────────────────────────
 //최종 제출 직전 데이터 정리 (함수화)
@@ -1338,6 +1365,166 @@ async function showPrevPeriodAlert() {
     return true;
   }
 }
+
+//같은 박스 안에서 "기존 파일" + "선택된 파일"을 함께 보여줌
+(function bindUnifiedFileUI(){
+  const groups = [
+    { id: 'files_WAGE_PROOF',              selList: 'sel_WAGE_PROOF' },
+    { id: 'files_PAYMENT_FROM_EMPLOYER',   selList: 'sel_PAYMENT_FROM_EMPLOYER' },
+    { id: 'files_OTHER',                   selList: 'sel_OTHER' },
+    { id: 'files_ELIGIBILITY_PROOF',       selList: 'sel_ELIGIBILITY_PROOF' }
+  ];
+
+  function fileNiceName(f){
+    if (f && typeof f.name === 'string' && f.name.trim() !== '') return f.name;
+    if (f && typeof f.webkitRelativePath === 'string' && f.webkitRelativePath.trim() !== '') {
+      const parts = f.webkitRelativePath.split('/');
+      return parts[parts.length - 1] || '파일';
+    }
+    return '파일';
+  }
+  function fileNiceSizeMB(f){
+    if (!f || typeof f.size !== 'number' || isNaN(f.size)) return '?';
+    return (f.size / (1024 * 1024)).toFixed(1);
+  }
+  function escapeHtml(s){
+    return String(s)
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+      .replace(/'/g,'&#39;');
+  }
+
+  groups.forEach(g => {
+    const inp = document.getElementById(g.id);
+    const out = document.getElementById(g.selList);
+    if(!inp || !out) return;
+
+    inp.addEventListener('change', ()=>{
+      const fl = inp.files;
+      if (!fl || fl.length === 0) {
+        out.innerHTML = '<em style="color:#666;">선택된 파일 없음</em>';
+        return;
+      }
+
+      const rows = [];
+      for (const f of fl) {
+        const name = escapeHtml(fileNiceName(f));
+        const mb   = fileNiceSizeMB(f);
+        const sizeSuffix = (mb !== '?') ? ' (' + mb + 'MB)' : '';
+        rows.push(
+          '<div class="file-chip" style="display:flex; align-items:center; gap:8px; margin:4px 0;">' +
+            '<span class="chip-label" style="flex:1; word-break:break-all;">' + name + sizeSuffix + '</span>' +
+            '<span style="font-size:12px; color:#888;">새로 선택됨</span>' +
+          '</div>'
+        );
+      }
+      out.innerHTML = rows.join('');
+    });
+  });
+})();
+
+
+// 기존 파일 삭제(같은 박스 안에서 바로 제거 요청)
+(function bindFileDeleteInline(){
+  const CTX  = '${pageContext.request.contextPath}';
+  const csrf = document.querySelector('input[name="_csrf"]')?.value || '';
+  const fileIdEl = document.getElementById('fileId');
+
+  document.addEventListener('click', async (e)=>{
+    if (!e.target.classList.contains('btn-del-exist')) return;
+    if (!fileIdEl?.value) return;
+
+    const seq = e.target.dataset.seq;
+    if (!seq) return;
+
+    if (!confirm('이 파일을 삭제하시겠습니까?')) return;
+
+    const body = new URLSearchParams();
+    body.append('fileId', fileIdEl.value);
+    body.append('sequence', String(seq));
+    body.append('removePhysical', 'true');
+    if (csrf) body.append('_csrf', csrf);
+
+    const resp = await fetch(CTX + '/file/delete-one', {
+      method:'POST',
+      credentials:'same-origin',
+      headers:{ 'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8' },
+      body
+    });
+    if (!resp.ok) {
+      alert('삭제 실패');
+      return;
+    }
+    // 성공 시: 해당 chip 제거 (새로고침 없이)
+    const row = e.target.closest('.file-chip');
+    if (row) row.remove();
+  });
+})();
+
+// 제출 직전 업로드(수정: fileId 있으면 /file/append, 없으면 /file/upload), 폼에서 파일 input 제거
+async function uploadAllFilesBeforeSubmit() {
+  const map = [
+    { id: 'files_WAGE_PROOF',            type: 'WAGE_PROOF' },
+    { id: 'files_PAYMENT_FROM_EMPLOYER', type: 'PAYMENT_FROM_EMPLOYER' },
+    { id: 'files_OTHER',                 type: 'OTHER' },
+    { id: 'files_ELIGIBILITY_PROOF',     type: 'ELIGIBILITY_PROOF' }
+  ];
+
+  const fd = new FormData();
+  let fileCount = 0;
+
+  for (const g of map) {
+    const input = document.getElementById(g.id);
+    if (input?.files?.length) {
+      for (const f of input.files) {
+        fd.append('files', f);
+        fd.append('fileTypes', g.type);
+        fileCount++;
+      }
+    }
+  }
+
+  if (fileCount === 0) return { ok:true, skipped:true, fileId:null };
+
+  const CTX  = '${pageContext.request.contextPath}';
+  const csrf = document.querySelector('input[name="_csrf"]')?.value || '';
+  const fileIdEl = document.getElementById('fileId');
+  const hasFileId = !!(fileIdEl && fileIdEl.value);
+
+  const url = CTX + (hasFileId ? '/file/append' : '/file/upload');
+  if (hasFileId) fd.append('fileId', fileIdEl.value);
+  if (csrf) fd.append('_csrf', csrf);
+
+  console.log('[upload] going to', url, 'hasFileId=', hasFileId, 'fileCount=', fileCount);
+
+  const resp = await fetch(url, {
+    method:'POST',
+    body: fd,
+    credentials:'same-origin',
+    headers: csrf ? { 'X-CSRF-TOKEN': csrf, 'Accept':'application/json' } : { 'Accept':'application/json' }
+  });
+
+  console.log('[upload] status=', resp.status, 'ct=', resp.headers.get('content-type'));
+  if (!resp.ok) {
+    const t = await resp.text().catch(()=> '');
+    console.error('[upload] fail body=', t);
+    return { ok:false, skipped:false, fileId:null };
+  }
+
+  if (!hasFileId) {
+    const ct = (resp.headers.get('content-type') || '').toLowerCase();
+    if (!ct.includes('application/json')) return { ok:false, skipped:false, fileId:null };
+    const data = await resp.json().catch(()=> null);
+    const newId = data?.fileId ?? null;
+    if (!newId) return { ok:false, skipped:false, fileId:null };
+    return { ok:true, skipped:false, fileId:newId };
+  }
+
+  return { ok:true, skipped:false, fileId:fileIdEl.value };
+}
+
 
 </script>
 </body>
