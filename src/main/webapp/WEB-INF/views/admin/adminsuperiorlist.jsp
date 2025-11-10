@@ -151,62 +151,68 @@ a { text-decoration: none; color: inherit; }
   color: var(--primary-color);
 }
 
-/* ==== 필터 (디자인 개선) ==== */
 .table-filters {
   display: flex;
-  flex-wrap: wrap;
-  gap: .75rem;
+  align-items: center;      /* 수직 중앙정렬 */
+  gap: .4rem;
   margin-bottom: 1.5rem;
+  flex-wrap: nowrap;          /* 반응형 줄바꿈 */
 }
+
+/* 필터 그룹 (라벨 + 입력창을 가로로 정렬) */
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+/* 라벨 왼쪽 배치 */
+.filter-group label,
+.filter-group input {
+  font-size: .85rem;
+  font-weight: 600;
+  color: #555;
+  white-space: nowrap;
+  margin: 0;
+}
+
+/* 인풋 & 셀렉트 공통 스타일 */
 .table-filters input[type="text"],
 .table-filters select {
-  padding: .5rem .75rem;
+  padding: .45rem .6rem;
   border: 1px solid var(--border-color);
   border-radius: .375rem;
   background: #fdfdfd;
-  height: 40px;
+  height: 38px;
   box-sizing: border-box;
   font-size: .9rem;
   transition: border-color .15s ease, box-shadow .15s ease;
 }
+
 .table-filters input[type="text"]:focus,
 .table-filters select:focus {
   outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px var(--primary-light-color);
 }
-.table-filters select {
-  flex: 1;
-}
 
-/* 검색창 */
-.search-box {
-  position: relative;
-  flex: 2; /* 기존 스타일 유지 */
-  min-width: 250px;
-}
-.search-box input {
-  width: 100%;
-  padding-right: 2.5rem !important; /* 아이콘 버튼 공간 */
-}
-.search-box button { /* 검색창 내부 버튼 */
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #999;
-  background: none;
-  border: none;
+/* 검색 버튼 - 작고 정사각형, 오른쪽 끝 */
+.btn-search {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--primary-color);
+  background: var(--primary-color);
+  font-size: 1rem;
   cursor: pointer;
-  padding: 0;
-  font-size: 1.1rem;
+  border-radius: .375rem;
+  color: var(--white-color);
+  transition: all .15s ease;
 }
-.search-box .bi-search { /* 혹시 i태그일 경우 대비 */
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #999;
+.btn-search:hover {
+  background-color: #364ab1;
 }
 
 /* ==== 테이블 (디자인 개선) ==== */
@@ -424,19 +430,39 @@ a { text-decoration: none; color: inherit; }
                     
                     <input type="hidden" name="page" value="${pageDTO.pageNum}">
                     
-                    <div class="search-box">
-                        <input type="text" name="keyword" placeholder="신청자 이름 또는 신청번호로 검색..." value="${keyword}">
-                        <button type="submit" style="background:none; border:none; position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer;">
-                            <i class="bi bi-search"></i>
-                        </button>
-                    </div>
-                    <%-- 처리 상태 필터 --%>
-                    <select name="status" id="statusSelect" onchange="this.form.submit()">
-                        <option value="">전체</option>
-                        <option value="PENDING" ${status == 'PENDING' ? 'selected' : ''}>대기</option>
-    					<option value="APPROVED" ${status == 'APPROVED' ? 'selected' : ''}>승인</option>
-    					<option value="REJECTED" ${status == 'REJECTED' ? 'selected' : ''}>반려</option>
-                    </select>
+                    <%-- 신청자 이름 필터 --%>
+				    <div class="filter-group">
+				        <label for="searchName">신청자 이름</label>
+				        <%-- [수정] name="applicantName", value="${applicantName}" --%>
+				        <input type="text" name="applicantName" id="searchName" placeholder="신청자 이름..." value="${applicantName}">
+				    </div>
+				
+				    <%-- 신청번호 필터 --%>
+				    <div class="filter-group">
+				        <label for="searchNumber">신청번호</label>
+				        <input type="text" name="applicationNumber" id="searchNumber" placeholder="신청번호..." value="${applicationNumber}">
+				    </div>
+				
+				    <%-- 처리 상태 필터 --%>
+				    <div class="filter-group">
+				    	<label for="statusSelect">처리상태</label>
+				        <select name="status" id="statusSelect" onchange="this.form.submit()">
+				            <option value="">전체</option>
+				            <option value="PENDING" ${status == 'PENDING' ? 'selected' : ''}>대기</option>
+				    		<option value="APPROVED" ${status == 'APPROVED' ? 'selected' : ''}>승인</option>
+				    		<option value="REJECTED" ${status == 'REJECTED' ? 'selected' : ''}>반려</option>
+				        </select>
+				    </div>
+				
+					<%-- 검색 버튼 --%>
+				    <button type="submit" class="btn-search">
+				        <i class="bi bi-search"></i>
+				    </button>
+				    
+				    <%-- [신규] 새로고침(초기화) 버튼 - JS에 로직이 있으므로 주석 해제 --%>
+				    <!-- <button type="button" class="btn-refresh" id="btnReset" style="height: 40px; width: 40px;">
+				        <i class="bi bi-arrow-clockwise"></i>
+				    </button> -->
                     <%-- 날짜 필터 - hidden input으로 값 전달 --%>
     				<c:if test="${not empty date}">
         				<input type="hidden" name="date" value="${date}">
@@ -535,7 +561,8 @@ a { text-decoration: none; color: inherit; }
 	    const dateBtn = document.getElementById('selectDate');
 	    const form = document.getElementById("searchForm");
 	    const statusSelect = document.getElementById("statusSelect");
-	    const keywordInput = form.querySelector('input[name="keyword"]');
+	    const applicantNameInput = form.querySelector('input[name="applicantName"]');
+		const applicationNumberInput = form.querySelector('input[name="applicationNumber"]');
 	    const pageInput = form.querySelector('input[name="page"]');
 	    
 	    if (current) statusSelect.value = current; 
@@ -569,7 +596,8 @@ a { text-decoration: none; color: inherit; }
 
 	            statusSelect.value = newStatus;
 	            
-	            keywordInput.value = ''; 
+	            if(applicantNameInput) applicantNameInput.value = ''; 
+	        	if(applicationNumberInput) applicationNumberInput.value = ''; 
 	            pageInput.value = '1';   
 	            fp.clear(); 
 	    
@@ -608,7 +636,8 @@ a { text-decoration: none; color: inherit; }
 		document.getElementById('btnReset').addEventListener("click", () => {
 			
 			// 입력 초기화
-		    form.querySelector('input[name="keyword"]').value = '';
+		    if(applicantNameInput) applicantNameInput.value = ''; 
+	        if(applicationNumberInput) applicationNumberInput.value = '';
 		    form.querySelector('select[name="status"]').value = '';
 		 	
 		    // date hidden input 제거

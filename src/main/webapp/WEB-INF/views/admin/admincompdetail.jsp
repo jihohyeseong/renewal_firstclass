@@ -193,7 +193,22 @@
 	    padding: 6px 14px; /* 패딩 축소 */
 	    font-size: 14px;
 	  }
-	
+	  
+	  .btn-danger {
+		padding: 6px 14px;
+		font-size: 14px;
+		background-color: #f44336;
+		border-color: #f44336;
+		color: white;
+		cursor: pointer;
+		border-radius: 4px;
+		transition: background-color 0.2s;
+	  }
+	  .btn-danger:hover {
+		background-color: #d32f2f;
+		border-color: #d32f2f;
+	  }
+	  
 	  /* ===== 반려 사유 카드 개선 ===== */
 	.reject-result {
 	  background: #fff;
@@ -260,12 +275,12 @@
 	}
 	
 	/* ===== 접수/반려 라디오 그룹 ===== */
-	.radio-group {
+	/* .radio-group {
 	  display: flex;
 	  gap: 16px;
 	  margin-bottom: 24px;
 	  justify-content: center;
-	}
+	} */
 	
 	.radio-wrapper {
 	  flex: 0 0 auto;
@@ -537,25 +552,23 @@
 	}
 	/* 1. 전체 컨테이너 너비 확장 */
 	.main-container {
-	    max-width: 1700px; /* 폼 2개가 들어가도록 기존보다 넓게 설정 */
+	    max-width: 1200px; /* 폼 2개가 들어가도록 기존보다 넓게 설정 */
 	}
 	
 	/* 2. 좌우 비교 레이아웃 컨테이너 */
 	.comparison-layout {
-	    display: flex;
-	    gap: 24px; /* 좌우 폼 사이 간격 */
 	    background: #fff;
 	    border: 1px solid var(--border-color);
 	    border-radius: 14px; /* 전체를 하나의 카드로 */
 	    padding: 24px;
 	    box-shadow: var(--shadow-lg);
-	    margin-bottom: 24px;
+	    margin-bottom: 30px;
 	}
 	
 	/* 3. 좌(원본), 우(수정) 컬럼 */
 	.comparison-column {
-	    flex: 1; /* 1:1 비율로 공간 차지 */
 	    min-width: 0; /* flex 버그 방지 */
+	    margin-bottom: 24px;
 	}
 	
 	/* 4. 중간 구분선 */
@@ -569,11 +582,11 @@
 	.comparison-column.update-form input[type="text"],
 	.comparison-column.update-form input[type="password"],
 	.comparison-column.update-form input[type="date"],
-	.comparison-column.update-form input[type="number"]:not(#edit-weekly-hours):not(#edit-regular-wage) {
-	    width: 100% !important; /* 인라인 스타일(width: 80%)을 덮어쓰고 꽉 채움 */
+	.comparison-column.update-form input[type="number"] {
+	    width: 85% !important; /* 인라인 스타일(width: 80%)을 덮어쓰고 꽉 채움 */
 	    box-sizing: border-box; 
-	    border-radius: 6px; /* 모서리 둥글게 */
-	    padding: 8px 10px;  /* 입력칸 내부 여백 */
+	    border-radius: 8px; /* 모서리 둥글게 */
+	    padding: 10px 12px;  /* 입력칸 내부 여백 */
 	    border: 1px solid #ced4da;
 	}
 	
@@ -600,7 +613,7 @@
 	}
 	
 	/* 빈 테이블 */ 
-	.alignment-spacer {
+	/* .alignment-spacer {
 		visibility: hidden; /* 공간은 차지하되, 내용물/테두리 모두 숨김 */
 		margin-top: 20px;
 	}
@@ -608,7 +621,7 @@
 	/* 스페이서 내부 테이블의 녹색 바 숨기기 */
 	.alignment-spacer .sheet-head::before {
 		display: none;
-	}
+	} */
 	
 	#edit-weekly-hours,
 	#edit-regular-wage {
@@ -928,14 +941,14 @@
 	                        <input type="number" name="updWeeklyHours"
 	                               id="edit-weekly-hours"
 	                               class="form-control"8
-	                               value="${confirmDTO.updWeeklyHours != null ? confirmDTO.updWeeklyHours : ''}"> 시간
+	                               value="${confirmDTO.updWeeklyHours != null ? confirmDTO.updWeeklyHours : ''}">  시간
 	                    </td>
 	                    <th>통상임금 (월)</th>
 	                    <td>
 	                        <input type="number" name="updRegularWage"
 	                               id="edit-regular-wage"
 	                               class="form-control"
-	                               value="${confirmDTO.updRegularWage != null ? confirmDTO.updRegularWage : ''}"> 원
+	                               value="${confirmDTO.updRegularWage != null ? confirmDTO.updRegularWage : ''}">  원
 	                    </td>
 	                </tr>
 	                
@@ -980,7 +993,7 @@
 	                        <input type="text" name="updChildResiRegiNumber"
 	                               id="edit-child-rrn"
 	                               placeholder="출산 후 입력 (예: 000000-0000000)"
-	                               class="form-control" style="width: 40%;"
+	                               class="form-control"
 	                               value="${confirmDTO.updChildResiRegiNumber != null ? confirmDTO.updChildResiRegiNumber : ''}">
 	                    </td>
 	                </tr>
@@ -998,102 +1011,104 @@
 	    </div>
 	</div>
 
-		        <div class="button-container">
-		        	<c:choose> 
-		
-				        <c:when test="${confirmDTO.statusCode == 'ST_50' or confirmDTO.statusCode == 'ST_60'}">
-				            <a href="${pageContext.request.contextPath}/admin/list" class="btn btn-secondary">목록으로</a>
-				        </c:when>
-		 				
-				        <c:otherwise>
-				            <div class="radio-group">
-				                <div class="radio-wrapper">
-				                    <input type="radio" name="judgeOption" id="approveOption" value="approve">
-				                    <label for="approveOption">접수</label>
-				                </div>
-				                
-				                <div class="radio-wrapper reject-radio">
-				                    <input type="radio" name="judgeOption" id="rejectOption" value="reject">
-				                    <label for="rejectOption">반려</label>
-				                </div>
-				            </div>
-				            
-				            <div id="rejectForm">
-							    <h3>반려 사유 선택</h3>
-							    <div>
-							        <div class="reason-item">
-							            <label>
-							                <input type="radio" name="reasonCode" value="RJ_10">
-							                <span>계좌정보 불일치</span>
-							            </label>
-							        </div>
-							        <div class="reason-item">
-							            <label>
-							                <input type="radio" name="reasonCode" value="RJ_20">
-							                <span>관련서류 미제출</span>
-							            </label>
-							        </div>
-							        <div class="reason-item">
-							            <label>
-							                <input type="radio" name="reasonCode" value="RJ_30">
-							                <span>신청시기 미도래</span>
-							            </label>
-							        </div>
-							        <div class="reason-item">
-							            <label>
-							                <input type="radio" name="reasonCode" value="RJ_40">
-							                <span>근속기간 미충족</span>
-							            </label>
-							        </div>
-							        <div class="reason-item">
-							            <label>
-							                <input type="radio" name="reasonCode" value="RJ_50">
-							                <span>자녀 연령 기준 초과</span>
-							            </label>
-							        </div>
-							        <div class="reason-item">
-							            <label>
-							                <input type="radio" name="reasonCode" value="RJ_60">
-							                <span>휴직 가능 기간 초과</span>
-							            </label>
-							        </div>
-							        <div class="reason-item">
-							            <label>
-							                <input type="radio" name="reasonCode" value="RJ_70">
-							                <span>제출서류 정보 불일치</span>
-							            </label>
-							        </div>
-							        <div class="reason-item">
-							            <label>
-							                <input type="radio" name="reasonCode" value="RJ_80">
-							                <span>신청서 작성 내용 미비</span>
-							            </label>
-							        </div>
-							        <div class="reason-item">
-							            <label>
-							                <input type="radio" name="reasonCode" value="RJ_99">
-							                <span>기타</span>
-							            </label>
-							        </div>
-							    </div> 
-							
-							    <div class="comment-wrapper">
-							        <label class="comment-label">상세 사유</label>
-							        <input type="text" id="rejectComment" class="form-control" placeholder="상세 사유를 입력하세요" style="width:50%;">
-							    </div>
-				
-							</div>
-							
-							<div class="judge-actions">
-					            <button type="button" id="confirmBtn" class="btn btn-primary">확인</button>
-					            <button type="button" id="cancelBtn" class="btn btn-secondary">취소</button>
-				            </div>
-				            
-				            <a href="${pageContext.request.contextPath}/admin/list" class="btn btn-secondary">목록</a>
-				        </c:otherwise>
-		    		</c:choose>
+        <c:choose>
+			<%-- 1. [완료 상태] ST_50(승인) 또는 ST_60(반려)일 때 --%>
+			<c:when test="${confirmDTO.statusCode == 'ST_50' or confirmDTO.statusCode == 'ST_60'}">
+				<div class="button-container" style="text-align: left; margin-top: 20px;">
+					<a href="${pageContext.request.contextPath}/admin/list" class="btn btn-secondary">목록으로</a>
 				</div>
-			</div>
+			</c:when>
+	
+			<%-- 2. [심사중 상태] 그 외 --%>
+			<c:otherwise>
+				<div class="button-container" style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; margin-bottom: 20px;">
+					<div>
+						<a href="${pageContext.request.contextPath}/admin/list" class="btn btn-secondary">목록</a>
+					</div>
+					
+					<div class="judge-actions-right">
+						<button type="button" id="approveBtnAction" class="btn btn-primary" style="margin-right: 8px;">
+							<i class="fa fa-check"></i> 접수
+						</button>
+						<button type="button" id="rejectBtnAction" class="btn btn-danger">
+							<i class="fa fa-times"></i> 반려
+						</button>
+					</div>
+				</div>
+	
+				<div id="rejectForm" style="display: none;"> <%-- JS가 .active 클래스로 제어 --%>
+					<h3>반려 사유 선택</h3>
+					<div>
+						<div class="reason-item">
+							<label>
+								<input type="radio" name="reasonCode" value="RJ_10">
+								<span>계좌정보 불일치</span>
+							</label>
+						</div>
+						<div class="reason-item">
+							<label>
+								<input type="radio" name="reasonCode" value="RJ_20">
+								<span>관련서류 미제출</span>
+							</label>
+						</div>
+						<div class="reason-item">
+							<label>
+								<input type="radio" name="reasonCode" value="RJ_30">
+								<span>신청시기 미도래</span>
+							</label>
+						</div>
+						<div class="reason-item">
+							<label>
+								<input type="radio" name="reasonCode" value="RJ_40">
+								<span>근속기간 미충족</span>
+							</label>
+						</div>
+						<div class="reason-item">
+							<label>
+								<input type="radio" name="reasonCode" value="RJ_50">
+								<span>자녀 연령 기준 초과</span>
+							</label>
+						</div>
+						<div class="reason-item">
+							<label>
+								<input type="radio" name="reasonCode" value="RJ_60">
+								<span>휴직 가능 기간 초과</span>
+							</label>
+						</div>
+						<div class="reason-item">
+							<label>
+								<input type="radio" name="reasonCode" value="RJ_70">
+								<span>제출서류 정보 불일치</span>
+							</label>
+						</div>
+						<div class="reason-item">
+							<label>
+								<input type="radio" name="reasonCode" value="RJ_80">
+								<span>신청서 작성 내용 미비</span>
+							</label>
+						</div>
+						<div class="reason-item">
+							<label>
+								<input type="radio" name="reasonCode" value="RJ_99">
+								<span>기타</span>
+							</label>
+						</div>
+					</div> 
+	
+					<div class="comment-wrapper">
+						<label class="comment-label">상세 사유</label>
+						<input type="text" id="rejectComment" class="form-control" placeholder="상세 사유를 입력하세요" style="width:50%;">
+					</div>
+	
+					<div class="judge-actions" style="text-align: right; margin-top: 20px; padding-bottom: 20px;">
+						<button type="button" id="confirmBtn" class="btn btn-danger" style="margin-right: 8px;">반려 확정</button>
+						<button type="button" id="cancelBtn" class="btn btn-secondary">취소</button>
+					</div>
+				</div>
+			</c:otherwise>
+		</c:choose>
+			
+		</div> <%-- .content-wrapper 닫기 --%>
 		
 		<input type="hidden" id="confirmNumber" value="${confirmDTO.confirmNumber}" />
     </main>
@@ -1107,7 +1122,9 @@ document.addEventListener("DOMContentLoaded", function() {
     const confirmNumber = document.getElementById("confirmNumber").value;
     const rejectComment = document.getElementById("rejectComment");
     const progressLine = document.querySelector('.progress-line');
-
+    const approveBtnAction = document.getElementById('approveBtnAction');
+	const rejectBtnAction = document.getElementById('rejectBtnAction');
+	
     // 수정 폼 관련
     const editStartDateInput = document.getElementById('edit-start-date');
     const editEndDateInput = document.getElementById('edit-end-date');
@@ -1183,7 +1200,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     
 	// ===== 접수/반려 처리 (새 디자인 적용) =====
-    document.querySelectorAll('input[name="judgeOption"]').forEach(radio => {
+    /* document.querySelectorAll('input[name="judgeOption"]').forEach(radio => {
         radio.addEventListener('change', function() {
             if (this.value === 'reject') {
                 rejectForm.classList.add('active');
@@ -1191,40 +1208,66 @@ document.addEventListener("DOMContentLoaded", function() {
                 rejectForm.classList.remove('active');
             }
         });
-    });
+    }); */
+    
+ 	// ===== [신규] '접수' 버튼 리스너 =====
+	approveBtnAction?.addEventListener("click", function() {
+		if (!confirm("접수 처리하시겠습니까?")) return;
+		
+		fetch("${pageContext.request.contextPath}/admin/judge/approve", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ confirmNumber: confirmNumber })
+		})
+		.then(res => res.json())
+		.then(data => { 
+			alert(data.message); 
+			if (data.success) location.href = data.redirectUrl; 
+		})
+		.catch(err => { console.error(err); alert("접수 처리 중 오류"); });
+	});
+
+	// ===== [신규] '반려' 버튼 리스너 (폼 열기) =====
+	rejectBtnAction?.addEventListener("click", function() {
+		rejectForm.style.display = 'block'; // 또는 rejectForm.classList.add('active');
+		// CSS에 #rejectForm.active { display: block; }이 정의되어 있다면 classList.add가 더 좋습니다.
+		// 제공된 CSS에는 .active 스타일이 있으므로 classList를 사용합니다.
+		rejectForm.classList.add('active');
+	});
 
     confirmBtn?.addEventListener("click", function() {
-        const selectedOption = document.querySelector('input[name="judgeOption"]:checked');
-        if (!selectedOption) { alert("접수 또는 반려를 선택해주세요."); return; }
-        const optionValue = selectedOption.value;
+		
+ 		// 반려 로직만 남김
+ 		const selectedReason = document.querySelector('input[name="reasonCode"]:checked');
+ 		const comment = rejectComment.value.trim();
+ 		
+ 		if (!selectedReason) { alert("반려 사유를 선택해주세요."); return; }
+ 		if (selectedReason.value==="RJ_99" && comment==="") { alert("기타 사유를 입력해주세요."); return; }
+ 		if (!confirm("반려 처리하시겠습니까?")) return;
+		
+ 		const requestData = { 
+			confirmNumber: confirmNumber, 
+			rejectionReasonCode: selectedReason.value, 
+			rejectComment: comment 
+		};
 
-        if (optionValue === "approve") {
-            if (!confirm("접수 처리하시겠습니까?")) return;
-            fetch("${pageContext.request.contextPath}/admin/judge/approve", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ confirmNumber: confirmNumber })
-            })
-            .then(res => res.json())
-            .then(data => { alert(data.message); if (data.success) location.href=data.redirectUrl; })
-            .catch(err => { console.error(err); alert("접수 처리 중 오류"); });
-        } else if (optionValue === "reject") {
-            const selectedReason = document.querySelector('input[name="reasonCode"]:checked');
-            const comment = rejectComment.value.trim();
-            if (!selectedReason) { alert("반려 사유 선택"); return; }
-            if (selectedReason.value==="RJ_99" && comment==="") { alert("기타 사유 입력"); return; }
-            if (!confirm("반려 처리하시겠습니까?")) return;
-            const requestData = { confirmNumber, rejectionReasonCode:selectedReason.value, rejectComment:comment };
-            fetch("${pageContext.request.contextPath}/admin/judge/reject", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(requestData)
-            })
-            .then(res=>res.json())
-            .then(data=>{ alert(data.message); if(data.success) location.href=data.redirectUrl; })
-            .catch(err=>{ console.error(err); alert("반려 처리 오류"); });
-        }
+ 		fetch("${pageContext.request.contextPath}/admin/judge/reject", {
+ 			method: "POST",
+ 			headers: { "Content-Type": "application/json" },
+ 			body: JSON.stringify(requestData)
+ 		})
+ 		.then(res=>res.json())
+ 		.then(data=>{ 
+			alert(data.message); 
+			if(data.success) location.href = data.redirectUrl; 
+		})
+ 		.catch(err=>{ console.error(err); alert("반려 처리 오류"); });
     });
+    
+ 	// ===== [신규] 반려 폼 '취소' 버튼 리스너 =====
+	cancelBtn?.addEventListener("click", function() {
+		rejectForm.classList.remove('active'); // 폼 숨기기
+	});
 
  	// ===== 기간 나누기 버튼  =====
     generateEditBtn?.addEventListener('click', function() {

@@ -215,20 +215,183 @@
 	    padding-bottom: 20px;
 	  }
 	
-	  .judge-actions .btn {
-	    justify-content: center;
-	    gap: 12px;
-	    margin-bottom: 25px; /* 목록 버튼과 간격 증가 */
-	    padding: 6px 14px;
-	  }
+	  .judge-actions { /* [수정] 반려 폼 내부 버튼 정렬용 */
+		text-align: right; 
+		margin-top: 20px; 
+		padding-bottom: 20px;
+	}
 	  
 	  .btn-primary, .btn-secondary {
 	    padding: 6px 14px; /* 패딩 축소 */
 	    font-size: 14px;
 	  }
 	  
-	#rejectForm { 
-		display: none; 
+	  /* ===== [신규] 반려 버튼 ===== */
+	.btn-danger {
+		padding: 6px 14px;
+		font-size: 14px;
+		background-color: #f44336;
+		border-color: #f44336;
+		color: white;
+		cursor: pointer;
+		border-radius: 4px;
+		transition: background-color 0.2s;
+	}
+	.btn-danger:hover {
+		background-color: #d32f2f;
+		border-color: #d32f2f;
+	}
+
+	/* ===== [신규] 부지급 사유 영역 (첫 번째 파일에서 복사) ===== */
+	#rejectForm {
+		display: none;
+		background: #fff;
+		border: 1px solid #e5e7eb;
+		border-radius: 12px;
+		padding: 24px;
+		margin-top: 20px;
+		box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+	}
+	
+	#rejectForm.active {
+		display: block;
+		animation: fadeInDown 0.3s ease;
+		margin-bottom: 10px;
+	}
+	
+	#rejectForm h3 {
+		font-size: 18px;
+		font-weight: 700;
+		color: #1f2937;
+		margin-bottom: 24px;
+		padding-bottom: 12px;
+		border-bottom: 2px solid #f3f4f6;
+	}
+	
+	/* 반려 사유 그리드 (2열 레이아웃) - 동적 로딩을 위해 #rejectReasons에 적용 */
+	#rejectReasons {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 14px;
+		justify-content: flex-start;
+		margin-bottom: 24px;
+	}
+	
+	.reason-item {
+		position: relative;
+		box-sizing: border-box;
+		flex: 0 0 calc(50% - 12px); 
+		max-width: 220px;         
+	}
+	
+	.reason-item input[type="radio"] {
+		position: absolute;
+		opacity: 0;
+		pointer-events: none;
+	}
+	
+	.reason-item label {
+		display: flex;
+		align-items: center;
+		padding: 12px 10px;
+		background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+		border: 2px solid transparent;
+		border-radius: 10px;
+		cursor: pointer;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		font-size: 14px;
+		font-weight: 500;
+		color: #4b5563;
+		box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+		position: relative;
+	}
+	
+	.reason-item label::after {
+		content: '';
+		position: absolute;
+		right: 18px;
+		top: 50%;
+		transform: translateY(-50%) scale(0);
+		width: 20px;
+		height: 20px;
+		background: #ef4444;
+		border-radius: 50%;
+		transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+	}
+	
+	.reason-item label::before {
+		content: '✓';
+		position: absolute;
+		right: 24px;
+		top: 50%;
+		transform: translateY(-50%) scale(0);
+		color: white;
+		font-size: 12px;
+		font-weight: bold;
+		z-index: 1;
+		transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.05s;
+	}
+	
+	.reason-item label:hover {
+		transform: translateY(-3px);
+		box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+		border-color: #e5e7eb;
+	}
+	
+	.reason-item label:has(input[type="radio"]:checked) {
+		border-color: #f9fafb;
+		color: #991b1b;
+		font-weight: 600;
+		box-shadow: 0 8px 24px rgba(239, 68, 68, 0.2);
+		padding-right: 55px;
+	}
+	
+	.reason-item label:has(input[type="radio"]:checked)::after {
+		transform: translateY(-50%) scale(1);
+	}
+	
+	.reason-item label:has(input[type="radio"]:checked)::before {
+		transform: translateY(-50%) scale(1);
+	}
+	
+	/* 상세 사유 입력 */
+	.comment-wrapper {
+		margin-top: 24px;
+	}
+	
+	.comment-label {
+		display: block;
+		font-weight: 600;
+		color: #333;
+		margin-bottom: 8px;
+		font-size: 15px;
+		text-align: left;
+	}
+	
+	#rejectComment {
+		width: 100%;
+		padding: 12px;
+		border: 2px solid #e0e0e0;
+		border-radius: 8px;
+		font-size: 14px;
+		resize: vertical;
+		min-height: 80px;
+		font-family: inherit;
+		transition: all 0.3s ease;
+		text-align: left;
+		display: block;
+		margin: 0;
+	}
+	
+	#rejectComment:focus {
+		outline: none;
+		border-color: #f44336;
+		box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.1);
+	}
+	
+	@keyframes fadeInDown {
+		from { opacity: 0; transform: translateY(-10px); }
+		to { opacity: 1; transform: translateY(0); }
 	}
 
 </style>
@@ -448,7 +611,7 @@
 	</table>
 
 	<h3 class="section-title" style="font-size: 16px; margin-top: 25px;">월별 지급 내역</h3>
-	<table class="info-table table-4col">
+	<table class="info-table table-5col">
 		<thead>
 			<tr>
 				<th>회차</th>
@@ -456,23 +619,85 @@
 				<th>사업장 지급액</th>
 				<th>정부 지급액</th>
 				<th>지급예정일</th>
+				<th>총 지급액</th>
 			</tr>
 		</thead>
 		<tbody>
-			<c:forEach var="t" items="${terms}" varStatus="st">
-				<tr>
-					<td><c:out value="${st.index + 1}" />개월차</td>
-					<td><c:out value="${t.startMonthDate}" /> ~ <c:out value="${t.endMonthDate}" /></td>
-					<td><fmt:formatNumber value="${t.companyPayment}" type="number" /></td>
-					<td><fmt:formatNumber value="${t.govPayment}" type="number" /></td>
-					<td><c:out value="${t.paymentDate}" /></td>
-				</tr>
-			</c:forEach>
+			<c:set var="totalAmount" value="${0}" />
+			
+			<c:forEach var="item" items="${dto.list}" varStatus="status">
+								<tr>
+									<td>
+										<fmt:formatDate value="${item.startMonthDate}" pattern="yyyy.MM.dd"/>
+									</td>
+							
+									<td>
+										<c:choose>
+											<c:when test="${not empty item.earlyReturnDate}">
+												<fmt:formatDate value="${item.earlyReturnDate}" pattern="yyyy.MM.dd"/>
+											</c:when>
+											<c:otherwise>
+												<fmt:formatDate value="${item.endMonthDate}" pattern="yyyy.MM.dd"/>
+											</c:otherwise>
+										</c:choose>
+									</td>
+							
+									<td>
+										<fmt:formatNumber value="${item.companyPayment}" type="number" pattern="#,###" />원
+									</td>
+							
+									<td>
+										<c:choose>
+											<c:when test="${not empty item.govPaymentUpdate}">
+												<fmt:formatNumber value="${item.govPaymentUpdate}" type="number" pattern="#,###" />원
+											</c:when>
+											<c:otherwise>
+												<fmt:formatNumber value="${item.govPayment}" type="number" pattern="#,###" />원
+											</c:otherwise>
+										</c:choose>
+									</td>
+							
+									<td>
+										<fmt:formatNumber
+											value="${item.companyPayment + (not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}"
+											type="number"
+											pattern="#,###" />원
+									</td>
+								</tr>
+							
+								<c:set var="totalAmount"
+									value="${totalAmount + item.companyPayment + (not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}" />
+							</c:forEach>
 
-			<c:if test="${empty terms}">
-				<tr>
-					<td colspan="5" style="text-align: center; color: #888;">단위기간 내역이 없습니다.</td>
-				</tr>
+			<c:if test="${not empty dto.list}">
+								<tr style="background-color: var(--light-gray-color);">
+									<td colspan="2">
+										<fmt:formatDate value="${dto.list[0].startMonthDate}" pattern="yyyy.MM.dd" />
+										-
+										<c:choose>
+											<c:when test="${not empty dto.list[fn:length(dto.list) - 1].earlyReturnDate}">
+												<fmt:formatDate value="${dto.list[fn:length(dto.list) - 1].earlyReturnDate}" pattern="yyyy.MM.dd" />
+											</c:when>
+											<c:otherwise>
+												<fmt:formatDate value="${dto.list[fn:length(dto.list) - 1].endMonthDate}" pattern="yyyy.MM.dd" />
+											</c:otherwise>
+										</c:choose>
+									</td>
+							
+									<td colspan="2" style="text-align: center; font-weight: 700; color: var(--dark-gray-color);">
+										합계 신청금액
+									</td>
+							
+									<td style="text-align: center; font-weight: 700; font-size: 1.05em; color: var(--primary-color);">
+										<fmt:formatNumber value="${totalAmount}" type="number" pattern="#,###" />원
+									</td>
+								</tr>
+			</c:if>
+		
+			<c:if test="${empty dto.list}">
+								<tr>
+									<td colspan="5" style="text-align: center; color: #888;">단위기간 내역이 없습니다.</td>
+								</tr>
 			</c:if>
 		</tbody>
 	</table>
@@ -658,26 +883,42 @@
 			<a href="${pageContext.request.contextPath}/admin/superior" class="btn btn-secondary">목록으로</a>
 		</c:when>
 		<c:otherwise>
-			<div class="judge-wrap">
-				<label><input type="radio" name="judgeOption" value="approve"> 지급</label>
-				<label><input type="radio" name="judgeOption" value="reject"> 부지급</label>
-			</div>
-
-			<div id="rejectForm">
-				<h3>부지급 사유 선택</h3>
-				<div class="reasons" id="rejectReasons"></div>
-				<div style="margin-top:10px;">
-					<label>상세 사유</label><br>
-					<input type="text" id="rejectComment" class="form-control" placeholder="상세 사유를 입력하세요 (선택)">
+			<div class="button-container" style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; margin-bottom: 20px;">
+				<div>
+					<a href="${pageContext.request.contextPath}/admin/superior" class="btn btn-secondary">목록</a>
+				</div>
+				
+				<div class="judge-actions-right">
+					<button type="button" id="approveBtnAction" class="btn btn-primary" style="margin-right: 8px;">
+						<i class="fa fa-check"></i> 지급
+					</button>
+					<button type="button" id="rejectBtnAction" class="btn btn-danger">
+						<i class="fa fa-times"></i> 부지급
+					</button>
 				</div>
 			</div>
 
-			<div class="judge-actions">
-				<button type="button" id="confirmBtn" class="btn btn-primary btn-sm">확인</button>
-				<a href="${pageContext.request.contextPath}/admin/superior" class="btn btn-secondary btn-sm">취소</a>
+			<div id="rejectForm"> <%-- JS가 .active 클래스로 제어 --%>
+				<h3>부지급 사유 선택</h3>
+				
+				<%-- [수정] 동적 로딩을 위해 #rejectReasons 사용, 스타일 적용을 위해 <div>로 감싸기 --%>
+				<div id="rejectReasons">
+					<%-- JS가 이 영역을 .reason-item으로 채웁니다 --%>
+				</div> 
+	
+				<div class="comment-wrapper">
+					<label class="comment-label">상세 사유</label>
+					<input type="text" id="rejectComment" class="form-control" placeholder="상세 사유를 입력하세요 (선택)" style="width:50%;">
+				</div>
+	
+				<div class="judge-actions" style="text-align: right; margin-top: 20px; padding-bottom: 20px;">
+					<%-- [수정] '확인' -> '부지급 확정'으로 텍스트 변경 --%>
+					<button type="button" id="confirmBtn" class="btn btn-danger" style="margin-right: 8px;">부지급 확정</button>
+					<button type="button" id="cancelBtn" class="btn btn-secondary">취소</button>
+				</div>
 			</div>
-			<a href="${pageContext.request.contextPath}/admin/superior" class="btn btn-secondary"
-					style="margin: 5px;">목록으로</a>
+			<%-- <a href="${pageContext.request.contextPath}/admin/superior" class="btn btn-secondary"
+					style="margin: 5px;">목록으로</a> --%>
 		</c:otherwise>
 	</c:choose>
 </div>
@@ -701,6 +942,10 @@ document.addEventListener("DOMContentLoaded", function () {
 	const ctx = '${pageContext.request.contextPath}';
 
 	const confirmBtn = document.getElementById("confirmBtn");
+	const cancelBtn = document.getElementById("cancelBtn");
+	const approveBtnAction = document.getElementById('approveBtnAction'); // 상단 '지급' 버튼
+	const rejectBtnAction = document.getElementById('rejectBtnAction'); // 상단 '부지급' 버튼
+	
 	const rejectForm = document.getElementById("rejectForm");
 	const rejectReasonsEl = document.getElementById("rejectReasons");
 	const rejectCommentEl = document.getElementById("rejectComment");
@@ -746,7 +991,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	}
 
 	// 지급/부지급 라디오 선택 시 사유 로딩 (기존과 동일)
-	document.querySelectorAll('input[name="judgeOption"]').forEach(radio => {
+	/* document.querySelectorAll('input[name="judgeOption"]').forEach(radio => {
 		radio.addEventListener('change', function() {
 			if (this.value === 'reject') {
 				rejectForm.style.display = "block";
@@ -780,55 +1025,103 @@ document.addEventListener("DOMContentLoaded", function () {
 				rejectForm.style.display = "none";
 			}
 		});
-	});
+	}); */
+	
+	// '지급' 버튼 리스너
+	if (approveBtnAction) {
+		approveBtnAction.addEventListener('click', function() {
+			if (!confirm('지급 확정하시겠습니까?')) return;
 
-	// 확인(지급/부지급)
+			fetch(ctx + '/admin/superior/approve', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ applicationNumber: Number(applicationNumber) })
+			})
+			.then(res => res.json())
+			.then(data => {
+				sendPushAndFinalize(userId, data, '처리가 완료되었습니다.');
+			})
+			.catch(() => alert('지급 처리 중 오류가 발생했습니다.'));
+		});
+	}
+	
+	// '부지급' 버튼 리스너 (폼 열기 + 사유 로드)
+	if (rejectBtnAction) {
+		rejectBtnAction.addEventListener('click', function() {
+			rejectForm.classList.add('active'); // 폼 표시
+
+			// 사유 로드 (최초 1회만)
+			if (!rejectReasonsEl.dataset.loaded) {
+				fetch(ctx + '/codes/final-reject', {
+					method: 'GET',
+					headers: { 'Accept': 'application/json' }
+				})
+				.then(res => res.json())
+				.then(list => {
+					if (!Array.isArray(list) || list.length === 0) {
+						rejectReasonsEl.innerHTML =
+							'<em style="color:#64748b;">사유 코드가 없습니다.</em>';
+					} else {
+						// [수정] 스타일 적용을 위해 .reason-item 구조로 생성
+						rejectReasonsEl.innerHTML = list
+							.map(({code, name}) =>
+								'<div class="reason-item">' +
+								'  <label>' +
+								'    <input type="radio" name="reasonCode" value="' + code + '">' +
+								'    <span>' + (name ?? code) + '</span>' +
+								'  </label>' +
+								'</div>'
+							)
+							.join('');
+					}
+					rejectReasonsEl.dataset.loaded = '1';
+				})
+				.catch(() => {
+					rejectReasonsEl.innerHTML =
+						'<div class="reason-item">' +
+						'  <label>' +
+						'    <input type="radio" name="reasonCode" value="RJ_99">' +
+						'    <span>기타(네트워크 오류)</span>' +
+						'  </label>' +
+						'</div>';
+					rejectReasonsEl.dataset.loaded = '1';
+				});
+			}
+		});
+	}
+	
+	// 반려 폼 '취소' 버튼 리스너
+	if (cancelBtn) {
+		cancelBtn.addEventListener('click', function() {
+			rejectForm.classList.remove('active'); // 폼 숨기기
+		});
+	}
+	
+	// 부지급 확정
 	if (confirmBtn) {
 		confirmBtn.addEventListener('click', function() {
-			const selected = document.querySelector('input[name="judgeOption"]:checked');
-			if (!selected) { alert('지급 또는 부지급을 선택해주세요.'); return; }
 
-			const approveUrl = ctx + '/admin/superior/approve';
-			const rejectUrl = ctx + '/admin/superior/reject';
+			// '부지급' 로직만 실행
+			const reason = document.querySelector('input[name="reasonCode"]:checked');
+			const comment = (rejectCommentEl?.value || '').trim();
+			if (!reason) { alert('부지급 사유를 선택해주세요.'); return; }
+			if (reason.value === 'RJ_99' && !comment) { alert('기타 선택 시 상세 사유를 입력하세요.'); return; }
+			if (!confirm('부지급 처리하시겠습니까?')) return;
 
-			if (selected.value === 'approve') {
-				if (!confirm('지급 확정하시겠습니까?')) return;
-
-				fetch(approveUrl, {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ applicationNumber: Number(applicationNumber) })
+			fetch(ctx + '/admin/superior/reject', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					applicationNumber: Number(applicationNumber),
+					rejectionReasonCode: reason.value,
+					rejectComment: comment
 				})
-				.then(res => res.json())
-				.then(data => {
-					// [수정] 푸시 알림 함수 호출로 변경
-					sendPushAndFinalize(userId, data, '처리가 완료되었습니다.');
-				})
-				.catch(() => alert('지급 처리 중 오류가 발생했습니다.'));
-
-			} else { // 'reject'
-				const reason = document.querySelector('input[name="reasonCode"]:checked');
-				const comment = (rejectCommentEl?.value || '').trim();
-				if (!reason) { alert('부지급 사유를 선택해주세요.'); return; }
-				if (reason.value === 'RJ_99' && !comment) { alert('기타 선택 시 상세 사유를 입력하세요.'); return; }
-				if (!confirm('부지급 처리하시겠습니까?')) return;
-
-				fetch(rejectUrl, {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({
-						applicationNumber: Number(applicationNumber),
-						rejectionReasonCode: reason.value,
-						rejectComment: comment
-					})
-				})
-				.then(res => res.json())
-				.then(data => {
-					// [수정] 푸시 알림 함수 호출로 변경
-					sendPushAndFinalize(userId, data, '부지급 처리가 완료되었습니다.');
-				})
-				.catch(() => alert('부지급 처리 중 오류가 발생했습니다.'));
-			}
+			})
+			.then(res => res.json())
+			.then(data => {
+				sendPushAndFinalize(userId, data, '부지급 처리가 완료되었습니다.');
+			})
+			.catch(() => alert('부지급 처리 중 오류가 발생했습니다.'));
 		});
 	}
 });

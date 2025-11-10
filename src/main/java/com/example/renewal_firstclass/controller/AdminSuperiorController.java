@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,12 +18,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.renewal_firstclass.domain.AdminSuperCheckDTO;
+import com.example.renewal_firstclass.domain.ApplicationDetailDTO;
 import com.example.renewal_firstclass.domain.CodeDTO;
 import com.example.renewal_firstclass.domain.CustomUserDetails;
 import com.example.renewal_firstclass.domain.PageDTO;
 import com.example.renewal_firstclass.domain.UserDTO;
 import com.example.renewal_firstclass.service.AdminSuperiorService;
 import com.example.renewal_firstclass.service.CodeService;
+import com.example.renewal_firstclass.service.UserApplyService;
 import com.example.renewal_firstclass.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -34,6 +37,7 @@ public class AdminSuperiorController {
     private final CodeService codeService; 
     private final UserService userService;
     private final AdminSuperiorService adminSuperiorService;
+    private final UserApplyService userApplyService;
     
     //목록 조회
     @RequestMapping(value="/admin/superior", method= {RequestMethod.GET, RequestMethod.POST})
@@ -77,8 +81,12 @@ public class AdminSuperiorController {
 
     // 상세페이지 조회
     @GetMapping("/admin/superior/detail")
-    public String showDetail(@RequestParam long appNo, Model model) {
+    public String showDetail(@RequestParam long appNo, @PathVariable Long applicationNumber, Model model) {
     	adminSuperiorService.userApplyDetail(appNo, model);
+    	ApplicationDetailDTO applicationDetailDTO = userApplyService.getApplicationDetail(applicationNumber);
+    	
+    	model.addAttribute("dto", applicationDetailDTO);
+    	
     	return "admin/adminsuperiordetail";
     }
     
