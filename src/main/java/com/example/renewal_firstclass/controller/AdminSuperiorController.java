@@ -81,9 +81,9 @@ public class AdminSuperiorController {
 
     // 상세페이지 조회
     @GetMapping("/admin/superior/detail")
-    public String showDetail(@RequestParam long appNo, @PathVariable Long applicationNumber, Model model) {
+    public String showDetail(@RequestParam long appNo, Model model) {
     	adminSuperiorService.userApplyDetail(appNo, model);
-    	ApplicationDetailDTO applicationDetailDTO = userApplyService.getApplicationDetail(applicationNumber);
+    	ApplicationDetailDTO applicationDetailDTO = userApplyService.getApplicationDetail(appNo);
     	
     	model.addAttribute("dto", applicationDetailDTO);
     	
