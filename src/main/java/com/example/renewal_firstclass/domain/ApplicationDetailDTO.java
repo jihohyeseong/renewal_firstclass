@@ -15,6 +15,7 @@ public class ApplicationDetailDTO {
 	private Long applicationNumber;
 	private Long confirmNumber;
 	private String statusCode;
+	private Long userId;
 	private String name;
 	private String registrationNumber;
 	private String zipNumber;

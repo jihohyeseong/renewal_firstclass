@@ -248,6 +248,7 @@
         <result property="accountNumber" column="account_number"/>
         <result property="govInfoAgree" column="gov_info_agree"/>
 
+        <result property="userId" column="id"/>
         <result property="name" column="user_name"/>
         <result property="registrationNumber" column="user_registration_number"/>
         <result property="zipNumber" column="user_zip_number"/>
@@ -307,6 +308,7 @@
 	        A.account_number,
 	        A.gov_info_agree,
 	        
+	        U_APP.id AS id,
 	        U_APP.name AS user_name,
 	        U_APP.registration_number AS user_registration_number,
 	        U_APP.zip_number AS user_zip_number,

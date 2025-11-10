@@ -367,7 +367,7 @@ public class CompanyApplyController {
             List<AttachedFileDTO> files = fileService.getFiles(confirmDTO.getFileId());
             
             
-            model.addAttribute("termList", dto.getTermAmounts()); 
+            model.addAttribute("termList", dto.getTermAmounts());
             model.addAttribute("confirmDTO", confirmDTO);
             model.addAttribute("files", files);
             return "company/compdetail";
