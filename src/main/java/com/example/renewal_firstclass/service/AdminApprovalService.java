@@ -159,10 +159,10 @@ public class AdminApprovalService {
     }
     
     // 심사중으로 변경
- 	/*public void updateStatusCode(Long confirmNumber) {
+ 	public void updateStatusCode(Long confirmNumber) {
  		
  		adminApprovalDAO.updateStatusCode(confirmNumber);
- 	}*/
+ 	}
  	
  	// 수정 업데이트
  	public boolean updateConfirm(ConfirmApplyDTO dto) {

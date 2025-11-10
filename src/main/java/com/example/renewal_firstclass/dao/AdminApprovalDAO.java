@@ -21,7 +21,7 @@ public interface AdminApprovalDAO {
     int isProcessed(@Param("confirmNumber") Long confirmNumber);
     
     // 심사중으로 업데이트
-    //void updateStatusCode(Long confirmNumber);
+    void updateStatusCode(Long confirmNumber);
     
     /*관리자 수정*/
     // UPD 컬럼 업데이트
