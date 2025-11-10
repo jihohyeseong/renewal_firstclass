@@ -481,5 +481,31 @@ public class CompanyApplyController {
         }
         return "redirect:/comp/main";
     }
+    
+    /*반려 후 재신청*/
+    @GetMapping("/comp/resubmit")
+    public String resubmitForm(@RequestParam("confirmNumber") Long confirmNumber,
+                               Model model, RedirectAttributes ra) {
+        UserDTO me = currentUserOrNull();
+        if (me == null) return "redirect:/login";
+
+        ConfirmApplyDTO dto = companyApplyService.findByConfirmNumber(confirmNumber);
+        if (dto == null || !dto.getUserId().equals(me.getId())) {
+            ra.addFlashAttribute("error","권한이 없거나 문서가 없습니다.");
+            return "redirect:/comp/main";
+        }
+        if (!"ST_60".equals(dto.getStatusCode())) {
+            ra.addFlashAttribute("error","반려 상태에서만 재신청 가능합니다.");
+            return "redirect:/comp/detail?confirmNumber=" + confirmNumber;
+        }
+
+        model.addAttribute("mode", "RESUBMIT");
+        model.addAttribute("oldConfirmNumber", confirmNumber);
+        model.addAttribute("confirmDTO", dto);
+        model.addAttribute("termList", dto.getTermAmounts());
+        model.addAttribute("files", fileService.getFiles(dto.getFileId()));
+        return "company/compresubmit";
+    }
+
 
 }

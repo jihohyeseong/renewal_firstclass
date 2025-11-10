@@ -218,8 +218,8 @@ h2{
                   ~
                   <fmt:formatDate value="${term.endMonthDate}" pattern="yyyy.MM.dd"/>
                 </td>
-                <td>₩ <fmt:formatNumber value="${term.companyPayment}" pattern="#,##0"/></td>
-                <td>₩ <fmt:formatNumber value="${term.govPayment}" pattern="#,##0"/></td>
+                <td><fmt:formatNumber value="${term.companyPayment}" pattern="#,##0"/>원</td>
+                <td><fmt:formatNumber value="${term.govPayment}" pattern="#,##0"/>원</td>
               </tr>
             </c:forEach>
             <c:if test="${empty termList}">
@@ -344,6 +344,12 @@ h2{
                   onclick="return confirm('신청을 회수하시겠습니까?');">신청 취소</button>
         </form>
       </c:if>
+      
+        <!-- 반려일 때만 재신청-->
+	  <c:if test="${confirmDTO.statusCode == 'ST_60'}">
+	    <a href="${pageContext.request.contextPath}/comp/resubmit?confirmNumber=${confirmDTO.confirmNumber}"
+	       class="btn bottom-btn btn-primary">재신청</a>
+	  </c:if>
 
       <c:if test="${confirmDTO.statusCode != 'ST_50' and confirmDTO.statusCode != 'ST_60'}">
         <form method="post" action="${pageContext.request.contextPath}/comp/delete" style="display:contents;">

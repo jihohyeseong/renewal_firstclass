@@ -93,7 +93,7 @@
     .payment-input-field{ flex:1; display:flex; justify-content:flex-end; }
   </style>
 
-  <title>육아휴직 확인서 제출(수정)</title>
+  <title>육아휴직 확인서 제출(재신청)</title>
 </head>
 <body>
 
@@ -103,9 +103,7 @@
   <div class="content-wrapper">
     <h1>육아휴직 확인서 제출</h1>
 
-    <form id="confirm-form"
-          action="${pageContext.request.contextPath}/comp/update?confirmNumber=${confirmDTO.confirmNumber}"
-          method="post">
+    <form id="confirm-form" action="${pageContext.request.contextPath}/comp/apply/save" method="post" enctype="multipart/form-data">
       <input type="hidden" id="confirm-number" name="confirmNumber" value="${confirmDTO.confirmNumber}"/>
       <sec:csrfInput />
 
