@@ -1,6 +1,7 @@
 package com.example.renewal_firstclass.controller;
 
 import java.security.Principal;
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import com.example.renewal_firstclass.domain.ApplyListDTO;
 import com.example.renewal_firstclass.domain.SimpleConfirmVO;
 import com.example.renewal_firstclass.domain.SimpleUserInfoVO;
 import com.example.renewal_firstclass.domain.UserApplyCompleteVO;
+import com.example.renewal_firstclass.service.AttachedFileService;
 import com.example.renewal_firstclass.service.UserApplyService;
 
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,7 @@ import lombok.RequiredArgsConstructor;
 public class UserApplyController {
 	
 	private final UserApplyService userApplyService;
+	private final AttachedFileService attachedFileService;
 	
 	// 유저 메인페이지
 	@GetMapping("/user/main")
@@ -104,9 +107,11 @@ public class UserApplyController {
 	// 임시저장중 삭제
 	@PostMapping("/user/delete/{applicationNumber}")
 	public String deleteApplication(@PathVariable Long applicationNumber, 
-									@RequestParam(value = "termId", required = false) List<Long> termIdList) {
+									@RequestParam(value = "termId", required = false) List<Long> termIdList,
+									@RequestParam(value = "fileId", required = false) Long fileId) {
 		
 		userApplyService.deleteApply(applicationNumber, termIdList);
+		int deleteNum = attachedFileService.deleteByFileId(fileId, true);
 		
 		return "redirect:/user/main";
 	}
@@ -164,7 +169,10 @@ public class UserApplyController {
 	public String userDetailPage(@PathVariable Long applicationNumber, Model model) {
 		
 		ApplicationDetailDTO applicationDetailDTO = userApplyService.getApplicationDetail(applicationNumber);
+		Date startDate = applicationDetailDTO.getList().get(0).getStartMonthDate();
+		Date endDate = applicationDetailDTO.getList().get(applicationDetailDTO.getList().size() - 1).getEndMonthDate();
 		model.addAttribute("dto", applicationDetailDTO);
+		model.addAttribute("totalDate", (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24) + 1);
 		
 		return "user/applicationDetail";
 	}

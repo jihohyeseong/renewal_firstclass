@@ -395,9 +395,9 @@ h2{
 				<table class="info-table">
 					<tbody>
 						<tr>
-							<th>육아휴직 기간</th>
+							<th>급여 신청 기간</th>
 							<td id="total-leave-period">
-								<fmt:formatDate value="${dto.startDate}" pattern="yyyy-MM-dd" /> ~ <fmt:formatDate value="${dto.endDate}" pattern="yyyy-MM-dd" />
+								<fmt:formatDate value="${dto.startDate}" pattern="yyyy-MM-dd" /> ~ <fmt:formatDate value="${dto.list[fn:length(dto.list) - 1].endMonthDate}" pattern="yyyy.MM.dd" /> (${totalDate}일)
 							</td>
 						</tr>
 					</tbody>
@@ -476,6 +476,7 @@ h2{
 												<fmt:formatDate value="${dto.list[fn:length(dto.list) - 1].endMonthDate}" pattern="yyyy.MM.dd" />
 											</c:otherwise>
 										</c:choose>
+										(${totalDate}일)
 									</td>
 							
 									<td colspan="2" style="text-align: center; font-weight: 700; color: var(--dark-gray-color);">
@@ -627,6 +628,7 @@ h2{
 						  action="${pageContext.request.contextPath}/user/delete/${dto.applicationNumber}" 
 						  method="post" 
 						  style="margin-left: auto;">
+						<input type="hidden" name="fileId" value="${dto.files[0].fileId}">
 						<sec:csrfInput/>
 						<c:forEach var="item" items="${dto.list}">
 							<input type="hidden" name="termId" value="${item.termId}" />
