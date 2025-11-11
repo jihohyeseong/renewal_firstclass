@@ -39,17 +39,18 @@ public class AdminSuperiorService {
     	return adminSuperiorDAO.selectCenterPositionByUsername(username);
     }
     
-    public Map<String, Object> getPagedApplicationsAndCounts(String keyword, String status, String date,
+    public Map<String, Object> getPagedApplicationsAndCounts(String nameKeyword, Long appNoKeyword, String status, String date,
     		PageDTO pageDTO) {
         Map<String, Object> result = new HashMap<>();
         
         // 검색 조건에 맞는 게시물 조회
-        int totalCnt = adminSuperiorDAO.selectTotalCount(keyword, status, date);
+        int totalCnt = adminSuperiorDAO.selectTotalCount(nameKeyword, appNoKeyword, status, date);
         pageDTO.setTotalCnt(totalCnt); // PageDTO에 총 개수 설정 -> 페이징 계산 완료
         
         // DTO로 묶어서 전달
         ApplicationSearchDTO search = new ApplicationSearchDTO();
-        search.setKeyword(keyword);
+        search.setNameKeyword(nameKeyword);
+        search.setAppNoKeyword(appNoKeyword);
         search.setStatus(status);
         search.setDate(date);
         search.setPageDTO(pageDTO);
@@ -60,7 +61,7 @@ public class AdminSuperiorService {
         Map<String, Integer> counts = new HashMap<>();
         
         // 전체 신청 건수
-        counts.put("total", adminSuperiorDAO.selectTotalCount(null, null, null));
+        counts.put("total", adminSuperiorDAO.selectTotalCount(null, null, null, null));
 
         // 대기 건수 = '2차 심사중'(ST_40)
         List<String> pendingStatusCodes = Arrays.asList("ST_40");
@@ -81,7 +82,7 @@ public class AdminSuperiorService {
     @Transactional
     public void userApplyDetail(long applicationNumber, Model model) {
         // 진입 시 검토중 전환 
-        //adminSuperiorDAO.whenOpenChangeState(applicationNumber);
+        adminSuperiorDAO.whenOpenChangeState(applicationNumber);
         
         AdminUserApprovalDTO dto = adminSuperiorDAO.selectAppDetailByAppNo(applicationNumber);
         try {

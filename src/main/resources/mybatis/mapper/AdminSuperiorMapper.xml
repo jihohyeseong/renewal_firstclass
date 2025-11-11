@@ -4,8 +4,12 @@
 
     <sql id="searchCondition">
         <where>
-            <if test="keyword != null and keyword != ''">
-                (u.name LIKE '%' || #{keyword} || '%' OR p.application_number LIKE '%' || #{keyword} || '%')
+          
+            <if test="nameKeyword != null and nameKeyword != ''">
+                AND (u.name LIKE '%' || #{nameKeyword} || '%' OR p.application_number LIKE '%' || #{nameKeyword} || '%')
+            </if>
+            <if test="appNoKeyword != null">
+            	AND p.application_number LIKE '%' || #{appNoKeyword} || '%'
             </if>
             <if test="status != null and status != ''">
                 <choose>
@@ -189,16 +193,13 @@
      AND status_code != 'ST_10'
 </update>
 
-<!-- 관리자가 상세 페이지 진입 시: ST_30(심사중) -> ST_40(2차 심사중)
+<!-- 관리자가 상세 페이지 진입 시: ST_30(심사중) -> ST_40(2차 심사중) -->
 <update id="whenOpenChangeState">
   UPDATE TB_PARENTAL_LEAVE_APPLICATION
      SET status_code  = 'ST_40'
    WHERE application_number = #{applicationNumber}
      AND NVL(delt_at,'N') = 'N'
      AND status_code = 'ST_30'
-</update>   -->
-    
-    
-    
-    
+</update>
+
 </mapper>

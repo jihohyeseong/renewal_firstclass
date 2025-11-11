@@ -433,14 +433,13 @@ a { text-decoration: none; color: inherit; }
                     <%-- 신청자 이름 필터 --%>
 				    <div class="filter-group">
 				        <label for="searchName">신청자 이름</label>
-				        <%-- [수정] name="applicantName", value="${applicantName}" --%>
-				        <input type="text" name="applicantName" id="searchName" placeholder="신청자 이름..." value="${applicantName}">
+				        <input type="text" name="nameKeyword" id="searchName" placeholder="신청자 이름..." value="${nameKeyword}">
 				    </div>
 				
 				    <%-- 신청번호 필터 --%>
 				    <div class="filter-group">
 				        <label for="searchNumber">신청번호</label>
-				        <input type="text" name="applicationNumber" id="searchNumber" placeholder="신청번호..." value="${applicationNumber}">
+				        <input type="text" name="appNoKeyword" id="searchNumber" placeholder="신청번호..." value="${appNoKeyword}">
 				    </div>
 				
 				    <%-- 처리 상태 필터 --%>
@@ -460,9 +459,10 @@ a { text-decoration: none; color: inherit; }
 				    </button>
 				    
 				    <%-- [신규] 새로고침(초기화) 버튼 - JS에 로직이 있으므로 주석 해제 --%>
-				    <!-- <button type="button" class="btn-refresh" id="btnReset" style="height: 40px; width: 40px;">
+				    <button type="button" class="btn-refresh" id="btnReset" style="height: 40px; width: 40px;">
 				        <i class="bi bi-arrow-clockwise"></i>
-				    </button> -->
+				    </button> 
+				
                     <%-- 날짜 필터 - hidden input으로 값 전달 --%>
     				<c:if test="${not empty date}">
         				<input type="hidden" name="date" value="${date}">
@@ -561,8 +561,8 @@ a { text-decoration: none; color: inherit; }
 	    const dateBtn = document.getElementById('selectDate');
 	    const form = document.getElementById("searchForm");
 	    const statusSelect = document.getElementById("statusSelect");
-	    const applicantNameInput = form.querySelector('input[name="applicantName"]');
-		const applicationNumberInput = form.querySelector('input[name="applicationNumber"]');
+	    const applicantNameInput = form.querySelector('input[name="nameKeyword"]');
+		const applicationNumberInput = form.querySelector('input[name="appNoKeyword"]');
 	    const pageInput = form.querySelector('input[name="page"]');
 	    
 	    if (current) statusSelect.value = current; 
