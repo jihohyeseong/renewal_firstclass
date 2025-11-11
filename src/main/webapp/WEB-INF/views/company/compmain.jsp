@@ -292,12 +292,56 @@
   outline: none;
 }
 
-.keyword-form .input-text{
-  height: 40px;       /* 기존 40px → 48px */
-  padding: 0 16px;    /* 좌우 여백 확대 */
-  font-size: 16px;    /* 글자 크기 살짝 키움 */
-  border-radius: 12px;
-  border: 1px solid var(--border-color, #dee2e6);
+/* --- 검색 필터 (추가/수정) --- */
+.filters-row {
+  display: flex;
+  justify-content: flex-end; /* 폼을 오른쪽으로 정렬 */
+  margin-top: 16px; /* 상태 필터와의 간격 */
+  margin-bottom: 24px; /* 테이블과의 간격 */
+}
+
+.keyword-form {
+  display: flex;
+  align-items: center;
+  gap: 16px; /* 각 요소(그룹, 버튼) 사이의 간격 */
+}
+
+.keyword-form .form-group {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* 라벨과 인풋 사이의 간격 */
+}
+
+.keyword-form .form-group label {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-color-light);
+  white-space: nowrap; /* '주민번호' 줄바꿈 방지 */
+}
+
+/* 기존 .input-text 스타일 오버라이드 (깔끔하게) */
+.keyword-form .input-text {
+  height: 40px;
+  padding: 0 14px;
+  font-size: 15px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border-color);
+  background-color: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.keyword-form .input-text:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-color-light);
+  outline: none;
+}
+
+/* 인풋박스 너비 고정 (필요에 따라 조절) */
+.keyword-form #nameKeywordInput { width: 140px; }
+.keyword-form #regNoDisplay { width: 160px; }
+
+/* 검색 버튼 높이 맞춤 */
+.keyword-form .btn {
+  height: 40px;
 }
 </style>
 </head>
@@ -347,19 +391,23 @@
 <div class="filters-row">
   <form id="keywordForm" class="keyword-form" method="post"
         action="${pageContext.request.contextPath}/comp/search">
-    <!-- 현재 상태 유지 전달 -->
     <input type="hidden" name="status" value="${status}" />
     <input type="hidden" name="page" value="1" />
     <input type="hidden" name="size" value="${size}" />
 
-    <input type="text" name="nameKeyword" placeholder="근로자 이름" value="${nameKeyword}" maxlength="50" class="input-text"/>
+    <div class="form-group">
+      <label for="nameKeywordInput">이름</label>
+      <input type="text" name="nameKeyword" id="nameKeywordInput" placeholder="근로자 이름" 
+             value="${nameKeyword}" maxlength="50" class="input-text"/>
+    </div>
 
-    <c:set var="regNoRaw" value="${empty regNoKeyword ? '' : regNoKeyword}" />
-    <!-- 전송용(숫자만) -->
-    <input type="hidden" name="regNoKeyword" id="regNoRaw" value="${regNoRaw}" />
-    <!-- 표시용(하이픈 포함) -->
-    <input type="text" id="regNoDisplay" class="input-text"
-           placeholder="주민등록번호(숫자13자리)" value="" maxlength="14"/>
+    <div class="form-group">
+      <label for="regNoDisplay">주민번호</label>
+      <c:set var="regNoRaw" value="${empty regNoKeyword ? '' : regNoKeyword}" />
+      <input type="hidden" name="regNoKeyword" id="regNoRaw" value="${regNoRaw}" />
+      <input type="text" id="regNoDisplay" class="input-text"
+             placeholder="숫자 13자리" value="" maxlength="14"/>
+    </div>
 
     <button type="submit" class="btn btn-secondary">검색</button>
   </form>
