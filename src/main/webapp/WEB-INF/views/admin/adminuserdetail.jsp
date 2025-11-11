@@ -690,7 +690,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	        rejectForm.style.display = "block";
 
 	        if (!rejectReasonsEl.dataset.loaded) {
-	          fetch(ctx + '/codes/reject', {
+	          fetch(ctx + '/code/reject', {
 	            method: 'GET',
 	            headers: { 'Accept': 'application/json' }
 	          })

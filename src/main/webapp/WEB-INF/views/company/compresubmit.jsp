@@ -104,7 +104,6 @@
     <h1>육아휴직 확인서 제출</h1>
 
     <form id="confirm-form" action="${pageContext.request.contextPath}/comp/apply/save" method="post" enctype="multipart/form-data">
-      <input type="hidden" id="confirm-number" name="confirmNumber" value="${confirmDTO.confirmNumber}"/>
       <sec:csrfInput />
 
       <!-- 근로자 정보 -->
@@ -1285,7 +1284,6 @@ async function uploadAllFilesBeforeSubmit() {
 
   const fd = new FormData();
   let fileCount = 0;
-
   for (const g of map) {
     const input = document.getElementById(g.id);
     if (input?.files?.length) {
@@ -1296,19 +1294,15 @@ async function uploadAllFilesBeforeSubmit() {
       }
     }
   }
-
+  // 파일 선택이 없다면 그냥 통과
   if (fileCount === 0) return { ok:true, skipped:true, fileId:null };
 
   const CTX  = '${pageContext.request.contextPath}';
   const csrf = document.querySelector('input[name="_csrf"]')?.value || '';
-  const fileIdEl = document.getElementById('fileId');
-  const hasFileId = !!(fileIdEl && fileIdEl.value);
 
-  const url = CTX + (hasFileId ? '/file/append' : '/file/upload');
-  if (hasFileId) fd.append('fileId', fileIdEl.value);
   if (csrf) fd.append('_csrf', csrf);
 
-  const resp = await fetch(url, {
+  const resp = await fetch(CTX + '/file/upload', {
     method:'POST',
     body: fd,
     credentials:'same-origin',
@@ -1319,15 +1313,27 @@ async function uploadAllFilesBeforeSubmit() {
     console.error('[upload] fail', resp.status, await resp.text().catch(()=> ''));
     return { ok:false, skipped:false, fileId:null };
   }
-  if (!hasFileId) {
-    const ct = (resp.headers.get('content-type') || '').toLowerCase();
-    if (!ct.includes('application/json')) return { ok:false, skipped:false, fileId:null };
-    const data = await resp.json().catch(()=> null);
-    const newId = data?.fileId ?? null;
-    if (!newId) return { ok:false, skipped:false, fileId:null };
-    return { ok:true, skipped:false, fileId:newId };
+
+  const ct = (resp.headers.get('content-type') || '').toLowerCase();
+  if (!ct.includes('application/json')) return { ok:false, skipped:false, fileId:null };
+
+  const data = await resp.json().catch(()=> null);
+  const newId = data?.fileId ?? null;
+  if (!newId) return { ok:false, skipped:false, fileId:null };
+
+  // 업로드 성공 → 폼에 fileId hidden 동적 주입
+  const form = document.getElementById('confirm-form');
+  let hidden = form.querySelector('input[name="fileId"]');
+  if (!hidden) {
+    hidden = document.createElement('input');
+    hidden.type = 'hidden';
+    hidden.name = 'fileId';
+    hidden.id   = 'fileId';
+    form.appendChild(hidden);
   }
-  return { ok:true, skipped:false, fileId:fileIdEl.value };
+  hidden.value = String(newId);
+
+  return { ok:true, skipped:false, fileId:newId };
 }
 
 // 최종 제출 직전 데이터 정리
