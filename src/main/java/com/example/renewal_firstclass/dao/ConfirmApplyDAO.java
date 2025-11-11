@@ -50,4 +50,6 @@ public interface ConfirmApplyDAO {
     Long findFileIdByConfirmNumber(Long confirmNumber);
     
     Long findUserIdByConfirmNumber(Long confirmNumber);
+    
+    int approveConfirmByBatch();
 }

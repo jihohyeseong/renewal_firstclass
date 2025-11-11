@@ -265,4 +265,11 @@
     AND delt_at = 'N'
 </select>
 
+<update id="approveConfirmByBatch">
+  UPDATE TB_CONFIRM_APPLICATION
+     SET status_code = 'ST_50'
+  WHERE delt_at = 'N'
+     AND status_code IN ('ST_20','ST_30')
+</update>
+
 </mapper>

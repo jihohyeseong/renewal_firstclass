@@ -173,18 +173,7 @@ public class CompanyApplyService {
         
         return dto;
     }
-    
-    
-/*    메인페이지 페이징처리용
-    public List<ConfirmListDTO> getListByUser(Long userId, int page, int size) {
-        int offset = (page - 1) * size;
-        return confirmApplyDAO.selectByUserId(userId, offset, size);
-    }
 
-    public int countByUser(Long userId) {
-        return confirmApplyDAO.countByUser(userId);
-    }  */
-    
     @Transactional
     public Long updateConfirm (ConfirmApplyDTO dto, List<Long> monthlyCompanyPay) {
     	
@@ -304,7 +293,6 @@ public class CompanyApplyService {
         Long ownerId = confirmApplyDAO.findUserIdByConfirmNumber(confirmNumber);
         return ownerId != null && ownerId.equals(currentUserId);
     }
-
-
+    
 
 }

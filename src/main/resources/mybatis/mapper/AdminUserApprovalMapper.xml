@@ -177,7 +177,7 @@
      SET status_code = 'ST_40',
          processor_id = #{processorId}
    WHERE application_number = #{applicationNumber}
-     AND NVL(delt_at, 'N') = 'N'
+     AND delt_at= 'N'
      AND status_code != 'ST_10'
 </update>
 
@@ -191,7 +191,7 @@
          processor_id = #{processorId},
          status_code = 'ST_60'
    WHERE application_number = #{applicationNumber}
-     AND NVL(delt_at,'N') = 'N'
+     AND delt_at = 'N'
      AND status_code != 'ST_10'
 </update>
 
@@ -200,7 +200,7 @@
   UPDATE TB_PARENTAL_LEAVE_APPLICATION
      SET status_code  = 'ST_30'
    WHERE application_number = #{applicationNumber}
-     AND NVL(delt_at,'N') = 'N'
+     AND delt_at = 'N'
      AND status_code = 'ST_20'
 </update>   
     
@@ -209,7 +209,7 @@
      SET upd_bank_code      = #{updBankCode},
          upd_account_number = #{updAccountNumber}
    WHERE application_number = #{applicationNumber}
-     AND NVL(delt_at,'N') = 'N'
+     AND delt_at = 'N'
 </update>
 
 <update id="updateChildInfoByAppNo">
@@ -222,7 +222,7 @@
              FROM TB_PARENTAL_LEAVE_APPLICATION
             WHERE application_number = #{applicationNumber}
          )
-     AND NVL(delt_at,'N') = 'N'
+     AND delt_at = 'N'
 </update>
     
     

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans   https://www.springframework.org/schema/beans/spring-beans.xsd
+         http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
+         http://www.springframework.org/schema/tx      https://www.springframework.org/schema/tx/spring-tx.xsd
+         http://www.springframework.org/schema/task    https://www.springframework.org/schema/task/spring-task.xsd">
+
+  <!-- 필요한 패키지만 스캔 -->
+  <context:component-scan base-package="
+      com.example.renewal_firstclass.batch,
+      com.example.renewal_firstclass.scheduler"/>
+
+  <tx:annotation-driven transaction-manager="transactionManager"/>
+  <task:annotation-driven/>
+
+  <!-- ★ 기존 애플리케이션 dataSource/transactionManager 재사용 전제 -->
+  <!-- job-repository = 배치 메타데이터 저장소(DB) -->
+<!-- batch-root.xml -->
+<bean id="jobRepository"
+      class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean">
+  <property name="dataSource" ref="dataSource"/>
+  <property name="transactionManager" ref="transactionManager"/>
+
+  <!-- ★ ORA-08177 방지: 기본 SERIALIZABLE → READ_COMMITTED -->
+  <property name="isolationLevelForCreate" value="ISOLATION_READ_COMMITTED"/>
+
+</bean>
+
+  <!-- job-launcher = 잡 실행기 -->
+  <bean id="jobLauncher"
+        class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+    <property name="jobRepository" ref="jobRepository"/>
+  </bean>
+  
+  
+<!-- <bean id="batchSchemaPopulator"
+      class="org.springframework.jdbc.datasource.init.ResourceDatabasePopulator">
+  <property name="ignoreFailedDrops" value="true"/>
+  <property name="scripts">
+    <list>
+      <value>classpath:org/springframework/batch/core/schema-oracle10g.sql</value>
+    </list>
+  </property>
+</bean>
+
+<bean class="org.springframework.jdbc.datasource.init.DataSourceInitializer">
+  <property name="dataSource" ref="dataSource"/>
+  <property name="databasePopulator" ref="batchSchemaPopulator"/>
+</bean>
+   -->
+
+</beans>
