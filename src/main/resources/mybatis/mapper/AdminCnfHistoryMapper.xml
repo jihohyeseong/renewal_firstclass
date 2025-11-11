@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.renewal_firstclass.dao.AdminCnfHistoryDAO">
+
+    <resultMap id="AdminCnfHistoryResult" type="com.example.renewal_firstclass.domain.AdminCnfHistoryDTO">
+        <result property="historyId" column="history_id"/>
+        <result property="confirmNumber" column="confirm_number"/>
+        <result property="applyDt" column="apply_dt"/>
+        <result property="startDate" column="start_date"/>
+        <result property="endDate" column="end_date"/>
+        <result property="weeklyHours" column="weekly_hours"/>
+        <result property="regularWage" column="regular_wage"/>
+        <result property="childName" column="child_name"/>
+        <result property="childResiRegiNumber" column="child_resi_regi_number"/>
+        <result property="childBirthDate" column="child_birth_date"/>
+        <result property="registrationNumber" column="registration_number"/>
+        <result property="name" column="name"/>
+        <result property="deltAt" column="delt_at"/>
+        <result property="responseName" column="response_name"/>
+        <result property="responsePhoneNumber" column="response_phone_number"/>
+        <result property="statusCode" column="status_code"/>
+        <result property="rejectionReasonCode" column="rejection_reason_code"/>
+        <result property="rejectComment" column="reject_comment"/>
+        <result property="processorId" column="processor_id"/>
+        <result property="centerId" column="center_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="actionType" column="action_type"/>
+        <result property="actionTime" column="action_time"/>
+    </resultMap>
+	
+	<sql id="cnfSearchWhere">
+        <where>
+            <if test="nameKeyword != null and nameKeyword != ''">
+                AND name LIKE '%' || #{nameKeyword} || '%'
+            </if>
+            <if test="regNoKeyword != null and regNoKeyword != ''">
+                AND registration_number = #{regNoKeyword}
+            </if>
+            <if test="actionType != null and actionType != ''">
+                AND action_type = #{actionType}
+            </if>
+            <if test="startDate != null">
+                AND action_time >= #{startDate}
+            </if>
+            <if test="endDate != null">
+                AND action_time &lt;= TRUNC(#{endDate}) + 0.99999
+            </if>
+        </where>
+    </sql>
+    
+    <select id="selectCnfHistoryList" parameterType="com.example.renewal_firstclass.domain.CompSearchDTO"
+            resultMap="AdminCnfHistoryResult">
+        SELECT *
+        FROM TB_CONFIRM_APPLICATION_HIS
+        <include refid="cnfSearchWhere" />
+        ORDER BY action_time DESC
+    </select>
+
+    <select id="selectCnfHistoryCount" parameterType="com.example.renewal_firstclass.domain.CompSearchDTO" resultType="int">
+        SELECT COUNT(*) FROM TB_CONFIRM_APPLICATION_HIS
+        <include refid="cnfSearchWhere" />
+    </select>
+
+</mapper>

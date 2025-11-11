@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.renewal_firstclass.dao.AdminAppHistoryDAO">
+
+    <resultMap id="AdminAppHistoryResult" type="com.example.renewal_firstclass.domain.AdminAppHistoryDTO">
+        <result property="historyId" column="history_id"/>
+        <result property="applicationNumber" column="application_number"/>
+        <result property="bankCode" column="bank_code"/>
+        <result property="accountNumber" column="account_number"/>
+        <result property="statusCode" column="status_code"/>
+        <result property="paymentResult" column="payment_result"/>
+        <result property="rejectionReasonCode" column="rejection_reason_code"/>
+        <result property="rejectComment" column="reject_comment"/>
+        <result property="payment" column="payment"/>
+        <result property="submittedDt" column="submitted_dt"/>
+        <result property="examineDt" column="examine_dt"/>
+        <result property="deltAt" column="delt_at"/>
+        <result property="confirmNumber" column="confirm_number"/>
+        <result property="userId" column="user_id"/>
+        <result property="govInfoAgree" column="gov_info_agree"/>
+        <result property="centerId" column="center_id"/>
+        <result property="updBankCode" column="upd_bank_code"/>
+        <result property="updAccountNumber" column="upd_account_number"/>
+        <result property="fileId" column="file_id"/>
+        <result property="actionType" column="action_type"/>
+        <result property="actionTime" column="action_time"/>
+        <result property="userName" column="user_name"/>
+        <result property="userRegiNumber" column="user_regi_number"/>
+    </resultMap>
+	
+	<sql id="appSearchWhere">
+        <where>
+            <if test="nameKeyword != null and nameKeyword != ''">
+                AND u.name LIKE '%' || #{nameKeyword} || '%'
+            </if>
+            <if test="regNoKeyword != null and regNoKeyword != ''">
+                AND u.registration_number = #{regNoKeyword}
+            </if>
+            <if test="actionType != null and actionType != ''">
+                AND h.action_type = #{actionType}
+            </if>
+            <if test="startDate != null">
+                AND h.action_time >= #{startDate}
+            </if>
+            <if test="endDate != null">
+                AND h.action_time &lt;= TRUNC(#{endDate}) + 0.99999
+            </if>
+        </where>
+    </sql>
+    
+    <select id="selectAppHistoryList" parameterType="com.example.renewal_firstclass.domain.CompSearchDTO"
+            resultMap="AdminAppHistoryResult">
+        SELECT 
+            h.*, 
+            u.name AS user_name, 
+            u.registration_number AS user_regi_number
+        FROM TB_PARENTAL_LEAVE_APPLICATION_HIS h
+        JOIN TB_USER u ON h.user_id = u.id
+        <include refid="appSearchWhere" />
+        ORDER BY h.action_time DESC
+    </select>
+
+    <select id="selectAppHistoryCount" parameterType="com.example.renewal_firstclass.domain.CompSearchDTO" resultType="int">
+        SELECT COUNT(*) 
+        FROM TB_PARENTAL_LEAVE_APPLICATION_HIS h
+        JOIN TB_USER u ON h.user_id = u.id
+        <include refid="appSearchWhere" />
+    </select>
+
+</mapper>
