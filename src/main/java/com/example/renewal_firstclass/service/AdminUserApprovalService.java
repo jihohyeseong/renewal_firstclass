@@ -13,7 +13,9 @@ import org.springframework.ui.Model;
 import com.example.renewal_firstclass.dao.AdminUserApprovalDAO;
 import com.example.renewal_firstclass.dao.CodeDAO;
 import com.example.renewal_firstclass.dao.TermAmountDAO;
+import com.example.renewal_firstclass.dao.UserApplyDAO;
 import com.example.renewal_firstclass.domain.AdminUserApprovalDTO;
+import com.example.renewal_firstclass.domain.ApplicationDetailDTO;
 import com.example.renewal_firstclass.domain.ApplicationSearchDTO;
 import com.example.renewal_firstclass.domain.CodeDTO;
 import com.example.renewal_firstclass.domain.ConfirmApplyDTO;
@@ -32,6 +34,7 @@ public class AdminUserApprovalService {
     private final TermAmountDAO termAmountDAO;
     private final CodeDAO codeDAO;
     private final AES256Util aes256Util;
+    private final UserApplyDAO userApplyDAO;
 
     public Map<String, Object> getPagedApplicationsAndCounts(String keyword, String status, String date,
     		PageDTO pageDTO) {
@@ -135,24 +138,34 @@ public class AdminUserApprovalService {
         if (updated == 0) {
             throw new IllegalStateException("부지급 처리가 불가능한 상태이거나 이미 처리되었습니다.");
         }
+        ApplicationDetailDTO detail = userApplyDAO.findApplicationDetailByApplicationNumber(applicationNumber);
+        if (detail == null) return;
+
+        Long confirmNumber = detail.getConfirmNumber();
+        List<TermAmountDTO> src = detail.getList();
+
+        if (confirmNumber == null || src == null || src.isEmpty()) return;
+
+        List<TermAmountDTO> toInsert = new java.util.ArrayList<>(src.size());
+        for (TermAmountDTO t : src) {
+            TermAmountDTO copy = new TermAmountDTO();
+            copy.setPaymentDate(t.getPaymentDate());
+            copy.setCompanyPayment(t.getCompanyPayment());
+            copy.setGovPayment(t.getGovPayment());
+            copy.setStartMonthDate(t.getStartMonthDate());
+            copy.setEndMonthDate(t.getEndMonthDate());
+            copy.setConfirmNumber(confirmNumber);
+            toInsert.add(copy);
+        }
+        termAmountDAO.insertTermAmount(toInsert);
     }
+    
 
     /**부지급 사유 코드 목록 */
     public List<CodeDTO> getRejectCodes() {
         return codeDAO.findAllRejectCode();
     }
     
-//    @Transactional(readOnly = true)
-//    public void userApplyDetail(long applicationNumber, Model model) {
-//        AdminUserApprovalDTO appDTO = adminUserApprovalDAO.selectAppDetailByAppNo(applicationNumber);
-//        if (appDTO == null) {
-//            model.addAttribute("error", "존재하지 않는 신청입니다.");
-//            return;
-//        }
-//        List<TermAmountDTO> terms = termAmountDAO.selectByConfirmId(appDTO.getConfirmNumber());
-//        model.addAttribute("appDTO", appDTO);
-//        model.addAttribute("terms", terms);
-//    }
     
     @Transactional
     public int updateAdminApply(Long applicationNumber,

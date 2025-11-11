@@ -293,18 +293,28 @@
 }
 
 /* --- 검색 필터 (추가/수정) --- */
-.filters-row {
-  display: flex;
-  justify-content: flex-end; /* 폼을 오른쪽으로 정렬 */
-  margin-top: 16px; /* 상태 필터와의 간격 */
-  margin-bottom: 24px; /* 테이블과의 간격 */
-}
+/* --- 검색 필터 (수정) --- */
+    .filters-row {
+        display: flex;
+		justify-content: center; /* ★ 중앙 정렬 ★ */
+        align-items: center;
+        margin-top: 0; /* 헤더와 이미 분리됨. 0 또는 16px */
+        margin-bottom: 24px;
+        padding: 20px; /* ★ 시각적 그룹화를 위한 패딩 */
+        border-radius: 10px; /* ★ 둥근 모서리 */
+    }
 
-.keyword-form {
-  display: flex;
-  align-items: center;
-  gap: 16px; /* 각 요소(그룹, 버튼) 사이의 간격 */
-}
+    /* 폼 자체의 불필요한 마진 제거 */
+    .filters-row .status-form,
+    .filters-row .keyword-form {
+        margin: 0;
+    }
+
+    .keyword-form {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
 
 .keyword-form .form-group {
   display: flex;
@@ -358,7 +368,7 @@
         <ul>
             <li><strong>육아휴직급여:</strong> [모의계산하기]버튼을 클릭하면 예상 지급액을 확인할 수 있습니다.</li>
             <li><strong>신청기간:</strong> 휴직개시일 1개월 이후부터 휴직종료일 이후 1년 이내 신청 가능합니다.</li>
-            <li><strong>승인기간:</strong> 신청서 제출완료 후 심시완료까지는 평균적으로 2-5일 소요됩니다. </li>
+            <li><strong>승인기간:</strong> 신청서 제출완료 후 평균적으로 1-2일 이내에 접수됩니다. </li>
         </ul>
     </div>
 
@@ -369,7 +379,7 @@
   <div class="content-header-right">
     <!-- 상태 전용 폼: 상태 변경 시 즉시 제출 -->
     <form id="statusForm" class="status-form" method="post"
-          action="${pageContext.request.contextPath}/comp/search">
+          action="${pageContext.request.contextPath}/comp/searchStatus">
       <label for="status" class="sr-only">상태 선택</label>
       <select id="status" name="status" onchange="this.form.submit()" class="status-select">
         <option value="ALL" ${status=='ALL'  ? 'selected' : ''}>전체</option>
@@ -385,32 +395,6 @@
 
     <a href="${pageContext.request.contextPath}/comp/apply" class="btn btn-primary">새로 신청하기</a>
   </div>
-</div>
-
-<!-- ▼▼▼ 상태 줄 아래: 키워드 검색 줄 ▼▼▼ -->
-<div class="filters-row">
-  <form id="keywordForm" class="keyword-form" method="post"
-        action="${pageContext.request.contextPath}/comp/search">
-    <input type="hidden" name="status" value="${status}" />
-    <input type="hidden" name="page" value="1" />
-    <input type="hidden" name="size" value="${size}" />
-
-    <div class="form-group">
-      <label for="nameKeywordInput">이름</label>
-      <input type="text" name="nameKeyword" id="nameKeywordInput" placeholder="근로자 이름" 
-             value="${nameKeyword}" maxlength="50" class="input-text"/>
-    </div>
-
-    <div class="form-group">
-      <label for="regNoDisplay">주민번호</label>
-      <c:set var="regNoRaw" value="${empty regNoKeyword ? '' : regNoKeyword}" />
-      <input type="hidden" name="regNoKeyword" id="regNoRaw" value="${regNoRaw}" />
-      <input type="text" id="regNoDisplay" class="input-text"
-             placeholder="숫자 13자리" value="" maxlength="14"/>
-    </div>
-
-    <button type="submit" class="btn btn-secondary">검색</button>
-  </form>
 </div>
 
 		<c:choose>

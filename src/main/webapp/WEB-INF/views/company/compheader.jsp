@@ -300,6 +300,9 @@
             <li><a
                 class="nav-link ${fn:contains(currentURI, '/mypage') ? 'active' : ''}"
                 href="${pageContext.request.contextPath}/mypage">마이페이지</a></li>
+            <li><a
+                class="nav-link ${fn:contains(currentURI, '/comp/search') ? 'active' : ''}"
+                href="${pageContext.request.contextPath}/comp/search">근로자 조회</a></li>
 		</ul>
 
 		<sec:authorize access="isAnonymous()">

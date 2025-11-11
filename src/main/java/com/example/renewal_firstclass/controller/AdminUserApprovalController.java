@@ -72,18 +72,7 @@ public class AdminUserApprovalController {
        return "admin/adminuserdetail";
    }
     
-/*    // 새로만든 신청서 상세
-    @GetMapping("/admin/user/apply/detail")
-    public String detailPage(@RequestParam Long appNo, Model model) {
-    	
-    	ApplicationDetailDTO applicationDetailDTO = userApplyService.getApplicationDetail(appNo);
-		model.addAttribute("dto", applicationDetailDTO);
-		
-		adminUserApprovalService.userApplyDetail(appNo, model);
-		
-		return "admin/admin_user_detail";
-    }*/
-    
+
     @GetMapping("/admin/user/apply/detail")
     public String detailPage(@RequestParam Long appNo, Model model) {
 

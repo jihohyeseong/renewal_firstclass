@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.renewal_firstclass.domain.AttachedFileDTO;
@@ -44,36 +43,6 @@ public class CompanyApplyController {
     private final UserService userService;
     private final AttachedFileService fileService;
 
-    
-/*     메인 
-    @GetMapping("/comp/main")
-    public String main(@RequestParam(defaultValue = "1") int page,
-                       @RequestParam(defaultValue = "10") int size,
-                       Model model) {
-
-        UserDTO user = currentUserOrNull();
-        if (user == null || user.getId() == null) {
-            return "redirect:/login";
-        }
-
-        // 전체 건수 & 목록
-        int total = companyApplyService.countByUser(user.getId());
-        int totalPages = (int) Math.ceil((double) total / Math.max(1, size));
-
-        // 페이지 경계 보정
-        if (page < 1) page = 1;
-        if (totalPages > 0 && page > totalPages) page = totalPages;
-
-        model.addAttribute("confirmList", companyApplyService.getListByUser(user.getId(), page, size));
-        model.addAttribute("userDTO",user);
-        model.addAttribute("page", page);
-        model.addAttribute("size", size);
-        model.addAttribute("total", total);
-        model.addAttribute("totalPages", totalPages);
-
-        return "company/compmain";
-    }*/
-    
     /* 메인 */
     @GetMapping("/comp/main")
     public String mainPage(@RequestParam(defaultValue = "1") int page,
@@ -116,8 +85,8 @@ public class CompanyApplyController {
     }
 
     /* 메인에서 검색 */
-    @PostMapping("/comp/search")
-    public String search(@RequestParam(defaultValue = "ALL") String status,
+    @PostMapping("/comp/searchStatus")
+    public String searchStatus(@RequestParam(defaultValue = "ALL") String status,
                          @RequestParam(required = false) String nameKeyword,
                          @RequestParam(required = false) String regNoKeyword,
                          @RequestParam(defaultValue = "1") int page,
@@ -129,7 +98,6 @@ public class CompanyApplyController {
             return "redirect:/login";
         }
 
-        // ★ 빈문자 -> null로 정규화
         nameKeyword = normalize(nameKeyword);
         regNoKeyword = normalize(regNoKeyword);
         status = (status == null || status.trim().isEmpty()) ? "ALL" : status.trim();
@@ -137,15 +105,12 @@ public class CompanyApplyController {
         int total;
         List<ConfirmListDTO> list;
 
-        // ★ 조건 분기: 상태/키워드 중 하나라도 있으면 조건검색, 전부 없으면 전체
         boolean onlyStatusAll = "ALL".equals(status) && nameKeyword == null && regNoKeyword == null;
 
         if (onlyStatusAll) {
-            // 전체
             total = companyApplyService.countConfirmList(user.getId());
             list  = companyApplyService.getConfirmList(user.getId(), page, size);
         } else {
-            // 상태는 항상 전달(ALL이면 Mapper에서 무시), 키워드는 null이면 Mapper에서 무시
             total = companyApplyService.countConfirmList(user.getId(), status, nameKeyword, regNoKeyword);
             list  = companyApplyService.getConfirmList(user.getId(), status, nameKeyword, regNoKeyword, page, size);
         }
@@ -158,8 +123,6 @@ public class CompanyApplyController {
         model.addAttribute("userDTO", user);
 
         model.addAttribute("status", status);
-        model.addAttribute("nameKeyword", nameKeyword);
-        model.addAttribute("regNoKeyword", regNoKeyword);
 
         model.addAttribute("page", page);
         model.addAttribute("size", size);
@@ -505,6 +468,87 @@ public class CompanyApplyController {
         model.addAttribute("termList", dto.getTermAmounts());
         model.addAttribute("files", fileService.getFiles(dto.getFileId()));
         return "company/compresubmit";
+    }
+    
+    @GetMapping("/comp/search")
+    public String searchConfirm(@RequestParam(defaultValue = "1") int page,
+                                @RequestParam(defaultValue = "10") int size,
+                                Model model){
+        UserDTO user = currentUserOrNull();
+        if (user == null || user.getId() == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("userDTO", user);
+        model.addAttribute("status", "ALL");
+        model.addAttribute("nameKeyword", null);
+        model.addAttribute("regNoKeyword", null);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
+
+        model.addAttribute("confirmList", null);
+        model.addAttribute("totalPages", 0);
+        model.addAttribute("total", 0);
+
+        model.addAttribute("searched", false);
+
+        return "company/compsearch";
+    }
+    
+    /* 메인에서 검색 */
+    @PostMapping("/comp/search")
+    public String search(@RequestParam(defaultValue = "ALL") String status,
+                         @RequestParam(required = false) String nameKeyword,
+                         @RequestParam(required = false) String regNoKeyword,
+                         @RequestParam(defaultValue = "1") int page,
+                         @RequestParam(defaultValue = "10") int size,
+                         Model model) {
+
+        UserDTO user = currentUserOrNull();
+        if (user == null || user.getId() == null) {
+            return "redirect:/login";
+        }
+
+        // ★ 빈문자 -> null로 정규화
+        nameKeyword = normalize(nameKeyword);
+        regNoKeyword = normalize(regNoKeyword);
+        status = (status == null || status.trim().isEmpty()) ? "ALL" : status.trim();
+
+        int total;
+        List<ConfirmListDTO> list;
+
+        // ★ 조건 분기: 상태/키워드 중 하나라도 있으면 조건검색, 전부 없으면 전체
+        boolean onlyStatusAll = "ALL".equals(status) && nameKeyword == null && regNoKeyword == null;
+
+        if (onlyStatusAll) {
+            // 전체
+            total = companyApplyService.countConfirmList(user.getId());
+            list  = companyApplyService.getConfirmList(user.getId(), page, size);
+        } else {
+            // 상태는 항상 전달(ALL이면 Mapper에서 무시), 키워드는 null이면 Mapper에서 무시
+            total = companyApplyService.countConfirmList(user.getId(), status, nameKeyword, regNoKeyword);
+            list  = companyApplyService.getConfirmList(user.getId(), status, nameKeyword, regNoKeyword, page, size);
+        }
+
+        int totalPages = (int) Math.ceil((double) total / Math.max(1, size));
+        if (page < 1) page = 1;
+        if (totalPages > 0 && page > totalPages) page = totalPages;
+
+        model.addAttribute("confirmList", list);
+        model.addAttribute("userDTO", user);
+
+        model.addAttribute("status", status);
+        model.addAttribute("nameKeyword", nameKeyword);
+        model.addAttribute("regNoKeyword", regNoKeyword);
+
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
+        model.addAttribute("total", total);
+        model.addAttribute("totalPages", totalPages);
+        
+        model.addAttribute("searched", true);
+
+        return "company/compsearch";
     }
 
 
