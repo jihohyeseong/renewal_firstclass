@@ -27,7 +27,8 @@ public interface AdminSuperiorDAO {
     List<AdminUserApprovalDTO> selectApplicationList(ApplicationSearchDTO search);
 
     //전체 조회
-    int selectTotalCount(@Param("keyword") String keyword, @Param("status") String status, @Param("date") String date);
+    int selectTotalCount(@Param("nameKeyword") String nameKeyword, @Param("appNoKeyword") Long appNoKeyword,
+    		@Param("status") String status, @Param("date") String date);
 
     //처리 상태별 조회
     int selectStatusCount(@Param("statusCode") String statusCode, @Param("paymentResult") String paymentResult);
@@ -39,7 +40,7 @@ public interface AdminSuperiorDAO {
     AdminUserApprovalDTO selectAppDetailByAppNo(@Param("applicationNumber") long applicationNumber);
 
     /** 관리자 상세 진입 시 심사중상태로*/
-    //int whenOpenChangeState(@Param("applicationNumber") long applicationNumber);
+    int whenOpenChangeState(@Param("applicationNumber") long applicationNumber);
 
     /** 최종 지급 확정*/
     int approveApplicationLevel2(@Param("applicationNumber") long applicationNumber,
