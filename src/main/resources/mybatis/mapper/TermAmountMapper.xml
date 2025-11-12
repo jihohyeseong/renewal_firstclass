@@ -15,7 +15,7 @@
           #{t.startMonthDate, jdbcType=DATE},
           #{t.endMonthDate,   jdbcType=DATE},
           #{t.confirmNumber},
-          'N'
+          #{t.updateAt}
         );
       </foreach>
     END;
