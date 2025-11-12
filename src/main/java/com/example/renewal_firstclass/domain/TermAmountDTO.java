@@ -28,4 +28,5 @@ public class TermAmountDTO {
 	private String deltAt;
 	private Date earlyReturnDate;
 	private Long govPaymentUpdate;
+	private String initAt;
 }

@@ -155,6 +155,7 @@ public class AdminUserApprovalService {
             copy.setStartMonthDate(t.getStartMonthDate());
             copy.setEndMonthDate(t.getEndMonthDate());
             copy.setUpdateAt(t.getUpdateAt());
+            copy.setInitAt("N");
             copy.setConfirmNumber(confirmNumber);
             toInsert.add(copy);
         }

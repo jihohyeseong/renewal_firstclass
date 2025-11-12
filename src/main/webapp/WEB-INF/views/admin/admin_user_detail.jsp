@@ -259,20 +259,43 @@ textarea.form-control { resize: vertical; }
 .btn-ghost:hover{ background: var(--light-gray-color); color: var(--dark-gray-color); }
 .btn-lg{ padding:14px 24px; font-size:16px; border-radius:14px; }
 
-/* ==== [추가] 하단 버튼 바: 가운데 확인 / 오른쪽 저장·목록 ==== */
+/* ==== [수정] 하단 버튼 바 ==== */
 .action-bar{
-  display:flex; align-items:center; justify-content:space-between;
-  margin-top:40px; gap:16px;
+  margin-top:40px;
+  text-align: center;
 }
-.action-bar .center-slot{ display:flex; justify-content:center; flex:1; }
-.action-bar .right-slot{ display:flex; gap:10px; }
+/* 완료 상태 (c:when) - 목록 버튼 왼쪽 정렬 (기본값) */
+.action-bar .list-button-slot {
+  /* 특별한 정렬이 필요 없으므로 비워둡니다 (기본 왼쪽 정렬) */
+}
+
+/* 버튼 줄을 한 줄로 강제하고, 오른쪽 묶음을 오른쪽 끝으로 밀기 */
+.action-bar .button-row{
+  display:flex !important;
+  align-items:center !important;
+  flex-wrap:nowrap !important;
+  gap:12px;
+  margin-top:20px;
+}
+
+/* 오른쪽 묶음을 자동으로 우측 끝으로 밀어냄 */
+.action-bar .right-buttons{
+  display:flex !important;
+  gap:10px;
+  margin-left:auto !important;
+}
+
+/* 혹시 어디선가 a.btn을 block으로 만든 스타일을 무력화 */
+.action-bar .button-row .btn{
+  display:inline-flex !important;
+}
 
 /* ==== [추가] 세그먼트(지급/부지급/접수반려) ==== */
 .segments{
   display:inline-flex; border:1px solid var(--border-color); border-radius:12px; overflow:hidden; background:#fff; box-shadow: var(--shadow-sm);
 }
 .segment-btn{
-  padding:10px 16px; font-weight:700; border:none; background:#fff; color:#334155; cursor:pointer;
+  padding:10px 25px; font-weight:700; border:none; background:#fff; color:#334155; cursor:pointer;
 }
 .segment-btn + .segment-btn{ border-left:1px solid var(--border-color); }
 .segment-btn[aria-pressed="true"]{
@@ -281,9 +304,9 @@ textarea.form-control { resize: vertical; }
 
 /* ==== [추가] 반려/부지급 사유 영역 ==== */
 #rejectForm{
-  display:none; margin-top:16px; padding:16px; border:1px solid #d1d9ff; background:#f0f2ff; border-radius:10px;
+  display:none; margin-top:16px; padding:5px; border:1px solid #d1d9ff; background:#f0f2ff; border-radius:10px;
 }
-#rejectForm .form-row{ display:flex; gap:12px; align-items:center; flex-wrap: wrap; }
+#rejectForm .form-row{ display:flex; gap:3px; align-items:center; flex-wrap: wrap; }
 #rejectForm select{ min-width:260px; }
 
 </style>
@@ -497,116 +520,119 @@ textarea.form-control { resize: vertical; }
 </div>
 
 
-		<div class="info-table-container">
-			<h2 class="section-title">급여 신청 기간</h2>
-			<table class="info-table">
-				<tbody>
-					<tr>
-						<th>총 육아휴직 기간</th>
-						<td id="total-leave-period">
-							<fmt:formatDate value="${dto.startDate}" pattern="yyyy-MM-dd" /> ~ <fmt:formatDate value="${dto.endDate}" pattern="yyyy-MM-dd" />
-						</td>
-					</tr>
-				</tbody>
-			</table>
-	
-			<h3 class="section-title" style="font-size: 16px; margin-top: 25px;">급여 신청 내역</h3>
-			<table class="info-table">
-				<thead>
-					<tr>
-						<th style="text-align:center;">시작일</th>
-						<th style="text-align:center;">종료일</th>
-						<th style="text-align:center;">사업장 지급액</th>
-						<th style="text-align:center;">정부 지급액</th>
-						<th style="text-align:center;">총 지급액</th>
-					</tr>
-				</thead>
-				<tbody>
-					<%-- 1. 합계 계산을 위한 변수 초기화 --%>
-					<c:set var="totalAmount" value="${0}" />
-					
-					<c:forEach var="item" items="${dto.list}" varStatus="status">
-						<tr>
-							<td style="text-align:center;">
-								<fmt:formatDate value="${item.startMonthDate}" pattern="yyyy.MM.dd"/>
-							</td>
-					
-							<td style="text-align:center;">
-								<c:choose>
-									<c:when test="${not empty item.earlyReturnDate}">
-										<fmt:formatDate value="${item.earlyReturnDate}" pattern="yyyy.MM.dd"/>
-									</c:when>
-									<c:otherwise>
-										<fmt:formatDate value="${item.endMonthDate}" pattern="yyyy.MM.dd"/>
-									</c:otherwise>
-								</c:choose>
-							</td>
-					
-							<td style="text-align:center;">
-								<fmt:formatNumber value="${item.companyPayment}" type="number" pattern="#,###" />원
-							</td>
-					
-							<td style="text-align:center;">
-								<c:choose>
-									<c:when test="${not empty item.govPaymentUpdate}">
-										<fmt:formatNumber value="${item.govPaymentUpdate}" type="number" pattern="#,###" />원
-									</c:when>
-									<c:otherwise>
-										<fmt:formatNumber value="${item.govPayment}" type="number" pattern="#,###" />원
-									</c:otherwise>
-								</c:choose>
-							</td>
-					
-							<td style="text-align:center;">
-								<fmt:formatNumber 
-									value="${item.companyPayment + 
-											(not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}" 
-									type="number" 
-									pattern="#,###" />원
-							</td>
-						</tr>
-					
-						<%-- 2. 루프를 돌면서 총 지급액을 합계 변수에 누적 --%>
-						<c:set var="totalAmount" 
-							value="${totalAmount + item.companyPayment + 
-									(not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}" />
-					</c:forEach>
-	
-					<%-- 3. [추가] 리스트가 비어있지 않을 때만 합계 행 표시 --%>
-					<c:if test="${not empty dto.list}">
-						<tr style="background-color: var(--light-gray-color);">
-							<td colspan="2" style="text-align:center;">
-								<fmt:formatDate value="${dto.list[0].startMonthDate}" pattern="yyyy.MM.dd" />
-								-
-								<c:choose>
-									<c:when test="${not empty dto.list[fn:length(dto.list) - 1].earlyReturnDate}">
-										<fmt:formatDate value="${dto.list[fn:length(dto.list) - 1].earlyReturnDate}" pattern="yyyy.MM.dd" />
-									</c:when>
-									<c:otherwise>
-										<fmt:formatDate value="${dto.list[fn:length(dto.list) - 1].endMonthDate}" pattern="yyyy.MM.dd" />
-									</c:otherwise>
-								</c:choose>
-							</td>
-					
-							<td colspan="2" style="text-align: center; font-weight: 700; color: var(--dark-gray-color);">
-								합계 신청금액
-							</td>
-					
-							<td style="text-align: center; font-weight: 700; font-size: 1.05em; color: var(--primary-color);">
-								<fmt:formatNumber value="${totalAmount}" type="number" pattern="#,###" />원
-							</td>
-						</tr>
-					</c:if>
+<!-- [블록 1] 급여 신청 기간 -->
+<div class="info-table-container">
+  <h2 class="section-title">급여 신청 기간</h2>
+  <table class="info-table">
+    <tbody>
+      <tr>
+        <th>총 육아휴직 기간</th>
+        <td id="total-leave-period">
+          <fmt:formatDate value="${dto.startDate}" pattern="yyyy-MM-dd" />
+          ~
+          <fmt:formatDate value="${dto.endDate}" pattern="yyyy-MM-dd" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
-					<%-- 기존 '내역 없음' 메시지 --%>
-					<c:if test="${empty dto.list}">
-						<tr>
-							<td colspan="5" style="text-align: center; color: #888;">단위기간 내역이 없습니다.</td>
-						</tr>
-					</c:if>
-				</tbody>
-			</table>
-		</div>
+<!-- [블록 2] 급여 신청 내역 -->
+<div class="info-table-container">
+  <h2 class="section-title">급여 신청 내역</h2>
+  <table class="info-table table-4col">
+    <thead>
+      <tr>
+        <th style="text-align:center;">시작일</th>
+        <th style="text-align:center;">종료일</th>
+        <th style="text-align:center;">사업장 지급액</th>
+        <th style="text-align:center;">정부 지급액</th>
+        <th style="text-align:center;">총 지급액</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%-- 1. 합계 계산 변수 --%>
+      <c:set var="totalAmount" value="${0}" />
+
+      <c:forEach var="item" items="${dto.list}" varStatus="status">
+        <tr>
+          <td style="text-align:center;">
+            <fmt:formatDate value="${item.startMonthDate}" pattern="yyyy.MM.dd"/>
+          </td>
+
+          <td style="text-align:center;">
+            <c:choose>
+              <c:when test="${not empty item.earlyReturnDate}">
+                <fmt:formatDate value="${item.earlyReturnDate}" pattern="yyyy.MM.dd"/>
+              </c:when>
+              <c:otherwise>
+                <fmt:formatDate value="${item.endMonthDate}" pattern="yyyy.MM.dd"/>
+              </c:otherwise>
+            </c:choose>
+          </td>
+
+          <td style="text-align:center;">
+            <fmt:formatNumber value="${item.companyPayment}" type="number" pattern="#,###" />원
+          </td>
+
+          <td style="text-align:center;">
+            <c:choose>
+              <c:when test="${not empty item.govPaymentUpdate}">
+                <fmt:formatNumber value="${item.govPaymentUpdate}" type="number" pattern="#,###" />원
+              </c:when>
+              <c:otherwise>
+                <fmt:formatNumber value="${item.govPayment}" type="number" pattern="#,###" />원
+              </c:otherwise>
+            </c:choose>
+          </td>
+
+          <td style="text-align:center;">
+            <fmt:formatNumber
+              value="${item.companyPayment + (not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}"
+              type="number" pattern="#,###" />원
+          </td>
+        </tr>
+
+        <%-- 2. 합계 누적 --%>
+        <c:set var="totalAmount"
+               value="${totalAmount + item.companyPayment + (not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}" />
+      </c:forEach>
+
+      <%-- 3. 합계 행 --%>
+      <c:if test="${not empty dto.list}">
+        <tr style="background-color: var(--light-gray-color);">
+          <td colspan="2" style="text-align:center;">
+            <fmt:formatDate value="${dto.list[0].startMonthDate}" pattern="yyyy.MM.dd" />
+            -
+            <c:choose>
+              <c:when test="${not empty dto.list[fn:length(dto.list) - 1].earlyReturnDate}">
+                <fmt:formatDate value="${dto.list[fn:length(dto.list) - 1].earlyReturnDate}" pattern="yyyy.MM.dd" />
+              </c:when>
+              <c:otherwise>
+                <fmt:formatDate value="${dto.list[fn:length(dto.list) - 1].endMonthDate}" pattern="yyyy.MM.dd" />
+              </c:otherwise>
+            </c:choose>
+          </td>
+
+          <td colspan="2" style="text-align: center; font-weight: 700; color: var(--dark-gray-color);">
+            합계 신청금액
+          </td>
+
+          <td style="text-align: center; font-weight: 700; font-size: 1.05em; color: var(--primary-color);">
+            <fmt:formatNumber value="${totalAmount}" type="number" pattern="#,###" />원
+          </td>
+        </tr>
+      </c:if>
+
+      <%-- 내역 없음 --%>
+      <c:if test="${empty dto.list}">
+        <tr>
+          <td colspan="5" style="text-align: center; color: #888;">단위기간 내역이 없습니다.</td>
+        </tr>
+      </c:if>
+    </tbody>
+  </table>
+</div>
 <!-- 자녀 정보 -->
 <div class="info-table-container">
   <h2 class="section-title">자녀 정보 (육아 대상)</h2>
@@ -632,6 +658,7 @@ textarea.form-control { resize: vertical; }
       </tr>
     </tbody>
   </table>
+  </div>
 
 <br>
 <!-- 계좌정보 -->
@@ -783,61 +810,59 @@ textarea.form-control { resize: vertical; }
 					</tbody>
 				</table>
 			</div>
-
-<!-- 			<div class="button-container"
-				style="margin-top: 18px; display: flex; gap: 8px; justify-content: center;">
-				<button type="submit" class="btn btn-secondary">수정사항 저장</button>
-			</div> -->
 		</form>
 
 
 		<!-- 하단 관리자 버튼 -->
-<!-- 하단 관리자 버튼 (리뉴얼) -->
-<!-- 하단 관리자 버튼 (접수/반려 2옵션) -->
 <div class="action-bar">
   <c:choose>
+    <%-- 완료된 상태: 목록 버튼만 우측에 표시 --%>
     <c:when test="${appDTO.statusCode == 'ST_40' or appDTO.statusCode == 'ST_50' or appDTO.statusCode == 'ST_60' or appDTO.paymentResult == 'Y'}">
-      <div class="center-slot"><!-- 완료상태면 가운데 비워둠 --></div>
-      <div class="right-slot">
+      <div class="right-slot-completed">
         <a href="${pageContext.request.contextPath}/admin/list" class="btn btn-outline btn-lg">목록으로 돌아가기</a>
       </div>
     </c:when>
+    
+    <%-- 진행중 상태: 2단 레이아웃 (세그먼트 / 버튼) --%>
     <c:otherwise>
-      <!-- 왼쪽: 세그먼트 버튼 (접수/반려) -->
       <div class="segments" id="judgeSegments">
         <button type="button" class="segment-btn" data-choice="approve" aria-pressed="true">접수</button>
         <button type="button" class="segment-btn" data-choice="reject"  aria-pressed="false">반려</button>
       </div>
 
-      <!-- 반려 사유: select + '기타'일 때 상세사유 -->
-      <div id="rejectForm">
-        <div class="form-row">
-          <label for="reasonSelect"><strong>반려 사유</strong></label>
-          <select id="reasonSelect" class="form-control">
-            <option value="">사유를 선택하세요</option>
-            <!-- JS로 ${ctx}/codes/reject 에서 채움 -->
-          </select>
-          <input type="text" id="rejectComment" class="form-control"
-                 placeholder="기타 사유 입력 (기타 선택 시 필수)"
-                 style="flex:1; min-width:280px;">
-        </div>
-      </div>
+<div id="rejectForm">
+        <%-- 1. 첫째 줄: 반려 사유 --%>
+        <div class="form-row">
+          <label><strong>반려 사유</strong></label>
+          <select id="reasonSelect" class="form-control" style="flex: 1;">
+<option value="">사유를 선택하세요</option>
+</select>
+        </div>
+        
+        <%-- 2. 둘째 줄: 상세 사유 (새 div로 분리) --%>
+        <div class="form-row" style="margin-top: 12px;"> <%-- 위쪽과 간격 추가 --%>
+          <label>상세 사유</label>
+          <input type="text" id="rejectComment" class="form-control"
+placeholder="상세사유 입력"
+style="flex:1; min-width:280px;">
+        </div>
+      </div>
 
-      <!-- 가운데: 확인 -->
-      <div class="center-slot">
-        <button type="button" id="confirmBtn" class="btn btn-primary btn-lg">확인</button>
-      </div>
-
-      <!-- 오른쪽: 저장/목록 -->
-      <div class="right-slot">
-        <button type="button" id="saveBtn" class="btn btn-ghost btn-lg">수정사항 저장</button>
-        <a href="${pageContext.request.contextPath}/admin/list" class="btn btn-outline btn-lg">목록으로 돌아가기</a>
-      </div>
+      <div class="button-row">
+	  <!-- 왼쪽: 목록 버튼 -->
+	  <a href="${pageContext.request.contextPath}/admin/list"
+	     class="btn btn-ghost btn-lg">목록으로 돌아가기</a>
+	
+	  <!-- 오른쪽: 저장 + 확인 묶음 -->
+	  <div class="right-buttons">
+	    <button type="button" id="saveBtn" class="btn btn-ghost btn-lg">수정사항 저장</button>
+	    <button type="button" id="confirmBtn" class="btn btn-primary btn-lg">확인</button>
+	  </div>
+	</div>
     </c:otherwise>
   </c:choose>
 </div>
 
-</div>
 </main>
 
 <input type="hidden" id="applicationNumber" value="${appDTO.applicationNumber}" />

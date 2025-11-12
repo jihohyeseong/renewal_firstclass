@@ -7,7 +7,7 @@
       <foreach collection="list" item="t">
         INSERT INTO TB_TERM_AMOUNT (
           payment_date, company_payment, gov_payment,
-          start_month_date, end_month_date, confirm_number, update_at
+          start_month_date, end_month_date, confirm_number, update_at, init_at
         ) VALUES (
           #{t.paymentDate,    jdbcType=DATE},
           #{t.companyPayment},
@@ -15,7 +15,8 @@
           #{t.startMonthDate, jdbcType=DATE},
           #{t.endMonthDate,   jdbcType=DATE},
           #{t.confirmNumber},
-          CASE WHEN #{t.updateAt} = 'Y' THEN 'Y' ELSE 'N' END
+          CASE WHEN #{t.updateAt} = 'Y' THEN 'Y' ELSE 'N' END,
+          CASE WHEN #{t.initAt} = 'N' THEN 'N' ELSE 'Y' END
         );
       </foreach>
     END;
@@ -31,6 +32,7 @@
     FROM TB_TERM_AMOUNT
     WHERE confirm_number = #{confirmNumber}
     AND delt_at = 'N'
+    AND init_at = 'Y'
     ORDER BY start_month_date
   </select>
 
@@ -38,6 +40,7 @@
     DELETE FROM TB_TERM_AMOUNT
     WHERE confirm_number = #{confirmNumber}
   </delete>
+  
   
 </mapper>
 
