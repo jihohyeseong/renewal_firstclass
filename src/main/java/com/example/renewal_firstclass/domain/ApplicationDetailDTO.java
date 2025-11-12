@@ -13,6 +13,8 @@ import lombok.ToString;
 public class ApplicationDetailDTO {
 
 	private Long applicationNumber;
+	private String rejectionReasonCode;
+	private String rejectComment;
 	private Long confirmNumber;
 	private String statusCode;
 	private Long userId;

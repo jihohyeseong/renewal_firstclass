@@ -832,83 +832,85 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	  // 확인(지급/부지급) — 토큰 없이
 	  if (confirmBtn) {
-	    confirmBtn.addEventListener('click', function() {
-	      const selected = document.querySelector('input[name="judgeOption"]:checked');
-	      if (!selected) { alert('지급 또는 부지급을 선택해주세요.'); return; }
+			confirmBtn.addEventListener('click', function() {
+				const selected = document.querySelector('input[name="judgeOption"]:checked');
+				if (!selected) { alert('지급 또는 부지급을 선택해주세요.'); return; }
 
-	      // ★ 컨트롤러 경로와 반드시 통일 (예: admin/judge/**)
-	      const approveUrl = ctx + '/admin/user/approve';
-	      const rejectUrl  = ctx + '/admin/user/reject';
+				// ★ 컨트롤러 경로와 반드시 통일 (예: admin/judge/**)
+				const approveUrl = ctx + '/admin/user/approve';
+				const rejectUrl	= ctx + '/admin/user/reject';
 
-	      if (selected.value === 'approve') {
-	        if (!confirm('지급 확정하시겠습니까?')) return;
+				if (selected.value === 'approve') {
+					if (!confirm('지급 확정하시겠습니까?')) return;
 
-	        fetch(approveUrl, {
-	          method: 'POST',
-	          headers: { 'Content-Type': 'application/json' },
-	          body: JSON.stringify({ applicationNumber: Number(applicationNumber) })
-	        })
-	        .then(res => res.json())
-	        .then(data => {
-	          alert(data.message || '처리가 완료되었습니다.');
-	          if (data.redirectUrl) location.href = data.redirectUrl.startsWith('/') ? (ctx + data.redirectUrl) : data.redirectUrl;
-	        })
-	        .catch(() => alert('지급 처리 중 오류가 발생했습니다.'));
-	      } else { 
-              const reason  = document.querySelector('input[name="reasonCode"]:checked');
-              const comment = (rejectCommentEl?.value || '').trim();
-              
-              // ... (기존 유효성 검사) ...
-              if (!reason) { alert('부지급 사유를 선택해주세요.'); return; }
-              if (reason.value === 'RJ_99' && !comment) { alert('기타 선택 시 상세 사유를 입력하세요.'); return; }
-              if (!confirm('부지급 처리하시겠습니까?')) return;
+					fetch(approveUrl, {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ applicationNumber: Number(applicationNumber) })
+					})
+					.then(res => res.json())
+					.then(data => {
+						alert(data.message || '처리가 완료되었습니다.');
+						if (data.redirectUrl) location.href = data.redirectUrl.startsWith('/') ? (ctx + data.redirectUrl) : data.redirectUrl;
+					})
+					.catch(() => alert('지급 처리 중 오류가 발생했습니다.'));
+				
+				} else { 
+					const reason	= document.querySelector('input[name="reasonCode"]:checked');
+					const comment = (rejectCommentEl?.value || '').trim();
+					 
+					if (!reason) { alert('부지급 사유를 선택해주세요.'); return; }
+					if (reason.value === 'RJ_99' && !comment) { alert('기타 선택 시 상세 사유를 입력하세요.'); return; }
+					if (!confirm('부지급 처리하시겠습니까?')) return;
 
-              fetch(rejectUrl, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                      applicationNumber: Number(applicationNumber),
-                      rejectionReasonCode: reason.value,
-                      rejectComment: comment
-                  })
-              })
-              .then(res => res.json())
-              .then(data => {
-                  // 1. 기존 부지급 완료 알림
-                  alert(data.message || '부지급 처리가 완료되었습니다.');
+					fetch(rejectUrl, {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							applicationNumber: Number(applicationNumber),
+							rejectionReasonCode: reason.value,
+							rejectComment: comment
+						})
+					})
+					.then(res => res.json())
+					.then(data => {
+						// 1. 기존 부지급 완료 알림
+						alert(data.message || '부지급 처리가 완료되었습니다.');
 
-                  const userId = document.getElementById('targetUserId')?.value;
-                  
-                  if (userId) {
-                      const pushUrl = `${ctx}/push/${userId}`;
-                      
-                      // 푸시 API 호출 (결과를 기다릴 필요 없이 "fire and forget")
-                      fetch(pushUrl, {
-                          method: 'GET' 
-                      })
-                      .then(pushRes => pushRes.text())
-                      .then(pushMsg => {
-                          // 푸시 결과는 콘솔에만 기록 (사용자 알림 X)
-                          console.log('Push notification result:', pushMsg); 
-                      })
-                      .catch(err => {
-                          // 푸시 실패는 메인 흐름에 영향을 주지 않도록 콘솔에만 기록
-                          console.error('Push notification failed:', err); 
-                      });
+						const userId = document.getElementById('targetUserId')?.value;
+						 
+						// ===============================================
+						// ★ 요청하신 jQuery.ajax 호출로 수정
+						// ===============================================
+						if (userId) {
+							$.ajax({
+								url: ctx + '/push/' + userId, // 'ctx'와 JS 변수인 'userId'를 조합
+								type: 'GET',
+								success: function(pushMsg) {
+									// 푸시 결과는 콘솔에만 기록 (사용자 알림 X)
+									console.log('Push notification result:', pushMsg); 
+								},
+								error: function(xhr, status, err) {
+									// 푸시 실패는 메인 흐름에 영향을 주지 않도록 콘솔에만 기록
+									console.error('Push notification failed:', err, status, xhr); 
+								}
+							});
+						} else {
+							console.warn('푸시를 보낼 userId를 찾을 수 없습니다.');
+						}
+						// ===============================================
+						// ★ 수정 완료
+						// ===============================================
 
-                  } else {
-                      console.warn('푸시를 보낼 userId를 찾을 수 없습니다.');
-                  }
-
-                  // 2. 기존 리다이렉트
-                  if (data.redirectUrl) {
-                      location.href = data.redirectUrl.startsWith('/') ? (ctx + data.redirectUrl) : data.redirectUrl;
-                  }
-              })
-              .catch(() => alert('부지급 처리 중 오류가 발생했습니다.'));
-          }
-      });
-  }
+						// 2. 기존 리다이렉트
+						if (data.redirectUrl) {
+							location.href = data.redirectUrl.startsWith('/') ? (ctx + data.redirectUrl) : data.redirectUrl;
+						}
+					})
+					.catch(() => alert('부지급 처리 중 오류가 발생했습니다.'));
+				}
+			});
+		}
 });
 
 </script>

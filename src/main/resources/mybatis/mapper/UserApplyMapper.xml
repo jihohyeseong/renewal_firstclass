@@ -243,6 +243,8 @@
     <!-- 육아휴직 상세페이지 -->
 	<resultMap id="applicationDetailResultMap" type="com.example.renewal_firstclass.domain.ApplicationDetailDTO">
         <id property="applicationNumber" column="application_number"/>
+        <result property="rejectionReasonCode" column="rejection_reason_code"/>
+        <result property="rejectComment" column="reject_comment"/>
         <result property="statusCode" column="status_code"/>
         <result property="bankCode" column="bank_code"/>
         <result property="accountNumber" column="account_number"/>
@@ -290,6 +292,7 @@
             <result property="confirmNumber" column="term_confirm_number"/>
             <result property="earlyReturnDate" column="early_return_date"/>
             <result property="govPaymentUpdate" column="gov_payment_update"/>
+            <result property="updateAt" column="update_at"/>
         </collection>
         
         <collection property="files" ofType="com.example.renewal_firstclass.domain.AttachedFileDTO">
@@ -303,6 +306,8 @@
 	<select id="findApplicationDetailByApplicationNumber" resultMap="applicationDetailResultMap" parameterType="long">
 	    SELECT
 	        A.application_number,
+	        A.rejection_reason_code,
+	        A.reject_comment,
 	        A.status_code,
 	        A.bank_code,
 	        A.account_number,
@@ -349,6 +354,7 @@
 	        T.confirm_number AS term_confirm_number,
 	        T.early_return_date,
 	        T.gov_payment_update,
+	        T.update_at,
 	        
 	        AF.file_id AS af_file_id,
 	        AF.file_type AS af_file_type,
@@ -480,5 +486,26 @@
 		SELECT COUNT(*)
 		FROM TB_PARENTAL_LEAVE_APPLICATION
 		WHERE confirm_number = #{confirmNumber} AND delt_at = 'N' AND status_code IN('ST_10', 'ST_20', 'ST_30')
+	</select>
+	
+	<select id="getMySimpleConfirmList" parameterType="string" resultType="SimpleConfirmVO">
+		SELECT
+	        c.confirm_number,
+	        TO_CHAR(c.apply_dt, 'YYYY-MM-DD') AS applyDt,
+	        TO_CHAR(c.start_date, 'YYYY-MM-DD') AS startDate,
+	        TO_CHAR(c.end_date, 'YYYY-MM-DD')   AS endDate,
+	        u.name,
+	        u.phone_number
+	    FROM
+	        TB_CONFIRM_APPLICATION c
+	    INNER JOIN
+	        TB_USER u ON c.user_id = u.id
+	    LEFT JOIN
+	    	TB_USER u2 ON COALESCE(c.upd_registration_number, c.registration_number) = u2.registration_number
+	    WHERE
+	        c.delt_at = 'N'
+	        AND c.status_code = 'ST_50'
+	        AND u.role = 'ROLE_CORP'
+	        AND u2.username = #{username}
 	</select>
 </mapper>

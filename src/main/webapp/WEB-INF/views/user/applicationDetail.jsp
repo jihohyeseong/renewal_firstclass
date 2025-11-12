@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>육아휴직 급여 신청서 상세 보기</title>
+<title>육아휴직 급여 신청서</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -180,6 +180,116 @@ h2{
     color: var(--gray-color); /* 아이콘 색상 */
 }
 
+네, '최종승인'과 '반려' 상태의 디자인을 더 눈에 띄고 명확하게 바꿔보겠습니다.
+
+기존의 텍스트와 노란색 경고창 대신, 성공(초록색)과 위험(붉은색)을 나타내는 명확한 '상태 알림 박스' 스타일을 추가하는 것이 좋겠습니다.
+
+아래 2단계를 적용해 주세요.
+
+1단계: CSS 스타일 추가
+먼저, <style> 태그 최하단 (미디어 쿼리 @media 시작 전)에 아래의 새로운 CSS 코드를 복사하여 붙여넣으세요.
+
+CSS
+
+/* ... 기존 file-download-link::before ... */
+.file-download-link::before {
+    content: '📎';
+    font-size: 1.1em;
+    color: var(--gray-color);
+}
+
+/* ================================== */
+/* ✅ [추가] 승인/반려 상태 박스 스타일 */
+/* ================================== */
+.status-notification {
+	background-color: var(--white-color); 
+	border: 1px solid var(--border-color);
+	color: var(--dark-gray-color);
+	padding: 25px;
+	margin-bottom: 30px;
+	border-radius: 8px;
+	overflow: hidden; 
+}
+
+.status-notification .status-title-area {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	flex-wrap: wrap; 
+}
+
+/* 2. 상태 뱃지 (은은한 스타일) */
+.status-badge {
+	display: inline-block;
+	padding: 6px 14px;
+	font-size: 16px;
+	font-weight: 700;
+	border-radius: 20px;
+	flex-shrink: 0;
+	
+	color: #ffffff; /* (기본값, 덮어씌워짐) */
+	background-color: #888; /* (기본값, 덮어씌워짐) */
+}
+
+/* 3. 메인 텍스트 (중립색) */
+.status-main-text {
+	font-size: 20px;
+	font-weight: 700;
+	color: var(--dark-gray-color); 
+}
+
+/* 4. 상세 내용 (심플한 구분선) */
+.status-detail-content {
+	font-size: 15px;
+	line-height: 1.6;
+	white-space: pre-line;
+	word-wrap: break-word;
+	
+	margin-top: 20px; 
+	padding-top: 20px;
+	
+	background-color: transparent;
+	padding: 0;
+	padding-top: 20px;
+	border: none;
+	border-top: 1px solid var(--border-color); 
+	
+	color: var(--dark-gray-color); 
+}
+.status-detail-content strong {
+	font-weight: 700;
+	display: block;
+	margin-bottom: 8px;
+	color: inherit;
+}
+
+
+/* 5. '최종승인' 스타일 (★ 푸른색 계열로 변경) */
+.status-notification.success {
+	/* 흰색 배경 유지 */
+}
+.status-notification.success .status-badge {
+	/* [변경] 연한 파랑 배경 + 진한 파랑 텍스트 */
+	background-color: var(--primary-light-color); /* #f0f2ff */
+	color: var(--primary-color) !important; /* #3f58d4 */
+}
+
+
+/* 6. '반려' 스타일 (★ 기존 붉은색 계열 유지) */
+.status-notification.danger {
+	/* 흰색 배경 유지 */
+}
+.status-notification.danger .status-badge {
+	/* [유지] 연한 빨강 배경 + 진한 빨강 텍스트 */
+	background-color: #fbebee;
+	color: #721c24 !important;
+}
+.status-notification.danger .status-detail-content {
+	border-top-color: #f5c6cb; /* 구분선만 연한 붉은색 (유지) */
+}
+.status-notification.danger .status-detail-content strong {
+	color: #721c24; 
+}
 /* ---------------------------------- */
 /* 📱 반응형 스타일 */
 /* ---------------------------------- */
@@ -321,16 +431,16 @@ h2{
   </c:when><c:otherwise>
 <jsp:include page="header.jsp"/>
   </c:otherwise></c:choose>
+
 	<main class="main-container">
-	<h1>육아휴직 급여 신청서 상세 보기</h1>	
+	
+	<div id="pdf-content-part-1">
+	<h1>육아휴직 급여 신청서</h1>	
 	<c:if test="${empty dto}">
 		<p style="text-align:center; font-size:18px; color:var(--gray-color);">신청서 정보를 불러올 수 없습니다.</p>
 	</c:if>
 	
 	<c:if test="${not empty dto}">
-	
-		<%-- ✅ 1페이지 캡처 영역 시작 --%>
-		<div id="pdf-content-part-1">
 		
 			<div class="info-table-container">
 				<h2 class="section-title">접수정보</h2>
@@ -404,7 +514,7 @@ h2{
 				</table>
 		
 				<h3 class="section-title" style="font-size: 16px; margin-top: 25px;">월별 지급 내역</h3>
-				
+				<br>
 				<div class="data-grid-container">
 					<table class="info-table">
 						<thead>
@@ -656,7 +766,59 @@ h2{
 								style="background-color: #c82333; border-color: #bd2130; transform: translateY(-2px); box-shadow: var(--shadow-md);">신청 취소</button>
 					</form>
 				</div>
-			</c:when><c:otherwise>
+			</c:when>
+			<c:when test="${dto.statusCode == 'ST_50'}">
+				<%-- [DESIGN UPDATE] 뱃지 스타일 --%>
+				<div class="status-notification success">
+					<div class="status-title-area">
+						<span class="status-badge">최종승인</span>
+						<span class="status-main-text">육아휴직 급여 신청이 승인되었습니다.</span>
+					</div>
+				</div>
+				
+				<div class="button-container" style="display: flex; justify-content: center;">
+					<button type="button" id="btn-pdf-download" class="btn bottom-btn btn-primary">PDF 다운로드</button>&nbsp;
+					<a href="${pageContext.request.contextPath}/user/main" class="btn bottom-btn btn-secondary">목록으로 돌아가기</a>
+				</div>
+			</c:when>
+									
+			<%-- ST_60: 반려 --%>
+			<c:when test="${dto.statusCode == 'ST_60'}">
+				
+				<%-- [DESIGN UPDATE] 뱃지 스타일 --%>
+				<div class="status-notification danger">
+					<div class="status-title-area">
+						<span class="status-badge">반려</span>
+						<%-- 반려 사유 코드를 뱃지 옆 메인 텍스트로 사용 --%>
+						<span class="status-main-text">
+							<c:choose>
+								<c:when test="${dto.rejectionReasonCode == 'RJ_10'}">계좌정보 불일치</c:when>
+								<c:when test="${dto.rejectionReasonCode == 'RJ_20'}">관련서류 미제출</c:when>
+								<c:when test="${dto.rejectionReasonCode == 'RJ_30'}">신청시기 미도래</c:when>
+								<c:when test="${dto.rejectionReasonCode == 'RJ_40'}">근속기간 미충족</c:when>
+								<c:when test="${dto.rejectionReasonCode == 'RJ_50'}">자녀 연령 기준 초과</c:when>
+								<c:when test="${dto.rejectionReasonCode == 'RJ_60'}">휴직 가능 기간 초과</c:when>
+								<c:when test="${dto.rejectionReasonCode == 'RJ_70'}">제출서류 정보 불일치</c:when>
+								<c:when test="${dto.rejectionReasonCode == 'RJ_80'}">신청서 작성 내용 미비</c:when>
+								<c:otherwise>기타 사유</c:otherwise>
+							</c:choose>
+						</span>
+					</div>
+					
+					<%-- 상세 반려 사유 (rejectComment) --%>
+					<c:if test="${not empty dto.rejectComment}">
+						<div class="status-detail-content">
+							<strong>상세 내용:</strong>
+							<c:out value="${dto.rejectComment}" />
+						</div>
+					</c:if>
+				</div>
+				
+				<div class="button-container" style="display: flex; justify-content: center;">
+					<a href="${pageContext.request.contextPath}/user/main" class="btn bottom-btn btn-secondary">목록으로 돌아가기</a>
+				</div>
+			</c:when>
+			<c:otherwise>
 				<div class="button-container" style="display: flex; justify-content: center;">
 					<button type="button" id="btn-pdf-download" class="btn bottom-btn btn-primary">PDF 다운로드</button>
 					<a href="${pageContext.request.contextPath}/user/main" class="btn bottom-btn btn-secondary">목록으로 돌아가기</a>
@@ -664,6 +826,7 @@ h2{
 			</c:otherwise>
 		</c:choose>
 	</c:if>
+	
 	</main>
 	
 	<footer class="footer">
@@ -721,8 +884,12 @@ $(document).ready(function() {
 			const applicationNumber = "${dto.applicationNumber}";
 			const filename = `육아휴직_급여신청서_${applicationNumber}.pdf`;
 
+			/**
+			 * ✨ [수정] PDF 변환 함수 (JPEG 압축 적용)
+			 */
 			function addCanvasToPdf(canvas, pdf) {
-				const imgData = canvas.toDataURL('image/png');
+				// ✨ 1. PNG를 고압축 JPEG로 변경 (0.75 = 75% 품질)
+				const imgData = canvas.toDataURL('image/jpeg', 0.75); 
 				const imgWidth = canvas.width;
 				const imgHeight = canvas.height;
 				const pdfWidth = 210 - (margin * 2);
@@ -736,7 +903,9 @@ $(document).ready(function() {
 						pdf.addPage();
 					}
 					let position = pageInnerHeight * (page - 1);
-					pdf.addImage(imgData, 'PNG', margin, margin - position, pdfWidth, pdfImgHeight);
+					
+					// ✨ 2. 이미지 포맷을 'JPEG'로 명시
+					pdf.addImage(imgData, 'JPEG', margin, margin - position, pdfWidth, pdfImgHeight); 
 					heightLeft = pdfImgHeight - (pageInnerHeight * page);
 				}
 			}

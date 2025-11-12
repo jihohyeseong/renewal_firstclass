@@ -22,10 +22,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.renewal_firstclass.domain.ApplicationDTO;
 import com.example.renewal_firstclass.domain.ApplicationDetailDTO;
 import com.example.renewal_firstclass.domain.ApplyListDTO;
+import com.example.renewal_firstclass.domain.AttachedFileDTO;
+import com.example.renewal_firstclass.domain.ConfirmApplyDTO;
 import com.example.renewal_firstclass.domain.SimpleConfirmVO;
 import com.example.renewal_firstclass.domain.SimpleUserInfoVO;
 import com.example.renewal_firstclass.domain.UserApplyCompleteVO;
 import com.example.renewal_firstclass.service.AttachedFileService;
+import com.example.renewal_firstclass.service.CompanyApplyService;
 import com.example.renewal_firstclass.service.UserApplyService;
 
 import lombok.RequiredArgsConstructor;
@@ -36,6 +39,7 @@ public class UserApplyController {
 	
 	private final UserApplyService userApplyService;
 	private final AttachedFileService attachedFileService;
+	private final CompanyApplyService companyApplyService;
 	
 	// 유저 메인페이지
 	@GetMapping("/user/main")
@@ -50,6 +54,38 @@ public class UserApplyController {
 		
 		return "user/main";
 	}
+	
+	// 확인서 조회
+	@GetMapping("/user/confirm/check")
+	public String confirmCheck(Principal principal, Model model) {
+		
+		String username = principal.getName();
+		List<SimpleConfirmVO> simpleConfirmList = userApplyService.mySimpleConfirmList(username);
+		model.addAttribute("simpleConfirmList", simpleConfirmList);
+		
+		return "user/confirm_my";
+	}
+	
+	// 확인서 상세
+	@GetMapping("/user/confirm/detail")
+    public String compDetail(@RequestParam("confirmNumber") Long confirmNumber,
+                             Model model,
+                             RedirectAttributes ra) {
+    	
+            ConfirmApplyDTO confirmDTO = companyApplyService.findByConfirmNumber(confirmNumber);
+            ConfirmApplyDTO dto = companyApplyService.findByConfirmNumber(confirmNumber);
+            if (confirmDTO == null) {
+                ra.addFlashAttribute("error", "확인서를 찾을 수 없습니다.");
+                return "redirect:/user/main";
+            }
+            List<AttachedFileDTO> files = attachedFileService.getFiles(confirmDTO.getFileId());
+            
+            model.addAttribute("termList", dto.getTermAmounts());
+            model.addAttribute("confirmDTO", confirmDTO);
+            model.addAttribute("files", files);
+            
+            return "user/confirm_detail";
+    }
 	
 	// 회사가 승인한 신청들 요청
 	@PostMapping("/user/confirms")

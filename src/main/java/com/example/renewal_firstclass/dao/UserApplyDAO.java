@@ -62,4 +62,6 @@ public interface UserApplyDAO {
 
 	int completeCheckByConfirmNumber(Long confirmNumber);
 
+	List<SimpleConfirmVO> getMySimpleConfirmList(String username);
+
 }

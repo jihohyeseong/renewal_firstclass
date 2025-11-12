@@ -62,15 +62,19 @@ public class UserApplyService {
 		String regiNum = applicationDTO.getRegistrationNumber();
 		applicationDTO.setRegistrationNumber(regiNum.substring(0,6) + "-" + regiNum.substring(6));
 		List<TermAmountDTO> list = applicationDTO.getList();
+		System.out.println(list);
 		if (list != null && !list.isEmpty()) {
 			boolean hasUpdateY = list.stream().anyMatch(term -> "Y".equals(term.getUpdateAt()));
 			if (hasUpdateY) {
-		        List<TermAmountDTO> filteredList = list.stream()
-		                                               .filter(term -> "Y".equals(term.getUpdateAt()))
-		                                               .collect(Collectors.toList());
-		        
-		        applicationDTO.setList(filteredList);
+		        list = list.stream()
+		                   .filter(term -> "Y".equals(term.getUpdateAt()))
+		                   .collect(Collectors.toList());
 		    }
+			List<TermAmountDTO> orderedList = list.stream()
+					  							  .sorted((term1, term2) -> (int)term1.getPaymentDate().getTime() - (int)term2.getPaymentDate().getTime())
+					  							  .collect(Collectors.toList());
+			System.out.println(orderedList);
+			applicationDTO.setList(orderedList);
 		}
 		
 		return applicationDTO;
@@ -228,6 +232,11 @@ public class UserApplyService {
 		int num = userApplyDAO.completeCheckByConfirmNumber(confirmNumber);
 		
 		return num > 0 ? true : false;
+	}
+
+	public List<SimpleConfirmVO> mySimpleConfirmList(String username) {
+		
+		return userApplyDAO.getMySimpleConfirmList(username);
 	}
 
 }
