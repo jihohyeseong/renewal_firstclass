@@ -181,48 +181,50 @@
         border-bottom: none;
     } */
 
-    /* 페이징 네비게이션 스타일 */
+    /* ==== 페이지네이션 (디자인 개선) ==== */
 	.pagination {
-	    display: flex;
-	    justify-content: center;
-	    align-items: center;
-	    margin-top: 2rem;
-	    gap: 0.5rem;
+	  display: flex;
+	  justify-content: center;
+	  gap: .5rem;
+	  margin-top: 2rem;
 	}
-	
 	.pagination a,
-	.pagination span,
-	.pagination strong {
-	    display: flex;
-	    align-items: center;
-	    justify-content: center;
-	    width: 38px;
-	    height: 38px;
-	    border: 1px solid var(--border-color);
-	    border-radius: 8px;
-	    background-color: var(--white-color);
-	    color: var(--dark-gray-color);
-	    font-weight: 500;
-	    transition: all 0.2s ease-in-out;
+	.pagination span {
+	  display: flex;
+	  align-items: center;
+	  justify-content: center;
+	  width: 38px;
+	  height: 38px;
+	  border: 1px solid var(--border-color);
+	  border-radius: 999px; /* 원형 버튼 */
+	  background: var(--white-color);
+	  color: var(--text-muted);
+	  text-decoration: none;
+	  font-size: .9rem;
+	  font-weight: 500;
+	  transition: all .15s ease;
 	}
-	
 	.pagination a:hover {
-	    background-color: var(--primary-light-color);
-	    border-color: var(--primary-color);
-	    color: var(--primary-color);
+	  background: var(--primary-light-color);
+	  border-color: var(--primary-light-color);
+	  color: var(--primary-color);
 	}
-	
 	.pagination .active {
-	    background-color: var(--primary-color);
-	    border-color: var(--primary-color);
-	    color: var(--white-color);
-	    cursor: default;
+	  background: var(--primary-color);
+	  border-color: var(--primary-color);
+	  color: var(--white-color);
+	  font-weight: 600;
+	  cursor: default;
 	}
-	
+	.pagination .active:hover {
+	  background: var(--primary-color);
+	  border-color: var(--primary-color);
+	  color: var(--white-color);
+	}
 	.pagination .disabled {
-	    color: #ced4da;
-	    background-color: #f8f9fa;
-	    pointer-events: none;
+	  background: var(--bg-light);
+	  color: #ced4da;
+	  pointer-events: none;
 	}
 		
 </style>
@@ -314,34 +316,21 @@
 </div>
 
 <div class="pagination">
-	    <c:choose>
-	        <c:when test="${pageDTO.pageNum > 1}">
-	            <a href="#" class="btn btn-primary btn-sm page-link" data-page="${pageDTO.pageNum - 1}">&lt;</a>
-	        </c:when>
-	        <c:otherwise>
-	            <span class="btn btn-secondary btn-sm disabled">&lt;</span>
-	        </c:otherwise>
-	    </c:choose>
-	
-	    <c:forEach var="pNum" begin="${pageDTO.paginationStart}" end="${pageDTO.paginationEnd}">
-	        <c:choose>
-	            <c:when test="${pNum == pageDTO.pageNum}">
-	                <strong class="btn btn-primary btn-sm active">${pNum}</strong>
-	            </c:when>
-	            <c:otherwise>
-	                <a href="#" class="btn btn-outline-primary btn-sm page-link" data-page="${pNum}">${pNum}</a>
-	            </c:otherwise>
-	        </c:choose>
-	    </c:forEach>
-	
-	    <c:choose>
-	        <c:when test="${pageDTO.pageNum < pageDTO.endPage}">
-	            <a href="#" class="btn btn-primary btn-sm page-link" data-page="${pageDTO.pageNum + 1}">&gt;</a>
-	        </c:when>
-	        <c:otherwise>
-	            <span class="btn btn-secondary btn-sm disabled">&gt;</span>
-	        </c:otherwise>
-	    </c:choose>
+	    <!-- 이전 버튼 (항상 활성화) -->
+    				<a class="js-page-link prev" data-page="${pageDTO.pageNum - 1}" style="cursor: pointer;">&laquo;</a>
+				
+				    <c:forEach begin="${pageDTO.paginationStart}" end="${pageDTO.paginationEnd}" var="p">
+				        <c:choose>
+				            <c:when test="${p == pageDTO.pageNum}">
+				                <span class="active">${p}</span> </c:when>
+				            <c:otherwise>
+				                <a class="js-page-link" data-page="${p}" style="cursor: pointer;">${p}</a>
+				            </c:otherwise>
+				        </c:choose>
+				    </c:forEach>
+				
+				    <!-- 다음 버튼 (항상 활성화) -->
+    				<a class="js-page-link next" data-page="${pageDTO.pageNum + 1}" style="cursor: pointer;">&raquo;</a>
 	</div>
 
 <script>

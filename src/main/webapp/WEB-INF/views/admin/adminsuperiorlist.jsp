@@ -523,14 +523,8 @@ a { text-decoration: none; color: inherit; }
                     </tbody>
                 </table>
                 <div class="pagination">
-				    <c:choose>
-				    	<c:when test="${pageDTO.startPage > 1}">
-				        	<a class="js-page-link" data-page="${pageDTO.startPage - 1}" style="cursor: pointer;">&laquo;</a>
-				    	</c:when>
-						<c:otherwise>
-				        	<span class="disabled">&laquo;</span>
-				    	</c:otherwise>
-					</c:choose>
+				    <!-- 이전 버튼 (항상 활성화) -->
+    				<a class="js-page-link prev" data-page="${pageDTO.pageNum - 1}" style="cursor: pointer;">&laquo;</a>
 				
 				    <c:forEach begin="${pageDTO.paginationStart}" end="${pageDTO.paginationEnd}" var="p">
 				        <c:choose>
@@ -542,14 +536,8 @@ a { text-decoration: none; color: inherit; }
 				        </c:choose>
 				    </c:forEach>
 				
-				    <c:choose>
-				    	<c:when test="${pageDTO.endPage > pageDTO.paginationEnd}">
-				        	<a class="js-page-link" data-page="${pageDTO.paginationEnd + 1}" style="cursor: pointer;">&raquo;</a>
-				    	</c:when>
-						<c:otherwise>
-					        <span class="disabled">&raquo;</span>
-					    </c:otherwise>
-					</c:choose>
+				    <!-- 다음 버튼 (항상 활성화) -->
+    				<a class="js-page-link next" data-page="${pageDTO.pageNum + 1}" style="cursor: pointer;">&raquo;</a>
 				</div>
             </div>
         </main>

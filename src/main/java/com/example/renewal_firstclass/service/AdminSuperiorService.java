@@ -159,6 +159,7 @@ public class AdminSuperiorService {
             copy.setStartMonthDate(t.getStartMonthDate());
             copy.setEndMonthDate(t.getEndMonthDate());
             copy.setConfirmNumber(confirmNumber);
+            copy.setUpdateAt(t.getUpdateAt());
             toInsert.add(copy);
         }
         termAmountDAO.insertTermAmount(toInsert);

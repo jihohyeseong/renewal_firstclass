@@ -426,7 +426,7 @@ a { text-decoration: none; color: inherit; }
                     <!-- <button class="table-btn btn-refresh" id="btnReset"><i class="bi bi-arrow-clockwise"></i></button> -->
                 </div>
 
-                <form id="searchForm" action="${pageContext.request.contextPath}/admin/superior" method="post" class="table-filters">
+                <form id="searchForm" action="${pageContext.request.contextPath}/admin/addamount" method="post" class="table-filters">
                     
                     <input type="hidden" name="page" value="${pageDTO.pageNum}">
                     
@@ -447,9 +447,9 @@ a { text-decoration: none; color: inherit; }
 				    	<label for="statusSelect">처리상태</label>
 				        <select name="status" id="statusSelect" onchange="this.form.submit()">
 				            <option value="">전체</option>
-				            <option value="PENDING" ${status == 'PENDING' ? 'selected' : ''}>대기</option>
-				    		<option value="APPROVED" ${status == 'APPROVED' ? 'selected' : ''}>승인</option>
-				    		<option value="REJECTED" ${status == 'REJECTED' ? 'selected' : ''}>반려</option>
+				            <option value="PENDING" ${status == 'PENDING' ? 'selected' : ''}>추가지급 대기</option>
+				    		<option value="APPROVED" ${status == 'APPROVED' ? 'selected' : ''}>추가지급 승인</option>
+				    		<option value="REJECTED" ${status == 'REJECTED' ? 'selected' : ''}>추가지급 반려</option>
 				        </select>
 				    </div>
 				
@@ -500,15 +500,15 @@ a { text-decoration: none; color: inherit; }
                                                     <span class="badge badge-wait">${app.statusName}</span>
                                                 </c:when>
                                                 <c:when test="${app.paymentResult == 'Y'}">
-                                                    <span class="badge badge-approved">승인</span>
+                                                    <span class="badge badge-approved">최종 지급 승인</span>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <span class="badge badge-rejected">반려</span>
+                                                    <span class="badge badge-rejected">기타</span>
                                                 </c:otherwise>
                                             </c:choose>
                                         </td>
                                         <td>
-                                            <a href="${pageContext.request.contextPath}/admin/superior/detail/?appNo=${app.applicationNumber}" class="table-btn btn-secondary">상세보기</a>
+                                            <a href="${pageContext.request.contextPath}/admin/addamount/detail/?appNo=${app.applicationNumber}" class="table-btn btn-secondary">신청하기</a>
                                         </td>
                                     </tr>
                                 </c:forEach>
@@ -522,14 +522,8 @@ a { text-decoration: none; color: inherit; }
                     </tbody>
                 </table>
                 <div class="pagination">
-				    <c:choose>
-				    	<c:when test="${pageDTO.startPage > 1}">
-				        	<a class="js-page-link" data-page="${pageDTO.startPage - 1}" style="cursor: pointer;">&laquo;</a>
-				    	</c:when>
-						<c:otherwise>
-				        	<span class="disabled">&laquo;</span>
-				    	</c:otherwise>
-					</c:choose>
+				    <!-- 이전 버튼 (항상 활성화) -->
+    				<a class="js-page-link prev" data-page="${pageDTO.pageNum - 1}" style="cursor: pointer;">&laquo;</a>
 				
 				    <c:forEach begin="${pageDTO.paginationStart}" end="${pageDTO.paginationEnd}" var="p">
 				        <c:choose>
@@ -541,14 +535,8 @@ a { text-decoration: none; color: inherit; }
 				        </c:choose>
 				    </c:forEach>
 				
-				    <c:choose>
-				    	<c:when test="${pageDTO.endPage > pageDTO.paginationEnd}">
-				        	<a class="js-page-link" data-page="${pageDTO.paginationEnd + 1}" style="cursor: pointer;">&raquo;</a>
-				    	</c:when>
-						<c:otherwise>
-					        <span class="disabled">&raquo;</span>
-					    </c:otherwise>
-					</c:choose>
+				    <!-- 다음 버튼 (항상 활성화) -->
+    				<a class="js-page-link next" data-page="${pageDTO.pageNum + 1}" style="cursor: pointer;">&raquo;</a>
 				</div>
             </div>
         </main>

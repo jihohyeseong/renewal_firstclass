@@ -665,15 +665,9 @@
     </c:url>
 
     <div class="pagination">
-	    <!-- 이전 버튼 -->
-	    <c:choose>
-	        <c:when test="${pageDTO.startPage > 1}">
-	            <a class="js-page-link prev" data-page="${pageDTO.startPage - 1}" style="cursor: pointer;">&laquo;</a>
-	        </c:when>
-	        <c:otherwise>
-	            <span class="disabled prev">&laquo;</span>
-	        </c:otherwise>
-	    </c:choose>
+	    <!-- 이전 버튼 (항상 활성화) -->
+    	<a class="js-page-link prev" data-page="${pageDTO.pageNum - 1}" style="cursor: pointer;">&laquo;</a>
+
 	
 	    <!-- 페이지 번호 -->
 	    <c:forEach begin="${pageDTO.paginationStart}" end="${pageDTO.paginationEnd}" var="p">
@@ -687,15 +681,8 @@
 	        </c:choose>
 	    </c:forEach>
 	
-	    <!-- 다음 버튼 -->
-	    <c:choose>
-	        <c:when test="${pageDTO.endPage > pageDTO.paginationEnd}">
-	            <a class="js-page-link next" data-page="${pageDTO.paginationEnd + 1}" style="cursor: pointer;">&raquo;</a>
-	        </c:when>
-	        <c:otherwise>
-	            <span class="disabled next">&raquo;</span>
-	        </c:otherwise>
-	    </c:choose>
+	    <!-- 다음 버튼 (항상 활성화) -->
+    	<a class="js-page-link next" data-page="${pageDTO.pageNum + 1}" style="cursor: pointer;">&raquo;</a>
 	</div>
 
 </div>
@@ -713,6 +700,19 @@
             $('#actionType').val(actionType);
             $('#searchForm').submit();
         });
+    });
+    
+    $('.js-page-link').on('click', function(e) {
+        e.preventDefault();
+
+        // 클릭한 링크의 data-page 값을 가져옴
+        const newPage = $(this).data('page');
+
+        // 폼 내부의 hidden input (pageNum) 값을 변경
+        $('#searchForm input[name="pageNum"]').val(newPage);
+
+        // 폼 전송 (GET 방식)
+        $('#searchForm').submit();
     });
 </script>
 </body>

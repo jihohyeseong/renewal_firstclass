@@ -42,8 +42,8 @@ public class AdminHistoryDTO {
     private Date applyDt;
     private Date startDate;
     private Date endDate;
-    private Integer weeklyHours;
-    private Integer regularWage;
+    private Long weeklyHours;
+    private Long regularWage;
     private String childName;
     private String childResiRegiNumber;
     private Date childBirthDate;
@@ -60,8 +60,8 @@ public class AdminHistoryDTO {
     private Long userId_Cnf; // 중복 방지
     private Long fileId_Cnf; // 중복 방지
     // --- [확인서(Cnf) 수정 전용 필드] --
-    private Integer updWeeklyHours;
-    private Integer updRegularWage;
+    private Long updWeeklyHours;
+    private Long updRegularWage;
     private String updChildName;
     private String updChildResiRegiNumber; // (복호화)
     private Date updEndDate;

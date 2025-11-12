@@ -10,8 +10,8 @@ public class AdminCnfHistoryDTO {
     private Date applyDt;
     private Date startDate;
     private Date endDate;
-    private Integer weeklyHours;
-    private Integer regularWage;
+    private Long weeklyHours;
+    private Long regularWage;
     private String childName;
     private String childResiRegiNumber;
     private Date childBirthDate;
@@ -20,8 +20,8 @@ public class AdminCnfHistoryDTO {
     private String deltAt;
     private String responseName;
     private String responsePhoneNumber;
-    private Integer updWeeklyHours;
-    private Integer updRegularWage;
+    private Long updWeeklyHours;
+    private Long updRegularWage;
     private String updChildName;
     private String updChildResiRegiNumber;
     private String rejectionReasonCode;
