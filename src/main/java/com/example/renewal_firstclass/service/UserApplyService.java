@@ -62,7 +62,6 @@ public class UserApplyService {
 		String regiNum = applicationDTO.getRegistrationNumber();
 		applicationDTO.setRegistrationNumber(regiNum.substring(0,6) + "-" + regiNum.substring(6));
 		List<TermAmountDTO> list = applicationDTO.getList();
-		System.out.println(list);
 		if (list != null && !list.isEmpty()) {
 			boolean hasUpdateY = list.stream().anyMatch(term -> "Y".equals(term.getUpdateAt()));
 			if (hasUpdateY) {
@@ -71,9 +70,8 @@ public class UserApplyService {
 		                   .collect(Collectors.toList());
 		    }
 			List<TermAmountDTO> orderedList = list.stream()
-					  							  .sorted((term1, term2) -> (int)term1.getPaymentDate().getTime() - (int)term2.getPaymentDate().getTime())
+					  							  .sorted((term1, term2) -> term1.getPaymentDate().compareTo(term2.getPaymentDate()))
 					  							  .collect(Collectors.toList());
-			System.out.println(orderedList);
 			applicationDTO.setList(orderedList);
 		}
 		
@@ -98,12 +96,14 @@ public class UserApplyService {
 		if (list != null && !list.isEmpty()) {
 			boolean hasUpdateY = list.stream().anyMatch(term -> "Y".equals(term.getUpdateAt()));
 			if (hasUpdateY) {
-		        List<TermAmountDTO> filteredList = list.stream()
-		                                               .filter(term -> "Y".equals(term.getUpdateAt()))
-		                                               .collect(Collectors.toList());
-		        
-		        applicationDTO.setList(filteredList);
+		        list = list.stream()
+		                   .filter(term -> "Y".equals(term.getUpdateAt()))
+		                   .collect(Collectors.toList());
 		    }
+			List<TermAmountDTO> orderedList = list.stream()
+					  							  .sorted((term1, term2) -> term1.getPaymentDate().compareTo(term2.getPaymentDate()))
+					  							  .collect(Collectors.toList());
+			applicationDTO.setList(orderedList);
 		}
 		
 		return applicationDTO;
