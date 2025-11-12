@@ -390,7 +390,7 @@ a { text-decoration: none; color: inherit; }
 	                <div class="stat-card ${status == 'PENDING' ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
-	                            <h6>대기 중 신청서</h6><h1>${counts.pending}</h1><small>현재 검토가 필요한 신청서</small>
+	                            <h6>대기 중 신청서</h6><h1>${counts.pending}</h1><small>현재 결재가 필요한 신청서</small>
 	                        </div>
 	                        <i class="bi bi-clock-history"></i>
 	                    </div>
@@ -496,19 +496,31 @@ a { text-decoration: none; color: inherit; }
                                         <td>${app.submittedDate}</td>
                                         <td>
                                             <c:choose>
-                                                <c:when test="${app.statusName == '대기'}">
-                                                    <span class="badge badge-wait">${app.statusName}</span>
-                                                </c:when>
-                                                <c:when test="${app.paymentResult == 'Y'}">
-                                                    <span class="badge badge-approved">최종 지급 승인</span>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <span class="badge badge-rejected">기타</span>
-                                                </c:otherwise>
+                                                <c:when test="${app.statusName == '추가지급 대기'}">
+				                                    <span class="badge badge-wait">${app.statusName}</span>
+				                                </c:when>
+				                                <c:when test="${app.statusName == '추가지급 결정'}">
+				                                    <span class="badge badge-approved">${app.statusName}</span>
+				                                </c:when>
+				                                <c:when test="${app.statusName == '추가지급 반려'}">
+				                                    <span class="badge badge-rejected">${app.statusName}</span>
+				                                </c:when>
+				                                <c:when test="${app.statusName == '최종 지급 승인'}">
+				                                    <span class="badge" style="background-color: #0d6efd;">${app.statusName}</span>
+				                                </c:when>
+				                                <c:otherwise>
+				                                    <span class="badge badge-rejected">${app.statusName}</span>
+				                                </c:otherwise>
                                             </c:choose>
                                         </td>
                                         <td>
-                                            <a href="${pageContext.request.contextPath}/admin/addamount/detail/?appNo=${app.applicationNumber}" class="table-btn btn-secondary">신청하기</a>
+                                            <a href="${pageContext.request.contextPath}/admin/addamount/detail/?appNo=${app.applicationNumber}" class="table-btn btn-secondary">
+				                                <%-- [수정] '최종 지급 승인'일 때만 '신청'으로 표시 --%>
+				                                <c:choose>
+				                                    <c:when test="${app.statusName == '최종 지급 승인'}">추가지급 신청</c:when>
+				                                    <c:otherwise>상세보기</c:otherwise>
+				                                </c:choose>
+				                            </a>
                                         </td>
                                     </tr>
                                 </c:forEach>

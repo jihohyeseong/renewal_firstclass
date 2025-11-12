@@ -6,26 +6,30 @@
         parameterType="long"
         resultType="com.example.renewal_firstclass.domain.ConfirmApplyDTO">
 	  SELECT
-	    confirm_number,
-	    apply_dt,
-	    start_date,
-	    end_date,
-	    weekly_hours,
-	    regular_wage,
-	    child_name,
-	    child_resi_regi_number,
-	    child_birth_date,
-	    registration_number,
-	    name,
-	    response_name,
-	    response_phone_number,
-	    status_code,
-	    processor_id,
-	    center_id,
-	    user_id
-	  FROM TB_CONFIRM_APPLICATION
-	  WHERE confirm_number = #{confirmNumber}
-	    AND NVL(delt_at,'N') = 'N'
+	    c.confirm_number,
+	    c.apply_dt,
+	    c.start_date,
+	    c.end_date,
+	    c.weekly_hours,
+	    c.regular_wage,
+	    c.child_name,
+	    c.child_resi_regi_number,
+	    c.child_birth_date,
+	    c.registration_number,
+	    c.name,
+	    c.response_name,
+	    c.response_phone_number,
+	    c.status_code,
+	    c.processor_id,
+	    c.center_id,
+	    c.user_id
+	FROM TB_CONFIRM_APPLICATION c
+	JOIN TB_TERM_AMOUNT t
+	    ON c.confirm_number = t.confirm_number
+	WHERE c.confirm_number = #{confirmNumber}
+	  AND t.init_at = 'Y'
+	  AND NVL(c.delt_at, 'N') = 'N'
+
 	</select>
 	
 	<!-- 관리자 접수/반려 섹션 -->
