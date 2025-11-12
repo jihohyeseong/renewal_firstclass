@@ -154,6 +154,7 @@ public class AdminUserApprovalService {
             copy.setGovPayment(t.getGovPayment());
             copy.setStartMonthDate(t.getStartMonthDate());
             copy.setEndMonthDate(t.getEndMonthDate());
+            copy.setUpdateAt(t.getUpdateAt());
             copy.setConfirmNumber(confirmNumber);
             toInsert.add(copy);
         }

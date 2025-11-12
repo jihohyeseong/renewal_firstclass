@@ -239,6 +239,53 @@ textarea.form-control { resize: vertical; }
 .judge-wrap input[type="radio"] {
   margin-right: 6px;     /* 아이콘과 텍스트 사이 */
 }
+
+/* ==== [추가] 버튼 리뉴얼 ==== */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center;
+  gap:8px; padding:12px 18px; font-size:15px; font-weight:600;
+  border-radius:12px; border:1px solid var(--border-color);
+  background: var(--white-color); color: var(--dark-gray-color);
+  cursor:pointer; transition: transform .12s ease, box-shadow .12s ease, background .12s ease, color .12s ease, border-color .12s ease;
+  box-shadow: var(--shadow-sm);
+}
+.btn:hover{ transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.btn:active{ transform: translateY(0); }
+.btn-primary{ background: var(--primary-color); color:#fff; border-color: var(--primary-color); }
+.btn-primary:hover{ filter: brightness(0.95); }
+.btn-outline{ background:#fff; color: var(--primary-color); border-color: var(--primary-color); }
+.btn-outline:hover{ background: var(--primary-light-color); }
+.btn-ghost{ background: transparent; color: var(--gray-color); border-color: transparent; }
+.btn-ghost:hover{ background: var(--light-gray-color); color: var(--dark-gray-color); }
+.btn-lg{ padding:14px 24px; font-size:16px; border-radius:14px; }
+
+/* ==== [추가] 하단 버튼 바: 가운데 확인 / 오른쪽 저장·목록 ==== */
+.action-bar{
+  display:flex; align-items:center; justify-content:space-between;
+  margin-top:40px; gap:16px;
+}
+.action-bar .center-slot{ display:flex; justify-content:center; flex:1; }
+.action-bar .right-slot{ display:flex; gap:10px; }
+
+/* ==== [추가] 세그먼트(지급/부지급/접수반려) ==== */
+.segments{
+  display:inline-flex; border:1px solid var(--border-color); border-radius:12px; overflow:hidden; background:#fff; box-shadow: var(--shadow-sm);
+}
+.segment-btn{
+  padding:10px 16px; font-weight:700; border:none; background:#fff; color:#334155; cursor:pointer;
+}
+.segment-btn + .segment-btn{ border-left:1px solid var(--border-color); }
+.segment-btn[aria-pressed="true"]{
+  background: var(--primary-light-color); color: var(--primary-color);
+}
+
+/* ==== [추가] 반려/부지급 사유 영역 ==== */
+#rejectForm{
+  display:none; margin-top:16px; padding:16px; border:1px solid #d1d9ff; background:#f0f2ff; border-radius:10px;
+}
+#rejectForm .form-row{ display:flex; gap:12px; align-items:center; flex-wrap: wrap; }
+#rejectForm select{ min-width:260px; }
+
 </style>
 </head>
 <body>
@@ -737,42 +784,61 @@ textarea.form-control { resize: vertical; }
 				</table>
 			</div>
 
-			<div class="button-container"
+<!-- 			<div class="button-container"
 				style="margin-top: 18px; display: flex; gap: 8px; justify-content: center;">
 				<button type="submit" class="btn btn-secondary">수정사항 저장</button>
-			</div>
+			</div> -->
 		</form>
 
 
 		<!-- 하단 관리자 버튼 -->
-<div class="button-container">
+<!-- 하단 관리자 버튼 (리뉴얼) -->
+<!-- 하단 관리자 버튼 (접수/반려 2옵션) -->
+<div class="action-bar">
   <c:choose>
     <c:when test="${appDTO.statusCode == 'ST_40' or appDTO.statusCode == 'ST_50' or appDTO.statusCode == 'ST_60' or appDTO.paymentResult == 'Y'}">
-      <a href="${pageContext.request.contextPath}/admin/list" class="btn btn-secondary">목록으로 돌아가기</a>
+      <div class="center-slot"><!-- 완료상태면 가운데 비워둠 --></div>
+      <div class="right-slot">
+        <a href="${pageContext.request.contextPath}/admin/list" class="btn btn-outline btn-lg">목록으로 돌아가기</a>
+      </div>
     </c:when>
     <c:otherwise>
-      <div class="judge-wrap">
-        <label><input type="radio" name="judgeOption" value="approve"> 지급</label>
-        <label><input type="radio" name="judgeOption" value="reject"> 부지급</label>
+      <!-- 왼쪽: 세그먼트 버튼 (접수/반려) -->
+      <div class="segments" id="judgeSegments">
+        <button type="button" class="segment-btn" data-choice="approve" aria-pressed="true">접수</button>
+        <button type="button" class="segment-btn" data-choice="reject"  aria-pressed="false">반려</button>
       </div>
 
+      <!-- 반려 사유: select + '기타'일 때 상세사유 -->
       <div id="rejectForm">
-        <h3>부지급 사유 선택</h3>
-        <div class="reasons" id="rejectReasons"></div>
-        <div style="margin-top:10px;">
-          <label>상세 사유</label><br>
-          <input type="text" id="rejectComment" class="form-control" placeholder="상세 사유를 입력하세요 (선택)">
+        <div class="form-row">
+          <label for="reasonSelect"><strong>반려 사유</strong></label>
+          <select id="reasonSelect" class="form-control">
+            <option value="">사유를 선택하세요</option>
+            <!-- JS로 ${ctx}/codes/reject 에서 채움 -->
+          </select>
+          <input type="text" id="rejectComment" class="form-control"
+                 placeholder="기타 사유 입력 (기타 선택 시 필수)"
+                 style="flex:1; min-width:280px;">
         </div>
       </div>
 
-      <div class="judge-actions">
-        <button type="button" id="confirmBtn" class="btn btn-primary">확인</button>
-        <a href="${pageContext.request.contextPath}/admin/list" class="btn btn-secondary">목록으로 돌아가기</a>
+      <!-- 가운데: 확인 -->
+      <div class="center-slot">
+        <button type="button" id="confirmBtn" class="btn btn-primary btn-lg">확인</button>
+      </div>
+
+      <!-- 오른쪽: 저장/목록 -->
+      <div class="right-slot">
+        <button type="button" id="saveBtn" class="btn btn-ghost btn-lg">수정사항 저장</button>
+        <a href="${pageContext.request.contextPath}/admin/list" class="btn btn-outline btn-lg">목록으로 돌아가기</a>
       </div>
     </c:otherwise>
   </c:choose>
 </div>
 
+</div>
+</main>
 
 <input type="hidden" id="applicationNumber" value="${appDTO.applicationNumber}" />
 <input type="hidden" id="targetUserId" value="${dto.userId}" />
@@ -784,135 +850,156 @@ textarea.form-control { resize: vertical; }
 <!-- 관리자 전용: 항상 실행 -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-	  const ctx = '${pageContext.request.contextPath}';
+  const ctx = '${pageContext.request.contextPath}';
 
-	  const confirmBtn        = document.getElementById("confirmBtn");
-	  const rejectForm        = document.getElementById("rejectForm");
-	  const rejectReasonsEl   = document.getElementById("rejectReasons"); // ← 꼭 필요
-	  const rejectCommentEl   = document.getElementById("rejectComment");
-	  const applicationNumber = document.getElementById("applicationNumber")?.value;
+  // ===== 엘리먼트 =====
+  const segmentsWrap      = document.getElementById('judgeSegments');
+  const segmentBtns       = segmentsWrap ? segmentsWrap.querySelectorAll('.segment-btn') : [];
+  const rejectForm        = document.getElementById('rejectForm');
+  const reasonSelect      = document.getElementById('reasonSelect');   // select로 사유 선택
+  const rejectCommentEl   = document.getElementById('rejectComment');
+  const confirmBtn        = document.getElementById('confirmBtn');
+  const saveBtn           = document.getElementById('saveBtn');
+  const adminUpdateForm   = document.getElementById('adminUpdateForm');
 
-	  // 지급/부지급 라디오 선택 시 사유 로딩
-	  document.querySelectorAll('input[name="judgeOption"]').forEach(radio => {
-	    radio.addEventListener('change', function() {
-	      if (this.value === 'reject') {
-	        rejectForm.style.display = "block";
+  const applicationNumber = Number(document.getElementById('applicationNumber')?.value);
+  const userId            = document.getElementById('targetUserId')?.value;
 
-	        if (!rejectReasonsEl.dataset.loaded) {
-	          fetch('${pageContext.request.contextPath}/codes/reject', {
-	            method: 'GET',
-	            headers: { 'Accept': 'application/json' }
-	          })
-	          .then(res => res.json())
-	          .then(list => {
-	            if (!Array.isArray(list) || list.length === 0) {
-	              rejectReasonsEl.innerHTML =
-	                '<em style="color:#64748b;">사유 코드가 없습니다.</em>';
-	            } else {
-	            	rejectReasonsEl.innerHTML = list
-	            	  .map(({code, name}) =>
-	            	    '<label><input type="radio" name="reasonCode" value="' + code + '"> ' + (name ?? code) + '</label>'
-	            	  )
-	            	  .join('');
-	            }
-	            rejectReasonsEl.dataset.loaded = '1';
-	          })
-	          .catch(() => {
-	            // 네트워크 실패 시라도 선택 가능하도록 기본 옵션 제공
-	            rejectReasonsEl.innerHTML =
-	              '<label><input type="radio" name="reasonCode" value="RJ_99"> 기타(네트워크 오류)</label>';
-	            rejectReasonsEl.dataset.loaded = '1';
-	          });
-	        }
-	      } else {
-	        rejectForm.style.display = "none";
-	      }
-	    });
-	  });
+  // ===== 상태 =====
+  let currentChoice = 'approve'; // 기본: 접수
+  let reasonsLoaded = false;
 
-	  // 확인(지급/부지급) — 토큰 없이
-	  if (confirmBtn) {
-			confirmBtn.addEventListener('click', function() {
-				const selected = document.querySelector('input[name="judgeOption"]:checked');
-				if (!selected) { alert('지급 또는 부지급을 선택해주세요.'); return; }
+  // ===== 세그먼트 토글 핸들러 =====
+  function setChoice(choice) {
+    currentChoice = choice;
+    segmentBtns.forEach(btn => {
+      const active = btn.dataset.choice === choice;
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
 
-				// ★ 컨트롤러 경로와 반드시 통일 (예: admin/judge/**)
-				const approveUrl = ctx + '/admin/user/approve';
-				const rejectUrl	= ctx + '/admin/user/reject';
+    if (choice === 'reject') {
+      rejectForm.style.display = 'block';
+      // 사유 옵션 1회 로딩
+      if (!reasonsLoaded) {
+        fetch(ctx + '/codes/reject', { method: 'GET', headers: { 'Accept': 'application/json' } })
+          .then(res => res.json())
+          .then(list => {
+            // 기본 옵션
+            reasonSelect.innerHTML = '<option value="">사유를 선택하세요</option>';
 
-				if (selected.value === 'approve') {
-					if (!confirm('지급 확정하시겠습니까?')) return;
+            if (Array.isArray(list) && list.length > 0) {
+              list.forEach(({ code, name }) => {
+                const opt = document.createElement('option');
+                opt.value = code;
+                opt.textContent = name || code;
+                reasonSelect.appendChild(opt);
+              });
+            } else {
+              // 없을 때 기본 '기타'라도 제공
+              const opt = document.createElement('option');
+              opt.value = 'RJ_99';
+              opt.textContent = '기타(사유코드 없음)';
+              reasonSelect.appendChild(opt);
+            }
+            reasonsLoaded = true;
+          })
+          .catch(() => {
+            reasonSelect.innerHTML =
+              '<option value="RJ_99">기타(네트워크 오류)</option>';
+            reasonsLoaded = true;
+          });
+      }
+    } else {
+      rejectForm.style.display = 'none';
+    }
+  }
 
-					fetch(approveUrl, {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({ applicationNumber: Number(applicationNumber) })
-					})
-					.then(res => res.json())
-					.then(data => {
-						alert(data.message || '처리가 완료되었습니다.');
-						if (data.redirectUrl) location.href = data.redirectUrl.startsWith('/') ? (ctx + data.redirectUrl) : data.redirectUrl;
-					})
-					.catch(() => alert('지급 처리 중 오류가 발생했습니다.'));
-				
-				} else { 
-					const reason	= document.querySelector('input[name="reasonCode"]:checked');
-					const comment = (rejectCommentEl?.value || '').trim();
-					 
-					if (!reason) { alert('부지급 사유를 선택해주세요.'); return; }
-					if (reason.value === 'RJ_99' && !comment) { alert('기타 선택 시 상세 사유를 입력하세요.'); return; }
-					if (!confirm('부지급 처리하시겠습니까?')) return;
+  // 초기 상태 동기화 (기본 접수)
+  setChoice('approve');
 
-					fetch(rejectUrl, {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({
-							applicationNumber: Number(applicationNumber),
-							rejectionReasonCode: reason.value,
-							rejectComment: comment
-						})
-					})
-					.then(res => res.json())
-					.then(data => {
-						// 1. 기존 부지급 완료 알림
-						alert(data.message || '부지급 처리가 완료되었습니다.');
+  // 세그먼트 클릭 바인딩
+  segmentBtns.forEach(btn => {
+    btn.addEventListener('click', () => setChoice(btn.dataset.choice));
+  });
 
-						const userId = document.getElementById('targetUserId')?.value;
-						 
-						// ===============================================
-						// ★ 요청하신 jQuery.ajax 호출로 수정
-						// ===============================================
-						if (userId) {
-							$.ajax({
-								url: ctx + '/push/' + userId, // 'ctx'와 JS 변수인 'userId'를 조합
-								type: 'GET',
-								success: function(pushMsg) {
-									// 푸시 결과는 콘솔에만 기록 (사용자 알림 X)
-									console.log('Push notification result:', pushMsg); 
-								},
-								error: function(xhr, status, err) {
-									// 푸시 실패는 메인 흐름에 영향을 주지 않도록 콘솔에만 기록
-									console.error('Push notification failed:', err, status, xhr); 
-								}
-							});
-						} else {
-							console.warn('푸시를 보낼 userId를 찾을 수 없습니다.');
-						}
-						// ===============================================
-						// ★ 수정 완료
-						// ===============================================
+  // ===== 확인(접수/반려) 처리 =====
+  if (confirmBtn) {
+    confirmBtn.addEventListener('click', function () {
+      if (!applicationNumber) { alert('신청번호를 확인할 수 없습니다.'); return; }
 
-						// 2. 기존 리다이렉트
-						if (data.redirectUrl) {
-							location.href = data.redirectUrl.startsWith('/') ? (ctx + data.redirectUrl) : data.redirectUrl;
-						}
-					})
-					.catch(() => alert('부지급 처리 중 오류가 발생했습니다.'));
-				}
-			});
-		}
+      const approveUrl = ctx + '/admin/user/approve';
+      const rejectUrl  = ctx + '/admin/user/reject';
+
+      if (currentChoice === 'approve') {
+        if (!confirm('접수(승인 진행)로 확정하시겠습니까?')) return;
+
+        fetch(approveUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ applicationNumber })
+        })
+        .then(res => res.json())
+        .then(data => {
+          alert(data.message || '처리가 완료되었습니다.');
+          if (data.redirectUrl) {
+            location.href = data.redirectUrl.startsWith('/') ? (ctx + data.redirectUrl) : data.redirectUrl;
+          }
+        })
+        .catch(() => alert('접수 처리 중 오류가 발생했습니다.'));
+        return;
+      }
+
+      // === 반려 ===
+      const code = reasonSelect?.value || '';
+      const comment = (rejectCommentEl?.value || '').trim();
+
+      if (!code) { alert('반려 사유를 선택하세요.'); return; }
+      if ((code === 'RJ_99' || code === 'ETC') && !comment) {
+        alert('기타 선택 시 상세 사유를 입력하세요.');
+        return;
+      }
+      if (!confirm('반려 처리하시겠습니까?')) return;
+
+      fetch(rejectUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          applicationNumber,
+          rejectionReasonCode: code,
+          rejectComment: comment
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        alert(data.message || '반려 처리가 완료되었습니다.');
+
+        // 푸시 (성공/실패 상관없이 메인 흐름 영향 X)
+        if (userId) {
+          $.ajax({
+            url: ctx + '/push/' + userId,
+            type: 'GET',
+            success: function (pushMsg) { console.log('Push notification result:', pushMsg); },
+            error:   function (xhr, status, err) { console.error('Push notification failed:', err, status, xhr); }
+          });
+        } else {
+          console.warn('푸시를 보낼 userId를 찾을 수 없습니다.');
+        }
+
+        if (data.redirectUrl) {
+          location.href = data.redirectUrl.startsWith('/') ? (ctx + data.redirectUrl) : data.redirectUrl;
+        }
+      })
+      .catch(() => alert('반려 처리 중 오류가 발생했습니다.'));
+    });
+  }
+
+  // ===== 저장 버튼 → 폼 제출 =====
+  if (saveBtn && adminUpdateForm) {
+    saveBtn.addEventListener('click', function () {
+      adminUpdateForm.submit();
+    });
+  }
 });
-
 </script>
 
 
