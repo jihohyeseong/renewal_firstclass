@@ -41,6 +41,18 @@
     WHERE confirm_number = #{confirmNumber}
   </delete>
   
+  <select id="countTotalTermsByConfirmNumbers" resultType="int" parameterType="java.util.List">
+    SELECT
+        COUNT(*)
+    FROM
+        TB_TERM_AMOUNT
+    WHERE
+        CONFIRM_NUMBER IN
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+  </select>
+  
   
 </mapper>
 

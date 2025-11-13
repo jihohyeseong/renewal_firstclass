@@ -272,4 +272,11 @@
      AND status_code IN ('ST_20','ST_30')
 </update>
 
+<select id="findMyConfirmList" resultType="long">
+    SELECT confirm_number
+    FROM TB_CONFIRM_APPLICATION
+    WHERE child_birth_date = #{childBirthDate}
+      AND registration_number = #{regiNum} AND status_code NOT IN ('ST_60') AND delt_at = 'N'
+</select>
+
 </mapper>

@@ -250,6 +250,7 @@ public class CompanyApplyController {
         } catch (Exception e) {
             ra.addFlashAttribute("form", form);
             ra.addFlashAttribute("error", "임시저장 중 오류: " + e.getMessage());
+            e.printStackTrace();
             return "redirect:/comp/apply";
         }
     }
