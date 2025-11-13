@@ -50,7 +50,8 @@
                 WHEN p.status_code = 'ST_50' THEN '승인'
                 WHEN p.status_code = 'ST_60' THEN '반려'
                 ELSE '기타'
-            END AS statusName
+            END AS statusName,
+            'PAYMENT' AS applicationType
         FROM TB_PARENTAL_LEAVE_APPLICATION p
         JOIN TB_User u ON p.user_id = u.id
         JOIN TB_CONFIRM_APPLICATION ca ON ca.confirm_number = p.confirm_number
