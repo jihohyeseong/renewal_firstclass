@@ -222,19 +222,30 @@
 </select>
 
 <select id="findLatestPeriodByPerson"
+        parameterType="map"
         resultType="map">
   SELECT
-    NVL(upd_start_date, start_date) AS startDate,
-    NVL(upd_end_date,   end_date)   AS endDate
-  FROM TB_CONFIRM_APPLICATION
-  WHERE name = #{name}
-    AND registration_number = #{registrationNumber}
-    AND delt_at = 'N'
+    NVL(ca.upd_start_date, ca.start_date) AS startDate,
+    NVL(
+      (
+        SELECT MAX(t.early_return_date)
+        FROM TB_TERM_AMOUNT t
+        WHERE t.confirm_number = ca.confirm_number
+          AND t.delt_at = 'N'
+          AND t.init_at = 'Y'
+          AND t.early_return_date IS NOT NULL
+      ),
+      NVL(ca.upd_end_date, ca.end_date)
+    ) AS endDate
+  FROM TB_CONFIRM_APPLICATION ca
+  WHERE ca.name = #{name}
+    AND ca.registration_number = #{registrationNumber}
+    AND ca.delt_at = 'N'
   <if test="nowConfirmNumber != null">
-    AND confirm_number != #{nowConfirmNumber}
+    AND ca.confirm_number != #{nowConfirmNumber}
   </if>
-    AND status_code != 'ST_60'
-  ORDER BY apply_dt DESC
+    AND ca.status_code != 'ST_60'
+  ORDER BY ca.apply_dt DESC
   FETCH FIRST 1 ROWS ONLY
 </select>
 
@@ -276,7 +287,10 @@
     SELECT confirm_number
     FROM TB_CONFIRM_APPLICATION
     WHERE child_birth_date = #{childBirthDate}
-      AND registration_number = #{regiNum} AND status_code NOT IN ('ST_60') AND delt_at = 'N'
+      AND registration_number = #{regiNum}
+      AND status_code NOT IN ('ST_60')
+      AND delt_at = 'N'
 </select>
+
 
 </mapper>
