@@ -9,7 +9,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,12 +16,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.renewal_firstclass.domain.AdminAddAmountDTO;
 import com.example.renewal_firstclass.domain.AdminSuperCheckDTO;
 import com.example.renewal_firstclass.domain.ApplicationDetailDTO;
 import com.example.renewal_firstclass.domain.CodeDTO;
 import com.example.renewal_firstclass.domain.CustomUserDetails;
 import com.example.renewal_firstclass.domain.PageDTO;
 import com.example.renewal_firstclass.domain.UserDTO;
+import com.example.renewal_firstclass.service.AdminAddAmountService;
 import com.example.renewal_firstclass.service.AdminSuperiorService;
 import com.example.renewal_firstclass.service.CodeService;
 import com.example.renewal_firstclass.service.UserApplyService;
@@ -38,6 +39,7 @@ public class AdminSuperiorController {
     private final UserService userService;
     private final AdminSuperiorService adminSuperiorService;
     private final UserApplyService userApplyService;
+    private final AdminAddAmountService adminAddAmountService;
     
     //목록 조회
     @RequestMapping(value="/admin/superior", method= {RequestMethod.GET, RequestMethod.POST})
@@ -90,6 +92,17 @@ public class AdminSuperiorController {
     	model.addAttribute("dto", applicationDetailDTO);
     	
     	return "admin/adminsuperiordetail";
+    }
+    // 추가지급 상세
+    @GetMapping("/admin/superior/addamountdetail")
+    public String showAddAmountDetail(@RequestParam long appNo, Model model) {
+        // 상태 변경 없는 새 서비스 메소드 호출
+        adminSuperiorService.getAddAmountDetail(appNo, model);
+        
+        ApplicationDetailDTO applicationDetailDTO = userApplyService.getApplicationDetail(appNo);
+        model.addAttribute("dto", applicationDetailDTO);
+        
+        return "admin/adminsuperaddamountdetail"; 
     }
     
     // 부지급 사유 코드 목록
@@ -172,4 +185,69 @@ public class AdminSuperiorController {
 	     }
 	     return resp;
 	 }
+	 //추가지급 지급 처리
+	 @PostMapping("/admin/superior/addamount/approve")
+	    @ResponseBody
+	    public Map<String, Object> approveAddAmount(@RequestBody Map<String, Object> payload) {
+		 System.out.println("========================================");
+		    System.out.println("approveAddAmount 메소드 호출됨!");
+		    System.out.println("Payload: " + payload);
+		    System.out.println("========================================");   
+		 Map<String, Object> resp = new HashMap<>();
+	        
+	        try {
+	            long applicationNumber = Long.parseLong(payload.get("applicationNumber").toString());
+	            Long superiorId = currentAdminIdOrNull();
+	            if (superiorId == null) {
+	            	resp.put("success", false);
+		             resp.put("message", "로그인이 필요합니다.");
+		             return resp;
+	            }
+	            
+	            // 새 서비스 호출
+	            adminSuperiorService.processAddAmount(applicationNumber, "ST_50");
+	            
+	            resp.put("message", "추가지급 '지급' 처리가 완료되었습니다.");
+	            resp.put("redirectUrl", "/admin/superior");
+	            resp.put("success", true);
+	        } catch (IllegalStateException e) {
+	        	resp.put("message", e.getMessage());
+		         resp.put("success", false);
+	        } catch (Exception e) {
+	        	e.printStackTrace();
+		         resp.put("message", "처리 중 오류가 발생했습니다.");
+		         resp.put("success", false);
+		    }
+	        return resp;
+	    }
+
+	    // 추가지급 부지급 처리
+	    @PostMapping("/admin/superior/addamount/reject")
+	    @ResponseBody
+	    public Map<String, Object> rejectAddAmount(@RequestBody Map<String, Object> payload) {
+	        Map<String, Object> resp = new HashMap<>();
+	        try {
+	            long applicationNumber = Long.parseLong(payload.get("applicationNumber").toString());
+	            Long superiorId = currentAdminIdOrNull();
+	            if (superiorId == null) {
+	            	resp.put("success", false);
+		             resp.put("message", "로그인이 필요합니다.");
+		             return resp;
+	            }
+	            
+	            // 새 서비스 호출
+	            adminSuperiorService.processAddAmount(applicationNumber, "ST_60");
+	            
+	            resp.put("message", "추가지급 '부지급' 처리가 완료되었습니다.");
+	            resp.put("redirectUrl", "/admin/superior");
+	            resp.put("success", true);
+	        } catch (IllegalStateException e) {
+	        	resp.put("message", e.getMessage());
+		         resp.put("success", false);
+	        } catch (Exception e) {
+		         resp.put("message", "처리 중 오류가 발생했습니다.");
+		         resp.put("success", false);
+		    }
+	        return resp;
+	    }
 }

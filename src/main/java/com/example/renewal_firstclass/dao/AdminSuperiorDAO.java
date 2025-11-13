@@ -6,10 +6,9 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import com.example.renewal_firstclass.domain.AdminListDTO;
+import com.example.renewal_firstclass.domain.AdminAddAmountDTO;
 import com.example.renewal_firstclass.domain.AdminUserApprovalDTO;
 import com.example.renewal_firstclass.domain.ApplicationSearchDTO;
-import com.example.renewal_firstclass.domain.TermAmountDTO;
 
 @Mapper
 public interface AdminSuperiorDAO {
@@ -51,4 +50,30 @@ public interface AdminSuperiorDAO {
                           @Param("rejectionReasonCode") String rejectionReasonCode,
                           @Param("rejectComment") String rejectComment,
                           @Param("superiorId") long superiorId);
+    
+    //추가지급 관련
+    
+    // 상위관리자 '추가 지급' 신청서 목록 조회 (서비스단에서 병합/페이징)
+    List<AdminUserApprovalDTO> selectAddAmountList(ApplicationSearchDTO search);
+
+    // '추가 지급' 테이블의 상태별 개수 조회
+    @Select("SELECT COUNT(*) FROM TB_ADD_AMOUNT WHERE status_code = #{statusCode}")
+    int selectAddAmountStatusCount(@Param("statusCode") String statusCode);
+
+    //'추가 지급' 테이블의 특정 상태 목록 개수 조회
+    @Select("SELECT COUNT(*) FROM TB_ADD_AMOUNT WHERE status_code IN ('ST_40', 'ST_50', 'ST_60')")
+    int selectAddAmountTotalCount();
+    
+
+    // 추가지급 상세페이지 (상태 변경 없음)
+    AdminUserApprovalDTO selectAddAmountDetailByAppNo(@Param("applicationNumber") long applicationNumber);
+
+    // 추가지급 상태 업데이트 (지급/부지급)
+    int updateAddAmountStatus(
+            @Param("applicationNumber") long applicationNumber,
+            @Param("statusCode") String statusCode
+    );
+    
+    // 특정 신청서의 추가지급 내역 목록 조회
+    List<AdminAddAmountDTO> selectAddAmountListByAppNo(@Param("applicationNumber") long applicationNumber);
 }

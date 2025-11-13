@@ -16,7 +16,7 @@
             <if test="status != null and status != ''">
                 <choose>
                     <when test="status == 'PENDING'">
-                        AND a.status_code = 'ST_40'
+                        AND a.application_number IS NULL
                     </when>
                     <when test="status == 'APPROVED'">
                         AND a.status_code = 'ST_50'

@@ -4,7 +4,8 @@
 
     <sql id="searchCondition">
         <where>
-          
+          	AND p.status_code IN ('ST_40', 'ST_50', 'ST_60')
+          	
             <if test="nameKeyword != null and nameKeyword != ''">
                 AND (u.name LIKE '%' || #{nameKeyword} || '%' OR p.application_number LIKE '%' || #{nameKeyword} || '%')
             </if>
@@ -14,7 +15,7 @@
             <if test="status != null and status != ''">
                 <choose>
 	                <when test="status == 'PENDING'">
-	                    AND p.status_code = 'ST_40'
+	                    AND p.status_code = 'ST_40' 
 	                </when>
 	                <when test="status == 'APPROVED'">
 	                    AND p.status_code = 'ST_50' AND p.payment_result = 'Y'
@@ -56,8 +57,57 @@
         <include refid="searchCondition"/>
         ORDER BY
             p.application_number DESC
-        OFFSET #{pageDTO.startList} ROWS FETCH NEXT #{pageDTO.listSize} ROWS ONLY
     </select>
+    
+    <select id="selectAddAmountList" resultType="com.example.renewal_firstclass.domain.AdminUserApprovalDTO">
+        SELECT
+            aa.application_number AS applicationNumber,
+            p.user_id AS userId,
+            u.name AS applicantName,
+            aa.status_code AS statusCode,
+            TO_CHAR(p.submitted_dt, 'YYYY-MM-DD') AS submittedDate, 
+            'Y' AS paymentResult, 
+            CASE
+                WHEN aa.status_code = 'ST_40' THEN '대기'
+                WHEN aa.status_code = 'ST_50' THEN '승인'
+                WHEN aa.status_code = 'ST_60' THEN '반려'
+                ELSE '기타'
+            END AS statusName,
+            'ADD_AMOUNT' AS applicationType FROM 
+            TB_ADD_AMOUNT aa
+        JOIN 
+            TB_PARENTAL_LEAVE_APPLICATION p ON aa.application_number = p.application_number
+        JOIN 
+            TB_User u ON p.user_id = u.id
+        <where>
+            aa.status_code IN ('ST_40', 'ST_50', 'ST_60')
+            AND p.delt_at = 'N'
+            
+            <if test="nameKeyword != null and nameKeyword != ''">
+                AND (u.name LIKE '%' || #{nameKeyword} || '%' OR p.application_number LIKE '%' || #{nameKeyword} || '%')
+            </if>
+            <if test="appNoKeyword != null">
+                AND p.application_number LIKE '%' || #{appNoKeyword} || '%'
+            </if>
+            <if test="date != null and date != ''">
+                AND TO_CHAR(p.submitted_dt, 'YYYY-MM-DD') = #{date}
+            </if>
+            
+            <if test="status != null and status != ''">
+                <choose>
+                    <when test="status == 'PENDING'">
+                        AND aa.status_code = 'ST_40'
+                    </when>
+                    <when test="status == 'APPROVED'">
+                        AND aa.status_code = 'ST_50'
+                    </when>
+                    <when test="status == 'REJECTED'">
+                        AND aa.status_code = 'ST_60'
+                    </when>
+                </choose>
+            </if>
+        </where>
+        </select>
 
     <select id="selectTotalCount" resultType="int">
         SELECT 
@@ -168,6 +218,102 @@
     AND NVL(p.delt_at, 'N') = 'N'
 </select>
 
+<!-- ADD_AMOUNT 테이블 조회 -->
+<select id="selectAddAmountListByAppNo" resultType="com.example.renewal_firstclass.domain.AdminAddAmountDTO">
+        SELECT 
+            aa.add_amount_id        AS addAmountId,
+            aa.term_id              AS termId,
+            aa.code_id              AS codeId,
+            c.name                  AS addReasonName, 
+            aa.amount               AS amount,
+            aa.add_reason            AS addReason,     
+            aa.status_code          AS statusCode,
+            aa.application_number   AS applicationNumber
+        FROM TB_ADD_AMOUNT aa
+        LEFT JOIN TB_CODE c ON aa.code_id = c.code_id
+        WHERE aa.application_number = #{applicationNumber}
+</select>
+    
+<select id="selectAddAmountDetailByAppNo"
+            resultType="com.example.renewal_firstclass.domain.AdminUserApprovalDTO">
+        SELECT
+            /* ===== 신청서(PLA) ===== */
+	    p.application_number,
+	    p.status_code,
+	    st_app.name                  AS statusName,
+	    p.bank_code,
+	    bank.name                    AS bankName,
+	    p.account_number,
+	    p.payment_result,
+	    p.payment,
+	    p.submitted_dt,
+	    p.examine_dt,
+	    p.rejection_reason_code,
+	    rj.name                      AS rejectionReasonName,
+	    p.reject_comment,
+	    p.gov_info_agree,
+	    p.center_id,
+	    p.confirm_number,
+	    p.user_id,                   -- 신청자 ID
+	    p.processor_id,
+	    p.superior_id,
+	
+	    /* ===== 확인서(CA) ===== */
+	    c.start_date,
+	    c.end_date,
+	    c.weekly_hours,
+	    c.regular_wage,
+	    c.child_name,
+	    c.child_resi_regi_number,
+	    c.child_birth_date,
+	    c.registration_number        AS applicantResiRegiNumber,  -- 근로자 주민번호(확인서에 저장됨)
+	    c.name                       AS applicantNameFromCA,     -- 근로자 이름(확인서에 저장)
+	    c.response_name,
+	    c.response_phone_number,
+	    c.user_id        AS corpUserId,   -- 회사계정 ID (참고용 필요시)
+	    c.center_id      AS corpCenterId, -- 회사의 소속 센터 (필요시)
+	
+	    /* ===== 신청자(USER, from PLA.user_id) ===== */
+	    au.name                      AS applicantName,           -- 신청자 이름(사용자 테이블)
+	    au.phone_number              AS applicantPhoneNumber,
+	    au.zip_number				 AS applicantZipNumber,
+	    au.address_base              AS applicantAddrBase,
+	    au.address_detail            AS applicantAddrDetail,
+	
+	    /* ===== 회사(USER, from CA.user_id) ===== */
+	    cu.name                      AS businessName,            -- 회사명
+	    cu.zip_number                  AS businessZipNumber,
+	    cu.address_base              AS businessAddrBase,
+	    cu.address_detail            AS businessAddrDetail,
+	    cu.buisiness_regi_number     AS businessRegiNumber,
+	
+	    /* ===== 처리자(USER) ===== */
+	    pu_proc.name                      AS processorName,
+	    pu_sup.name					      AS superiorName
+	    
+        FROM TB_PARENTAL_LEAVE_APPLICATION p
+            JOIN TB_CONFIRM_APPLICATION c ON c.confirm_number = p.confirm_number
+
+		  /* 신청자(근로자) */
+		  JOIN TB_USER au ON au.id = p.user_id
+		
+		  /* 처리자(관리자) */
+		  LEFT JOIN TB_USER pu_proc ON pu_proc.id = p.processor_id
+		  
+		  /* 처리자(상위 관리자) */
+		  LEFT JOIN TB_USER pu_sup ON pu_sup.id = p.superior_id
+		
+		  /* 회사(사업장) — 확인서의 user_id */
+		  LEFT JOIN TB_USER cu ON cu.id = c.user_id
+		
+		  /* 코드 */
+		  LEFT JOIN TB_CODE bank   ON bank.code = p.bank_code
+		  LEFT JOIN TB_CODE st_app ON st_app.code = p.status_code
+		  LEFT JOIN TB_CODE rj     ON rj.code   = p.rejection_reason_code
+        WHERE p.application_number = #{applicationNumber}
+          AND NVL(p.delt_at, 'N') = 'N'
+</select>
+    
 <!-- 지급 확정 -->
 <update id="approveApplicationLevel2">
   UPDATE TB_PARENTAL_LEAVE_APPLICATION
@@ -201,5 +347,15 @@
      AND NVL(delt_at,'N') = 'N'
      AND status_code = 'ST_30'
 </update>
+
+<!-- 추가지급 지급/부지급 상태코드 업데이트 -->
+<update id="updateAddAmountStatus">
+        UPDATE TB_ADD_AMOUNT
+        SET 
+            status_code = #{statusCode}
+        WHERE
+            application_number = #{applicationNumber}
+            AND status_code = 'ST_40' 
+    </update>
 
 </mapper>

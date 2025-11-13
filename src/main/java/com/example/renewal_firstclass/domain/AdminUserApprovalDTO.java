@@ -73,4 +73,6 @@ public class AdminUserApprovalDTO {
     private Long confirmNumber;
     
     private List<TermAmountDTO> termAmounts;
+    
+    private String applicationType; //구분용
 }

@@ -82,7 +82,7 @@ public class AdminAddAmountController {
             @RequestParam("codeId") Long codeId,
             @RequestParam(value = "addReason", required = false) String addReason,
             @RequestParam("termId") List<Long> termIds,
-            @RequestParam("amount") List<Long> amounts, // JSP에서 number 타입으로 보내도 Long/Integer로 받아짐 (0 or null)
+            @RequestParam("amount") List<Long> amounts, 
             RedirectAttributes rttr) {
         
         try {

@@ -1,6 +1,9 @@
 package com.example.renewal_firstclass.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +16,7 @@ import com.example.renewal_firstclass.dao.AdminSuperiorDAO;
 import com.example.renewal_firstclass.dao.CodeDAO;
 import com.example.renewal_firstclass.dao.TermAmountDAO;
 import com.example.renewal_firstclass.dao.UserApplyDAO;
+import com.example.renewal_firstclass.domain.AdminAddAmountDTO;
 import com.example.renewal_firstclass.domain.AdminUserApprovalDTO;
 import com.example.renewal_firstclass.domain.ApplicationDetailDTO;
 import com.example.renewal_firstclass.domain.ApplicationSearchDTO;
@@ -41,15 +45,11 @@ public class AdminSuperiorService {
     public String getCenterPositionByUsername(String username) {
     	return adminSuperiorDAO.selectCenterPositionByUsername(username);
     }
-    
+    //목록 조회
     public Map<String, Object> getPagedApplicationsAndCounts(String nameKeyword, Long appNoKeyword, String status, String date,
     		PageDTO pageDTO) {
         Map<String, Object> result = new HashMap<>();
-        
-        // 검색 조건에 맞는 게시물 조회
-        int totalCnt = adminSuperiorDAO.selectTotalCount(nameKeyword, appNoKeyword, status, date);
-        pageDTO.setTotalCnt(totalCnt); // PageDTO에 총 개수 설정 -> 페이징 계산 완료
-        
+          
         // DTO로 묶어서 전달
         ApplicationSearchDTO search = new ApplicationSearchDTO();
         search.setNameKeyword(nameKeyword);
@@ -58,30 +58,64 @@ public class AdminSuperiorService {
         search.setDate(date);
         search.setPageDTO(pageDTO);
 
+        // 두 목록 전체 조회
         List<AdminUserApprovalDTO> applicationList = adminSuperiorDAO.selectApplicationList(search);
+        List<AdminUserApprovalDTO> addAmountList = adminSuperiorDAO.selectAddAmountList(search);
 
-        // 상태별 건수 조회
+        // 두 리스트 병합
+        List<AdminUserApprovalDTO> combinedList = new ArrayList<>();
+        combinedList.addAll(applicationList);
+        combinedList.addAll(addAmountList);
+
+        // 병합된 리스트 정렬 (예: 신청일 내림차순)
+        combinedList.sort(Comparator.comparing(
+                AdminUserApprovalDTO::getSubmittedDate, 
+                Comparator.nullsLast(Comparator.reverseOrder())
+        ));
+
+        // 수동 페이징 처리
+        int totalCnt = combinedList.size();
+        pageDTO.setTotalCnt(totalCnt); 
+
+        int startList = pageDTO.getStartList();
+        int endList = Math.min(startList + pageDTO.getListSize(), totalCnt);
+        
+        List<AdminUserApprovalDTO> paginatedList;
+        if (startList >= totalCnt) {
+            paginatedList = Collections.emptyList();
+        } else {
+            paginatedList = combinedList.subList(startList, endList);
+        }
+
+        // 상태별 건수 조회 (기존 + 추가지급)
         Map<String, Integer> counts = new HashMap<>();
         
-        // 전체 신청 건수
-        counts.put("total", adminSuperiorDAO.selectTotalCount(null, null, null, null));
-
-        // 대기 건수 = '2차 심사중'(ST_40)
-        List<String> pendingStatusCodes = Arrays.asList("ST_40");
-        counts.put("pending", adminSuperiorDAO.selectStatusCountIn(pendingStatusCodes));
+        // 기존 건수
+        int pendingApp = adminSuperiorDAO.selectStatusCountIn(Arrays.asList("ST_40"));
+        int approvedApp = adminSuperiorDAO.selectStatusCount("ST_50", "Y");
+        int rejectedApp = adminSuperiorDAO.selectStatusCount("ST_60", "N");
+        int totalApp = pendingApp+approvedApp+rejectedApp;
         
-        // 승인/반려
-        counts.put("approved", adminSuperiorDAO.selectStatusCount("ST_50", "Y"));
-        counts.put("rejected", adminSuperiorDAO.selectStatusCount("ST_60", "N")); 
+        // 추가지급 건수 (새 DAO 메소드 사용)
+        int totalAdd = adminSuperiorDAO.selectAddAmountTotalCount();
+        int pendingAdd = adminSuperiorDAO.selectAddAmountStatusCount("ST_40");
+        int approvedAdd = adminSuperiorDAO.selectAddAmountStatusCount("ST_50");
+        int rejectedAdd = adminSuperiorDAO.selectAddAmountStatusCount("ST_60");
+
+        // 합산
+        counts.put("total", totalApp + totalAdd);
+        counts.put("pending", pendingApp + pendingAdd);
+        counts.put("approved", approvedApp + approvedAdd);
+        counts.put("rejected", rejectedApp + rejectedAdd); 
         
         //결과 반환
-        result.put("list", applicationList);
+        result.put("list", paginatedList);
         result.put("pageDTO", pageDTO);
         result.put("counts", counts);
 
         return result;
     }
-    
+    // 지급 상세
     @Transactional
     public void userApplyDetail(long applicationNumber, Model model) {
         // 진입 시 검토중 전환 
@@ -122,6 +156,75 @@ public class AdminSuperiorService {
 
         model.addAttribute("appDTO", appDTO);
         model.addAttribute("terms", terms);
+        model.addAttribute("isAddAmountDetail", false);
+    }
+    // 추가지급 상세 
+    public void getAddAmountDetail(long applicationNumber, Model model) {
+        
+    	 AdminUserApprovalDTO dto = adminSuperiorDAO.selectAppDetailByAppNo(applicationNumber);
+         try {
+             if (dto.getApplicantResiRegiNumber() != null && !dto.getApplicantResiRegiNumber().trim().isEmpty()) {
+                 dto.setApplicantResiRegiNumber(aes256Util.decrypt(dto.getApplicantResiRegiNumber()));
+             }
+         } catch (Exception ignore) {}
+
+         try {
+             if (dto.getChildResiRegiNumber() != null && !dto.getChildResiRegiNumber().trim().isEmpty()) {
+                 dto.setChildResiRegiNumber(aes256Util.decrypt(dto.getChildResiRegiNumber()));
+             }
+         } catch (Exception ignore) {}
+         try {
+             if (dto.getUpdChildResiRegiNumber() != null && !dto.getUpdChildResiRegiNumber().trim().isEmpty()) {
+                 dto.setUpdChildResiRegiNumber(aes256Util.decrypt(dto.getUpdChildResiRegiNumber()));
+             }
+         } catch (Exception ignore) {}
+         try {
+             if (dto.getUpdAccountNumber() != null && !dto.getUpdAccountNumber().trim().isEmpty()) {
+                 dto.setUpdAccountNumber(aes256Util.decrypt(dto.getUpdAccountNumber()));
+             }
+         } catch (Exception ignore) {}
+
+        // 상세 조회 (새로 만든 매퍼 사용, 내용은 동일함)
+        AdminUserApprovalDTO appDTO = adminSuperiorDAO.selectAddAmountDetailByAppNo(applicationNumber);
+        if (appDTO == null) {
+            model.addAttribute("error", "존재하지 않는 신청입니다.");
+            return;
+        }
+
+        // 월별 단위기간 내역
+        List<TermAmountDTO> terms = termAmountDAO.selectByConfirmId(appDTO.getConfirmNumber());
+        
+        List<AdminAddAmountDTO> addAmountList = adminSuperiorDAO.selectAddAmountListByAppNo(applicationNumber);
+        
+        // (1) 버튼 표시 조건 및 기본 정보 출력을 위해 리스트 자체를 담음
+        model.addAttribute("addAmountData", addAmountList); 
+
+        // (2) JSP 테이블 매핑을 위해 termId를 Key로 하는 Map 생성
+        Map<Long, AdminAddAmountDTO> addAmountMap = new HashMap<>();
+        if (addAmountList != null) {
+            for (AdminAddAmountDTO item : addAmountList) {
+                // termId가 null이 아닐 경우에만 맵에 추가
+                if (item.getTermId() != null) {
+                    addAmountMap.put(item.getTermId(), item);
+                }
+            }
+        }
+        model.addAttribute("addAmountMap", addAmountMap);
+        model.addAttribute("appDTO", appDTO);
+        model.addAttribute("terms", terms);
+        // (JSP에서 구분을 위해)
+        model.addAttribute("isAddAmountDetail", true); 
+    }
+    //추가지급 지급/부지급 처리
+    @Transactional
+    public void processAddAmount(long applicationNumber, String statusCode) {
+        // 'ST_50' (지급) 또는 'ST_60' (부지급)
+        int updated = adminSuperiorDAO.updateAddAmountStatus(applicationNumber, statusCode);
+        
+        if (updated == 0) {
+            throw new IllegalStateException("추가지급 처리가 불가능한 상태이거나 이미 처리되었습니다.");
+        }
+       
     }
     
     /**최종 지급 확정*/

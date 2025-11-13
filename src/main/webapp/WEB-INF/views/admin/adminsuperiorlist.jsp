@@ -473,6 +473,7 @@ a { text-decoration: none; color: inherit; }
                 <table class="data-table">
                     <thead>
                         <tr>
+                        	<th>구분</th>
                             <th>신청서 번호</th>
                             <th>신청자 이름</th>
                             <th>신청일
@@ -492,7 +493,17 @@ a { text-decoration: none; color: inherit; }
                             <c:when test="${not empty applicationList}">
                                 <c:forEach var="app" items="${applicationList}">
                                     <tr>
-                                        <td>${app.applicationNumber}</td>
+                                    	<td>
+                                    		<c:if test="${app.applicationType == 'ADD_AMOUNT'}">
+			                                	<span class="badge" style="background-color: #ffc107; color: #333; margin-left: 5px;">추가지급</span>
+			                            	</c:if>
+				                            <c:if test="${app.applicationType == 'PAYMENT'}">
+				                                <span class="badge" style="background-color: #0d6efd; margin-left: 5px;">급여지급</span>
+				                            </c:if>
+                                    	</td>
+                                        <td>
+                                        	${app.applicationNumber}
+                                        </td>
                                         <td>${app.applicantName}</td>
                                         <td>${app.submittedDate}</td>
                                         <td>
@@ -500,16 +511,32 @@ a { text-decoration: none; color: inherit; }
                                                 <c:when test="${app.statusName == '대기'}">
                                                     <span class="badge badge-wait">${app.statusName}</span>
                                                 </c:when>
-                                                <c:when test="${app.paymentResult == 'Y'}">
+                                                <c:when test="${app.statusName == '승인'}">
                                                     <span class="badge badge-approved">승인</span>
                                                 </c:when>
-                                                <c:otherwise>
-                                                    <span class="badge badge-rejected">반려</span>
-                                                </c:otherwise>
+                                                <c:when test="${app.statusName == '반려'}">
+									                 <span class="badge badge-rejected">${app.statusName}</span>
+									            </c:when>
+									            
+									            <%-- 기타/Fallback --%>
+									            <c:otherwise>
+									                <span class="badge badge-rejected">${app.statusName}</span>
+									            </c:otherwise>
                                             </c:choose>
                                         </td>
                                         <td>
-                                            <a href="${pageContext.request.contextPath}/admin/superior/detail/?appNo=${app.applicationNumber}" class="table-btn btn-secondary">상세보기</a>
+                                            <c:choose>
+				                                <c:when test="${app.applicationType == 'PAYMENT'}">
+				                                    <a href="${pageContext.request.contextPath}/admin/superior/detail/?appNo=${app.applicationNumber}" class="table-btn">
+				                                        	결재하기
+				                                    </a>
+				                                </c:when>
+				                                <c:when test="${app.applicationType == 'ADD_AMOUNT'}">
+				                                    <a href="${pageContext.request.contextPath}/admin/superior/addamountdetail/?appNo=${app.applicationNumber}" class="table-btn btn-secondary">
+				                                        	상세보기
+				                                    </a>
+				                                </c:when>
+				                            </c:choose>
                                         </td>
                                     </tr>
                                 </c:forEach>
