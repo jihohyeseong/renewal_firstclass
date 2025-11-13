@@ -24,11 +24,8 @@
 	    c.center_id,
 	    c.user_id
 	FROM TB_CONFIRM_APPLICATION c
-	JOIN TB_TERM_AMOUNT t
-	    ON c.confirm_number = t.confirm_number
-	WHERE c.confirm_number = #{confirmNumber}
-	  AND t.init_at = 'Y'
-	  AND NVL(c.delt_at, 'N') = 'N'
+	WHERE confirm_number = #{confirmNumber}
+	  AND NVL(delt_at, 'N') = 'N'
 
 	</select>
 	
@@ -115,6 +112,7 @@
 	    FROM TB_TERM_AMOUNT
 	    WHERE confirm_number = #{confirmNumber}
 	    AND update_at = 'N'
+	    AND init_at = 'Y'
 	</select>
 	
 	<select id="selectUpdatedTermAmounts" 
@@ -125,6 +123,7 @@
 	    FROM TB_TERM_AMOUNT
 	    WHERE confirm_number = #{confirmNumber}
 	    AND update_at = 'Y'
+	    AND init_at = 'Y'
 	</select>
 	
 	<!-- upd 컬럼 존재 여부 확인 -->
