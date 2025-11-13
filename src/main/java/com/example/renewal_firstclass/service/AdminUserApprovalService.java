@@ -76,50 +76,52 @@ public class AdminUserApprovalService {
     }
     
     @Transactional
-    public void userApplyDetail(long applicationNumber, Model model) {
-        // 진입 시 검토중 전환 
+    public AdminUserApprovalDTO userApplyDetail(long applicationNumber, Model model) {
+        // 화면 진입 시 상태 "검토중" 전환
         adminUserApprovalDAO.whenOpenChangeState(applicationNumber);
-        
-        AdminUserApprovalDTO dto = adminUserApprovalDAO.selectAppDetailByAppNo(applicationNumber);
-        if (dto == null) {
-            model.addAttribute("error", "존재하지 않는 신청입니다.");
-            return; // ← void라서 return; 만
-        }
-        try {
-            if (dto.getApplicantResiRegiNumber() != null && !dto.getApplicantResiRegiNumber().trim().isEmpty()) {
-                dto.setApplicantResiRegiNumber(aes256Util.decrypt(dto.getApplicantResiRegiNumber()));
-            }
-        } catch (Exception ignore) {}
 
-        try {
-            if (dto.getChildResiRegiNumber() != null && !dto.getChildResiRegiNumber().trim().isEmpty()) {
-                dto.setChildResiRegiNumber(aes256Util.decrypt(dto.getChildResiRegiNumber()));
-            }
-        } catch (Exception ignore) {}
-        try {
-            if (dto.getUpdChildResiRegiNumber() != null && !dto.getUpdChildResiRegiNumber().trim().isEmpty()) {
-                dto.setUpdChildResiRegiNumber(aes256Util.decrypt(dto.getUpdChildResiRegiNumber()));
-            }
-        } catch (Exception ignore) {}
-        try {
-            if (dto.getUpdAccountNumber() != null && !dto.getUpdAccountNumber().trim().isEmpty()) {
-                dto.setUpdAccountNumber(aes256Util.decrypt(dto.getUpdAccountNumber()));
-            }
-        } catch (Exception ignore) {}
-
-        // 상세 조회
+        // 상세 조회 (한 번만)
         AdminUserApprovalDTO appDTO = adminUserApprovalDAO.selectAppDetailByAppNo(applicationNumber);
         if (appDTO == null) {
             model.addAttribute("error", "존재하지 않는 신청입니다.");
-            return;
+            return null;   // ← 이제 리턴 타입이 있으니 null 리턴
         }
 
-        // 월별 단위기간 내역
+        try {
+            if (appDTO.getApplicantResiRegiNumber() != null && !appDTO.getApplicantResiRegiNumber().trim().isEmpty()) {
+                appDTO.setApplicantResiRegiNumber(aes256Util.decrypt(appDTO.getApplicantResiRegiNumber()));
+            }
+        } catch (Exception ignore) {}
+
+        try {
+            if (appDTO.getChildResiRegiNumber() != null && !appDTO.getChildResiRegiNumber().trim().isEmpty()) {
+                appDTO.setChildResiRegiNumber(aes256Util.decrypt(appDTO.getChildResiRegiNumber()));
+            }
+        } catch (Exception ignore) {}
+
+        try {
+            if (appDTO.getUpdChildResiRegiNumber() != null && !appDTO.getUpdChildResiRegiNumber().trim().isEmpty()) {
+                appDTO.setUpdChildResiRegiNumber(aes256Util.decrypt(appDTO.getUpdChildResiRegiNumber()));
+            }
+        } catch (Exception ignore) {}
+
+        try {
+            if (appDTO.getUpdAccountNumber() != null && !appDTO.getUpdAccountNumber().trim().isEmpty()) {
+                appDTO.setUpdAccountNumber(aes256Util.decrypt(appDTO.getUpdAccountNumber()));
+            }
+        } catch (Exception ignore) {}
+
+        // ===== 월별 단위기간 내역 조회 =====
         List<TermAmountDTO> terms = termAmountDAO.selectByConfirmId(appDTO.getConfirmNumber());
 
+        // ===== 화면에서 쓸 데이터 model에 적재 =====
         model.addAttribute("appDTO", appDTO);
         model.addAttribute("terms", terms);
+
+        // 컨트롤러에서 파일 조회 등 추가 작업할 수 있게 DTO 반환
+        return appDTO;
     }
+
     
     /**1차 지급 확정*/
     @Transactional

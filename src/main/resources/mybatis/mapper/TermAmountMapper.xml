@@ -22,25 +22,53 @@
     END;
   </insert>
   
-  <select id="selectByConfirmId"
-          parameterType="long"
-          resultType="com.example.renewal_firstclass.domain.TermAmountDTO">
-    SELECT
-      term_id, confirm_number,
-      payment_date, company_payment, gov_payment,
-      start_month_date, end_month_date, update_at
-    FROM TB_TERM_AMOUNT
-    WHERE confirm_number = #{confirmNumber}
-    AND delt_at = 'N'
-    AND init_at = 'Y'
-    ORDER BY start_month_date
-  </select>
+<select id="selectByConfirmId"
+        parameterType="long"
+        resultType="com.example.renewal_firstclass.domain.TermAmountDTO">
+  SELECT
+    t.term_id,
+    t.confirm_number,
+    t.payment_date,
+    t.company_payment,
+    t.gov_payment,
+    t.start_month_date,
+    t.end_month_date,
+    t.update_at
+  FROM TB_TERM_AMOUNT t
+  WHERE t.confirm_number = #{confirmNumber}
+    AND t.delt_at = 'N'
+    AND t.init_at = 'Y'
+    AND t.update_at = CASE
+      WHEN EXISTS (
+        SELECT 1
+        FROM TB_TERM_AMOUNT x
+        WHERE x.confirm_number = #{confirmNumber}
+          AND x.delt_at = 'N'
+          AND x.init_at = 'Y'
+          AND x.update_at = 'Y'
+      )
+      THEN 'Y'
+      ELSE 'N'
+    END
+  ORDER BY t.start_month_date
+</select>
 
   <delete id="deleteTermsByConfirmId" parameterType="long">
     DELETE FROM TB_TERM_AMOUNT
     WHERE confirm_number = #{confirmNumber}
   </delete>
   
+    <select id="countTotalTermsByConfirmNumbers" resultType="int" parameterType="java.util.List">
+    SELECT
+        COUNT(*)
+    FROM
+        TB_TERM_AMOUNT
+    WHERE
+        CONFIRM_NUMBER IN
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+  </select>
   
 </mapper>
 

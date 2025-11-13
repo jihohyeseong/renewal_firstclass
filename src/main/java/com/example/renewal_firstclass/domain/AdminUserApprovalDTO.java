@@ -16,14 +16,14 @@ public class AdminUserApprovalDTO {
     private Long applicationNumber;
     private String statusCode;
     private String bankCode;
-    private String bankName;           // alias
+    private String bankName;
     private String accountNumber;
     private String paymentResult;
     private BigDecimal payment;
     private Date submittedDt;
     private Date examineDt;
     private String rejectionReasonCode;
-    private String rejectionReasonName; // alias
+    private String rejectionReasonName;
     private String rejectComment;
     private String govInfoAgree;
     private Long userId;
@@ -31,6 +31,7 @@ public class AdminUserApprovalDTO {
     private Long superiorId;
     private String updBankCode;
     private String updAccountNumber;
+    private Long fileId;
 
     // TB_CONFIRM_APPLICATION
     private Date startDate;
@@ -49,7 +50,6 @@ public class AdminUserApprovalDTO {
     private String updChildResiRegiNumber;
     private Date updChildBirthDate;
 
-    // USERS
     // 신청자(근로자)
     private String applicantName;
     private String applicantPhoneNumber;

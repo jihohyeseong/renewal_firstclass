@@ -16,7 +16,7 @@
 
 <style>
 :root{
-	--primary-color:#3f58d4;
+    --primary-color:#3f58d4;
 	--primary-light-color:#f0f2ff;
 	--white-color:#ffffff;
 	--light-gray-color:#f8f9fa;
@@ -41,37 +41,18 @@ body{
 }
 a{text-decoration:none;color:inherit}
 
-.header,.footer{
-	background-color:var(--white-color);padding:15px 40px;border-bottom:1px solid var(--border-color);box-shadow:var(--shadow-sm);
-}
-.footer{border-top:1px solid var(--border-color);border-bottom:none;text-align:center;padding:20px 0;margin-top:auto}
+.footer {
+       text-align: center;
+       padding: 20px 0;
+       font-size: 14px;
+       color: var(--gray-color);
+       margin-top: auto;
+   }
 
-		.header-nav {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-		}
-	
-		.header-nav .nav-link {
-            display: block;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 500;
-            color: #495057;
-            transition: all 0.3s ease-in-out;
-		}
-		.header-nav .nav-link:hover {
-            color: #3f58d4;
-            transform: translateY(-3px);
-            box-shadow: 0 4px 10px rgba(63, 88, 212, 0.3);
-		}
+
 
 .main-container{
-	flex-grow:1;width:100%;max-width:850px;margin:40px auto;padding:40px;
+	flex-grow:1;width:100%;max-width:1200px;margin:2rem auto;padding:40px;
 	background-color:var(--white-color);border-radius:12px;box-shadow:var(--shadow-md);
 }
 
@@ -90,23 +71,41 @@ h2{
 /* 테이블 */
 .info-table-container{margin-bottom:30px}
 .info-table{
-	width:100%;border-collapse:collapse;
-	border-top:2px solid var(--border-color);
-	border-left:none;border-right:none;
+  width:100%;
+  border-collapse:collapse;
+  border-top:2px solid var(--border-color);
+  border-left:none;
+  border-right:none;
+  table-layout:fixed;
 }
-.info-table th,.info-table td{
-	padding:12px 15px;border:1px solid var(--border-color);
-	text-align:left;font-size:15px;
+.info-table th,
+.info-table td{
+  padding:12px 15px;
+  border:1px solid var(--border-color);
+  text-align:left;
+  font-size:15px;
+  word-break:keep-all;
 }
 .info-table th{
-	background-color:var(--light-gray-color);
-	font-weight:500;width:150px;color:var(--dark-gray-color);
+  background-color:var(--light-gray-color);
+  font-weight:500;
+  color:var(--dark-gray-color);
+  text-align:center;
 }
-.info-table td{background-color:var(--white-color);color:#333}
-.info-table.table-4col th{width:120px;background-color:var(--light-gray-color)}
-.info-table.table-4col td{width:auto}
-.info-table.table-4col th,.info-table.table-4col td{border-top:none}
-.info-table tr:first-child th,.info-table tr:first-child td{border-top:1px solid var(--border-color)}
+.info-table td{
+  background-color:var(--white-color);
+  color:#333;
+}
+
+.info-table.table-4col th,
+.info-table.table-4col td{
+}
+
+.info-table tr:first-child th,
+.info-table tr:first-child td{
+  border-top:1px solid var(--border-color);
+}
+
 
 /* 버튼 */
 .btn{
@@ -264,12 +263,9 @@ textarea.form-control { resize: vertical; }
   margin-top:40px;
   text-align: center;
 }
-/* 완료 상태 (c:when) - 목록 버튼 왼쪽 정렬 (기본값) */
 .action-bar .list-button-slot {
-  /* 특별한 정렬이 필요 없으므로 비워둡니다 (기본 왼쪽 정렬) */
 }
 
-/* 버튼 줄을 한 줄로 강제하고, 오른쪽 묶음을 오른쪽 끝으로 밀기 */
 .action-bar .button-row{
   display:flex !important;
   align-items:center !important;
@@ -278,19 +274,16 @@ textarea.form-control { resize: vertical; }
   margin-top:20px;
 }
 
-/* 오른쪽 묶음을 자동으로 우측 끝으로 밀어냄 */
 .action-bar .right-buttons{
   display:flex !important;
   gap:10px;
   margin-left:auto !important;
 }
 
-/* 혹시 어디선가 a.btn을 block으로 만든 스타일을 무력화 */
 .action-bar .button-row .btn{
   display:inline-flex !important;
 }
 
-/* ==== [추가] 세그먼트(지급/부지급/접수반려) ==== */
 .segments{
   display:inline-flex; border:1px solid var(--border-color); border-radius:12px; overflow:hidden; background:#fff; box-shadow: var(--shadow-sm);
 }
@@ -299,16 +292,98 @@ textarea.form-control { resize: vertical; }
 }
 .segment-btn + .segment-btn{ border-left:1px solid var(--border-color); }
 .segment-btn[aria-pressed="true"]{
-  background: var(--primary-light-color); color: var(--primary-color);
+  background: #e9ecef;          /* 연회색 배경 */
+  color: #343a40;                /* 진회색 텍스트 */
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.15);
 }
+
 
 /* ==== [추가] 반려/부지급 사유 영역 ==== */
-#rejectForm{
-  display:none; margin-top:16px; padding:5px; border:1px solid #d1d9ff; background:#f0f2ff; border-radius:10px;
-}
-#rejectForm .form-row{ display:flex; gap:3px; align-items:center; flex-wrap: wrap; }
-#rejectForm select{ min-width:260px; }
 
+/* === RejectForm 레이아웃 컴팩트 (라벨 옆 공백 제거) === */
+/* === 반려 폼: 라벨-인풋 간 공백 최소화 & 정렬 안정화 === */
+#rejectForm{
+  display:block;
+  margin-top:10px; padding:10px 12px;
+  border:1px solid #d1d9ff; background:#f0f2ff; border-radius:10px;
+}
+
+/* 공통 행: 라벨 110px + 인풋 1fr */
+#rejectForm .form-row{
+  display:grid !important;
+  grid-template-columns: 110px 1fr;
+  column-gap: 10px;
+  row-gap: 0;
+  align-items:center;
+  margin:8px 0 !important;
+}
+
+/* 라벨은 딱 맞게, 줄바꿈 금지 */
+#rejectForm label{
+  margin:0 !important;
+  white-space:nowrap !important;
+  font-weight:700; color:#334155;
+}
+
+/* 컨트롤 기본 사이즈 */
+#rejectForm .form-control{
+  width:100%;
+  padding:10px 12px !important;
+  font-size:14px !important;
+  border-radius:10px;
+}
+
+/* 셀렉트가 폭을 벌리는 문제 제거 */
+#rejectForm select{ min-width:0 !important; }
+
+/* === 상세사유만 라벨 위 / textarea 아래 (스택) === */
+#rejectForm .form-row.row-detail{ align-items: start; }
+#rejectForm .form-row.row-detail label{ margin:0 !important; }
+#rejectForm .form-row.row-detail .form-control{ grid-column: 2; }
+#rejectForm .form-row.row-detail textarea.form-control{
+  min-height:140px;    /* 필요하면 160~200px로 늘리면 됨 */
+  line-height:1.5;
+  resize:vertical;
+}
+#rejectForm .form-row:first-of-type .form-control{
+  flex: 0 0 auto !important;
+  width: clamp(160px, 26vw, 240px) !important; /* 160~240px 사이로 */
+  max-width: 240px !important;
+  justify-self: start; /* 왼쪽 정렬 */
+}
+
+/* ===== 관리자 수정폼 테이블 공통 스타일 ===== */
+.info-table.edit-table th {
+  background: #b0baec;           /* 자녀정보(수정)에서 쓰던 파랑톤 */
+}
+
+/* 수정폼 테이블은 행 높이를 살짝 컴팩트하게 */
+.info-table.edit-table th,
+.info-table.edit-table td {
+  padding: 8px 10px;             /* 위쪽 보기용 테이블보다 살짝만 줄임 */
+}
+
+/* 수정폼 안 인풋 크기 줄이기 */
+.info-table.edit-table .form-control {
+  padding: 6px 8px !important;
+  font-size: 14px;
+  height: 32px;
+  box-sizing: border-box;
+  border: none;
+  outline: none;
+  background-color: transparent;
+}
+.file-download-link {
+    color: var(--primary-color); /* 테마 색상 적용 */
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px; /* 아이콘과 텍스트 간격 */
+}
+.file-download-link:hover {
+    text-decoration: underline;
+}
 </style>
 </head>
 <body>
@@ -375,6 +450,10 @@ textarea.form-control { resize: vertical; }
 <div class="info-table-container">
   <h2 class="section-title">접수정보</h2>
   <table class="info-table table-4col">
+    <colgroup>
+    <col style="width:15%"><col style="width:35%">
+    <col style="width:15%"><col style="width:35%">
+  </colgroup>
     <tbody>
       <tr>
         <th class="data-title">접수번호</th>
@@ -404,14 +483,16 @@ textarea.form-control { resize: vertical; }
 <div class="info-table-container">
   <h2 class="section-title">신청인 정보 (육아휴직자)</h2>
   <table class="info-table table-4col">
+    <colgroup>
+    <col style="width:15%"><col style="width:35%">
+    <col style="width:15%"><col style="width:35%">
+  </colgroup>
     <tbody>
       <tr>
         <th>이름</th>
-        <td colspan="3"><c:out value="${appDTO.applicantName}" /></td>
-      </tr>
-      <tr>
+        <td><c:out value="${appDTO.applicantName}" /></td>
         <th>주민등록번호</th>
-        <td colspan="3">
+        <td>
           <c:if test="${not empty appDTO.applicantResiRegiNumber}">
             <c:set var="rrnRaw" value="${appDTO.applicantResiRegiNumber}" />
             <c:set var="rrnDigits" value="${fn:replace(fn:replace(fn:trim(rrnRaw), '-', ''), ' ', '')}" />
@@ -424,7 +505,7 @@ textarea.form-control { resize: vertical; }
       </tr>
       <tr>
         <th>휴대전화번호</th>
-        <td colspan="3">
+        <td>
           <c:if test="${not empty appDTO.applicantPhoneNumber}">
             <c:out value="${appDTO.applicantPhoneNumber}" />
           </c:if>
@@ -432,10 +513,8 @@ textarea.form-control { resize: vertical; }
             <span class="highlight-warning">미입력</span>
           </c:if>
         </td>
-      </tr>
-      <tr>
         <th>주소</th>
-        <td colspan="3">
+        <td>
           <c:choose>
             <c:when test="${empty appDTO.applicantZipNumber and empty appDTO.applicantAddrBase}">
               <span class="highlight-warning">미입력</span>
@@ -456,10 +535,10 @@ textarea.form-control { resize: vertical; }
 <div class="info-table-container">
   <h2 class="section-title">사업장 정보 (회사)</h2>
   <table class="info-table table-4col">
-    <colgroup>
-      <col style="width:120px"><col>
-      <col style="width:120px"><col>
-    </colgroup>
+      <colgroup>
+    <col style="width:15%"><col style="width:35%">
+    <col style="width:15%"><col style="width:35%">
+  </colgroup>
     <tbody>
 
       <tr>
@@ -480,7 +559,7 @@ textarea.form-control { resize: vertical; }
       </tr>
 
       <tr>
-        <th>사업장 <br/>등록번호</th>
+        <th>사업장 등록번호</th>
         <td>
           <c:choose>
             <c:when test="${empty appDTO.businessRegiNumber}">
@@ -522,20 +601,49 @@ textarea.form-control { resize: vertical; }
 
 <!-- [블록 1] 급여 신청 기간 -->
 <div class="info-table-container">
-  <h2 class="section-title">급여 신청 기간</h2>
-  <table class="info-table">
+  <h2 class="section-title">급여 신청 정보</h2>
+  <table class="info-table table-4col">
+    <colgroup>
+    <col style="width:15%"><col style="width:35%">
+    <col style="width:15%"><col style="width:35%">
+  </colgroup>
     <tbody>
       <tr>
-        <th>총 육아휴직 기간</th>
-        <td id="total-leave-period">
-          <fmt:formatDate value="${dto.startDate}" pattern="yyyy-MM-dd" />
+        <th>급여 신청 기간</th>
+        <td colspan="3">
+          <fmt:formatDate value="${dto.list[0].startMonthDate}" pattern="yyyy.MM.dd" />
           ~
-          <fmt:formatDate value="${dto.endDate}" pattern="yyyy-MM-dd" />
+          <c:choose>
+            <c:when test="${not empty dto.list[fn:length(dto.list) - 1].earlyReturnDate}">
+              <fmt:formatDate value="${dto.list[fn:length(dto.list) - 1].earlyReturnDate}" pattern="yyyy.MM.dd" />
+            </c:when>
+            <c:otherwise>
+              <fmt:formatDate value="${dto.list[fn:length(dto.list) - 1].endMonthDate}" pattern="yyyy.MM.dd" />
+            </c:otherwise>
+          </c:choose>
+          (<c:out value="${totalDate}" />일)
+        </td>
+        
+      </tr>
+
+      <tr>
+        <th>월 소정근로시간</th>
+        <td >
+          ${appDTO.weeklyHours} 시간
+        </td>
+        <th>통상임금</th>
+        <td>
+          <fmt:formatNumber value="${appDTO.regularWage}" pattern="#,###" /> 원
         </td>
       </tr>
+
     </tbody>
   </table>
 </div>
+
+
+
+
 
 <!-- [블록 2] 급여 신청 내역 -->
 <div class="info-table-container">
@@ -551,7 +659,6 @@ textarea.form-control { resize: vertical; }
       </tr>
     </thead>
     <tbody>
-      <%-- 1. 합계 계산 변수 --%>
       <c:set var="totalAmount" value="${0}" />
 
       <c:forEach var="item" items="${dto.list}" varStatus="status">
@@ -593,12 +700,10 @@ textarea.form-control { resize: vertical; }
           </td>
         </tr>
 
-        <%-- 2. 합계 누적 --%>
         <c:set var="totalAmount"
                value="${totalAmount + item.companyPayment + (not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}" />
       </c:forEach>
 
-      <%-- 3. 합계 행 --%>
       <c:if test="${not empty dto.list}">
         <tr style="background-color: var(--light-gray-color);">
           <td colspan="2" style="text-align:center;">
@@ -612,6 +717,7 @@ textarea.form-control { resize: vertical; }
                 <fmt:formatDate value="${dto.list[fn:length(dto.list) - 1].endMonthDate}" pattern="yyyy.MM.dd" />
               </c:otherwise>
             </c:choose>
+            (<c:out value="${totalDate}" />일)
           </td>
 
           <td colspan="2" style="text-align: center; font-weight: 700; color: var(--dark-gray-color);">
@@ -639,6 +745,10 @@ textarea.form-control { resize: vertical; }
 
   <!-- 원본 데이터 표시 테이블 -->
   <table class="info-table table-4col">
+    <colgroup>
+    <col style="width:15%"><col style="width:35%">
+    <col style="width:15%"><col style="width:35%">
+  </colgroup>
     <tbody>
       <tr>
         <th>자녀 이름</th>
@@ -665,6 +775,10 @@ textarea.form-control { resize: vertical; }
 <div class="info-table-container">
   <h2 class="section-title">급여 입금 계좌정보</h2>
   <table class="info-table table-4col">
+    <colgroup>
+    <col style="width:15%"><col style="width:35%">
+    <col style="width:15%"><col style="width:35%">
+  </colgroup>
     <tbody>
       <tr>
         <th>은행</th>
@@ -698,6 +812,10 @@ textarea.form-control { resize: vertical; }
 <div class="info-table-container">
   <h2 class="section-title">접수 처리 센터 정보</h2>
   <table class="info-table table-4col">
+    <colgroup>
+    <col style="width:15%"><col style="width:35%">
+    <col style="width:15%"><col style="width:35%">
+  </colgroup>
     <tbody>
       <tr>
         <th>관할센터</th>
@@ -719,6 +837,10 @@ textarea.form-control { resize: vertical; }
 <div class="info-table-container">
   <h2 class="section-title">행정정보 공동이용 동의</h2>
   <table class="info-table table-4col">
+    <colgroup>
+    <col style="width:15%"><col style="width:35%">
+    <col style="width:15%"><col style="width:35%">
+  </colgroup>
     <tbody>
       <tr>
         <th>동의 여부</th>
@@ -734,19 +856,71 @@ textarea.form-control { resize: vertical; }
   </table>
 </div>
 
-		<%-- 컨텍스트 경로 --%>
+<!-- 첨부파일 -->
+<div class="info-table-container">
+  <h2 class="section-title">첨부파일</h2>
+  <table class="info-table table-4col">
+      <colgroup>
+    <col style="width:15%">
+  </colgroup>
+    <tbody>
+      <!-- 첨부파일이 없을 때 -->
+      <c:if test="${empty files}">
+        <tr>
+          <th style="width: 150px; text-align:center;">파일 목록</th>
+          <td>첨부된 파일이 없습니다.</td>
+        </tr>
+      </c:if>
+
+      <!-- 첨부파일이 있을 때 -->
+      <c:if test="${not empty files}">
+        <c:forEach var="file" items="${files}" varStatus="status">
+          <tr>
+            <c:if test="${status.first}">
+              <th rowspan="${fn:length(files)}"
+                  style="width: 150px; text-align:center;">파일 목록</th>
+            </c:if>
+
+            <td>
+              <a href="${pageContext.request.contextPath}/file/download?fileId=${file.fileId}&seq=${file.sequence}"
+                 class="file-download-link">
+                  <span>
+                  <c:choose>
+                    <c:when test="${file.fileType == 'WAGE_PROOF'}">
+                      (통상임금 증명자료)
+                    </c:when>
+                    <c:when test="${file.fileType == 'PAYMENT_FROM_EMPLOYER'}">
+                      (사업주로부터 금품을 지급받은 자료)
+                    </c:when>
+                    <c:when test="${file.fileType == 'OTHER'}">
+                      (기타 자료)
+                    </c:when>
+                    <c:when test="${file.fileType == 'ELIGIBILITY_PROOF'}">
+                      (배우자/한부모/장애아동 확인 자료)
+                    </c:when>
+                    <c:otherwise>
+                      (기타 자료)
+                    </c:otherwise>
+                  </c:choose>
+                </span>
+                <c:set var="parts" value="${fn:split(file.fileUrl, '\\\\')}" />
+                ${parts[fn:length(parts) - 1]}
+              </a>
+            </td>
+          </tr>
+        </c:forEach>
+      </c:if>
+    </tbody>
+  </table>
+</div>
+
+
+
 		<c:set var="ctx" value="${pageContext.request.contextPath}" />
-
-
-		<%@ taglib prefix="sec"
-			uri="http://www.springframework.org/security/tags"%>
-
 
 		<!-- 관리자 임시수정 폼 -->
 		<form id="adminUpdateForm" method="post"
 			action="${ctx}/admin/user/update" style="margin-top: 18px;">
-			<%-- CSRF --%>
-			<sec:csrfInput />
 
 			<!-- 필수: 신청번호 -->
 			<input type="hidden" name="applicationNumber"
@@ -755,7 +929,11 @@ textarea.form-control { resize: vertical; }
 			<!-- 계좌정보(업데이트) -->
 			<div class="info-table-container">
 				<h2 class="section-title">급여 입금 계좌정보 (수정)</h2>
-				<table class="info-table table-4col">
+				<table class="info-table table-4col edit-table">
+				  <colgroup>
+				    <col style="width:15%"><col style="width:35%">
+				    <col style="width:15%"><col style="width:35%">
+				  </colgroup>
 					<tbody>
 						<tr>
 							<th>은행</th>
@@ -772,7 +950,7 @@ textarea.form-control { resize: vertical; }
 								</td>
 							<th>계좌번호</th>
 							<td>
-								<%-- 컨트롤러 파라미터명과 동일: updAccountNumber --%> <input type="text"
+							<input type="text"
 								name="updAccountNumber" class="form-control"
 								value="${fn:escapeXml(appDTO.updAccountNumber)}"
 								placeholder="계좌번호(숫자/하이픈)" />
@@ -785,7 +963,11 @@ textarea.form-control { resize: vertical; }
 			<!-- 자녀 정보(업데이트) -->
 			<div class="info-table-container">
 				<h2 class="section-title">자녀 정보 (수정)</h2>
-				<table class="info-table table-4col">
+				<table class="info-table table-4col edit-table">
+				  <colgroup>
+				    <col style="width:15%"><col style="width:35%">
+				    <col style="width:15%"><col style="width:35%">
+				  </colgroup>
 					<tbody>
 						<tr>
 							<th style="background: #b0baec;">자녀 이름</th>
@@ -818,10 +1000,13 @@ textarea.form-control { resize: vertical; }
   <c:choose>
     <%-- 완료된 상태: 목록 버튼만 우측에 표시 --%>
     <c:when test="${appDTO.statusCode == 'ST_40' or appDTO.statusCode == 'ST_50' or appDTO.statusCode == 'ST_60' or appDTO.paymentResult == 'Y'}">
-      <div class="right-slot-completed">
-        <a href="${pageContext.request.contextPath}/admin/list" class="btn btn-outline btn-lg">목록으로 돌아가기</a>
-      </div>
-    </c:when>
+  	<div class="right-slot-completed">
+    <a href="${pageContext.request.contextPath}/admin/list"
+       class="btn btn-outline btn-lg">목록으로 돌아가기</a>
+    <a href="${pageContext.request.contextPath}/admin/judge/detail/${appDTO.confirmNumber}"
+         class="btn btn-primary btn-lg"> 확인서 보러가기</a>
+  </div>
+</c:when>
     
     <%-- 진행중 상태: 2단 레이아웃 (세그먼트 / 버튼) --%>
     <c:otherwise>
@@ -831,31 +1016,33 @@ textarea.form-control { resize: vertical; }
       </div>
 
 <div id="rejectForm">
-        <%-- 1. 첫째 줄: 반려 사유 --%>
-        <div class="form-row">
-          <label><strong>반려 사유</strong></label>
-          <select id="reasonSelect" class="form-control" style="flex: 1;">
-<option value="">사유를 선택하세요</option>
-</select>
-        </div>
-        
-        <%-- 2. 둘째 줄: 상세 사유 (새 div로 분리) --%>
-        <div class="form-row" style="margin-top: 12px;"> <%-- 위쪽과 간격 추가 --%>
-          <label>상세 사유</label>
-          <input type="text" id="rejectComment" class="form-control"
-placeholder="상세사유 입력"
-style="flex:1; min-width:280px;">
-        </div>
-      </div>
+  <!-- 1. 첫째 줄: 반려 사유 -->
+<div class="form-row">
+  <label><strong>반려 사유</strong></label>
+  <select id="reasonSelect" class="form-control">
+    <option value="">사유를 선택하세요</option>
+  </select>
+</div>
+
+<div class="form-row row-detail">
+  <label>상세 사유</label>
+  <textarea id="rejectComment" class="form-control" placeholder="상세사유 입력"></textarea>
+</div>
+
+</div>
+
 
       <div class="button-row">
 	  <!-- 왼쪽: 목록 버튼 -->
 	  <a href="${pageContext.request.contextPath}/admin/list"
-	     class="btn btn-ghost btn-lg">목록으로 돌아가기</a>
+       class="btn btn-outline btn-lg">목록으로 돌아가기</a>
+       <a href="${pageContext.request.contextPath}/admin/judge/detail/${appDTO.confirmNumber}"
+         class="btn btn-primary btn-lg"> 확인서 보러가기</a>
+	  
 	
 	  <!-- 오른쪽: 저장 + 확인 묶음 -->
 	  <div class="right-buttons">
-	    <button type="button" id="saveBtn" class="btn btn-ghost btn-lg">수정사항 저장</button>
+	    <button type="button" id="saveBtn" class="btn btn-outline btn-lg">수정사항 저장</button>
 	    <button type="button" id="confirmBtn" class="btn btn-primary btn-lg">확인</button>
 	  </div>
 	</div>
@@ -868,9 +1055,9 @@ style="flex:1; min-width:280px;">
 <input type="hidden" id="applicationNumber" value="${appDTO.applicationNumber}" />
 <input type="hidden" id="targetUserId" value="${dto.userId}" />
 
-<footer class="footer">
-  <p>&copy; 2025 육아휴직 서비스. All Rights Reserved.</p>
-</footer>
+	<footer class="footer">
+		<p>&copy; 2025 육아휴직 서비스. All Rights Reserved.</p>
+	</footer>
 
 <!-- 관리자 전용: 항상 실행 -->
 <script>
@@ -986,14 +1173,14 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!confirm('반려 처리하시겠습니까?')) return;
 
       fetch(rejectUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          applicationNumber,
-          rejectionReasonCode: code,
-          rejectComment: comment
-        })
-      })
+    	  method: 'POST',
+    	  headers: { 'Content-Type': 'application/json' },
+    	  body: JSON.stringify({
+    	    applicationNumber: applicationNumber,
+    	    rejectionReasonCode: code,
+    	    rejectComment: comment
+    	  })
+    	})
       .then(res => res.json())
       .then(data => {
         alert(data.message || '반려 처리가 완료되었습니다.');

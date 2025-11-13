@@ -1,5 +1,6 @@
 package com.example.renewal_firstclass.dao;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -52,4 +53,5 @@ public interface ConfirmApplyDAO {
     Long findUserIdByConfirmNumber(Long confirmNumber);
     
     int approveConfirmByBatch();
+	List<Long> findMyConfirmList(@Param("childBirthDate")Date childBirthDate, @Param("regiNum")String registrationNumber);
 }

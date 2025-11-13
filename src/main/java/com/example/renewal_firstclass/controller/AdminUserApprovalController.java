@@ -12,18 +12,20 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.renewal_firstclass.domain.AdminUserApprovalDTO;
 import com.example.renewal_firstclass.domain.ApplicationDetailDTO;
+import com.example.renewal_firstclass.domain.AttachedFileDTO;
 import com.example.renewal_firstclass.domain.CodeDTO;
 import com.example.renewal_firstclass.domain.CustomUserDetails;
 import com.example.renewal_firstclass.domain.PageDTO;
 import com.example.renewal_firstclass.domain.UserDTO;
 import com.example.renewal_firstclass.service.AdminUserApprovalService;
+import com.example.renewal_firstclass.service.AttachedFileService;
 import com.example.renewal_firstclass.service.CodeService;
 import com.example.renewal_firstclass.service.UserApplyService;
 import com.example.renewal_firstclass.service.UserService;
@@ -39,6 +41,7 @@ public class AdminUserApprovalController {
     
     private final UserService userService;
     private final UserApplyService userApplyService;
+    private final AttachedFileService fileService;
     
 
     @GetMapping("/admin/user/apply")
@@ -66,11 +69,11 @@ public class AdminUserApprovalController {
         return "admin/adminuserlist";
     }
     
-    @GetMapping("/admin/user/detail")
+/*    @GetMapping("/admin/user/detail")
     public String detail(@RequestParam long appNo, Model model) {
        adminUserApprovalService.userApplyDetail(appNo, model);
        return "admin/adminuserdetail";
-   }
+   }*/
     
 
     @GetMapping("/admin/user/apply/detail")
@@ -86,6 +89,21 @@ public class AdminUserApprovalController {
         // 은행 코드
         List<CodeDTO> bankCodes = codeService.getBankCodeList();
         model.addAttribute("bankCodes", bankCodes);
+        
+        //신청기한 일수계산
+        Date startDate = applicationDetailDTO.getList().get(0).getStartMonthDate();
+        Date endDate   = applicationDetailDTO.getList()
+                             .get(applicationDetailDTO.getList().size() - 1)
+                             .getEndMonthDate();
+        long totalDate = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24) + 1;
+        model.addAttribute("totalDate", totalDate);
+        
+        AdminUserApprovalDTO appDTO = adminUserApprovalService.userApplyDetail(appNo, model);
+
+        if (appDTO != null && appDTO.getFileId() != null) {
+            List<AttachedFileDTO> files = fileService.getFiles(appDTO.getFileId());
+            model.addAttribute("files", files);
+        }
 
         return "admin/admin_user_detail";
     }
