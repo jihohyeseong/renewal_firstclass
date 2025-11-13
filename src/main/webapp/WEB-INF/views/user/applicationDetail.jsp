@@ -66,21 +66,43 @@ h2{
 }
 
 /* 테이블 */
-.info-table-container{margin-bottom:40px}
+.info-table-container{margin-bottom:30px}
 .info-table{
-	width:100%;border-collapse:collapse;
-	border-top:2px solid var(--dark-gray-color);
+  width:100%;
+  border-collapse:collapse;
+  border-top:2px solid var(--border-color);
+  border-left:none;
+  border-right:none;
+  table-layout:fixed;
 }
-.info-table th,.info-table td{
-	padding:12px 15px;border:1px solid var(--border-color);
-	text-align:left;font-size:15px;
-	vertical-align: middle;
+.info-table th,
+.info-table td{
+  padding:12px 15px;
+  border:1px solid var(--border-color);
+  text-align:left;
+  font-size:15px;
+  word-break:keep-all;
 }
 .info-table th{
-	background-color:var(--light-gray-color);
-	font-weight:500;width:150px;color:var(--dark-gray-color);
+  background-color:var(--light-gray-color);
+  font-weight:500;
+  color:var(--dark-gray-color);
+  text-align:center;
 }
-.info-table td{background-color:var(--white-color);color:#333}
+.info-table td{
+  background-color:var(--white-color);
+  color:#333;
+}
+
+.info-table.table-4col th,
+.info-table.table-4col td{
+}
+
+.info-table tr:first-child th,
+.info-table tr:first-child td{
+  border-top:1px solid var(--border-color);
+}
+
 
 /* 월별 내역 테이블(데이터 그리드) 스크롤 컨테이너 */
 .data-grid-container {
@@ -174,11 +196,7 @@ h2{
 .file-download-link:hover {
     text-decoration: underline;
 }
-.file-download-link::before {
-    content: '📎'; /* 첨부파일 아이콘 */
-    font-size: 1.1em;
-    color: var(--gray-color); /* 아이콘 색상 */
-}
+
 
 네, '최종승인'과 '반려' 상태의 디자인을 더 눈에 띄고 명확하게 바꿔보겠습니다.
 
@@ -445,6 +463,10 @@ CSS
 			<div class="info-table-container">
 				<h2 class="section-title">접수정보</h2>
 				<table class="info-table">
+				    <colgroup>
+					    <col style="width:15%"><col style="width:35%">
+					    <col style="width:15%"><col style="width:35%">
+					  </colgroup>
 					<tbody>
 						<tr>
 							<th>접수번호</th>
@@ -459,6 +481,9 @@ CSS
 			<div class="info-table-container">
 				<h2 class="section-title">신청인 정보 (육아휴직자)</h2>
 				<table class="info-table">
+					<colgroup>
+					    <col style="width:15%">
+					  </colgroup>
 					<tbody>
 						<tr>
 							<th>이름</th>
@@ -483,6 +508,9 @@ CSS
 			<div class="info-table-container">
 				<h2 class="section-title">사업장 정보 (회사)</h2>
 				<table class="info-table">
+						<colgroup>
+					    <col style="width:15%">
+					  </colgroup>
 					<tbody>
 						<tr>
 							<th>사업장 이름</th>
@@ -503,6 +531,9 @@ CSS
 			<div>
 				<h2 class="section-title">급여 신청 기간 및 월별 내역</h2>
 				<table class="info-table">
+						<colgroup>
+					    <col style="width:15%">
+					  </colgroup>
 					<tbody>
 						<tr>
 							<th>급여 신청 기간</th>
@@ -517,6 +548,7 @@ CSS
 				<br>
 				<div class="data-grid-container">
 					<table class="info-table">
+
 						<thead>
 							<tr>
 								<th>시작일</th>
@@ -619,6 +651,10 @@ CSS
 			<div class="info-table-container">
 				<h2 class="section-title">자녀 정보 (육아 대상)</h2>
 				<table class="info-table">
+						<colgroup>
+					    <col style="width:15%"><col style="width:35%">
+					    <col style="width:15%"><col style="width:35%">
+					  </colgroup>
 					<tbody>
 							<tr>
 								<th>자녀 이름</th>
@@ -637,6 +673,10 @@ CSS
 			<div class="info-table-container">
 				<h2 class="section-title">급여 입금 계좌정보</h2>
 				<table class="info-table">
+						<colgroup>
+					    <col style="width:15%"><col style="width:35%">
+					    <col style="width:15%"><col style="width:35%">
+					  </colgroup>
 					<tbody>
 						<tr>
 							<th>은행</th>
@@ -655,6 +695,10 @@ CSS
 			<div class="info-table-container">
                 <h2 class="section-title">행정정보 공동이용 동의</h2>
                 <table class="info-table">
+                	<colgroup>
+					    <col style="width:15%"><col style="width:35%">
+					    <col style="width:15%"><col style="width:35%">
+					  </colgroup>
                     <tbody>
                     <tr>
                     <th>동의 여부</th>
@@ -672,6 +716,9 @@ CSS
             <div class="info-table-container">
                 <h2 class="section-title">첨부파일</h2>
                 <table class="info-table">
+                	 <colgroup>
+					    <col style="width:15%">
+					  </colgroup>
                     <tbody>
                         <c:if test="${empty dto.files}">
                             <tr>
@@ -691,6 +738,25 @@ CSS
                                     <td>
                                         <a href="${pageContext.request.contextPath}/file/download?fileId=${file.fileId}&seq=${file.sequence}" 
                                            class="file-download-link">
+                                                             <span>
+											                  <c:choose>
+											                    <c:when test="${file.fileType == 'WAGE_PROOF'}">
+											                      (통상임금 증명자료)
+											                    </c:when>
+											                    <c:when test="${file.fileType == 'PAYMENT_FROM_EMPLOYER'}">
+											                      (사업주로부터 금품을 지급받은 자료)
+											                    </c:when>
+											                    <c:when test="${file.fileType == 'OTHER'}">
+											                      (기타 자료)
+											                    </c:when>
+											                    <c:when test="${file.fileType == 'ELIGIBILITY_PROOF'}">
+											                      (배우자/한부모/장애아동 확인 자료)
+											                    </c:when>
+											                    <c:otherwise>
+											                      (기타 자료)
+											                    </c:otherwise>
+											                  </c:choose>
+											                </span>
                                             <c:set var="parts" value="${fn:split(file.fileUrl, '\\\\')}" />
   											${parts[fn:length(parts) - 1]}
                                         </a>

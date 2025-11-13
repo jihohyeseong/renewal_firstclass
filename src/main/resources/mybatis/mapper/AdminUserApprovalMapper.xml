@@ -108,6 +108,7 @@
     p.processor_id,
     p.upd_bank_code,
     p.upd_account_number,
+    p.file_id,
 
     /* ===== 확인서(CA) ===== */
     c.start_date,
