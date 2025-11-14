@@ -130,6 +130,33 @@ body {
   flex-wrap: wrap;
   gap: .75rem;
   margin-bottom: 1.5rem;
+  justify-content: space-between;
+}
+
+/* 레이블 + 인풋 묶음 */
+.filter-group {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  white-space: nowrap;
+}
+
+/* "이름/번호:" 레이블 */
+.filter-label {
+  font-size: .9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+/* 검색 인풋 래퍼 */
+.search-box {
+  position: relative;
+  width: 240px;
+  flex: 0 0 auto;
+}
+
+.search-box input {
+  width: 100%;
 }
 
 .table-filters input[type="text"],
@@ -153,13 +180,12 @@ body {
 
 .search-box {
   position: relative;
-  flex: 1 1 300px; /* 유연한 너비 */
-  min-width: 250px;
+  flex: 0 0 240px;
+  max-width: 240px;
 }
 
 .search-box input {
   width: 100%;
-  padding-right: 2.5rem !important;
 }
 
 .search-box .bi-search {
@@ -236,13 +262,24 @@ table.data-table {
   border-spacing: 0;
 }
 
+/* 기본은 가운데 정렬 + 패딩 약간 줄이기 */
 table.data-table th,
 table.data-table td {
-  padding: .9rem 1rem;
-  border-bottom: 1px solid var(--border-light); /* 더 연한 보더 */
+  padding: .8rem .9rem;
+  border-bottom: 1px solid var(--border-light);
   vertical-align: middle;
-  font-size: .9rem;
-  text-align: left;
+  font-size: 1rem;
+  text-align: center;
+}
+
+/* 첫 번째 컬럼(구분)은 왼쪽 정렬이 더 자연스러움 */
+
+
+/* 마지막 컬럼(검토)은 패딩 더 줄여서 버튼 옆 여백 줄이기 */
+table.data-table th:last-child,
+table.data-table td:last-child {
+  padding-right: .5rem;
+  padding-left: .5rem;
 }
 
 table.data-table thead th {
@@ -283,6 +320,7 @@ table.data-table tbody tr:first-child td[colspan] {
   font-size: .8rem;
   font-weight: 600;
   transition: all .15s ease;
+  min-width: 80px;  
 }
 
 .table-btn:hover {
@@ -299,10 +337,11 @@ table.data-table tbody tr:first-child td[colspan] {
   color: var(--white-color);
   font-size: .8rem;
   font-weight: 600;
+  min-width: 80px; 
 }
 
 .badge-wait {
-  background: var(--primary-color);
+  background: #5a6fe0;
 }
 
 .badge-approved {
@@ -317,13 +356,8 @@ table.data-table tbody tr:first-child td[colspan] {
   display: inline-flex;
   align-items: center;
   gap: .4rem;
-  padding: .25rem .55rem;
-  border-radius: 999px;
-  border: 1px solid var(--border-color);
-  font-size: .75rem;
-  font-weight: 500;
-  background: var(--white-color);
-  color: #555;
+  min-width: 80px;
+  font-weight: 400; 
 }
 
 .doc-chip i {
@@ -378,6 +412,23 @@ table.data-table tbody tr:first-child td[colspan] {
   border-color: var(--primary-color);
   color: var(--white-color);
 }
+
+/* 왼쪽 필터 묶음 */
+.filter-left {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .5rem;
+}
+
+/* 오른쪽 필터 묶음 */
+.filter-right {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .5rem;
+}
+
 </style>
 </head>
 <body>
@@ -387,7 +438,7 @@ table.data-table tbody tr:first-child td[colspan] {
     <h2 class="page-title">관리자 신청/확인서 목록</h2>
     
     <!-- [붙여넣기 위치] <div class="table-wrapper"> 위쪽, page-title 아래 -->
-<div class="stat-cards" id="statCards" style="margin-bottom:22px; display:grid; grid-template-columns:repeat(6,1fr); gap:12px;">
+<div class="stat-cards" id="statCards" style="margin-bottom:22px; display:grid; grid-template-columns:repeat(5,1fr); gap:12px;">
   <div class="stat-card" data-status="" data-doc="">
     <div class="stat-head">
       <span class="stat-title">총 문서 수</span>
@@ -404,15 +455,6 @@ table.data-table tbody tr:first-child td[colspan] {
     </div>
     <div class="stat-num" id="statSubmit">-</div>
     <div class="stat-desc">현재 검토가 필요한 문서</div>
-  </div>
-  
-    <div class="stat-card" data-status="심사중" data-doc="">
-    <div class="stat-head">
-      <span class="stat-title">심사중</span>
-      <i class="bi bi-clock-history"></i>
-    </div>
-    <div class="stat-num" id="statReview1">-</div>
-    <div class="stat-desc">현재 심사중인 문서</div>
   </div>
   
     <div class="stat-card" data-status="2차 심사중" data-doc="">
@@ -445,54 +487,76 @@ table.data-table tbody tr:first-child td[colspan] {
     
 
     <div class="table-wrapper">
-      <div class="table-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+      <!-- <div class="table-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
         <h4 style="margin:0">목록</h4>
-        <button class="btn-refresh" id="btnReset" title="초기화"><i class="bi bi-arrow-clockwise"></i></button>
+        
       </div>
-
+ -->
       <!-- 필터 영역 -->
-      <form id="filterForm" class="table-filters" onsubmit="return false;">
-        <input type="hidden" name="centerId" id="centerId" value="${centerId}">
-        <div class="search-box">
-          <input type="text" name="keyword" id="keyword" placeholder="신청자 이름 / 신청서번호 / 확인서번호 검색">
-          <i class="bi bi-search"></i>
-        </div>
+<form id="filterForm" class="table-filters" onsubmit="return false;">
+  <input type="hidden" name="centerId" id="centerId" value="${centerId}">
 
-        <select name="docType" id="docType">
-          <option value="">전체 문서</option>
-          <option value="APPLICATION">신청서</option>
-          <option value="CONFIRM">확인서</option>
-        </select>
+  <!-- 문서/상태/날짜 -->
+  <div class="filter-left">
+    <select name="docType" id="docType">
+      <option value="">전체 문서</option>
+      <option value="APPLICATION">신청서</option>
+      <option value="CONFIRM">확인서</option>
+    </select>
 
-        <!-- 상태는 코드명 그대로(코드테이블 name) -->
-        <select name="statusName" id="statusName">
-          <option value="">전체 상태</option>
-          <option value="제출">제출</option>
-          <option value="심사중">심사중</option>
-          <option value="2차 심사중">2차 심사중</option>
-          <option value="승인">승인</option>
-          <option value="반려">반려</option>
-        </select>
+    <select name="statusName" id="statusName">
+      <option value="">전체 상태</option>
+      <option value="제출">제출</option>
+      <option value="2차 심사중">2차 심사중</option>
+      <option value="승인">승인</option>
+      <option value="반려">반려</option>
+    </select>
+
+    <button type="button" id="btnDate" title="날짜 선택">
+      <i class="bi bi-calendar-week"></i>
+    </button>
+    <input type="hidden" name="date" id="date">
+  </div>
+
+  <!-- 이름/번호 검색 + 버튼 -->
+  <div class="filter-right">
+    <div class="filter-group">
+      <span class="filter-label">검색 :</span>
+      <div class="search-box">
+        <input type="text" name="keyword" id="keyword"
+               placeholder="신청자 이름 / 신청서번호로 검색">
+      </div>
+    </div>
+
+    <button type="button" id="btnSearch" class="table-btn">조회</button>
+    <button class="btn-refresh" id="btnReset" title="초기화">
+      <i class="bi bi-arrow-clockwise"></i>
+    </button>
+  </div>
+</form>
 
 
-        <!-- 날짜는 flatpickr 버튼식 -->
-        <button type="button" id="btnDate" title="날짜 선택"><i class="bi bi-calendar-week"></i></button>
-        <input type="hidden" name="date" id="date">
-        <button type="button" id="btnSearch" class="table-btn">조회</button>
-      </form>
 
       <!-- 데이터 테이블 -->
       <table class="data-table">
-        <thead>
-        <tr>
-          <th>구분</th>
-          <th>신청서번호</th>
-          <th>신청자</th>
-          <th>신청일</th>
-          <th>상태</th>
-          <th>검토</th>
-        </tr>
-        </thead>
+	  <colgroup>
+	    <col style="width:16%;">
+	    <col style="width:18%;">
+	    <col style="width:18%;">
+	    <col style="width:18%;">
+	    <col style="width:14%;">
+	    <col style="width:16%;">
+	  </colgroup>
+	  <thead>
+	  <tr>
+	    <th>구분</th>
+	    <th>번호</th>
+	    <th>신청자</th>
+	    <th>신청일</th>
+	    <th>상태</th>
+	    <th>검토</th>
+	  </tr>
+	  </thead>
         <tbody id="listBody">
         <tr><td colspan="6" style="text-align:center;color:#6c757d">데이터를 불러오는 중…</td></tr>
         </tbody>
@@ -533,15 +597,25 @@ table.data-table tbody tr:first-child td[colspan] {
     try { return new Date(val).toISOString().slice(0,10); } catch(e){ return ''; }
   }
   function statusBadge(name){
-    if (name === '승인') return '<span class="badge badge-approved">승인</span>';
-    if (name === '반려') return '<span class="badge badge-rejected">반려</span>';
-    return '<span class="badge badge-wait">' + (name || '') + '</span>';
-  }
+	  var display = name;
+	  if (name === '심사중') {
+	    display = '제출';
+	  }
+	  if (display === '승인') return '<span class="badge badge-approved">승인</span>';
+	  if (display === '반려') return '<span class="badge badge-rejected">반려</span>';
+	  return '<span class="badge badge-wait">' + (display || '') + '</span>';
+	}
+
   function docChip(type){
     if (type === 'APPLICATION') return '<span class="doc-chip"><i class="bi bi-file-earmark-text"></i> 신청서</span>';
     if (type === 'CONFIRM')     return '<span class="doc-chip"><i class="bi bi-patch-check"></i> 확인서</span>';
     return '';
   }
+  function clearCardActive(){
+	  document.querySelectorAll('#statCards .stat-card')
+	    .forEach(function(c){ c.classList.remove('active'); });
+	}
+
 
   // ====== 서버 통신 ======
   async function fetchList(params){
@@ -635,40 +709,41 @@ table.data-table tbody tr:first-child td[colspan] {
     }
   }
 
-  // ====== 카드 숫자 (요약 API 없이 /fetch 재활용) ======
-  async function fetchCountWithStatus(baseParams, statusName){
-    const p = Object.assign({}, baseParams, { startList: 0, listSize: 1 });
-    p.statusName = statusName || ''; // 전체는 빈 문자열
-    const data = await fetchList(p);
-    return data.totalCount || 0;
+  // ====== 카드 숫자 ======
+async function fetchCountWithStatus(baseParams, statusName){
+  const p = Object.assign({}, baseParams, { startList: 0, listSize: 1 });
+  p.statusName = statusName || ''; // 전체는 빈 문자열
+  const data = await fetchList(p);
+  return data.totalCount || 0;
+}
+
+async function loadCardCounts(){
+  // 🔹 카드는 항상 "전체 기준"으로만 계산하고 싶으니까
+  //    검색/필터 값은 안 쓴다. (빈 객체)
+  const base = {};
+
+  try{
+    const [ total, submit, review2, approved, rejected ] = await Promise.all([
+      fetchCountWithStatus(base, ''),           // 총 문서
+      fetchCountWithStatus(base, '제출'),       // 제출 + 심사중 
+      fetchCountWithStatus(base, '2차 심사중'), // 2차 심사중
+      fetchCountWithStatus(base, '승인'),       // 승인
+      fetchCountWithStatus(base, '반려')        // 반려
+    ]);
+
+    qs('statTotal').textContent    = total;
+    qs('statSubmit').textContent   = submit;
+    qs('statReview2').textContent  = review2;
+    qs('statApproved').textContent = approved;
+    qs('statRejected').textContent = rejected;
+  }catch(e){
+    console.error('[card-counts]', e);
+    ['statTotal','statSubmit','statReview2','statApproved','statRejected']
+      .forEach(id => qs(id).textContent = '-');
   }
+}
 
-  async function loadCardCounts(){
-    const base = gatherParams();
-    delete base.startList; delete base.listSize;
 
-    try{
-      const [ total, submit, review1, review2, approved, rejected ] = await Promise.all([
-        fetchCountWithStatus(base, ''),            // 총 문서
-        fetchCountWithStatus(base, '제출'),        // 제출
-        fetchCountWithStatus(base, '심사중'),      // 심사중
-        fetchCountWithStatus(base, '2차 심사중'),  // 2차 심사중
-        fetchCountWithStatus(base, '승인'),        // 승인
-        fetchCountWithStatus(base, '반려')         // 반려
-      ]);
-
-      qs('statTotal').textContent    = total;
-      qs('statSubmit').textContent   = submit;
-      qs('statReview1').textContent  = review1;
-      qs('statReview2').textContent  = review2;
-      qs('statApproved').textContent = approved;
-      qs('statRejected').textContent = rejected;
-    }catch(e){
-      console.error('[card-counts]', e);
-      ['statTotal','statSubmit','statReview1','statReview2','statApproved','statRejected']
-        .forEach(id => qs(id).textContent = '-');
-    }
-  }
 
   // ====== 바인딩 ======
   document.addEventListener('DOMContentLoaded', function(){
@@ -678,21 +753,26 @@ table.data-table tbody tr:first-child td[colspan] {
       onChange: function(selected, dateStr){
         qs('date').value = dateStr || '';
         state.page = 1;
+        clearCardActive();
         load().then(loadCardCounts);
       }
     });
 
     qs('btnSearch').addEventListener('click', function(){
+      clearCardActive(); 
       state.page = 1; load().then(loadCardCounts);
     });
     qs('docType').addEventListener('change', function(){
+      clearCardActive(); 
       state.page = 1; load().then(loadCardCounts);
     });
     qs('statusName').addEventListener('change', function(){
+      clearCardActive(); 
       state.page = 1; load().then(loadCardCounts);
     });
     qs('keyword').addEventListener('keydown', function(e){
-      if (e.key === 'Enter'){ e.preventDefault(); state.page = 1; load().then(loadCardCounts); }
+      if (e.key === 'Enter'){ clearCardActive(); e.preventDefault(); 
+      state.page = 1; load().then(loadCardCounts); }
     });
     qs('btnReset').addEventListener('click', function(){
       qs('keyword').value = '';
@@ -701,6 +781,7 @@ table.data-table tbody tr:first-child td[colspan] {
       qs('date').value = '';
       fp.clear();
       state.page = 1;
+      clearCardActive();
       load().then(loadCardCounts);
     });
 
