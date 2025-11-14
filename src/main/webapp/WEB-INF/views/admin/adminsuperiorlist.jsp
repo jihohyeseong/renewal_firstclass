@@ -528,7 +528,7 @@ a { text-decoration: none; color: inherit; }
                                             <c:choose>
 				                                <c:when test="${app.applicationType == 'PAYMENT'}">
 				                                    <a href="${pageContext.request.contextPath}/admin/superior/detail/?appNo=${app.applicationNumber}" class="table-btn">
-				                                        	결재하기
+				                                        	상세보기
 				                                    </a>
 				                                </c:when>
 				                                <c:when test="${app.applicationType == 'ADD_AMOUNT'}">

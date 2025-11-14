@@ -108,6 +108,12 @@
                 </choose>
             </if>
         </where>
+        GROUP BY
+        	aa.application_number,
+        	p.user_id,
+        	u.name,
+        	aa.status_code,
+        	TO_CHAR(p.submitted_dt, 'YYYY-MM-DD')
         </select>
 
     <select id="selectTotalCount" resultType="int">
