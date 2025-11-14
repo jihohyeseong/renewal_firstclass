@@ -55,10 +55,13 @@
         FROM TB_PARENTAL_LEAVE_APPLICATION p
         JOIN TB_User u ON p.user_id = u.id
         JOIN TB_CONFIRM_APPLICATION ca ON ca.confirm_number = p.confirm_number
-        LEFT JOIN TB_ADD_AMOUNT a ON p.application_number = a.application_number
+        LEFT JOIN (
+		    SELECT application_number, MIN(status_code) AS status_code
+		    FROM TB_ADD_AMOUNT
+		    GROUP BY application_number
+		) a ON p.application_number = a.application_number
         <include refid="searchCondition"/>
-        ORDER BY
-            p.application_number DESC
+        ORDER BY p.application_number DESC
         OFFSET #{pageDTO.startList} ROWS FETCH NEXT #{pageDTO.listSize} ROWS ONLY
     </select>
     

@@ -6,6 +6,7 @@
         parameterType="com.example.renewal_firstclass.domain.CompSearchDTO"
         resultType="com.example.renewal_firstclass.domain.AdminChildListDTO">
   SELECT
+  	ca.confirm_number,
     ca.name,
     ca.child_name,
     ca.child_birth_date,
@@ -14,22 +15,19 @@
     ca.end_date,
     ca.confirm_number,
     
-    pa.status_code,
-    pa.application_number,
-    
+    ca.status_code,
+        
     c.name AS statusName
     
   FROM TB_CONFIRM_APPLICATION ca
-  LEFT JOIN TB_PARENTAL_LEAVE_APPLICATION pa ON pa.confirm_number = ca.confirm_number
-  LEFT JOIN TB_CODE   c  ON c.code  = pa.status_code
+  LEFT JOIN TB_CODE   c  ON c.code  = ca.status_code
 
-  WHERE pa.status_code IN ('ST_20', 'ST_30', 'ST_40', 'ST_50')
-    AND NVL(pa.delt_at, 'N') = 'N'
+  WHERE ca.status_code IN ('ST_20', 'ST_30', 'ST_50')
     AND NVL(ca.delt_at, 'N') = 'N'
     
   
   <if test="status != null and status != '' and status != 'ALL'">
-    AND pa.status_code = #{status}
+    AND ca.status_code = #{status}
   </if>
 
   <!-- 자녀 이름 검색 -->
@@ -44,14 +42,13 @@
 
   AND NVL(ca.delt_at, 'N') = 'N'
   ORDER BY
-    CASE pa.status_code
+    CASE ca.status_code
       WHEN 'ST_20' THEN 1
       WHEN 'ST_30' THEN 2
-      WHEN 'ST_40' THEN 3
-      WHEN 'ST_50' THEN 4
-      ELSE 5
+      WHEN 'ST_50' THEN 3
+      ELSE 4
     END,
-    pa.application_number DESC
+    ca.confirm_number DESC
   OFFSET #{pageDTO.startList} ROWS FETCH NEXT #{pageDTO.listSize} ROWS ONLY
 </select>
 
@@ -61,15 +58,13 @@
         resultType="int">
   SELECT COUNT(*)
   FROM TB_CONFIRM_APPLICATION ca
-  LEFT JOIN TB_PARENTAL_LEAVE_APPLICATION pa ON pa.confirm_number = ca.confirm_number
-  LEFT JOIN TB_CODE   c  ON c.code  = pa.status_code
+  LEFT JOIN TB_CODE   c  ON c.code  = ca.status_code
   
-  WHERE pa.status_code IN ('ST_20', 'ST_30', 'ST_40', 'ST_50')
-      AND NVL(pa.delt_at, 'N') = 'N'
+  WHERE ca.status_code IN ('ST_20', 'ST_30', 'ST_50')
       AND NVL(ca.delt_at, 'N') = 'N'
       
   <if test="status != null and status != '' and status != 'ALL'">
-    AND pa.status_code = #{status}
+    AND ca.status_code = #{status}
   </if>
 
   <!-- 자녀 이름 검색 -->
@@ -83,23 +78,5 @@
   </if>
 
 </select>
-<!-- 
-<select id="selectOriginalTermAmounts" 
-        parameterType="long" 
-        resultType="com.example.renewal_firstclass.domain.TermAmountDTO">
-	    SELECT *
-	    FROM TB_TERM_AMOUNT
-	    WHERE confirm_number = #{confirmNumber}
-	    AND update_at = 'N'
-</select>
-	
-<select id="selectUpdatedTermAmounts" 
-	        parameterType="long" 
-	        resultType="com.example.renewal_firstclass.domain.TermAmountDTO">
-	    SELECT *
-	    FROM TB_TERM_AMOUNT
-	    WHERE confirm_number = #{confirmNumber}
-	    AND update_at = 'Y'
-</select> -->
 
 </mapper>

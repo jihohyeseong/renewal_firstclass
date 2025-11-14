@@ -238,6 +238,8 @@
 <div class="search-wrapper">
     <form id="statusForm" class="status-form" method="post"
 			action="${pageContext.request.contextPath}/admin/childsearch">
+		<input type="hidden" name="page" id="pageInput" value="${pageDTO.pageNum}">
+        <input type="hidden" name="size" value="${pageDTO.listSize}">
 		
 		<input type="text" name="nameKeyword" placeholder="자녀 이름" value="${nameKeyword}" maxlength="50"/>
 	  	
@@ -248,12 +250,8 @@
 			<option value="ALL" ${status=='ALL' ? 'selected' : ''}>전체</option>
 			<option value="ST_20" ${status=='ST_20' ? 'selected' : ''}>제출</option>
 			<option value="ST_30" ${status=='ST_30' ? 'selected' : ''}>심사중</option>
-			<option value="ST_40" ${status=='ST_40' ? 'selected' : ''}>2차심사중</option> 
 			<option value="ST_50" ${status=='ST_50' ? 'selected' : ''}>승인</option> 
 		</select> 
-		
-		<input type="hidden" name="page" id="pageInput" value="${pageDTO.pageNum}">
-        <input type="hidden" name="size" value="${pageDTO.listSize}">
         	
 		<button type="submit" class="btn btn-primary btn-sm">검색</button> 
 	</form>
@@ -263,7 +261,7 @@
     <table class="result-table">
         <thead>
             <tr>
-                <th>신청서번호</th>
+                <th>확인서번호</th>
                 <th>자녀이름</th>
                 <th>자녀주민번호</th> <th>신청인</th>
                 <th>신청상태</th>
@@ -280,7 +278,7 @@
                 <c:otherwise>
                     <c:forEach var="child" items="${childList}">
                         <tr>
-                            <td>${child.applicationNumber}</td>
+                            <td>${child.confirmNumber}</td>
                             <td>${child.childName}</td>
                             <td>${child.childResiRegiNumber}</td> <td>${child.name}</td>
                             <td>${child.statusName}</td>
@@ -335,23 +333,46 @@
 
 <script>
 $(document).ready(function() {
+    
+    // 페이지 링크가 클릭되었는지 확인하기 위한 플래그
+    let pageLinkClicked = false;
+
+    /**
+     * 1. "페이지 링크"(.js-page-link) 클릭 시
+     */
+    $('.js-page-link').on('click', function(e) {
+        e.preventDefault(); // a 태그의 기본 동작(링크 이동)을 막습니다.
+
+        // 클릭한 링크의 data-page 값을 가져옵니다.
+        const newPage = $(this).data('page');
+
+        // 폼 내부의 hidden input (pageNum) 값을 새 페이지로 변경합니다.
+        $('#pageInput').val(newPage);
+        
+        // [중요] 페이지 링크가 클릭되었다고 플래그를 설정합니다.
+        pageLinkClicked = true;
+        
+        // 폼을 수동으로 전송합니다.
+        $('#statusForm').submit();
+    });
+    
+    /**
+     * 2. "폼이 전송될 때" (검색 버튼을 누르거나, 페이지 링크로 submit()이 호출될 때)
+     */
     $('#statusForm').on('submit', function() {
-
-        if (!$(this).data('page-clicked')) {
-            $('#pageInput').val(1); 
+        
+        // 페이지 링크로 인해 전송된 것이라면, 플래그가 true입니다.
+        if (pageLinkClicked) {
+            // 플래그를 리셋하고, pageNum을 1로 덮어쓰지 않고 그대로 전송합니다.
+            pageLinkClicked = false;
+        } else {
+            // 페이지 링크가 아닌 '검색' 버튼으로 전송된 것이므로, pageNum을 1로 리셋합니다.
+            $('#pageInput').val(1);
         }
-        $(this).removeData('page-clicked'); 
+        
+        // 폼 전송을 계속 진행합니다.
     });
 
-    $('.pagination').on('click', '.page-link', function(e) {
-        e.preventDefault(); // <a> 태그의 기본 동작(GET) 방지
-        
-        var pageNum = $(this).data('page'); // 클릭한 페이지 번호
-        
-        $('#pageInput').val(pageNum); // hidden input에 페이지 번호 설정
-        $('#statusForm').data('page-clicked', true); // 플래그 설정
-        $('#statusForm').submit(); // 폼을 (POST로) 전송
-    });
 });
 </script>
 </body>

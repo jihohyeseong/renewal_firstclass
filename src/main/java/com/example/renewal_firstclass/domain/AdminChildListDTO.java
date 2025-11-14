@@ -7,7 +7,6 @@ import lombok.Data;
 
 @Data
 public class AdminChildListDTO {
-    private Long applicationNumber;
     private Long confirmNumber;
     private String childName;
     private Date childBirthDate;
@@ -15,7 +14,6 @@ public class AdminChildListDTO {
     private String name;
     private Date startDate;
 	private Date endDate;
-	//private List<TermAmountDTO> list;
     private String statusCode;
     private String statusName;
 }
