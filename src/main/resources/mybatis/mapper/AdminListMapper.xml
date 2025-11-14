@@ -5,15 +5,13 @@
 
 <mapper namespace="com.example.renewal_firstclass.dao.AdminListDAO">
 
-  <!-- ================= 외부(통합) 공통 필터 ================= -->
+  <!-- ================= 공통 필터 ================= -->
   <sql id="allFilters">
     <where>
-      <!-- 문서 종류 :APPLICATION CONFIRM -->
       <if test="docType != null">
         AND t.doc_type = #{docType}
       </if>
 
-      <!-- 신청자명 / 신청서번호 / 확인서번호 -->
       <if test="keyword != null and keyword != ''">
         AND (
           t.name LIKE '%' || #{keyword} || '%'
@@ -22,15 +20,21 @@
         )
       </if>
 
-      <!-- 날짜-->
       <if test="date != null">
         AND TO_CHAR(t.apply_date, 'YYYY-MM-DD') = #{date}
       </if>
 
-      <!-- 상태-->
       <if test="statusName != null">
-        AND t.status_name = #{statusName}
+        <choose>
+          <when test="statusName == '제출'">
+            AND t.status_name IN ('제출', '심사중')
+          </when>
+          <otherwise>
+            AND t.status_name = #{statusName}
+          </otherwise>
+        </choose>
       </if>
+
       <if test="statusCode != null">
         AND t.status_code = #{statusCode}
       </if>

@@ -221,11 +221,19 @@ textarea.form-control { resize: vertical; }
   box-shadow: 0 0 0 4px rgba(63,88,212,.18);
 }
 .stepper-wrapper .progress-line {
-  position: absolute; top: 50%; left: 6%;
-  height: 8px; border-radius: 8px; background-color: var(--primary-color);
-  z-index: 1; transform: translateY(-50%);
-  width: 0%; transition: width .35s ease;
+  position: absolute;
+  top: 50%;
+  left: 6%;
+  height: 8px;
+  border-radius: 8px;
+  background-color: var(--primary-color);
+  z-index: 1;
+  transform: translateY(-50%);
+  width: 0%;
+  max-width: 88%;
+  transition: width .35s ease;
 }
+
 
 #rejectForm { display: none; }
 
