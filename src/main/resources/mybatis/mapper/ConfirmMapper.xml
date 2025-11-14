@@ -292,5 +292,14 @@
       AND delt_at = 'N'
 </select>
 
+<select id="findFirstStartDateForPerson" resultType="java.sql.Date">
+    SELECT MIN(START_DATE)
+    FROM TB_CONFIRM_APPLICATION
+    WHERE CHILD_BIRTH_DATE = #{childBirthDate}
+      AND REGISTRATION_NUMBER = #{registrationNumber}
+      AND STATUS_CODE NOT IN ('ST_60') <if test="excludeConfirmNumber != null">
+          AND CONFIRM_NUMBER != #{excludeConfirmNumber}
+      </if>
+</select>
 
 </mapper>

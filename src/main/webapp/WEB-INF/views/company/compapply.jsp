@@ -91,6 +91,237 @@
   .date-range-display{ font-weight:500; flex-basis:300px; flex-shrink:0; text-align:center; }
   .payment-input-field{ flex:1; display:flex; justify-content:flex-end; }
 
+	input[type="checkbox"] {
+  /* 브라우저 기본 스타일 제거 */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  
+  /* 커스텀 박스 디자인 */
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-color, #dee2e6);
+  border-radius: 4px; /* 폼의 다른 요소와 통일 */
+  background-color: #fff;
+  cursor: pointer;
+  transition: .2s;
+  
+  /* 텍스트와 정렬 */
+  vertical-align: middle;
+  position: relative;
+  top: -2px; /* 텍스트 라인과 미세조정 */
+  
+  /* 체크마크를 중앙에 배치하기 위한 설정 */
+  display: inline-grid;
+  place-content: center;
+}
+
+/* 체크마크 (SVG 아이콘 사용) - 기본 숨김 */
+input[type="checkbox"]::before {
+  content: '';
+  width: 11px; /* 20px 박스 안에 적절한 크기 */
+  height: 11px;
+  
+  /* 흰색 체크마크 SVG (URL-encoded) */
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M2 8l4 4 8-8'/%3e%3c/svg%3e");
+  background-size: contain;
+  background-repeat: no-repeat;
+  
+  transform: scale(0); /* 기본 숨김 */
+  transition: .1s transform ease-in-out;
+}
+
+/* 체크되었을 때 스타일 */
+input[type="checkbox"]:checked {
+  background-color: var(--primary-color, #3f58d4);
+  border-color: var(--primary-color, #3f58d4);
+}
+
+/* 체크되었을 때 체크마크 보이기 */
+input[type="checkbox"]:checked::before {
+  transform: scale(1);
+}
+
+/* 포커스 스타일 (다른 input과 통일) */
+input[type="checkbox"]:focus {
+   border-color: var(--primary-color); 
+   box-shadow: 0 0 0 3px rgba(63,88,212,.15); 
+   outline: none;
+}
+
+
+/* 2. 요청사항: 첨부파일 섹션 디자인 개선 
+*/
+
+/* '파일 선택' 버튼을 사이트의 다른 버튼과 유사하게 변경 */
+.form-section input[type="file"]::file-selector-button {
+  /* .btn-secondary 스타일 재활용 */
+  display: inline-block;
+  padding: 8px 15px; /* 기본 버튼보다 살짝 작게 */
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 6px; /* 폼 요소와 통일 */
+  border: 1px solid var(--border-color,#dee2e6);
+  cursor: pointer;
+  transition: .2s;
+  
+  background: #fff;
+  color: var(--gray-color, #868e96);
+  margin-right: 15px; /* 버튼과 '선택된 파일 없음' 텍스트 간격 */
+}
+
+/* 버튼 호버 효과 */
+.form-section input[type="file"]::file-selector-button:hover {
+  background: var(--light-gray-color, #f8f9fa);
+  color: var(--dark-gray-color, #343a40);
+}
+
+/* '선택된 파일 없음' 텍스트 스타일 */
+.form-section input[type="file"] {
+  font-size: 14px;
+  color: transparent;
+}
+
+/* 파일 목록이 표시되는 .info-box 개선 */
+.form-section .info-box[id^="list_"] {
+  background-color: #fff; /* 기존 파란 배경 대신 깔끔한 흰색 */
+  border: 1px solid var(--border-color, #dee2e6); /* 일반 테두리 */
+  min-height: 50px;
+  padding: 10px;
+  display: flex; /* 파일 '알약'들을 정렬하기 위해 */
+  flex-wrap: wrap; /* 파일이 많으면 줄바꿈 */
+  gap: 8px; /* 알약 사이 간격 */
+}
+
+/* 파일이 없을 때 (JS가 '선택된 파일 없음' 텍스트만 넣음):
+  :not(:has(div)) -> 자식으로 <div>(파일 알약)가 없는 상태 
+*/
+.form-section .info-box[id^="list_"]:not(:has(div)) {
+   color: var(--gray-color, #868e96);
+   font-style: italic;
+   align-items: center; /* 텍스트를 수직 중앙 정렬 */
+}
+
+/* 파일이 선택되었을 때 (JS가 <div>를 넣음) '알약' 스타일 */
+.form-section .info-box[id^="list_"] div {
+  display: inline-block;
+  padding: 6px 12px;
+  background: var(--primary-light-color, #f0f2ff);
+  border: 1px solid #d1d9ff;
+  color: var(--primary-color, #3f58d4);
+  border-radius: 20px; /* 둥근 알약 모양 */
+  font-size: 14px;
+  font-weight: 500;
+  
+  /* JS가 강제로 margin-bottom을 주므로 초기화 */
+  margin-bottom: 0 !important; 
+}
+.checkbox-group span {
+  font-size: 15px; /* 기본 폰트(16px)보다 약간 작게 */
+  color: #333;
+  line-height: 1.5; /* 줄간격이 필요한 경우 대비 */
+}
+
+/* '해외자녀' 케이스 (align-items:flex-start)에서
+   체크박스가 텍스트 첫 줄과 정렬되도록 미세 조정 */
+.checkbox-group[style*="flex-start"] input[type="checkbox"] {
+   margin-top: 4px; /* 텍스트 첫 줄의 중앙 부근으로 이동 */
+   top: 0; /* 기존 top:-2px가 있다면 리셋 */
+}
+
+/* '임신 중' 케이스 (align-items:center)는
+   flex-center가 잘 정렬해주므로 기존 top값만 리셋 */
+.checkbox-group[style*="align-items:center"] input[type="checkbox"] {
+   top: 0;
+}
+
+
+/* 2. 요청사항: 첨부파일 수직 레이아웃 및 알약/X버튼 디자인 */
+
+/* 1단계에서 추가한 .form-group-vertical 클래스 스타일 */
+.form-group-vertical {
+  display: block !important; /* grid 레이아웃 무시 */
+  margin-bottom: 25px !important; /* 각 파일 항목 간 간격 */
+}
+
+.form-group-vertical .field-title {
+  /* --- 기본 스타일 (너비, 폰트 등) --- */
+  width: 100% !important;
+  font-weight: 500;
+  font-size: 16px;
+  color: #333;
+  line-height: 1.6;
+  margin-bottom: 12px;
+
+  /* --- [신규] 구분되는 디자인 적용 --- */
+  background: white; /* 연한 회색 배경 */
+  border-left: 4px solid var(--primary-color, #3f58d4); /* 왼쪽 강조선 */
+  padding: 12px 15px; /* 안쪽 여백 */
+  border-radius: 4px; /* 폼 요소와 통일 */
+}
+
+.form-group-vertical .input-field {
+  width: 100% !important;
+}
+
+/* 파일 목록이 표시되는 .info-box (알약 디자인 적용) */
+.form-section .info-box[id^="list_"] {
+  background-color: #fff;
+  border: 1px solid var(--border-color, #dee2e6);
+  min-height: 50px;
+  padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* 파일이 없을 때 ('선택된 파일 없음' 텍스트) */
+.form-section .info-box[id^="list_"]:not(:has(.file-pill)) {
+   color: var(--gray-color, #868e96);
+   font-style: italic;
+   align-items: center;
+}
+
+/* 파일 '알약' 스타일 */
+.form-section .info-box[id^="list_"] .file-pill {
+  display: inline-flex; /* 텍스트와 X버튼 정렬 */
+  align-items: center;
+  padding: 6px 8px 6px 12px; /* X버튼을 위해 오른쪽 패딩 축소 */
+  background: var(--primary-light-color, #f0f2ff);
+  border: 1px solid #d1d9ff;
+  color: var(--primary-color, #3f58d4);
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  
+  /* 혹시 모를 div의 margin 제거 */
+  margin-bottom: 0 !important; 
+}
+
+/* 파일 '알약' 내부의 X 버튼 */
+.file-remove-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.1);
+  color: var(--primary-color, #3f58d4);
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1;
+  margin-left: 8px;
+  cursor: pointer;
+  transition: .2s;
+  padding: 0; /* 버튼 기본 패딩 제거 */
+}
+
+.file-remove-btn:hover {
+  background: rgba(0,0,0,0.2);
+  color: #000;
+}
 </style>
 
   <title>육아휴직 확인서 제출</title>
@@ -115,7 +346,7 @@
         <div class="form-group">
           <label class="field-title" for="employee-name">근로자 성명</label>
           <div class="input-field">
-            <input type="text" id="employee-name" name="name" placeholder="이름 검색 버튼을 누르면 자동으로 채워집니다." readonly>
+            <input type="text" id="employee-name" name="name" placeholder="버튼을 누르면 자동으로 채워집니다." readonly>
           </div>
         </div>
         <div class="form-group">
@@ -127,7 +358,7 @@
 		    <input type="hidden" name="registrationNumber" id="employee-rrn-hidden">
 		    <!-- ⬇︎ 추가 -->
 		    <button type="button" id="find-employee-btn" class="btn btn-secondary" style="white-space:nowrap;">
-		      이름 검색
+		      근로자 확인
 		    </button>
 		  </div>
 		</div>
@@ -275,11 +506,12 @@
   <h2>첨부파일</h2>
 
   <!-- 1) 통상임금 증명자료 -->
-  <div class="form-group">
+  <div class="form-group form-group-vertical">
     <label class="field-title">통상임금을 확인할 수 있는 증명자료(임금대장, 근로계약서 등)</label>
     <div class="input-field">
       <!-- ✅ fileTypes 먼저 선언해야 files와 순서 맞음 -->
       <input type="hidden" name="fileTypes" value="WAGE_PROOF">
+      <br>
       <input type="file" name="files" id="files_WAGE_PROOF" multiple
              accept=".pdf,.jpg,.jpeg,.png,.heic,.gif,.bmp,.tif,.tiff,.hwp,.hwpx,.doc,.docx,.xls,.xlsx">
       <div id="list_WAGE_PROOF" class="info-box" style="margin-top:8px; min-height:40px;">선택된 파일 없음</div>
@@ -287,10 +519,11 @@
   </div>
 
   <!-- 2) 사업주 금품 지급 확인 자료 -->
-  <div class="form-group">
+  <div class="form-group form-group-vertical">
     <label class="field-title">육아휴직 기간 동안 사업주로부터 금품을 지급받은경우 이를 확인할 수 있는 자료</label>
     <div class="input-field">
       <input type="hidden" name="fileTypes" value="PAYMENT_FROM_EMPLOYER">
+      <br>
       <input type="file" name="files" id="files_PAYMENT_FROM_EMPLOYER" multiple
              accept=".pdf,.jpg,.jpeg,.png,.heic,.gif,.bmp,.tif,.tiff,.hwp,.hwpx,.doc,.docx,.xls,.xlsx">
       <div id="list_PAYMENT_FROM_EMPLOYER" class="info-box" style="margin-top:8px; min-height:40px;">선택된 파일 없음</div>
@@ -298,10 +531,11 @@
   </div>
 
   <!-- 3) 기타 자료 -->
-  <div class="form-group">
+  <div class="form-group form-group-vertical">
     <label class="field-title">기타 자료</label>
     <div class="input-field">
       <input type="hidden" name="fileTypes" value="OTHER">
+      <br>
       <input type="file" name="files" id="files_OTHER" multiple
              accept=".pdf,.jpg,.jpeg,.png,.heic,.gif,.bmp,.tif,.tiff,.hwp,.hwpx,.doc,.docx,.xls,.xlsx">
       <div id="list_OTHER" class="info-box" style="margin-top:8px; min-height:40px;">선택된 파일 없음</div>
@@ -309,10 +543,11 @@
   </div>
 
   <!-- 4) 배우자/한부모/장애아동 확인 자료 -->
-  <div class="form-group">
+  <div class="form-group form-group-vertical">
     <label class="field-title">배우자가 3개월 이상 육아휴직을 사용, 한부모, 중증장애아동의 부모 중 어느 하나에 해당함을 확인할 수 있는 증명자료사본</label>
     <div class="input-field">
       <input type="hidden" name="fileTypes" value="ELIGIBILITY_PROOF">
+      <br>
       <input type="file" name="files" id="files_ELIGIBILITY_PROOF" multiple
              accept=".pdf,.jpg,.jpeg,.png,.heic,.gif,.bmp,.tif,.tiff,.hwp,.hwpx,.doc,.docx,.xls,.xlsx">
       <div id="list_ELIGIBILITY_PROOF" class="info-box" style="margin-top:8px; min-height:40px;">선택된 파일 없음</div>
@@ -1324,9 +1559,6 @@ async function uploadAllFilesBeforeSubmit() {
   }
   return { ok: true, skipped: false, fileId };
 }
-
-
-
 
 (function filePreview(){
 	  function bind(id, outId){

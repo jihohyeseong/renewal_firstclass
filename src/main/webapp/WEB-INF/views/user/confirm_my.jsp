@@ -38,12 +38,17 @@
         background-color: var(--bg-color-soft); /* 전체 페이지 배경색 */
         color: var(--text-color);
         line-height: 1.6;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh; /* 뷰포트 전체 높이 */
+        margin: 0; /* body의 기본 마진 제거 */
     }
 
     .main-container {
         max-width: 1100px;
         margin: 20px auto;
         padding: 0 20px;
+        flex-grow: 1;
     }
 
     /* --- 콘텐츠 래퍼 (카드 디자인) --- */

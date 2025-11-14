@@ -14,7 +14,7 @@ public interface TermAmountDAO {
     int deleteTermsByConfirmId(@Param("confirmNumber") long confirmNumber);
 
 	int countTotalTermsByConfirmNumbers(List<Long> previousConfirmNumbers);
-    
+	List<TermAmountDTO> selectTermsByConfirmNumbers(@Param("list") List<Long> confirmNumbers);
 
 }
 

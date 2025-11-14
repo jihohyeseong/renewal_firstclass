@@ -54,4 +54,10 @@ public interface ConfirmApplyDAO {
     
     int approveConfirmByBatch();
 	List<Long> findMyConfirmList(@Param("childBirthDate")Date childBirthDate, @Param("regiNum")String registrationNumber);
+	
+	Date findFirstStartDateForPerson(
+	        @Param("childBirthDate") Date childBirthDate, 
+	        @Param("registrationNumber") String registrationNumber,
+	        @Param("excludeConfirmNumber") Long excludeConfirmNumber
+	    );
 }

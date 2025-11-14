@@ -20,7 +20,8 @@ public class MyPageService {
 		UserDTO user = mypageDAO.findByUserName(username);
 		// 주민번호 복호화
 		try {
-			user.setRegistrationNumber(aes256Util.decrypt(user.getRegistrationNumber()));
+			if(user.getRegistrationNumber() != null)
+				user.setRegistrationNumber(aes256Util.decrypt(user.getRegistrationNumber()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

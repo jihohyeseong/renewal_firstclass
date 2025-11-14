@@ -70,6 +70,34 @@
         </foreach>
   </select>
   
+	<select id="selectTermsByConfirmNumbers"
+	        resultType="com.example.renewal_firstclass.domain.TermAmountDTO"
+	        parameterType="java.util.List">
+	
+	    SELECT
+	        START_MONTH_DATE,
+	        EFFECTIVE_END_DATE AS END_MONTH_DATE
+	    FROM (
+	        SELECT
+	            START_MONTH_DATE,
+	            COALESCE(early_return_date, END_MONTH_DATE) AS EFFECTIVE_END_DATE,
+	            CONFIRM_NUMBER
+	        FROM
+	            TB_TERM_AMOUNT
+	        WHERE
+	            delt_at = 'N'  ) T
+	    WHERE
+	        CONFIRM_NUMBER IN
+	        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+	            #{item}
+	        </foreach>
+	        <![CDATA[
+	            AND START_MONTH_DATE <= EFFECTIVE_END_DATE
+	        ]]>
+	    ORDER BY
+	        START_MONTH_DATE ASC
+	</select>
+  
 </mapper>
 
 
