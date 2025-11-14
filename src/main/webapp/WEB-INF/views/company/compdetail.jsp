@@ -40,18 +40,46 @@ h2{
 }
 
 /* 테이블 공통 */
-.info-table-container{margin-bottom:40px}
+/* 테이블 공통 */
+.info-table-container{
+  margin-bottom:30px;
+}
+
 .info-table{
-  width:100%;border-collapse:collapse;border-top:2px solid var(--dark-gray-color);
+  width:100%;
+  border-collapse:collapse;
+  border-top:2px solid var(--border-color);
+  border-left:none;
+  border-right:none;
+  table-layout:fixed;
 }
-.info-table th,.info-table td{
-  padding:12px 15px;border:1px solid var(--border-color);
-  text-align:left;font-size:15px;vertical-align:middle;
+
+.info-table th,
+.info-table td{
+  padding:12px 15px;
+  border:1px solid var(--border-color);
+  text-align:left;
+  font-size:15px;
+  vertical-align:middle;
+  word-break:keep-all
 }
+
 .info-table th{
-  background-color:var(--light-gray-color);font-weight:500;width:150px;color:var(--dark-gray-color);
+  background-color:var(--light-gray-color);
+  font-weight:500;
+  color:var(--dark-gray-color);
+  text-align:center;
 }
-.info-table td{background-color:var(--white-color);color:#333}
+
+.info-table td{
+  background-color:var(--white-color);
+  color:#333;
+}
+
+.info-table.monthly-table th,
+.info-table.monthly-table td{
+  text-align:center;
+}
 
 /* 월별 내역 스크롤 래퍼 */
 .data-grid-container{
@@ -70,16 +98,71 @@ h2{
   transition:all .2s ease-in-out;text-align:center;
 }
 .btn:disabled,.btn.disabled{cursor:not-allowed;opacity:.65}
-.btn-primary{background-color:var(--primary-color);color:#fff;border-color:var(--primary-color)}
-.btn-primary:hover{background-color:#364ab1;box-shadow:var(--shadow-md);transform:translateY(-2px)}
-.btn-secondary{background-color:var(--white-color);color:var(--gray-color);border-color:var(--border-color)}
-.btn-secondary:hover{background-color:var(--light-gray-color);color:var(--dark-gray-color);border-color:#ccc}
+
+.btn-primary{
+  background-color:var(--primary-color);
+  color:#fff;
+  border-color:var(--primary-color);
+}
+/* 호버 시 진한 초록색으로 */
+.btn-primary:hover{
+  background-color:#1e7c43 !important;
+  border-color:#1e7c43 !important;
+  box-shadow:var(--shadow-md);
+  transform:translateY(-2px);
+}
+
+.btn-secondary{background-color:var(--white-color);color:var(--gray-color);border-color:var(--border-color);}
+.btn-secondary:hover{background-color:var(--light-gray-color);color:var(--dark-gray-color);border-color:#ccc; transform:translateY(-2px);}
 .btn-danger{background-color:var(--danger-color);color:#fff;border-color:var(--danger-color)}
-.btn-danger:hover{background-color:#c82333;border-color:#bd2130;transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.btn-danger:hover{background-color:#c82333;border-color:#bd2130;transform:translateY(-2px);box-shadow:var(--shadow-md);}
+
+/* 살짝 회색톤 버튼 */
+.btn-soft{
+  background-color:#e2e5e8;
+  color:var(--dark-gray-color);
+  border:1px solid #d0d4da;
+}
+
+/* 호버 시 살짝만 진해지도록 */
+.btn-soft:hover{
+  background-color:#c0c4ca;
+  border-color:#c0c4ca;
+  box-shadow:var(--shadow-md);
+  transform:translateY(-2px);
+}
 
 .button-container{
-  display:flex;justify-content:center;align-items:center;gap:15px;margin-top:50px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  margin-top:50px;
 }
+
+/* 3구역(왼/중/오) 공통 */
+.button-container .button-left,
+.button-container .button-center,
+.button-container .button-right{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+/* 가운데 영역은 넓게 잡고 중앙 정렬 */
+.button-container .button-center{
+  flex:1;
+  justify-content:center;
+}
+
+/* 왼쪽 / 오른쪽 정렬 */
+.button-container .button-left{
+  justify-content:flex-start;
+}
+.button-container .button-right{
+  justify-content:flex-end;
+}
+
 .bottom-btn{padding:12px 30px;font-size:1.1em}
 .detail-btn{
   border:1px solid var(--primary-color);color:var(--primary-color);
@@ -89,6 +172,18 @@ h2{
 .highlight-warning{background:#fff3cd;color:#856404;font-weight:700;padding:2px 6px;border-radius:4px}
 
 .footer{ text-align:center; padding:20px 0; font-size:14px; color:var(--gray-color); }
+
+.file-download-link {
+    color: var(--primary-color);
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.file-download-link:hover {
+    text-decoration: underline;
+}
 </style>
 </head>
 <body>
@@ -105,9 +200,13 @@ h2{
   <c:if test="${not empty confirmDTO}">
     <!-- 접수 정보 -->
     <div class="info-table-container">
-      <h2 class="section-title">접수 정보</h2>
-      <table class="info-table">
-        <tbody>
+        <h2 class="section-title">접수 정보</h2>
+		  <table class="info-table table-4col">
+		    <colgroup>
+		      <col style="width:15%"><col style="width:35%">
+		      <col style="width:15%"><col style="width:35%">
+		    </colgroup>
+		    <tbody>
           <tr>
             <th>확인서 번호</th><td>${confirmDTO.confirmNumber}</td>
             <th>처리 상태</th><td>${confirmDTO.statusName}</td>
@@ -136,9 +235,13 @@ h2{
 
     <!-- 근로자 정보 -->
     <div class="info-table-container">
-      <h2 class="section-title">근로자 정보</h2>
-      <table class="info-table">
-        <tbody>
+        <h2 class="section-title">근로자 정보</h2>
+		  <table class="info-table table-4col">
+		    <colgroup>
+		      <col style="width:15%"><col style="width:35%">
+		      <col style="width:15%"><col style="width:35%">
+		    </colgroup>
+		    <tbody>
           <tr>
             <th>성명</th><td>${confirmDTO.name}</td>
             <th>주민등록번호</th>
@@ -161,7 +264,7 @@ h2{
           <tr>
             <th>주당 소정근로시간</th><td>${confirmDTO.weeklyHours} 시간</td>
             <th>통상임금(월)</th>
-            <td>₩ <fmt:formatNumber value="${confirmDTO.regularWage}" pattern="#,##0"/></td>
+            <td><fmt:formatNumber value="${confirmDTO.regularWage}" pattern="#,##0"/>원</td>
           </tr>
         </tbody>
       </table>
@@ -169,9 +272,13 @@ h2{
 
     <!-- 자녀 정보 -->
     <div class="info-table-container">
-      <h2 class="section-title">대상 자녀 정보</h2>
-      <table class="info-table">
-        <tbody>
+	<h2 class="section-title">대상 자녀 정보</h2>
+	  <table class="info-table table-4col">
+	    <colgroup>
+	      <col style="width:15%"><col style="width:35%">
+	      <col style="width:15%"><col style="width:35%">
+	    </colgroup>
+	    <tbody>
           <c:choose>
             <c:when test="${not empty confirmDTO.childName}">
               <tr>
@@ -200,7 +307,7 @@ h2{
     <!-- 월별 지급 내역 -->
     <div class="info-table-container">
       <h2 class="section-title">월별 지급 내역</h2>
-        <table class="info-table">
+        <table class="info-table monthly-table">
           <thead>
             <tr>
               <th>회차</th>
@@ -209,8 +316,8 @@ h2{
               <th>정부 지급예정액</th>
             </tr>
           </thead>
-          <tbody>
-            <c:forEach var="term" items="${termList}" varStatus="st">
+          <tbody >
+            <c:forEach var="term" items="${termList}" varStatus="st" >
               <tr>
                 <td>${st.count}개월차</td>
                 <td>
@@ -231,9 +338,12 @@ h2{
 
     <!-- 접수 처리 센터 -->
     <div class="info-table-container">
-      <h2 class="section-title">접수 처리 센터 정보</h2>
-      <table class="info-table">
-        <tbody>
+	  <h2 class="section-title">접수 처리 센터 정보</h2>
+	  <table class="info-table table-4col">
+	    <colgroup>
+	      <col style="width:15%"><col style="width:35%">
+	      <col style="width:15%"><col style="width:35%">
+	    </colgroup>
           <c:choose>
             <c:when test="${not empty confirmDTO.centerName or not empty confirmDTO.centerAddressBase or not empty confirmDTO.centerPhoneNumber}">
               <tr>
@@ -263,103 +373,157 @@ h2{
     </div>
 
     <!-- 첨부파일 -->
+    <!-- 첨부파일 -->
     <div class="info-table-container">
       <h2 class="section-title">첨부파일</h2>
+      <table class="info-table table-4col">
+        <colgroup>
+          <col style="width:15%"><col style="width:85%">
+        </colgroup>
+        <tbody>
+
+          <!-- 첨부파일이 없을 때 -->
+          <c:if test="${empty files}">
+            <tr>
+              <th style="text-align:center;">파일 목록</th>
+              <td style="color:var(--gray-color);">
+                등록된 첨부파일이 없습니다.
+              </td>
+            </tr>
+          </c:if>
+
+          <!-- 첨부파일이 있을 때 -->
+          <c:if test="${not empty files}">
+            <c:forEach var="f" items="${files}" varStatus="st">
+
+              <c:set var="parts1" value="${fn:split(f.fileUrl, '/')}" />
+              <c:choose>
+                <c:when test="${fn:length(parts1) > 1}">
+                  <c:set var="displayName" value="${parts1[fn:length(parts1)-1]}" />
+                </c:when>
+                <c:otherwise>
+                  <c:set var="parts2" value="${fn:split(f.fileUrl, '\\\\')}" />
+                  <c:set var="displayName" value="${parts2[fn:length(parts2)-1]}" />
+                </c:otherwise>
+              </c:choose>
+
+              <c:set var="typeLabel">
+                <c:choose>
+                  <c:when test="${f.fileType == 'WAGE_PROOF'}">통상임금 증명자료</c:when>
+                  <c:when test="${f.fileType == 'PAYMENT_FROM_EMPLOYER'}">사업주로부터 금품을 지급받은 자료</c:when>
+                  <c:when test="${f.fileType == 'ELIGIBILITY_PROOF'}">배우자/한부모/장애아동 확인 자료</c:when>
+                  <c:when test="${f.fileType == 'OTHER'}">기타 자료</c:when>
+                  <c:otherwise>기타 자료</c:otherwise>
+                </c:choose>
+              </c:set>
+
+              <tr>
+                <c:if test="${st.first}">
+                  <th rowspan="${fn:length(files)}" style="text-align:center;">
+		                    파일 목록
+                  </th>
+                </c:if>
+
+                <td>
+                  <a href="<c:url value='/file/download'>
+                              <c:param name='fileId' value='${f.fileId}'/>
+                              <c:param name='seq'   value='${f.sequence}'/>
+                           </c:url>"
+                     class="file-download-link">
+                    <span>(<c:out value='${typeLabel}'/>)</span>
+                    <c:out value="${displayName}" />
+                  </a>
+                </td>
+              </tr>
+            </c:forEach>
+          </c:if>
+
+        </tbody>
+      </table>
+    </div>
+
+
+    <!-- 하단 버튼 -->
+    <div class="button-container">
+
       <c:choose>
-        <c:when test="${not empty files}">
-            <table class="info-table">
 
-              <tbody>
-                <c:forEach var="f" items="${files}">
-                  <%-- 표시용 파일명 추출 --%>
-                  <c:set var="parts1" value="${fn:split(f.fileUrl, '/')}"/>
-                  <c:choose>
-                    <c:when test="${fn:length(parts1) > 1}">
-                      <c:set var="displayName" value="${parts1[fn:length(parts1)-1]}"/>
-                    </c:when>
-                    <c:otherwise>
-                      <c:set var="parts2" value="${fn:split(f.fileUrl, '&#92;')}"/>
-                      <c:set var="displayName" value="${parts2[fn:length(parts2)-1]}"/>
-                    </c:otherwise>
-                  </c:choose>
+        <c:when test="${confirmDTO.statusCode == 'ST_10'}">
+          <div class="button-left">
+            <a href="${pageContext.request.contextPath}/comp/main"
+               class="btn bottom-btn btn-secondary">목록으로 돌아기기</a>
+          </div>
+          <div class="button-center">
+            <a href="${pageContext.request.contextPath}/comp/update?confirmNumber=${confirmDTO.confirmNumber}"
+               class="btn bottom-btn btn-soft">내용 수정</a>
 
-                  <%-- 파일 타입 4개 라벨 --%>
-                  <c:set var="typeLabel">
-                    <c:choose>
-                      <c:when test="${f.fileType == 'WAGE_PROOF'}">통상임금을 확인할 수 있는 증명자료</c:when>
-                      <c:when test="${f.fileType == 'PAYMENT_FROM_EMPLOYER'}">사업주로부터 금품을 지급받은 자료</c:when>
-                      <c:when test="${f.fileType == 'ELIGIBILITY_PROOF'}">배우자/한부모/장애아동 확인 자료</c:when>
-                      <c:when test="${f.fileType == 'OTHER'}">기타 자료</c:when>
-                      <c:otherwise>기타 자료</c:otherwise>
-                    </c:choose>
-                  </c:set>
+            <form method="post"
+                  action="${pageContext.request.contextPath}/comp/submit"
+                  style="display:inline-block; margin:0;">
+              <sec:csrfInput/>
+              <input type="hidden" name="confirmNumber" value="${confirmDTO.confirmNumber}" />
+              <button type="submit" class="btn bottom-btn btn-primary"
+                      onclick="return confirm('제출 후 처리가 완료되면 수정이 불가합니다. 제출할까요?');">
+              	  최종 제출
+              </button>
+            </form>
+          </div>
 
-                  <tr>
-                    <th>
-                      <span style="display:inline-block;padding:2px 10px;border-radius:999px;background:var(--light-gray-color);">
-                        <c:out value="${typeLabel}"/>
-                      </span>
-                    </th>
-                    <td>
-                      <a href="<c:url value='/file/download'><c:param name='fileId' value='${f.fileId}'/><c:param name='seq' value='${f.sequence}'/></c:url>"
-                         style="text-decoration:none; color:var(--primary-color); word-break:break-all;">
-                        <c:out value="${displayName}"/>
-                      </a>
-                    </td>
-                    <td>
-                      <a class="btn btn-secondary"
-                         href="<c:url value='/file/download'><c:param name='fileId' value='${f.fileId}'/><c:param name='seq' value='${f.sequence}'/></c:url>">다운로드</a>
-                    </td>
-                  </tr>
-                </c:forEach>
-              </tbody>
-            </table>
+          <div class="button-right">
+            <form method="post"
+                  action="${pageContext.request.contextPath}/comp/delete"
+                  style="display:inline-block; margin:0;">
+              <sec:csrfInput/>
+              <input type="hidden" name="confirmNumber" value="${confirmDTO.confirmNumber}" />
+              <button type="submit" class="btn bottom-btn btn-secondary"
+                      onclick="return confirm('이 확인서를 삭제하시겠습니까?\n삭제한 신청서는 되돌릴 수 없습니다.');">
+               	 삭제
+              </button>
+            </form>
+          </div>
         </c:when>
+
         <c:otherwise>
-          <div style="text-align:center; color:var(--gray-color); padding:14px;">등록된 첨부파일이 없습니다.</div>
+          <!-- 제출 이후 상태 -->
+          <div class="button-left">
+            <a href="${pageContext.request.contextPath}/comp/main"
+               class="btn bottom-btn btn-secondary">목록으로 돌아가기</a>
+          </div>
+
+          <div class="button-right">
+            <c:if test="${confirmDTO.statusCode == 'ST_20' or confirmDTO.statusCode == 'ST_30'}">
+              <form method="post"
+                    action="${pageContext.request.contextPath}/comp/recall"
+                    style="display:inline-block; margin:0;">
+                <sec:csrfInput/>
+                <input type="hidden" name="confirmNumber" value="${confirmDTO.confirmNumber}" />
+                <button type="submit" class="btn bottom-btn btn-soft"
+                        onclick="return confirm('신청을 회수하시겠습니까?');">
+               	   신청 취소
+                </button>
+              </form>
+            </c:if>
+            <c:if test="${confirmDTO.statusCode == 'ST_60'}">
+              <a href="${pageContext.request.contextPath}/comp/resubmit?confirmNumber=${confirmDTO.confirmNumber}"
+                 class="btn bottom-btn btn-primary">재신청</a>
+            </c:if>
+            <c:if test="${confirmDTO.statusCode != 'ST_50' and confirmDTO.statusCode != 'ST_60'}">
+              <form method="post"
+                    action="${pageContext.request.contextPath}/comp/delete"
+                    style="display:inline-block; margin:0;">
+                <sec:csrfInput/>
+                <input type="hidden" name="confirmNumber" value="${confirmDTO.confirmNumber}" />
+                <button type="submit" class="btn bottom-btn btn-secondary"
+                        onclick="return confirm('이 확인서를 삭제하시겠습니까?\n삭제한 신청서는 되돌릴 수 없습니다.');">
+                 	 삭제
+                </button>
+              </form>
+            </c:if>
+          </div>
         </c:otherwise>
       </c:choose>
     </div>
 
-    <!-- 하단 버튼 -->
-    <div class="button-container">
-      <a href="${pageContext.request.contextPath}/comp/main" class="btn bottom-btn btn-secondary">목록</a>
-
-      <c:if test="${confirmDTO.statusCode == 'ST_10'}">
-        <a href="${pageContext.request.contextPath}/comp/update?confirmNumber=${confirmDTO.confirmNumber}" class="btn bottom-btn btn-secondary">내용 수정</a>
-
-        <form method="post" action="${pageContext.request.contextPath}/comp/submit" style="display:contents;">
-          <sec:csrfInput/>
-          <input type="hidden" name="confirmNumber" value="${confirmDTO.confirmNumber}" />
-          <button type="submit" class="btn bottom-btn btn-primary"
-                  onclick="return confirm('제출 후 처리가 완료되면 수정이 불가합니다. 제출할까요?');">최종 제출</button>
-        </form>
-      </c:if>
-
-      <c:if test="${confirmDTO.statusCode == 'ST_20' or confirmDTO.statusCode == 'ST_30'}">
-        <form method="post" action="${pageContext.request.contextPath}/comp/recall" style="display:contents;">
-          <sec:csrfInput/>
-          <input type="hidden" name="confirmNumber" value="${confirmDTO.confirmNumber}" />
-          <button type="submit" class="btn bottom-btn btn-secondary"
-                  onclick="return confirm('신청을 회수하시겠습니까?');">신청 취소</button>
-        </form>
-      </c:if>
-      
-        <!-- 반려일 때만 재신청-->
-	  <c:if test="${confirmDTO.statusCode == 'ST_60'}">
-	    <a href="${pageContext.request.contextPath}/comp/resubmit?confirmNumber=${confirmDTO.confirmNumber}"
-	       class="btn bottom-btn btn-primary">재신청</a>
-	  </c:if>
-
-      <c:if test="${confirmDTO.statusCode != 'ST_50' and confirmDTO.statusCode != 'ST_60'}">
-        <form method="post" action="${pageContext.request.contextPath}/comp/delete" style="display:contents;">
-          <sec:csrfInput/>
-          <input type="hidden" name="confirmNumber" value="${confirmDTO.confirmNumber}" />
-          <button type="submit" class="btn bottom-btn btn-secondary"
-                  onclick="return confirm('이 확인서를 삭제하시겠습니까?\n삭제한 신청서는 되돌릴 수 없습니다.');">삭제</button>
-        </form>
-      </c:if>
-    </div>
   </c:if>
 </main>
 

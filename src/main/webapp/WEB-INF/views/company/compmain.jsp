@@ -143,26 +143,17 @@
 	    padding: 14px 16px;           /* 헤더/바디 패딩 동일 */
 	    box-sizing: border-box;       /* 패딩 포함해서 폭 계산 -> 오차 방지 */
 	    vertical-align: middle;
+	    text-align: center; 
 	}
 	
 	.list-table thead th {
 	    font-weight: 600;
 	    background-color: var(--primary-color);
 	    color: var(--white);
-	    text-align: left;
 	    border-bottom: 2px solid var(--primary-color-dark);
 	}
 	
 	/* 정렬만 다르게 */
-	.list-table thead th:nth-child(4),
-	.list-table td:nth-child(4) {     /* 상태 */
-	    text-align: center;
-	}
-	.list-table thead th:nth-child(5),
-	.list-table td:nth-child(5) {     /* 작업 */
-	    text-align: right;
-	    white-space: nowrap;
-	}
     .list-table tbody tr:hover { 
         background: var(--primary-color-light); /* 연한 녹색 호버 */
     }
@@ -187,13 +178,10 @@
 	    color: #4b5563;
 	}
 
+	.status-badge.status-ST_30,
 	.status-badge.status-ST_20 {
 	    background-color: #c6c6cc;
 	    color: #4b5563;
-	}
-	.status-badge.status-ST_30 { /* 심사중 */
-	    background-color: #fcf5d8 !important; 
-	    color: #b45309 !important;
 	}
 	.status-badge.status-ST_50 { /* 승인완료 */
 	    background-color: #d2f8de !important;
@@ -211,15 +199,16 @@
 
     /* --- 테이블 내부 버튼 (기존 오버라이드 유지 및 수정) --- */
     .list-table .btn {
-        padding: 6px 12px;
+        padding: 6px 20px;
         font-size: 13px;
         font-weight: 500;
         line-height: 1;
-        border-radius: 6px;
+        border-radius: 999px;
         margin: 0 2px;
+        width: 8.5em; 
     }
     .list-table td.actions {
-        text-align: right;
+        text-align: center;
         white-space: nowrap;
     }
 
@@ -353,6 +342,14 @@
 .keyword-form .btn {
   height: 40px;
 }
+
+/* 호버 시 진한 초록으로 강제 */
+.btn-primary:hover {
+  background-color:#1e7c43 !important;
+  border-color:#1e7c43 !important;
+  box-shadow:var(--shadow-md);
+  transform:translateY(-2px);
+}
 </style>
 </head>
 <body>
@@ -385,9 +382,8 @@
         <option value="ALL" ${status=='ALL'  ? 'selected' : ''}>전체</option>
         <option value="ST_10" ${status=='ST_10' ? 'selected' : ''}>등록(임시저장)</option>
         <option value="ST_20" ${status=='ST_20' ? 'selected' : ''}>제출</option>
-        <option value="ST_30" ${status=='ST_30' ? 'selected' : ''}>심사중</option>
-        <option value="ST_50" ${status=='ST_50' ? 'selected' : ''}>승인완료</option>
-        <option value="ST_60" ${status=='ST_60' ? 'selected' : ''}>반려처리</option>
+        <option value="ST_50" ${status=='ST_50' ? 'selected' : ''}>접수</option>
+        <option value="ST_60" ${status=='ST_60' ? 'selected' : ''}>반려</option>
       </select>
       <input type="hidden" name="page" value="1" />
       <input type="hidden" name="size" value="${size}" />
@@ -426,19 +422,18 @@
 						<c:forEach var="app" items="${confirmList}">
 							<tr>
 								<td>${app.confirmNumber}</td>
-								<td>${not empty app.applyDt ? app.applyDt : '-'}</td>
+								<td>${not empty app.applyDt ? app.applyDt : '신청 전'}</td>
 								<td>${app.name}</td>
 
 								<td class="status-cell"><c:set var="stCode"
 										value="${app.statusCode}" /> <%-- 화면에 보여줄 텍스트 결정 --%> <c:set
 										var="stName">
-										<c:choose>
-											<c:when test="${stCode == 'ST_10'}">등록(임시저장)</c:when>
-											<c:when test="${stCode == 'ST_20'}">제출</c:when>
-											<c:when test="${stCode == 'ST_30'}">심사중</c:when>
-											<c:when test="${stCode == 'ST_50'}">승인완료</c:when>
-											<c:when test="${stCode == 'ST_60'}">반려처리</c:when>
-										</c:choose>
+										    <c:choose>
+										        <c:when test="${stCode == 'ST_10'}">등록(임시저장)</c:when>
+										        <c:when test="${stCode == 'ST_20' or stCode == 'ST_30'}">제출</c:when>
+										        <c:when test="${stCode == 'ST_50'}">접수</c:when>
+										        <c:when test="${stCode == 'ST_60'}">반려</c:when>
+										    </c:choose>
 									</c:set> <span class="status-badge status-${stCode}">${stName}</span></td>
 
 								<td class="actions"><a
