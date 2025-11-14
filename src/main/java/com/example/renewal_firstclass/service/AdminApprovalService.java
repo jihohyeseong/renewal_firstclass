@@ -3,14 +3,16 @@ package com.example.renewal_firstclass.service;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
+import java.util.ArrayList; // 삭제 (새 로직에서는 미사용)
 import java.util.List;
+import java.util.stream.Collectors; // ### 추가 ###
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.renewal_firstclass.dao.AdminApprovalDAO;
 import com.example.renewal_firstclass.dao.ConfirmApplyDAO;
+import com.example.renewal_firstclass.dao.TermAmountDAO; // ### 추가 ###
 import com.example.renewal_firstclass.domain.AdminJudgeDTO;
 import com.example.renewal_firstclass.domain.ConfirmApplyDTO;
 import com.example.renewal_firstclass.domain.TermAmountDTO;
@@ -27,10 +29,12 @@ public class AdminApprovalService {
     private final AdminApprovalDAO adminApprovalDAO;
     private final ConfirmApplyDAO confirmApplyDAO;
     private final AES256Util aes256Util;
+    private final CompanyApplyService companyApplyService; 
+    private final TermAmountDAO termAmountDAO;
     
     // 신청 상세 조회
     public ConfirmApplyDTO getConfirmForEditing(Long confirmNumber) {
-
+        // (기존 코드와 동일)
         // 1. 원본 데이터 조회
         ConfirmApplyDTO originalDto = confirmApplyDAO.selectByConfirmNumber(confirmNumber);
         if (originalDto == null) return null;
@@ -76,7 +80,7 @@ public class AdminApprovalService {
 
     // 승인 처리
     public boolean adminApprove(AdminJudgeDTO judgeDTO, Long userId) {
-    
+        // (기존 코드와 동일)
         // 1. 이미 처리된 신청인지 확인
         int processedCount = adminApprovalDAO.isProcessed(judgeDTO.getConfirmNumber());
         
@@ -97,7 +101,7 @@ public class AdminApprovalService {
                 .processorId(userId)
                 .statusCode("ST_50") 
                 .rejectionReasonCode(null) 
-                .rejectComment(null)       
+                .rejectComment(null)    
                 .build();
         
         int result = adminApprovalDAO.updateAdminJudge(updateDto);
@@ -112,7 +116,7 @@ public class AdminApprovalService {
 
     // 반려 처리
     public boolean adminReject(AdminJudgeDTO judgeDTO, Long userId) {
-
+        // (기존 코드와 동일)
         // 1. 필수값 체크
         if (judgeDTO.getRejectionReasonCode() == null || judgeDTO.getRejectionReasonCode().isEmpty()) {
             log.warn("Rejection failed: RejectionReasonCode is missing for confirmNumber {}", judgeDTO.getConfirmNumber());
@@ -159,22 +163,22 @@ public class AdminApprovalService {
     }
     
     // 심사중으로 변경
- 	public void updateStatusCode(Long confirmNumber) {
- 		
- 		adminApprovalDAO.updateStatusCode(confirmNumber);
- 	}
- 	
- 	// 수정 업데이트
- 	public boolean updateConfirm(ConfirmApplyDTO dto) {
+    public void updateStatusCode(Long confirmNumber) {
+        
+        adminApprovalDAO.updateStatusCode(confirmNumber);
+    }
+    
+    // 수정 업데이트 (이 메서드는 saveConfirmEdits와 중복되는 듯 하나, 일단 둠)
+    public boolean updateConfirm(ConfirmApplyDTO dto) {
 
- 		int result = adminApprovalDAO.updateConfirmEdit(dto);
- 		return result > 0;
- 	}
- 	
- 	// 수정사항 저장
- 	@Transactional
- 	public boolean saveConfirmEdits(ConfirmApplyDTO dto) {
- 		// 암호화
+        int result = adminApprovalDAO.updateConfirmEdit(dto);
+        return result > 0;
+    }
+    
+    // 수정사항 저장
+    @Transactional
+    public boolean saveConfirmEdits(ConfirmApplyDTO dto) {
+        // 암호화
         try {
             if (dto.getUpdRegistrationNumber() != null && !dto.getUpdRegistrationNumber().trim().isEmpty())
                 dto.setUpdRegistrationNumber(aes256Util.encrypt(dto.getUpdRegistrationNumber()));
@@ -184,9 +188,9 @@ public class AdminApprovalService {
             throw new IllegalStateException("개인정보 암호화 오류", e);
         }
         
- 		Long confirmNumber = dto.getConfirmNumber();
+        Long confirmNumber = dto.getConfirmNumber();
 
- 		// 1. TB_CONFIRM_APPLICATION 테이블의 upd_ 컬럼들 업데이트
+        // 1. TB_CONFIRM_APPLICATION 테이블의 upd_ 컬럼들 업데이트
         adminApprovalDAO.updateConfirmEdit(dto);
 
         // 2. 단위기간 재계산이 필요한지 여부
@@ -232,13 +236,68 @@ public class AdminApprovalService {
             LocalDate s = sDate.toLocalDate();
             LocalDate e = eDate.toLocalDate();
             
-            // 단위기간 재계산
-            List<TermAmountDTO> updatedTerms = calculateUpdatedTerms(s, e, wage, monthlyCompanyPay);
+            // ### [수정된 로직 시작] ###
+            
+            // 1. 검색 기준이 될 자녀 생년월일과 암호화된 주민번호 결정
+            Date searchChildBirthDate = (dto.getUpdChildBirthDate() != null) 
+                                    ? dto.getUpdChildBirthDate() 
+                                    : originalData.getChildBirthDate();
+            
+            // dto의 updRegistrationNumber는 메서드 상단에서 이미 암호화되었음
+            String searchRegNo = (dto.getUpdRegistrationNumber() != null && !dto.getUpdRegistrationNumber().trim().isEmpty()) 
+                                    ? dto.getUpdRegistrationNumber() 
+                                    : originalData.getRegistrationNumber();
+            
+            Long currentConfirmNumber = dto.getConfirmNumber();
+
+            // 2. 이전 승인 건들 조회 (현재 수정 건 제외)
+            List<Long> previousConfirmNumbers = confirmApplyDAO.findMyConfirmList(
+                searchChildBirthDate, 
+                searchRegNo
+            );
+            if (previousConfirmNumbers != null && currentConfirmNumber != null) {
+                previousConfirmNumbers = previousConfirmNumbers.stream()
+                        .filter(num -> !num.equals(currentConfirmNumber))
+                        .collect(Collectors.toList());
+            }
+
+            // 3. 최초 휴직 시작일 조회
+            java.sql.Date sqlStartDate = confirmApplyDAO.findFirstStartDateForPerson(
+                searchChildBirthDate, 
+                searchRegNo,
+                currentConfirmNumber // 현재 수정 건 제외
+            );
+            LocalDate firstEverStartDate = (sqlStartDate != null) ? sqlStartDate.toLocalDate() : null;
+            if (firstEverStartDate == null) {
+                firstEverStartDate = s; // 이전 이력이 없으면 지금이 최초
+            }
+
+            // 4. 이전 누적 일수 계산 (TermAmountDAO 주입 필요)
+            long totalPreviousDays = 0;
+            if (previousConfirmNumbers != null && !previousConfirmNumbers.isEmpty()) {
+                List<TermAmountDTO> previousTerms = termAmountDAO.selectTermsByConfirmNumbers(previousConfirmNumbers);
+                for (TermAmountDTO term : previousTerms) {
+                    if (term.getStartMonthDate() != null && term.getEndMonthDate() != null) {
+                        totalPreviousDays += ChronoUnit.DAYS.between(
+                            term.getStartMonthDate().toLocalDate(), 
+                            term.getEndMonthDate().toLocalDate()
+                        ) + 1;
+                    }
+                }
+            }
+
+            // 5. 단위기간 재계산 (CompanyApplyService 주입 필요)
+            List<TermAmountDTO> updatedTerms = companyApplyService.calculateTerms(
+                s, e, wage, monthlyCompanyPay, firstEverStartDate, totalPreviousDays
+            );
+            
+            // ### [수정된 로직 종료] ###
             
             // 재계산된 단위기간을 update_at='Y'로 삽입
             if (!updatedTerms.isEmpty()) {
                 for (TermAmountDTO t : updatedTerms) {
                     t.setConfirmNumber(confirmNumber);
+                    t.setUpdateAt("Y"); // '수정본'임을 명시
                 }
                 adminApprovalDAO.insertUpdatedTermAmounts(updatedTerms);
             }
@@ -248,55 +307,6 @@ public class AdminApprovalService {
 
         return true;
     }
- 	
- 	// 재계산 로직(확인서에서 그대로 가져옴)
- 	private List<TermAmountDTO> calculateUpdatedTerms(LocalDate start, LocalDate end, long regularWage, List<Long> monthlyCompanyPay) {
- 	    List<TermAmountDTO> list = new ArrayList<>();
- 	    LocalDate curStart = start;
- 	    int monthIdx = 1;
-
- 	    while (!curStart.isAfter(end) && monthIdx <= 12) {
- 	        LocalDate nextStart = start.plusMonths(monthIdx);
- 	        if (nextStart.getDayOfMonth() != start.getDayOfMonth()) {
- 	            nextStart = nextStart.plusMonths(1).withDayOfMonth(1);
- 	        }
- 	        LocalDate theoreticalEnd = nextStart.minusDays(1);
- 	        LocalDate actualEnd = theoreticalEnd.isAfter(end) ? end : theoreticalEnd;
- 	        if (curStart.isAfter(actualEnd)) break;
-
- 	        long companyPay = (monthlyCompanyPay != null && monthlyCompanyPay.size() >= monthIdx)
- 	                ? (monthlyCompanyPay.get(monthIdx - 1) == null ? 0L : monthlyCompanyPay.get(monthIdx - 1))
- 	                : 0L;
-
- 	        long monthlyCap;
- 	        if (monthIdx <= 3) monthlyCap = Math.min(regularWage, 2_500_000L);
- 	        else if (monthIdx <= 6) monthlyCap = Math.min(regularWage, 2_000_000L);
- 	        else monthlyCap = Math.min(Math.round(regularWage * 0.8), 1_600_000L);
-
- 	        long daysInTerm = ChronoUnit.DAYS.between(curStart, actualEnd) + 1;
- 	        long daysInFull = ChronoUnit.DAYS.between(curStart, theoreticalEnd) + 1;
- 	        long proratedCap = (daysInTerm >= daysInFull)
- 	                ? monthlyCap
- 	                : ((long) Math.floor((monthlyCap * (double) daysInTerm / daysInFull) / 10)) * 10;
-
- 	        long gov = Math.min(proratedCap, Math.max(0L, regularWage - companyPay));
- 	        gov = (gov / 10L) * 10L;
-
- 	        TermAmountDTO t = TermAmountDTO.builder()
- 	                .startMonthDate(Date.valueOf(curStart))
- 	                .endMonthDate(Date.valueOf(actualEnd))
- 	                .paymentDate(Date.valueOf(actualEnd.plusDays(1)))
- 	                .companyPayment(companyPay)
- 	                .govPayment(gov)
- 	                .updateAt("Y")
- 	                .build();
-
- 	        list.add(t);
- 	        curStart = actualEnd.plusDays(1);
- 	        monthIdx++;
- 	    }
- 	    return list;
- 	}
-
+    
 
 }
