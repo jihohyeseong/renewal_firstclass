@@ -205,7 +205,7 @@
 		position: absolute; top: 50%; left: 6%;
 		height: 8px; border-radius: 8px; background-color: var(--primary-color);
 		z-index: 1; transform: translateY(-50%);
-		width: 0%; transition: width .35s ease;
+		width: 0%; max-width: 88%; transition: width .35s ease;
 	}
 	
 	/* ===== 버튼 영역 수정 ===== */
@@ -989,43 +989,6 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 	}
 
-	// 지급/부지급 라디오 선택 시 사유 로딩 (기존과 동일)
-	/* document.querySelectorAll('input[name="judgeOption"]').forEach(radio => {
-		radio.addEventListener('change', function() {
-			if (this.value === 'reject') {
-				rejectForm.style.display = "block";
-
-				if (!rejectReasonsEl.dataset.loaded) {
-					fetch(ctx + '/codes/final-reject', {
-						method: 'GET',
-						headers: { 'Accept': 'application/json' }
-					})
-					.then(res => res.json())
-					.then(list => {
-						if (!Array.isArray(list) || list.length === 0) {
-							rejectReasonsEl.innerHTML =
-								'<em style="color:#64748b;">사유 코드가 없습니다.</em>';
-						} else {
-							rejectReasonsEl.innerHTML = list
-								.map(({code, name}) =>
-									'<label><input type="radio" name="reasonCode" value="' + code + '"> ' + (name ?? code) + '</label>'
-								)
-								.join('');
-						}
-						rejectReasonsEl.dataset.loaded = '1';
-					})
-					.catch(() => {
-						rejectReasonsEl.innerHTML =
-							'<label><input type="radio" name="reasonCode" value="RJ_99"> 기타(네트워크 오류)</label>';
-						rejectReasonsEl.dataset.loaded = '1';
-					});
-				}
-			} else {
-				rejectForm.style.display = "none";
-			}
-		});
-	}); */
-	
 	// '지급' 버튼 리스너
 	if (approveBtnAction) {
 		approveBtnAction.addEventListener('click', function() {

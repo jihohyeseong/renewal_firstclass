@@ -58,128 +58,154 @@
         .btn-secondary { background-color: var(--white-color); color: var(--gray-color); border-color: var(--border-color); }
         .btn-secondary:hover { background-color: var(--light-gray-color); color: var(--dark-gray-color); border-color: #ccc; }
         
-        /* --- [수정] 검색창 스타일 --- */
-        h2 {
-            text-align: center;
-            margin: 1.5rem 0 1rem 0; /* 위아래 여백 */
-            font-weight: 700;
-        }
+        /* ==== 레이아웃 ==== */
+		.main-content {
+		  max-width: 1200px;
+		  margin: 0 auto;
+		  padding: 2rem;
+		}
+		
+		.page-title {
+		  font-size: 1.75rem;
+		  font-weight: 700;
+		  margin-bottom: 1.5rem;
+		}
         
-        .search-wrapper {
-            /* 기존 margin-bottom: 20px; */
-            /* [수정] 카드 디자인 및 가운데 정렬 */
-            max-width: 1200px; /* 테이블과 너비 맞춤 */
-            margin: 0 auto 20px auto; /* 가운데 정렬 및 하단 여백 */
-            padding: 1.5rem;
-            background-color: var(--white-color);
-            border-radius: 0.75rem; /* 카드 둥근 모서리 */
-            border: 1px solid #e9ecef;
-            box-shadow: var(--shadow-sm);
-        }
+		/* 레이블 + 인풋 묶음 */
+		.filter-group {
+		  display: inline-flex;
+		  align-items: center;
+		  gap: .5rem;
+		  white-space: nowrap;
+		}
 
-        .status-form { /* [수정] 폼 정렬 */
-            display: flex;
-            flex-wrap: wrap; /* 작은 화면에서 줄바꿈 */
-            justify-content: center; /* 폼 내부 요소 가운데 정렬 */
-            align-items: center;
-            gap: 0.75rem; /* 요소간 간격 */
+		.filter-label {
+		  font-size: .9rem;
+		  font-weight: 500;
+		  color: var(--text-muted);
+		}
+		
+		/* 테이블 */ 
+        .status-form { 
+              display: flex;
+			  flex-wrap: wrap;
+			  gap: .75rem;
+			  margin-bottom: 1.5rem;
+			  justify-content: space-between;
         }
         
         .status-form input[type="text"],
         .status-form select { /* [수정] 입력창/선택창 스타일 */
-            padding: 10px 12px; /* 크기 키우기 */
-            font-size: 15px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px; /* 둥근 모서리 */
-            flex: 1; /* 너비 자동 조절 */
-            min-width: 180px; /* 최소 너비 */
+            padding: .5rem .75rem;
+		  border: 1px solid var(--border-color);
+		  border-radius: .375rem;
+		  background: #fdfdfd;
+		  height: 40px;
+		  box-sizing: border-box;
+		  font-size: .9rem;
+		  transition: border-color .15s ease, box-shadow .15s ease;
         }
         
-        .status-form select {
-            flex-grow: 0; /* select는 많이 늘어나지 않게 */
-            min-width: 150px;
-        }
-
-        .status-form .btn-primary { /* 검색 버튼 */
-            flex-grow: 0; /* 버튼은 고정 크기 */
-            padding: 10px 20px; /* 입력창과 높이 맞춤 */
-        }
+        .status-form input[type="text"]:focus,
+		.status-form select:focus {
+		  outline: none;
+		  border-color: var(--primary-color);
+		  box-shadow: 0 0 0 3px var(--primary-light-color);
+		}
         
-        .status-form input[type="text"] { /* (기존) z-index 문제 해결 */
-            position: relative;
-            z-index: 10;
-            pointer-events: auto !important;
-        }
-        
-    /* Table Wrapper */
-        .table-wrapper {
-            background-color: #fff;
-            padding: 1.5rem;
-            border-radius: 0.75rem;
-            border: 1px solid #e9ecef;
-            box-sizing: border-box;
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .table-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        .table-header h4 {
-            font-weight: 700;
-            margin: 0;
-        }
-        .table-filters {
-            display: flex;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
-        .table-filters input, .table-filters select {
-            padding: 0.5rem 0.75rem;
-            border: 1px solid #ced4da;
-            border-radius: 0.375rem;
-            font-size: 0.9rem;
-        }
-        .table-filters input { flex: 2; }
-        .table-filters select { flex: 1; }
+        /* ==== 필터 버튼 (디자인 개선) ==== */
+		.status-form button {
+		  display: inline-flex;
+		  align-items: center;
+		  justify-content: center;
+		  padding: 0 .75rem;
+		  height: 40px;
+		  min-width: 40px;
+		  border: 1px solid var(--border-color);
+		  border-radius: .375rem;
+		  background: var(--white-color);
+		  color: #555;
+		  cursor: pointer;
+		  font-size: .9rem;
+		  font-weight: 500;
+		  transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+		}
+        .status-form button:hover {
+		  background-color: #f8f9fa;
+		}
+		
+		#btnSearch {
+		  background: var(--primary-color);
+		  border-color: var(--primary-color);
+		  color: var(--white-color);
+		  padding: 0 1.25rem;
+		}
+		
+		#btnSearch:hover {
+		  background: #334abf;
+		  border-color: #334abf;
+		  color: var(--white-color);
+		}
+		
+    /* ==== 테이블 래퍼 (디자인 개선) ==== */
+	.table-wrapper {
+	  background: var(--white-color);
+	  border: none;
+	  border-radius: .75rem;
+	  padding: 1.5rem 2rem;
+	  box-shadow: var(--shadow-sm);
+	}
+	
+	.table-header {
+	  display: flex;
+	  justify-content: space-between;
+	  align-items: center;
+	  margin-bottom: 1.5rem;
+	}
+	
+	.table-header h4 {
+	  margin: 0;
+	  font-size: 1.25rem;
+	  font-weight: 700;
+	}
 
       /* Table */
-    .result-table {
+    table.result-table {
         width: 100%;
         border-collapse: collapse;
         text-align: left;
     }
-    .result-table th, .result-table td {
-        padding: 1rem;
-        vertical-align: middle;
-        border-bottom: 1px solid #dee2e6;
+    table.result-table th, .result-table td {
+        padding: .8rem .9rem;
+	  border-bottom: 1px solid var(--border-light);
+	  vertical-align: middle;
+	  font-size: 1rem;
+	  text-align: center;
     }
-    .result-table th {
-        background-color: #f8f9fa;
-        font-weight: 700;
-        color: #495057;
-    }
-    .result-table tbody tr:hover {
-    	background-color: #f1f3f5;
-    }
-    /*
-    .term-list {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-        text-align: left;
-    }
-    .term-list li {
-        font-size: 0.9em;
-        border-bottom: 1px dashed #eee;
-        padding: 4px 0;
-    }
-    .term-list li:last-child {
-        border-bottom: none;
-    } */
+    table.result-table th:last-child,
+	table.result-table td:last-child {
+	  padding-right: .5rem;
+	  padding-left: .5rem;
+	}
+	
+	table.result-table thead th {
+	  background: var(--white-color);
+	  font-weight: 600;
+	  color: #888;
+	  font-size: .8rem;
+	  text-transform: uppercase;
+	  letter-spacing: .5px;
+	  border-bottom: 2px solid #e9ecef;
+	  border-top: 1px solid #e9ecef;
+	}
+	
+	table.result-table tbody tr:hover {
+	  background-color: #fcfdff; /* 매우 연한 호버 효과 */
+	}
+	
+	table.result-table tbody td {
+	  color: var(--text-color);
+	}
 
     /* ==== 페이지네이션 (디자인 개선) ==== */
 	.pagination {
@@ -226,26 +252,52 @@
 	  color: #ced4da;
 	  pointer-events: none;
 	}
-		
+	/* 왼쪽 필터 묶음 */
+	.filter-left {
+	  display: flex;
+	  flex-wrap: wrap;
+	  align-items: center;
+	  gap: .5rem;
+	}
+	
+	/* 오른쪽 필터 묶음 */
+	.filter-right {
+	  display: flex;
+	  flex-wrap: wrap;
+	  align-items: center;
+	  gap: .5rem;
+	}	
 </style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
+<div class="content-container">
 <%@ include file="adminheader.jsp" %>
-<h2>동일 영아 조회</h2>
+<main class="main-content">
+<h2 class="page-title">동일 영아 조회</h2>
 
-<div class="search-wrapper">
+<div class="table-wrapper">
+
     <form id="statusForm" class="status-form" method="post"
 			action="${pageContext.request.contextPath}/admin/childsearch">
 		<input type="hidden" name="page" id="pageInput" value="${pageDTO.pageNum}">
         <input type="hidden" name="size" value="${pageDTO.listSize}">
+        
+		<div class="filter-left">
+		<div class="filter-group">
+			<span class="filter-label">이름 검색 </span>
+			<input type="text" name="nameKeyword" placeholder="자녀 이름 입력" value="${nameKeyword}" maxlength="50"/>
+	  	</div>
+	
+		<div class="filter-group">
+			<span class="filter-label">주민등록번호 검색</span>
+			<input type="text" name="regNoKeyword" placeholder="자녀 주민등록번호 입력" value="${regNoKeyword}" maxlength="13"/>
+		</div>
+		</div>
 		
-		<input type="text" name="nameKeyword" placeholder="자녀 이름" value="${nameKeyword}" maxlength="50"/>
-	  	
-		<input type="text" name="regNoKeyword" placeholder="주민등록번호(숫자13자리)" value="${regNoKeyword}" maxlength="13"/>
-		
-		<label for="status" class="sr-only">상태 선택</label>
+		<div class="filter-group">
+		<label for="status" class="filter-label">상태 선택</label>
 		<select id="status" name="status" class="status-select">
 			<option value="ALL" ${status=='ALL' ? 'selected' : ''}>전체</option>
 			<option value="ST_20" ${status=='ST_20' ? 'selected' : ''}>제출</option>
@@ -253,12 +305,19 @@
 			<option value="ST_50" ${status=='ST_50' ? 'selected' : ''}>승인</option> 
 		</select> 
         	
-		<button type="submit" class="btn btn-primary btn-sm">검색</button> 
+		<button type="submit" id="btnSearch" class="table-btn">조회</button> 
+		</div>
 	</form>
-</div>
 
-<div class="table-wrapper">
     <table class="result-table">
+    <colgroup>
+	    <col style="width:16%;">
+	    <col style="width:18%;">
+	    <col style="width:18%;">
+	    <col style="width:18%;">
+	    <col style="width:14%;">
+	    <col style="width:16%;">
+	  </colgroup>
         <thead>
             <tr>
                 <th>확인서번호</th>
@@ -287,23 +346,6 @@
                             ~	<fmt:formatDate value="${child.endDate}" pattern="yyyy-MM-dd" />
                             </td>
                             
-                            <%-- <td>
-                                <c:if test="${not empty child.list}">
-                                    <ul class="term-list">
-                                        <c:forEach var="term" items="${child.list}">
-                                            <li>
-                                                <fmt:formatDate value="${term.startMonthDate}" pattern="yyyy.MM.dd" />
-                                                ~
-                                                <fmt:formatDate value="${term.endMonthDate}" pattern="yyyy.MM.dd" />
-                                                (${term.govPayment+term.companyPayment}원)
-                                            </li>
-                                        </c:forEach>
-                                    </ul>
-                                </c:if>
-                                <c:if test="${empty child.list}">
-                                    (단위 기간 정보 없음)
-                                </c:if>
-                            </td> --%>
                         </tr>
                     </c:forEach>
                 </c:otherwise>
@@ -330,16 +372,14 @@
 				    <!-- 다음 버튼 (항상 활성화) -->
     				<a class="js-page-link next" data-page="${pageDTO.pageNum + 1}" style="cursor: pointer;">&raquo;</a>
 	</div>
-
+</main>
+</div>
 <script>
 $(document).ready(function() {
     
     // 페이지 링크가 클릭되었는지 확인하기 위한 플래그
     let pageLinkClicked = false;
 
-    /**
-     * 1. "페이지 링크"(.js-page-link) 클릭 시
-     */
     $('.js-page-link').on('click', function(e) {
         e.preventDefault(); // a 태그의 기본 동작(링크 이동)을 막습니다.
 
@@ -356,9 +396,6 @@ $(document).ready(function() {
         $('#statusForm').submit();
     });
     
-    /**
-     * 2. "폼이 전송될 때" (검색 버튼을 누르거나, 페이지 링크로 submit()이 호출될 때)
-     */
     $('#statusForm').on('submit', function() {
         
         // 페이지 링크로 인해 전송된 것이라면, 플래그가 true입니다.

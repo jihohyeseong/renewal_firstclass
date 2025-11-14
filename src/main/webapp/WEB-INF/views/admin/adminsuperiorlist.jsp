@@ -66,6 +66,7 @@ a { text-decoration: none; color: inherit; }
   grid-template-columns: repeat(4, 1fr); /* 4개 카드 */
   gap: 1rem;
   margin-bottom: 2rem;
+  max-width: 1600px;
 }
 .stat-card {
   background: var(--white-color);
@@ -151,14 +152,6 @@ a { text-decoration: none; color: inherit; }
   color: var(--primary-color);
 }
 
-.table-filters {
-  display: flex;
-  align-items: center;      /* 수직 중앙정렬 */
-  gap: .4rem;
-  margin-bottom: 1.5rem;
-  flex-wrap: nowrap;          /* 반응형 줄바꿈 */
-}
-
 /* 필터 그룹 (라벨 + 입력창을 가로로 정렬) */
 .filter-group {
   display: flex;
@@ -174,8 +167,33 @@ a { text-decoration: none; color: inherit; }
   color: #555;
   white-space: nowrap;
   margin: 0;
+  display: flex;
+}
+.filter-label {
+  font-size: .9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+/* 왼쪽 필터 묶음 */
+.filter-left {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: .5rem;
 }
 
+/* 오른쪽 필터 묶음 */
+.filter-right {
+  display: flex;
+    gap: 10px;
+}
+.table-filters {
+  display: flex;
+  align-items: center;      /* 수직 중앙정렬 */
+  gap: .4rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: nowrap;          /* 반응형 줄바꿈 */
+}
 /* 인풋 & 셀렉트 공통 스타일 */
 .table-filters input[type="text"],
 .table-filters select {
@@ -196,23 +214,21 @@ a { text-decoration: none; color: inherit; }
   box-shadow: 0 0 0 3px var(--primary-light-color);
 }
 
-/* 검색 버튼 - 작고 정사각형, 오른쪽 끝 */
-.btn-search {
+.table-filters button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
-  border: 1px solid var(--primary-color);
-  background: var(--primary-color);
-  font-size: 1rem;
-  cursor: pointer;
+  padding: 0 .75rem;
+  height: 40px;
+  min-width: 40px;
+  border: 1px solid var(--border-color);
   border-radius: .375rem;
-  color: var(--white-color);
-  transition: all .15s ease;
-}
-.btn-search:hover {
-  background-color: #364ab1;
+  background: var(--white-color);
+  color: #555;
+  cursor: pointer;
+  font-size: .9rem;
+  font-weight: 500;
+  transition: background-color .15s ease, border-color .15s ease, color .15s ease;
 }
 
 /* ==== 테이블 (디자인 개선) ==== */
@@ -256,14 +272,20 @@ a { text-decoration: none; color: inherit; }
 
 /* 테이블 헤더 내 날짜 버튼 */
 .data-table th button {
-  border: none;
-  background: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 .75rem;
+  height: 40px;
+  min-width: 40px;
+  border: 1px solid var(--border-color);
+  border-radius: .375rem;
+  background: var(--white-color);
+  color: #555;
   cursor: pointer;
-  padding: 0;
-  vertical-align: middle;
-  font-size: 1.1rem;
-  color: var(--text-muted);
-  transition: color .15s ease;
+  font-size: .9rem;
+  font-weight: 500;
+  transition: background-color .15s ease, border-color .15s ease, color .15s ease;
 }
 .data-table th button:hover {
   color: var(--primary-color);
@@ -289,6 +311,22 @@ a { text-decoration: none; color: inherit; }
 .badge-wait { background-color: var(--primary-color); }
 .badge-approved { background-color: var(--success-color); }
 .badge-rejected { background-color: var(--text-muted); }
+
+.doc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  min-width: 80px;
+  font-weight: 400; 
+}
+
+.doc-chip i {
+  font-size: 1rem;
+  color: var(--primary-color);
+}
+.doc-chip .bi-patch-check {
+  color: var(--success-color);
+}
 
 /* 상세보기 버튼 (테이블 내부) */
 .table-btn {
@@ -317,8 +355,50 @@ a { text-decoration: none; color: inherit; }
   background: #e9ecef;
   color: #333;
 }
+#selectDate {
+  font-size: 1.1rem;
+}
+#btnSearch {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--white-color);
+  padding: 8px 20px;
+  height: 38px;
+  border-radius: .375rem;
+  white-space: nowrap;
+}
 
+#btnSearch:hover {
+  background: #334abf;
+  border-color: #334abf;
+  color: var(--white-color);
+}
+.badge {
+  display: inline-block;
+  padding: .35em .65em;
+  border-radius: 999px;
+  color: var(--white-color);
+  font-size: .8rem;
+  font-weight: 600;
+  min-width: 80px; 
+  text-align: center;
+}
 
+.doc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  min-width: 80px;
+  font-weight: 400; 
+}
+
+.doc-chip i {
+  font-size: 1rem;
+  color: var(--primary-color);
+}
+.doc-chip .bi-patch-check {
+  color: var(--success-color);
+}
 /* ==== 페이지네이션 (디자인 개선) ==== */
 .pagination {
   display: flex;
@@ -364,22 +444,21 @@ a { text-decoration: none; color: inherit; }
   color: #ced4da;
   pointer-events: none;
 }
+
 </style>
 </head>
 <body>
-
-    <div class="content-container">
-    <%@ include file="adminheader.jsp" %>
-
-        <main class="main-content">
+<div class="content-container">
+<%@ include file="adminheader.jsp" %>
+      <main class="main-content">
             <h2 class="page-title" style="margin-top: 30px;">급여 최종 결재 목록</h2>
 
-            <div class="stat-cards-container">
+            <div class="stat-cards-container" id="statCards" style="margin-bottom:22px; display:grid; grid-template-columns:repeat(4,1fr); gap:12px;">
                 <a class="js-status-card" data-status="" style="cursor: pointer;">
 	                <div class="stat-card ${empty status ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
-	                            <h6>총 신청서 수</h6><h1>${counts.total}</h1><small>모든 육아휴직 신청서</small>
+	                            <h6>총 신청서 수</h6><h1>${counts.total}</h1><small>최종 승인된 신청서</small>
 	                        </div>
 	                        <i class="bi bi-files"></i>
 	                    </div>
@@ -421,31 +500,34 @@ a { text-decoration: none; color: inherit; }
             </div>
 
             <div class="table-wrapper">
-                <div class="table-header">
-                    <h4>모든 육아휴직 신청서</h4>
-                    <!-- <button class="table-btn btn-refresh" id="btnReset"><i class="bi bi-arrow-clockwise"></i></button> -->
-                </div>
 
                 <form id="searchForm" action="${pageContext.request.contextPath}/admin/superior" method="post" class="table-filters">
                     
                     <input type="hidden" name="page" value="${pageDTO.pageNum}">
                     
                     <%-- 신청자 이름 필터 --%>
-				    <div class="filter-group">
-				        <label for="searchName">신청자 이름</label>
+                    <div class="filter-left">
+                    <div class="filter-group">
+				        <label for="searchName" class="filter-label">신청자 이름</label>
 				        <input type="text" name="nameKeyword" id="searchName" placeholder="신청자 이름..." value="${nameKeyword}">
 				    </div>
-				
 				    <%-- 신청번호 필터 --%>
 				    <div class="filter-group">
 				        <label for="searchNumber">신청번호</label>
 				        <input type="text" name="appNoKeyword" id="searchNumber" placeholder="신청번호..." value="${appNoKeyword}">
 				    </div>
-				
+					<button type="button" id="selectDate" style="background:none; border:none; cursor:pointer; margin-left:5px;">
+                                    <i class="bi bi-calendar-week"></i>
+                                </button>
+                                <c:if test="${not empty date}">
+                                    <span style="font-size:0.85em; color:#666;">(${date})</span>
+                                </c:if>
+					</div>
 				    <%-- 처리 상태 필터 --%>
+					<div class="filter-right">
 				    <div class="filter-group">
-				    	<label for="statusSelect">처리상태</label>
-				        <select name="status" id="statusSelect" onchange="this.form.submit()">
+				    	<label for="statusSelect" class="filter-label">처리상태  </label>
+						<select name="status" id="statusSelect" onchange="this.form.submit()">
 				            <option value="">전체</option>
 				            <option value="PENDING" ${status == 'PENDING' ? 'selected' : ''}>대기</option>
 				    		<option value="APPROVED" ${status == 'APPROVED' ? 'selected' : ''}>승인</option>
@@ -454,12 +536,8 @@ a { text-decoration: none; color: inherit; }
 				    </div>
 				
 					<%-- 검색 버튼 --%>
-				    <button type="submit" class="btn-search">
-				        <i class="bi bi-search"></i>
-				    </button>
-				    
-				    <%-- [신규] 새로고침(초기화) 버튼 - JS에 로직이 있으므로 주석 해제 --%>
-				    <button type="button" class="btn-refresh" id="btnReset" style="height: 40px; width: 40px;">
+					<button type="submit" id="btnSearch" class="btn-search">조회</button>
+					<button type="button" class="btn-refresh" id="btnReset" style="height: 40px; width: 40px;">
 				        <i class="bi bi-arrow-clockwise"></i>
 				    </button> 
 				
@@ -467,23 +545,25 @@ a { text-decoration: none; color: inherit; }
     				<c:if test="${not empty date}">
         				<input type="hidden" name="date" value="${date}">
     				</c:if>
+    				</div>
                     
                 </form>
 
                 <table class="data-table">
+                <colgroup>
+				    <col style="width:14%;">
+				    <col style="width:20%;">
+				    <col style="width:18%;">
+				    <col style="width:18%;">
+				    <col style="width:12%;">
+				    <col style="width:12%;">
+			   </colgroup>
                     <thead>
                         <tr>
-                        	<th>구분</th>
+                        	<th style="margin-left: 20px">구분</th>
                             <th>신청서 번호</th>
                             <th>신청자 이름</th>
-                            <th>신청일
-                            	<button type="button" id="selectDate" style="background:none; border:none; cursor:pointer; margin-left:5px;">
-                                    <i class="bi bi-calendar-week"></i>
-                                </button>
-                                <c:if test="${not empty date}">
-                                    <span style="font-size:0.85em; color:#666;">(${date})</span>
-                                </c:if>
-                            </th>
+                            <th>신청일</th>
                             <th>상태</th>
                             <th>검토</th>
                         </tr>
@@ -495,10 +575,12 @@ a { text-decoration: none; color: inherit; }
                                     <tr>
                                     	<td>
                                     		<c:if test="${app.applicationType == 'ADD_AMOUNT'}">
-			                                	<span class="badge" style="background-color: #ffc107; color: #333; margin-left: 5px;">추가지급</span>
+			                                	<span class="doc-chip" style=" color: #333; margin-left: 5px;">
+			                                	<i class="bi bi-file-earmark-text" style="color: var(--success-color);"></i>추가지급</span>
 			                            	</c:if>
 				                            <c:if test="${app.applicationType == 'PAYMENT'}">
-				                                <span class="badge" style="background-color: #0d6efd; margin-left: 5px;">급여지급</span>
+				                                <span class="doc-chip" style=" margin-left: 5px;">
+				                                <i class="bi bi-file-earmark-text" style="color: var(--primary-color);"></i>급여지급</span>
 				                            </c:if>
                                     	</td>
                                         <td>

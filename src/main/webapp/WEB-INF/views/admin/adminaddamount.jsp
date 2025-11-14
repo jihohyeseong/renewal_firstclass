@@ -196,23 +196,17 @@ a { text-decoration: none; color: inherit; }
   box-shadow: 0 0 0 3px var(--primary-light-color);
 }
 
-/* 검색 버튼 - 작고 정사각형, 오른쪽 끝 */
-.btn-search {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  border: 1px solid var(--primary-color);
+#btnSearch {
   background: var(--primary-color);
-  font-size: 1rem;
-  cursor: pointer;
-  border-radius: .375rem;
+  border-color: var(--primary-color);
   color: var(--white-color);
-  transition: all .15s ease;
+  padding: 0 1.25rem;
 }
-.btn-search:hover {
-  background-color: #364ab1;
+
+#btnSearch:hover {
+  background: #334abf;
+  border-color: #334abf;
+  color: var(--white-color);
 }
 
 /* ==== 테이블 (디자인 개선) ==== */
@@ -308,7 +302,7 @@ a { text-decoration: none; color: inherit; }
   color: var(--white-color);
   transform: translateY(-1px);
 }
-.table-btn.btn-secondary { /* 기존 클래스 호환 */
+.table-btn.btn-secondary { 
   background: #f1f3f5;
   color: #555;
   border-color: #f1f3f5;
@@ -318,7 +312,21 @@ a { text-decoration: none; color: inherit; }
   color: #333;
 }
 
+#btnSearch {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--white-color);
+  padding: 0 1.25rem;
+  border-radius: .375rem !important;
+  white-space: nowrap;
+  height: 38px;
+}
 
+#btnSearch:hover {
+  background: #334abf;
+  border-color: #334abf;
+  color: var(--white-color);
+}
 /* ==== 페이지네이션 (디자인 개선) ==== */
 .pagination {
   display: flex;
@@ -422,7 +430,6 @@ a { text-decoration: none; color: inherit; }
 
             <div class="table-wrapper">
                 <div class="table-header">
-                    <h4>모든 육아휴직 신청서</h4>
                     <!-- <button class="table-btn btn-refresh" id="btnReset"><i class="bi bi-arrow-clockwise"></i></button> -->
                 </div>
 
@@ -454,9 +461,7 @@ a { text-decoration: none; color: inherit; }
 				    </div>
 				
 					<%-- 검색 버튼 --%>
-				    <button type="submit" class="btn-search">
-				        <i class="bi bi-search"></i>
-				    </button>
+				    <button type="button" id="btnSearch" class="table-btn">조회</button>
 				    
 				    <button type="button" class="btn-refresh" id="btnReset" style="height: 40px; width: 40px;">
 				        <i class="bi bi-arrow-clockwise"></i>

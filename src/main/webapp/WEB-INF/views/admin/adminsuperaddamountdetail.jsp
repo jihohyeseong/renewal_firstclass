@@ -51,7 +51,7 @@
 	.header .welcome-msg{font-size:16px}
 	
 	.main-container{
-		flex-grow:1;width:100%;max-width:850px;margin:40px auto;padding:40px;
+		flex-grow:1;width:100%;max-width:1200px;margin:40px auto;padding:40px;
 		background-color:var(--white-color);border-radius:12px;box-shadow:var(--shadow-md);
 	}
 	
@@ -205,7 +205,7 @@
 		position: absolute; top: 50%; left: 6%;
 		height: 8px; border-radius: 8px; background-color: var(--primary-color);
 		z-index: 1; transform: translateY(-50%);
-		width: 0%; transition: width .35s ease;
+		width: 0%; max-width: 88%; transition: width .35s ease;
 	}
 	
 	/* ===== 버튼 영역 수정 ===== */
