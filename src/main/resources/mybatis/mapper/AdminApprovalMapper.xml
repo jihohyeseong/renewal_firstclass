@@ -124,6 +124,7 @@
 	    WHERE confirm_number = #{confirmNumber}
 	    AND update_at = 'Y'
 	    AND init_at = 'Y'
+	    ORDER BY payment_date
 	</select>
 	
 	<!-- upd 컬럼 존재 여부 확인 -->

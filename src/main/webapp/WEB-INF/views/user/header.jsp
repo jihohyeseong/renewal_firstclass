@@ -280,7 +280,7 @@
         <%-- 데스크탑용 중앙 메뉴 (모바일에선 이 안으로 들어옴) --%>
         <ul class="header-nav">
             <li><a class="nav-link ${fn:contains(currentURI, '/main') ? 'active' : ''}" href="${pageContext.request.contextPath}/user/main">신청내역</a></li>
-            <li><a class="nav-link ${fn:contains(currentURI, 'confirm') ? 'active' : ''}" href="${pageContext.request.contextPath}/user/confirm/check">확인서 조회</a></li>
+            <li><a class="nav-link ${fn:contains(currentURI, 'confirm_my') ? 'active' : ''}" href="${pageContext.request.contextPath}/user/confirm/check">확인서 조회</a></li>
             <li><a class="nav-link ${fn:contains(currentURI, '/calc') ? 'active' : ''}" href="${pageContext.request.contextPath}/calc/user">모의 계산하기</a></li>
             <li><a class="nav-link ${fn:contains(currentURI, '/mypage') ? 'active' : ''}" href="${pageContext.request.contextPath}/mypage">마이페이지</a></li>
         </ul>

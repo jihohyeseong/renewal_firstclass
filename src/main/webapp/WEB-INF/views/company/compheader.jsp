@@ -292,16 +292,16 @@
     <nav class="header-right-nav" id="main-nav-menu">
         <ul class="header-nav">
 			<li><a
-                class="nav-link ${fn:contains(currentURI, '/comp/main') ? 'active' : ''}"
+                class="nav-link ${fn:contains(currentURI, 'compmain') ? 'active' : ''}"
                 href="${pageContext.request.contextPath}/comp/main">신청내역</a></li>
             <li><a
-                class="nav-link ${fn:contains(currentURI, '/calc/corp') ? 'active' : ''}"
+                class="nav-link ${fn:contains(currentURI, 'calcmain') ? 'active' : ''}"
                 href="${pageContext.request.contextPath}/calc/corp">모의 계산하기</a></li>
             <li><a
                 class="nav-link ${fn:contains(currentURI, '/mypage') ? 'active' : ''}"
                 href="${pageContext.request.contextPath}/mypage">마이페이지</a></li>
             <li><a
-                class="nav-link ${fn:contains(currentURI, '/comp/search') ? 'active' : ''}"
+                class="nav-link ${fn:contains(currentURI, 'search') ? 'active' : ''}"
                 href="${pageContext.request.contextPath}/comp/search">근로자 조회</a></li>
 		</ul>
 
