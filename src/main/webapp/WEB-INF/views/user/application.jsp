@@ -972,11 +972,28 @@
                         
                         <div id="born-fields">
                               <div class="form-group">
-                                    <label class="field-title" for="child-name">자녀 이름</label>
-                                    <div class="input-field">
-                                         <input type="text" id="child-name" name="childName" value="${applicationDTO.childName}">
-                                    </div>
-                              </div>
+								    <label class="field-title" for="child-name">자녀 이름</label>
+								    
+								    <%-- .input-field 하나로 통합하고, 내부를 flex로 변경 --%>
+								    <div class="input-field" style="display: flex; align-items: center; gap: 15px;">
+								        
+								        <%-- 1. 자녀 이름 입력칸 (flex-grow: 1로 설정) --%>
+								        <input type="text" id="child-name" name="childName" value="${applicationDTO.childName}" style="flex-grow: 1;">
+								        
+								        <%-- 2. 출산 전 체크박스 (flex-shrink: 0로 설정) --%>
+								        <div class="checkbox-group" style="flex-shrink: 0; white-space: nowrap;">
+								            
+								            <%-- [요청 1 반영] childName이 비어있으면 'checked' --%>
+								            <input type="checkbox" id="before-birth-chk" style="transform: scale(1.2);" ${empty applicationDTO.childName ? 'checked' : ''}>
+								            
+								            <label for="before-birth-chk" style="font-weight: 500; color: var(--primary-color);">
+								                출산 전 (자녀 이름/주민번호 미입력)
+								            </label>
+								        </div>
+								        
+								    </div>
+								</div>
+                              
                               <div class="form-group">
                                     <label class="field-title" for="birth-date">출생(예정)일</label>
                                     <div class="input-field">
@@ -999,14 +1016,7 @@
                                      <input type="hidden" name="childResiRegiNumber" id="child-rrn-hidden">
                               </div>
                               <div class="form-group" style="margin-top: -10px; margin-bottom: 25px;">
-                            <label class="field-title"></label> <div class="input-field">
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="before-birth-chk" style="transform: scale(1.2);">
-                                    <label for="before-birth-chk" style="font-weight: 500; color: var(--primary-color);">
-                                        출산 전 (자녀 이름/주민번호 미입력)
-                                    </label>
-                                </div>
-                            </div>
+                            
                         </div>
                         </div>
                    </div>
