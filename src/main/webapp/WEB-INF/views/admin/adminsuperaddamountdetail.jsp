@@ -51,7 +51,7 @@
 	.header .welcome-msg{font-size:16px}
 	
 	.main-container{
-		flex-grow:1;width:100%;max-width:1200px;margin:40px auto;padding:40px;
+		flex-grow:1;width:100%;max-width:1200px;margin:2rem auto;padding:40px;
 		background-color:var(--white-color);border-radius:12px;box-shadow:var(--shadow-md);
 	}
 	
@@ -209,156 +209,103 @@
 	}
 	
 	/* ===== 버튼 영역 수정 ===== */
-	  .button-container {
-	    text-align: center;
-	    margin-top: 20px;
-	    padding-bottom: 20px;
-	  }
+	 .button-container {
+	  margin-top:40px;
+	  text-align: center;
+	}
+	.button-container .button-row{
+	  display:flex !important;
+	  align-items:center !important;
+	  flex-wrap:nowrap !important;
+	  gap:12px;
+	  margin-top:20px;
+	}
 	
-	  .judge-actions { /* [수정] 반려 폼 내부 버튼 정렬용 */
-		text-align: right; 
-		margin-top: 20px; 
-		padding-bottom: 20px;
+	.button-container .judge-actions{
+	  display:flex !important;
+	  gap:10px;
+	  margin-left:auto !important;
+	}
+	
+	.button-container .button-row .btn{
+	  display:inline-flex !important;
+	}
+	.segments{
+	  display:inline-flex; border:1px solid var(--border-color); border-radius:12px; overflow:hidden; background:#fff; box-shadow: var(--shadow-sm);
+	}
+	.segment-btn{
+	  padding:10px 25px; font-weight:700; border:none; background:#fff; color:#334155; cursor:pointer;
+	}
+	.segment-btn + .segment-btn{ border-left:1px solid var(--border-color); }
+	.segment-btn[aria-pressed="true"]{
+	  background: #e9ecef;          /* 연회색 배경 */
+	  color: #343a40;                /* 진회색 텍스트 */
+	  box-shadow: inset 0 1px 3px rgba(0,0,0,0.15);
 	}
 	  
 	  .btn-primary, .btn-secondary {
 	    padding: 6px 14px; /* 패딩 축소 */
 	    font-size: 14px;
 	  }
-	  
-	  /* ===== [신규] 반려 버튼 ===== */
-	.btn-danger {
-		padding: 6px 14px;
-		font-size: 14px;
-		background-color: #f44336;
-		border-color: #f44336;
-		color: white;
-		cursor: pointer;
-		border-radius: 4px;
-		transition: background-color 0.2s;
+	.btn.btn-outline.btn-lg {
+    	line-height: 1 !important;
+    	padding: 10px 4px;
+    	height: 38px;
 	}
-	.btn-danger:hover {
-		background-color: #d32f2f;
-		border-color: #d32f2f;
+	/* ===== [신규] 부지급 사유 영역  ===== */
+	#rejectForm{
+	  display:none;
+	  margin-top:10px; padding:10px 12px;
+	  border:1px solid #d1d9ff; background:#f0f2ff; border-radius:10px;
 	}
-	
-	.reason-item {
-		position: relative;
-		box-sizing: border-box;
-		flex: 0 0 calc(50% - 12px); 
-		max-width: 220px;         
+	#rejectForm.active {
+	  display: block;
+	  animation: fadeInDown 0.3s ease-out; /* 가지고 계신 애니메이션 적용 */
 	}
 	
-	.reason-item input[type="radio"] {
-		position: absolute;
-		opacity: 0;
-		pointer-events: none;
+	/* 공통 행: 라벨 110px + 인풋 1fr */
+	#rejectForm .form-row{
+	  display:grid !important;
+	  grid-template-columns: 110px 1fr;
+	  column-gap: 10px;
+	  row-gap: 0;
+	  align-items:center;
+	  margin:8px 0 !important;
 	}
 	
-	.reason-item label {
-		display: flex;
-		align-items: center;
-		padding: 12px 10px;
-		background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
-		border: 2px solid transparent;
-		border-radius: 10px;
-		cursor: pointer;
-		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-		font-size: 14px;
-		font-weight: 500;
-		color: #4b5563;
-		box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-		position: relative;
+	/* 라벨은 딱 맞게, 줄바꿈 금지 */
+	#rejectForm label{
+	  margin:0 !important;
+	  white-space:nowrap !important;
+	  font-weight:700; color:#334155;
 	}
 	
-	.reason-item label::after {
-		content: '';
-		position: absolute;
-		right: 18px;
-		top: 50%;
-		transform: translateY(-50%) scale(0);
-		width: 20px;
-		height: 20px;
-		background: #ef4444;
-		border-radius: 50%;
-		transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+	/* 컨트롤 기본 사이즈 */
+	#rejectForm .form-control{
+	  width:100%;
+	  padding:10px 12px !important;
+	  font-size:14px !important;
+	  border-radius:10px;
 	}
 	
-	.reason-item label::before {
-		content: '✓';
-		position: absolute;
-		right: 24px;
-		top: 50%;
-		transform: translateY(-50%) scale(0);
-		color: white;
-		font-size: 12px;
-		font-weight: bold;
-		z-index: 1;
-		transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.05s;
-	}
+	/* 셀렉트가 폭을 벌리는 문제 제거 */
+	#rejectForm select{ min-width:0 !important; }
 	
-	.reason-item label:hover {
-		transform: translateY(-3px);
-		box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-		border-color: #e5e7eb;
+	/* === 상세사유만 라벨 위 / textarea 아래 (스택) === */
+	#rejectForm .form-row.row-detail{ align-items: start; }
+	#rejectForm .form-row.row-detail label{ margin:0 !important; }
+	#rejectForm .form-row.row-detail .form-control{ grid-column: 2; }
+	#rejectForm .form-row.row-detail textarea.form-control{
+	  min-height:140px;    /* 필요하면 160~200px로 늘리면 됨 */
+	  line-height:1.5;
+	  resize:vertical;
 	}
-	
-	.reason-item label:has(input[type="radio"]:checked) {
-		border-color: #f9fafb;
-		color: #991b1b;
-		font-weight: 600;
-		box-shadow: 0 8px 24px rgba(239, 68, 68, 0.2);
-		padding-right: 55px;
+	#rejectForm .form-row:first-of-type .form-control{
+	  flex: 0 0 auto !important;
+	  width: clamp(160px, 26vw, 240px) !important; /* 160~240px 사이로 */
+	  max-width: 240px !important;
+	  justify-self: start; /* 왼쪽 정렬 */
 	}
-	
-	.reason-item label:has(input[type="radio"]:checked)::after {
-		transform: translateY(-50%) scale(1);
-	}
-	
-	.reason-item label:has(input[type="radio"]:checked)::before {
-		transform: translateY(-50%) scale(1);
-	}
-	
-	/* 상세 사유 입력 */
-	.comment-wrapper {
-		margin-top: 24px;
-	}
-	
-	.comment-label {
-		display: block;
-		font-weight: 600;
-		color: #333;
-		margin-bottom: 8px;
-		font-size: 15px;
-		text-align: left;
-	}
-	
-	#rejectComment {
-		width: 100%;
-		padding: 12px;
-		border: 2px solid #e0e0e0;
-		border-radius: 8px;
-		font-size: 14px;
-		resize: vertical;
-		min-height: 80px;
-		font-family: inherit;
-		transition: all 0.3s ease;
-		text-align: left;
-		display: block;
-		margin: 0;
-	}
-	
-	#rejectComment:focus {
-		outline: none;
-		border-color: #f44336;
-		box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.1);
-	}
-	
-	@keyframes fadeInDown {
-		from { opacity: 0; transform: translateY(-10px); }
-		to { opacity: 1; transform: translateY(0); }
-	}
-
 </style>
 </head>
 <body>
@@ -993,26 +940,58 @@
                 </tr>
             </tbody>
         </table>
-        <div class="button-container" style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">
-	        <%-- [수정] 상위 관리자 목록으로 돌아가도록 URL 변경 --%>
-	        <a href="${pageContext.request.contextPath}/admin/superior" class="btn btn-secondary">
-	            <i class="fa fa-list"></i> 목록으로
-	        </a>
+	</div>
 	
+		<!-- 관리자 하단 버튼 -->
+		<div class="button-container">
+        	<c:choose>
+        	<c:when test="${addAmountData[0].statusCode == 'ST_50' || addAmountData[0].statusCode == 'ST_60' }">
+		        <div class="button-row">
+				<a href="${pageContext.request.contextPath}/admin/superior" class="btn btn-outline btn-lg">
+		            목록으로 돌아가기</a>
+				</div>
+			</c:when>
+			<c:otherwise>
+			<div class="button-container">
 	        <c:if test="${not empty addAmountData[0] && addAmountData[0].statusCode == 'ST_40'}">
-	            <div>
-	            	<button type="button" id="btnAddAmountApprove" class="btn btn-primary">지급</button>
-	                <button type="button" id="btnAddAmountReject" class="btn btn-danger">부지급</button>
+	            <div class="segments" id="judgeSegments">
+	            	<button type="button" id="btnAddAmountApprove" class="segment-btn" aria-pressed="false">지급</button>
+	                <button type="button" id="btnAddAmountReject" class="segment-btn" aria-pressed="false">부지급</button>
 	            </div>
 	        </c:if>
-
-		</div>
-    </div>
-
+	        </div>
+	        
+	        <div class="button-row">
+	        	<a href="${pageContext.request.contextPath}/admin/superior" class="btn btn-outline btn-lg">
+		            목록으로 돌아가기</a>
+	        </div>
+	        
+	        <%-- <div id="rejectForm">
+				<div class="form-row">
+				<label><strong>부지급 사유 선택</strong></label>
+				<select id="rejectReasons" class="form-control">
+					JS가 이 영역을 .reason-item으로 채웁니다
+				</select> 
+				</div>
+				<div class="form-row row-detail">
+					<label>상세 사유</label>
+					<textarea id="rejectComment" class="form-control" placeholder="상세 사유를 입력하세요 (선택)"></textarea>
+				</div>
+			</div>
+			<div class="button-row">
+				<a href="${pageContext.request.contextPath}/admin/superior" class="btn btn-outline btn-lg">목록으로</a>
+				<div class="judge-actions">
+					<button type="button" id="confirmBtn" class="btn btn-primary btn-lg">확인</button>
+					<button type="button" id="cancelBtn" class="btn btn-outline btn-lg">취소</button>
+				</div>
+			</div> --%>
+		</c:otherwise>
+		</c:choose>
+    	</div>
+</main>
 <%-- (hidden inputs - applicationNumber는 폼 안으로 이동, userId는 스크립트용으로 남김) --%>
 <input type="hidden" id="userId" value="${appDTO.userId}" />
 <input type="hidden" id="applicationNumber" value="${appDTO.applicationNumber}" />
-</main>
 
 <footer class="footer">
 	<p>&copy; 2025 육아휴직 서비스. All Rights Reserved.</p>
@@ -1023,6 +1002,15 @@ document.addEventListener("DOMContentLoaded", function () {
 	const ctx = '${pageContext.request.contextPath}';
 	console.log('ctx =', '${pageContext.request.contextPath}');
 	const applicationNumber = document.getElementById("applicationNumber")?.value;
+	/* const form = document.getElementById("addAmountForm");
+	const reasonSelect = document.getElementById("codeId");
+	
+	const selectedOption = reasonSelect.options[reasonSelect.selectedIndex];
+    const reasonCodeStr = selectedOption.getAttribute("data-code-str"); // "AR_30"
+    const reasonText = document.getElementById("addReason").value.trim(); */
+    
+    const btnApprove = document.getElementById("btnAddAmountApprove");
+    const btnReject = document.getElementById("btnAddAmountReject");
 	
 	// [추가] userId 값 읽기
 	const userId = document.getElementById("userId")?.value;
@@ -1063,14 +1051,11 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 	}
 
-	const form = document.getElementById("addAmountForm");
-
 	// [신규] 폼 유효성 검사
-    if (form) {
+    /* if (form) {
         form.addEventListener("submit", function(e) {
             
             // 1. 사유 선택 검사
-            const reasonSelect = document.getElementById("codeId");
             if (!reasonSelect.value) {
                 alert("추가지급 사유를 선택하세요.");
                 reasonSelect.focus();
@@ -1079,10 +1064,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             // 2. '기타' 선택 시 상세 사유 검사
-            const selectedOption = reasonSelect.options[reasonSelect.selectedIndex];
-            const reasonCodeStr = selectedOption.getAttribute("data-code-str"); // "AR_30"
-            const reasonText = document.getElementById("addReason").value.trim();
-            
             if (reasonCodeStr === 'AR_30' && reasonText === '') {
                 alert("'기타' 사유를 선택한 경우, 상세 사유를 반드시 입력해야 합니다.");
                 document.getElementById("addReason").focus();
@@ -1115,13 +1096,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 e.preventDefault(); // 사용자가 '취소' 누르면 제출 중단
             }
         });
-    }
- // ==========================================================
-    // ▼ [신규] 상위 관리자 추가지급 결재 버튼 핸들러
-    // ==========================================================
-    const btnApprove = document.getElementById("btnAddAmountApprove");
-    const btnReject = document.getElementById("btnAddAmountReject");
-
+    } */
+    // 상위 관리자 추가지급 결재 버튼 핸들러
     if (btnApprove) {
         btnApprove.addEventListener("click", function() {
             handleApproval("approve");
@@ -1134,7 +1110,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    function handleApproval(actionType) {
+    function handleApproval(actionType, clickedButton) {
         if (!applicationNumber) {
             alert("신청서 번호를 찾을 수 없습니다.");
             return;
@@ -1142,27 +1118,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const isApprove = actionType === "approve";
         const actionText = isApprove ? "지급" : "부지급";
+        
         console.log("actionText:", actionText);
-        const url = isApprove ? "${pageContext.request.contextPath}/admin/superior/addamount/approve" 
-                : "${pageContext.request.contextPath}/admin/superior/addamount/reject";
+        const url = isApprove ? "${pageContext.request.contextPath}/admin/superior/addamount/approve"
+        		: "${pageContext.request.contextPath}/admin/superior/addamount/reject";
 
-
-        if (!confirm(`이 추가지급 신청을 '${actionText}' 처리하시겠습니까?`)) {
+        if (btnApprove) btnApprove.setAttribute('aria-pressed', isApprove);
+  		if (btnReject) btnReject.setAttribute('aria-pressed', !isApprove);
+  		
+  		setTimeout(function() {
+        if (!confirm("이 추가지급 신청을 '" + actionText + "' 처리하시겠습니까?")) {
+        	// "취소"를 누르면 버튼 '눌림' 상태를 다시 해제합니다.
+            if (clickedButton) clickedButton.setAttribute('aria-pressed', 'false');
+        
             return;
         }
-
+		
         fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                // 'X-CSRF-TOKEN': '...' // CSRF 토큰이 필요하면 추가
             },
             body: JSON.stringify({ applicationNumber: applicationNumber })
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // 기존 'sendPushAndFinalize' 함수 재사용
                 sendPushAndFinalize(userId, data, `추가지급 '${actionText}' 처리가 완료되었습니다.`);
             } else {
                 alert(data.message || `처리 중 오류가 발생했습니다: ${actionText}`);
@@ -1172,7 +1153,8 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error('Error:', error);
             alert(`네트워크 오류 또는 서버 응답 실패: ${actionText}`);
         });
-    }
+    }, 0);
+}
 });
 
 </script>
