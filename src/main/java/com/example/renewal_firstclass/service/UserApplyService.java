@@ -86,7 +86,8 @@ public class UserApplyService {
 		}
 		try {
 			applicationDTO.setRegistrationNumber(aes256Util.decrypt(applicationDTO.getRegistrationNumber()));
-			applicationDTO.setChildResiRegiNumber(aes256Util.decrypt(applicationDTO.getChildResiRegiNumber()));
+			if(applicationDTO.getChildResiRegiNumber() != null)
+				applicationDTO.setChildResiRegiNumber(aes256Util.decrypt(applicationDTO.getChildResiRegiNumber()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -144,7 +145,8 @@ public class UserApplyService {
 		if(dto != null) {
 			try {
 				dto.setRegistrationNumber(aes256Util.decrypt(dto.getRegistrationNumber()));
-				dto.setChildResiRegiNumber(aes256Util.decrypt(dto.getChildResiRegiNumber()));
+				if(dto.getChildResiRegiNumber() != null)
+					dto.setChildResiRegiNumber(aes256Util.decrypt(dto.getChildResiRegiNumber()));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

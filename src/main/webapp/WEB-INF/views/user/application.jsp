@@ -967,6 +967,7 @@
 
                    <div class="form-section">
                         <h2>자녀 정보</h2>
+                        
                         <input type="hidden" name="childBirthDate" id="childBirthDateHidden">
                         
                         <div id="born-fields">
@@ -977,11 +978,12 @@
                                     </div>
                               </div>
                               <div class="form-group">
-                                    <label class="field-title" for="birth-date">출생일</label>
+                                    <label class="field-title" for="birth-date">출생(예정)일</label>
                                     <div class="input-field">
                                          <input type="date" id="birth-date" name="childBirthDate" value="${applicationDTO.childBirthDate}">
                                     </div>
                               </div>
+                              
                               
                               <%-- [★★ 수정 1-4 ★★] 자녀 주민번호 폼 그룹 수정 --%>
                               <div class="form-group">
@@ -996,6 +998,16 @@
                                      </div>
                                      <input type="hidden" name="childResiRegiNumber" id="child-rrn-hidden">
                               </div>
+                              <div class="form-group" style="margin-top: -10px; margin-bottom: 25px;">
+                            <label class="field-title"></label> <div class="input-field">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="before-birth-chk" style="transform: scale(1.2);">
+                                    <label for="before-birth-chk" style="font-weight: 500; color: var(--primary-color);">
+                                        출산 전 (자녀 이름/주민번호 미입력)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                         </div>
                    </div>
                    <div class="form-section">
@@ -2084,6 +2096,41 @@ if (filesContainer) {
   const rrnBEl = document.getElementById('child-rrn-b');
   bindDigitsOnly(rrnAEl);
   bindDigitsOnly(rrnBEl);
+  
+//─────────────────────────────────────
+    // [신규] 출산 전 체크박스 로직
+    // ─────────────────────────────────────
+    const beforeBirthChk = document.getElementById('before-birth-chk');
+    const childNameEl = document.getElementById('child-name'); // 자녀 이름 input
+    // const rrnAEl, rrnBEl는 상단에 이미 선언되어 있음
+
+    if (beforeBirthChk && childNameEl && rrnAEl && rrnBEl) {
+       
+       function toggleChildFields(isDisabled) {
+           if (isDisabled) {
+               // 1. 비활성화 및 값 비우기
+               childNameEl.disabled = true;
+               rrnAEl.disabled = true;
+               rrnBEl.disabled = true;
+               
+               childNameEl.value = '';
+               rrnAEl.value = '';
+               rrnBEl.value = '';
+           } else {
+               // 2. 활성화
+               childNameEl.disabled = false;
+               rrnAEl.disabled = false;
+               rrnBEl.disabled = false;
+           }
+       }
+
+       beforeBirthChk.addEventListener('change', function() {
+           toggleChildFields(this.checked);
+       });
+       
+       // (페이지 로드 시 초기 상태 체크)
+       toggleChildFields(beforeBirthChk.checked);
+    }
     
   // ─────────────────────────────────────
   // 자녀정보 처리
@@ -2137,9 +2184,10 @@ if (filesContainer) {
   // 폼 유효성 검사 함수 (지난 요청사항 포함)
   // ─────────────────────────────────────
   function validateAndFocus() {
-    
+	const beforeBirthChk = document.getElementById('before-birth-chk');
+	const isBeforeBirth = beforeBirthChk && beforeBirthChk.checked;
     const childName = document.getElementById('child-name');
-    if (!childName.value.trim()) {
+    if (!isBeforeBirth && !childName.value.trim()) {
          alert('자녀 이름을 입력해주세요.');
          childName.focus();
          return false;
@@ -2147,20 +2195,20 @@ if (filesContainer) {
 
     const birthDate = document.getElementById('birth-date');
     if (!birthDate.value) {
-         alert('자녀의 출생일을 선택해주세요.');
+         alert('자녀의 출생(예정)일을 선택해주세요.');
          birthDate.focus();
          return false;
     }
     
     const childRrnA = document.getElementById('child-rrn-a');
-    if (!childRrnA.value.trim() || childRrnA.value.trim().length !== 6) {
+    if (!isBeforeBirth && (!childRrnA.value.trim() || childRrnA.value.trim().length !== 6)) {
          alert('자녀의 주민등록번호 앞 6자리를 정확히 입력해주세요.');
          childRrnA.focus();
          return false;
     }
 
     const childRrnB = document.getElementById('child-rrn-b');
-    if (!childRrnB.value.trim() || childRrnB.value.trim().length !== 7) {
+    if (!isBeforeBirth && (!childRrnB.value.trim() || childRrnB.value.trim().length !== 7)) {
          alert('자녀의 주민등록번호 뒤 7자리를 정확히 입력해주세요.');
          childRrnB.focus();
          return false;
@@ -2288,21 +2336,34 @@ if (filesContainer) {
           
           // 5. 자녀 주민번호 합치기
           if (rrnHidden) {
-              const a = onlyDigits(rrnAEl ? rrnAEl.value : '');
-              const b = onlyDigits(rrnBEl ? rrnBEl.value : '');
-              if (a.length === 6 && b.length === 7) {
-                  rrnHidden.value = a + b;
-                  rrnHidden.name = 'childResiRegiNumber';
-              } else {
-                  const originalRRN = "${applicationDTO.childResiRegiNumber}";
-                  if (originalRRN && originalRRN.length === 13) {
-                      rrnHidden.value = originalRRN;
-                      rrnHidden.name = 'childResiRegiNumber';
-                  } else {
-                      rrnHidden.removeAttribute('name');
-                  }
-              }
-          }
+	                // ▼▼▼ [수정] '출산 전' 체크박스 확인 ▼▼▼
+	                const beforeBirthChk = document.getElementById('before-birth-chk');
+	                const isBeforeBirth = beforeBirthChk && beforeBirthChk.checked;
+	                
+	                if (isBeforeBirth) {
+	                    // '출산 전'이 체크된 경우, 주민번호 값을 전송하지 않음
+	                    rrnHidden.removeAttribute('name');
+	                    rrnHidden.value = '';
+	                } else {
+	                // ▲▲▲ [수정] '출산 전' 체크박스 확인 끝 ▲▲▲
+
+	                    // (기존 else 내부 로직)
+	                    const a = onlyDigits(rrnAEl ? rrnAEl.value : '');
+	                    const b = onlyDigits(rrnBEl ? rrnBEl.value : '');
+	                    if (a.length === 6 && b.length === 7) {
+	                        rrnHidden.value = a + b;
+	                        rrnHidden.name = 'childResiRegiNumber';
+	                    } else {
+	                        const originalRRN = "${applicationDTO.childResiRegiNumber}";
+	                        if (originalRRN && originalRRN.length === 13) {
+	                            rrnHidden.value = originalRRN;
+	                            rrnHidden.name = 'childResiRegiNumber';
+	                        } else {
+	                            rrnHidden.removeAttribute('name');
+	                        }
+	                    }
+	                } // [수정] '출산 전' if-else 블록의 닫는 괄호
+	            }
           // --- (기존 2~5번 로직 끝) ---
           
           // 6. 성공 알림
