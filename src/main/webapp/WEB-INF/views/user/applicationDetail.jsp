@@ -658,13 +658,33 @@ CSS
 					<tbody>
 							<tr>
 								<th>자녀 이름</th>
-								<td><c:out value="${dto.childName}" /></td>
+								<td>
+								    <c:choose>
+								        <c:when test="${empty dto.childName}">
+								            출산 예정
+								        </c:when>
+								        <c:otherwise>
+								            <c:out value="${dto.childName}" />
+								        </c:otherwise>
+								    </c:choose>
+								</td>
 								<th>생년월일</th>
 								<td><fmt:formatDate value="${dto.childBirthDate}" pattern="yyyy-MM-dd" /></td>
 							</tr>
 							<tr>
 								<th>주민등록번호</th>
-								<td colspan="3"><c:if test="${not empty dto.childResiRegiNumber}"><c:set var="rrnCleaned" value="${fn:replace(fn:replace(fn:trim(dto.childResiRegiNumber), '-', ''), ' ', '')}" />${fn:substring(rrnCleaned, 0, 6)}-${fn:substring(rrnCleaned, 6, 13)}</c:if></td>
+								<td colspan="3">
+								    <c:choose>
+								        <c:when test="${empty dto.childResiRegiNumber}">
+								            출산 예정
+								        </c:when>
+								        <c:otherwise>
+								            <c:set var="rrnCleaned" 
+								                   value="${fn:replace(fn:replace(fn:trim(dto.childResiRegiNumber), '-', ''), ' ', '')}" />
+								            ${fn:substring(rrnCleaned, 0, 6)}-${fn:substring(rrnCleaned, 6, 13)}
+								        </c:otherwise>
+								    </c:choose>
+								</td>
 							</tr>
 					</tbody>
 				</table>

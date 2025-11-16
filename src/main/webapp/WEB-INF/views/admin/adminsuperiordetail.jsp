@@ -51,7 +51,7 @@
 	.header .welcome-msg{font-size:16px}
 	
 	.main-container{
-		flex-grow:1;width:100%;max-width:850px;margin:40px auto;padding:40px;
+		flex-grow:1;width:100%;max-width:1200px;margin:2rem auto;padding:40px;
 		background-color:var(--white-color);border-radius:12px;box-shadow:var(--shadow-md);
 	}
 	
@@ -208,17 +208,39 @@
 		width: 0%; max-width: 88%; transition: width .35s ease;
 	}
 	
-	/* ===== 버튼 영역 수정 ===== */
+	/* ===== 하단 버튼 ===== */
 	  .button-container {
-	    text-align: center;
-	    margin-top: 20px;
-	    padding-bottom: 20px;
-	  }
+	  margin-top:40px;
+	  text-align: center;
+	}
+	.button-container .button-row{
+	  display:flex !important;
+	  align-items:center !important;
+	  flex-wrap:nowrap !important;
+	  gap:12px;
+	  margin-top:20px;
+	}
 	
-	  .judge-actions { /* [수정] 반려 폼 내부 버튼 정렬용 */
-		text-align: right; 
-		margin-top: 20px; 
-		padding-bottom: 20px;
+	.button-container .judge-actions{
+	  display:flex !important;
+	  gap:10px;
+	  margin-left:auto !important;
+	}
+	
+	.button-container .button-row .btn{
+	  display:inline-flex !important;
+	}
+	.segments{
+	  display:inline-flex; border:1px solid var(--border-color); border-radius:12px; overflow:hidden; background:#fff; box-shadow: var(--shadow-sm);
+	}
+	.segment-btn{
+	  padding:10px 25px; font-weight:700; border:none; background:#fff; color:#334155; cursor:pointer;
+	}
+	.segment-btn + .segment-btn{ border-left:1px solid var(--border-color); }
+	.segment-btn[aria-pressed="true"]{
+	  background: #e9ecef;          /* 연회색 배경 */
+	  color: #343a40;                /* 진회색 텍스트 */
+	  box-shadow: inset 0 1px 3px rgba(0,0,0,0.15);
 	}
 	  
 	  .btn-primary, .btn-secondary {
@@ -226,172 +248,59 @@
 	    font-size: 14px;
 	  }
 	  
-	  /* ===== [신규] 반려 버튼 ===== */
-	.btn-danger {
-		padding: 6px 14px;
-		font-size: 14px;
-		background-color: #f44336;
-		border-color: #f44336;
-		color: white;
-		cursor: pointer;
-		border-radius: 4px;
-		transition: background-color 0.2s;
+	/* ===== [신규] 부지급 사유 영역  ===== */
+	#rejectForm{
+	  display:none;
+	  margin-top:10px; padding:10px 12px;
+	  border:1px solid #d1d9ff; background:#f0f2ff; border-radius:10px;
 	}
-	.btn-danger:hover {
-		background-color: #d32f2f;
-		border-color: #d32f2f;
-	}
-
-	/* ===== [신규] 부지급 사유 영역 (첫 번째 파일에서 복사) ===== */
-	#rejectForm {
-		display: none;
-		background: #fff;
-		border: 1px solid #e5e7eb;
-		border-radius: 12px;
-		padding: 24px;
-		margin-top: 20px;
-		box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-	}
-	
 	#rejectForm.active {
-		display: block;
-		animation: fadeInDown 0.3s ease;
-		margin-bottom: 10px;
+	  display: block;
+	  animation: fadeInDown 0.3s ease-out; /* 가지고 계신 애니메이션 적용 */
 	}
 	
-	#rejectForm h3 {
-		font-size: 18px;
-		font-weight: 700;
-		color: #1f2937;
-		margin-bottom: 24px;
-		padding-bottom: 12px;
-		border-bottom: 2px solid #f3f4f6;
+	/* 공통 행: 라벨 110px + 인풋 1fr */
+	#rejectForm .form-row{
+	  display:grid !important;
+	  grid-template-columns: 110px 1fr;
+	  column-gap: 10px;
+	  row-gap: 0;
+	  align-items:center;
+	  margin:8px 0 !important;
 	}
 	
-	/* 반려 사유 그리드 (2열 레이아웃) - 동적 로딩을 위해 #rejectReasons에 적용 */
-	#rejectReasons {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 14px;
-		justify-content: flex-start;
-		margin-bottom: 24px;
+	/* 라벨은 딱 맞게, 줄바꿈 금지 */
+	#rejectForm label{
+	  margin:0 !important;
+	  white-space:nowrap !important;
+	  font-weight:700; color:#334155;
 	}
 	
-	.reason-item {
-		position: relative;
-		box-sizing: border-box;
-		flex: 0 0 calc(50% - 12px); 
-		max-width: 220px;         
+	/* 컨트롤 기본 사이즈 */
+	#rejectForm .form-control{
+	  width:100%;
+	  padding:10px 12px !important;
+	  font-size:14px !important;
+	  border-radius:10px;
 	}
 	
-	.reason-item input[type="radio"] {
-		position: absolute;
-		opacity: 0;
-		pointer-events: none;
-	}
+	/* 셀렉트가 폭을 벌리는 문제 제거 */
+	#rejectForm select{ min-width:0 !important; }
 	
-	.reason-item label {
-		display: flex;
-		align-items: center;
-		padding: 12px 10px;
-		background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
-		border: 2px solid transparent;
-		border-radius: 10px;
-		cursor: pointer;
-		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-		font-size: 14px;
-		font-weight: 500;
-		color: #4b5563;
-		box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-		position: relative;
+	/* === 상세사유만 라벨 위 / textarea 아래 (스택) === */
+	#rejectForm .form-row.row-detail{ align-items: start; }
+	#rejectForm .form-row.row-detail label{ margin:0 !important; }
+	#rejectForm .form-row.row-detail .form-control{ grid-column: 2; }
+	#rejectForm .form-row.row-detail textarea.form-control{
+	  min-height:140px;    /* 필요하면 160~200px로 늘리면 됨 */
+	  line-height:1.5;
+	  resize:vertical;
 	}
-	
-	.reason-item label::after {
-		content: '';
-		position: absolute;
-		right: 18px;
-		top: 50%;
-		transform: translateY(-50%) scale(0);
-		width: 20px;
-		height: 20px;
-		background: #ef4444;
-		border-radius: 50%;
-		transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-	}
-	
-	.reason-item label::before {
-		content: '✓';
-		position: absolute;
-		right: 24px;
-		top: 50%;
-		transform: translateY(-50%) scale(0);
-		color: white;
-		font-size: 12px;
-		font-weight: bold;
-		z-index: 1;
-		transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.05s;
-	}
-	
-	.reason-item label:hover {
-		transform: translateY(-3px);
-		box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-		border-color: #e5e7eb;
-	}
-	
-	.reason-item label:has(input[type="radio"]:checked) {
-		border-color: #f9fafb;
-		color: #991b1b;
-		font-weight: 600;
-		box-shadow: 0 8px 24px rgba(239, 68, 68, 0.2);
-		padding-right: 55px;
-	}
-	
-	.reason-item label:has(input[type="radio"]:checked)::after {
-		transform: translateY(-50%) scale(1);
-	}
-	
-	.reason-item label:has(input[type="radio"]:checked)::before {
-		transform: translateY(-50%) scale(1);
-	}
-	
-	/* 상세 사유 입력 */
-	.comment-wrapper {
-		margin-top: 24px;
-	}
-	
-	.comment-label {
-		display: block;
-		font-weight: 600;
-		color: #333;
-		margin-bottom: 8px;
-		font-size: 15px;
-		text-align: left;
-	}
-	
-	#rejectComment {
-		width: 100%;
-		padding: 12px;
-		border: 2px solid #e0e0e0;
-		border-radius: 8px;
-		font-size: 14px;
-		resize: vertical;
-		min-height: 80px;
-		font-family: inherit;
-		transition: all 0.3s ease;
-		text-align: left;
-		display: block;
-		margin: 0;
-	}
-	
-	#rejectComment:focus {
-		outline: none;
-		border-color: #f44336;
-		box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.1);
-	}
-	
-	@keyframes fadeInDown {
-		from { opacity: 0; transform: translateY(-10px); }
-		to { opacity: 1; transform: translateY(0); }
+	#rejectForm .form-row:first-of-type .form-control{
+	  flex: 0 0 auto !important;
+	  width: clamp(160px, 26vw, 240px) !important; /* 160~240px 사이로 */
+	  max-width: 240px !important;
+	  justify-self: start; /* 왼쪽 정렬 */
 	}
 
 </style>
@@ -875,67 +784,58 @@
 		</table>
 	</div>
 </c:if>
-
+<!-- 하단 관리자 버튼 -->
 <div class="button-container">
 	<c:choose>
 		<c:when test="${appDTO.statusCode == 'ST_50' or appDTO.statusCode == 'ST_60' or appDTO.paymentResult == 'Y'}">
-			<a href="${pageContext.request.contextPath}/admin/superior" class="btn btn-secondary">목록으로</a>
+			<div class="right-slot-completed">
+			<a href="${pageContext.request.contextPath}/admin/superior" class="btn btn-outline btn-lg">목록으로</a>
+			</div>
 		</c:when>
 		<c:otherwise>
-			<div class="button-container" style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; margin-bottom: 20px;">
-				<div>
-					<a href="${pageContext.request.contextPath}/admin/superior" class="btn btn-secondary">목록</a>
-				</div>
-				
-				<div class="judge-actions-right">
-					<button type="button" id="approveBtnAction" class="btn btn-primary" style="margin-right: 8px;">
-						<i class="fa fa-check"></i> 지급
+			<div class="button-container">
+				<div class="segments" id="judgeSegments">
+					<button type="button" id="approveBtnAction" class="segment-btn" aria-pressed="false">
+						지급
 					</button>
-					<button type="button" id="rejectBtnAction" class="btn btn-danger">
-						<i class="fa fa-times"></i> 부지급
+					<button type="button" id="rejectBtnAction" class="segment-btn" aria-pressed="false">
+						부지급
 					</button>
 				</div>
 			</div>
 
-			<div id="rejectForm"> <%-- JS가 .active 클래스로 제어 --%>
-				<h3>부지급 사유 선택</h3>
-				
-				<%-- [수정] 동적 로딩을 위해 #rejectReasons 사용, 스타일 적용을 위해 <div>로 감싸기 --%>
-				<div id="rejectReasons">
+			<div id="rejectForm">
+				<div class="form-row">
+				<label><strong>부지급 사유 선택</strong></label>
+				<select id="rejectReasons" class="form-control">
 					<%-- JS가 이 영역을 .reason-item으로 채웁니다 --%>
-				</div> 
-	
-				<div class="comment-wrapper">
-					<label class="comment-label">상세 사유</label>
-					<input type="text" id="rejectComment" class="form-control" placeholder="상세 사유를 입력하세요 (선택)" style="width:50%;">
+				</select> 
 				</div>
-	
-				<div class="judge-actions" style="text-align: right; margin-top: 20px; padding-bottom: 20px;">
-					<%-- [수정] '확인' -> '부지급 확정'으로 텍스트 변경 --%>
-					<button type="button" id="confirmBtn" class="btn btn-danger" style="margin-right: 8px;">부지급 확정</button>
-					<button type="button" id="cancelBtn" class="btn btn-secondary">취소</button>
+				<div class="form-row row-detail">
+					<label>상세 사유</label>
+					<textarea id="rejectComment" class="form-control" placeholder="상세 사유를 입력하세요 (선택)"></textarea>
 				</div>
 			</div>
-			<%-- <a href="${pageContext.request.contextPath}/admin/superior" class="btn btn-secondary"
-					style="margin: 5px;">목록으로</a> --%>
+			<div class="button-row">
+				<a href="${pageContext.request.contextPath}/admin/superior" class="btn btn-outline btn-lg">목록으로</a>
+				<div class="judge-actions">
+					<button type="button" id="confirmBtn" class="btn btn-primary btn-lg">확인</button>
+					<button type="button" id="cancelBtn" class="btn btn-outline btn-lg">취소</button>
+				</div>
+				</div>
 		</c:otherwise>
 	</c:choose>
 </div>
 
-<%-- ========================================================= --%>
-<%-- 			★ [수정 1] userId를 위한 hidden input 추가 ★
-<%-- ========================================================= --%>
+</main>
+
 <input type="hidden" id="applicationNumber" value="${appDTO.applicationNumber}" />
 <input type="hidden" id="userId" value="${appDTO.userId}" />
-
 
 <footer class="footer">
 	<p>&copy; 2025 육아휴직 서비스. All Rights Reserved.</p>
 </footer>
 
-<%-- ========================================================= --%>
-<%-- 			★ [수정 2] 스크립트 수정 ★
-<%-- ========================================================= --%>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 	const ctx = '${pageContext.request.contextPath}';
@@ -992,6 +892,16 @@ document.addEventListener("DOMContentLoaded", function () {
 	// '지급' 버튼 리스너
 	if (approveBtnAction) {
 		approveBtnAction.addEventListener('click', function() {
+			// '지급' 버튼 클릭 시, '부지급' 폼이 열려있다면 닫고 버튼 상태 리셋
+            if (rejectForm.classList.contains('active')) {
+                rejectForm.classList.remove('active');
+            }
+            if (rejectBtnAction) {
+                rejectBtnAction.setAttribute('aria-pressed', 'false');
+            }
+            //지급 버튼 자신도 눌린 상태 해제
+            approveBtnAction.setAttribute('aria-pressed', 'false');
+            
 			if (!confirm('지급 확정하시겠습니까?')) return;
 
 			fetch(ctx + '/admin/superior/approve', {
@@ -1011,7 +921,12 @@ document.addEventListener("DOMContentLoaded", function () {
 	if (rejectBtnAction) {
 		rejectBtnAction.addEventListener('click', function() {
 			rejectForm.classList.add('active'); // 폼 표시
-
+			
+			// [수정] '부지급' 버튼을 눌린 상태(회색)로 변경
+            rejectBtnAction.setAttribute('aria-pressed', 'true');
+            if (approveBtnAction) {
+                approveBtnAction.setAttribute('aria-pressed', 'false');
+            }
 			// 사유 로드 (최초 1회만)
 			if (!rejectReasonsEl.dataset.loaded) {
 				fetch(ctx + '/codes/final-reject', {
@@ -1020,34 +935,28 @@ document.addEventListener("DOMContentLoaded", function () {
 				})
 				.then(res => res.json())
 				.then(list => {
-					if (!Array.isArray(list) || list.length === 0) {
-						rejectReasonsEl.innerHTML =
-							'<em style="color:#64748b;">사유 코드가 없습니다.</em>';
-					} else {
-						// [수정] 스타일 적용을 위해 .reason-item 구조로 생성
-						rejectReasonsEl.innerHTML = list
-							.map(({code, name}) =>
-								'<div class="reason-item">' +
-								'  <label>' +
-								'    <input type="radio" name="reasonCode" value="' + code + '">' +
-								'    <span>' + (name ?? code) + '</span>' +
-								'  </label>' +
-								'</div>'
-							)
-							.join('');
-					}
-					rejectReasonsEl.dataset.loaded = '1';
-				})
-				.catch(() => {
-					rejectReasonsEl.innerHTML =
-						'<div class="reason-item">' +
-						'  <label>' +
-						'    <input type="radio" name="reasonCode" value="RJ_99">' +
-						'    <span>기타(네트워크 오류)</span>' +
-						'  </label>' +
-						'</div>';
-					rejectReasonsEl.dataset.loaded = '1';
-				});
+					// [수정된 부분 1/2] : <option> 태그로 변경
+	                let optionsHTML = '<option value="">사유를 선택하세요</option>'; // 기본 프롬프트
+
+	                if (Array.isArray(list) && list.length > 0) {
+	                    optionsHTML += list
+	                        .map(({code, name}) =>
+	                            '<option value="' + code + '">' +
+	                            (name ?? code) +
+	                            '</option>'
+	                        )
+	                        .join('');
+	                }
+	                optionsHTML += '<option value="RJ_99">기타</option>';
+	                rejectReasonsEl.innerHTML = optionsHTML;
+	                rejectReasonsEl.dataset.loaded = '1';
+	            })
+	            .catch(() => {
+	                rejectReasonsEl.innerHTML =
+	                    '<option value="">(사유 로딩 실패)</option>' +
+	                    '<option value="RJ_99">기타(네트워크 오류)</option>';
+	                rejectReasonsEl.dataset.loaded = '1';
+	            });
 			}
 		});
 	}
@@ -1056,6 +965,10 @@ document.addEventListener("DOMContentLoaded", function () {
 	if (cancelBtn) {
 		cancelBtn.addEventListener('click', function() {
 			rejectForm.classList.remove('active'); // 폼 숨기기
+			// [수정] '부지급' 버튼을 눌리지 않은 상태(기본)로 변경
+            if (rejectBtnAction) {
+                rejectBtnAction.setAttribute('aria-pressed', 'false');
+            }
 		});
 	}
 	
@@ -1064,10 +977,10 @@ document.addEventListener("DOMContentLoaded", function () {
 		confirmBtn.addEventListener('click', function() {
 
 			// '부지급' 로직만 실행
-			const reason = document.querySelector('input[name="reasonCode"]:checked');
+			const reason = rejectReasonsEl.value;
 			const comment = (rejectCommentEl?.value || '').trim();
 			if (!reason) { alert('부지급 사유를 선택해주세요.'); return; }
-			if (reason.value === 'RJ_99' && !comment) { alert('기타 선택 시 상세 사유를 입력하세요.'); return; }
+			if (reason === 'RJ_99' && !comment) { alert('기타 선택 시 상세 사유를 입력하세요.'); return; }
 			if (!confirm('부지급 처리하시겠습니까?')) return;
 
 			fetch(ctx + '/admin/superior/reject', {
@@ -1075,7 +988,7 @@ document.addEventListener("DOMContentLoaded", function () {
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					applicationNumber: Number(applicationNumber),
-					rejectionReasonCode: reason.value,
+					rejectionReasonCode: reason,
 					rejectComment: comment
 				})
 			})

@@ -184,7 +184,7 @@ public class AdminSuperiorService {
              }
          } catch (Exception ignore) {}
 
-        // 상세 조회 (새로 만든 매퍼 사용, 내용은 동일함)
+        // 상세 조회
         AdminUserApprovalDTO appDTO = adminSuperiorDAO.selectAddAmountDetailByAppNo(applicationNumber);
         if (appDTO == null) {
             model.addAttribute("error", "존재하지 않는 신청입니다.");
