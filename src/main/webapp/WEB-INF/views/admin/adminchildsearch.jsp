@@ -310,14 +310,14 @@
 	</form>
 
     <table class="result-table">
-    <colgroup>
-	    <col style="width:16%;">
-	    <col style="width:18%;">
-	    <col style="width:18%;">
-	    <col style="width:18%;">
+	<colgroup>
 	    <col style="width:14%;">
-	    <col style="width:16%;">
-	  </colgroup>
+	    <col style="width:14%;">
+	    <col style="width:18%;">
+	    <col style="width:18%;">
+	    <col style="width:12%;">
+	    <col style="width:24%;">
+	</colgroup>
         <thead>
             <tr>
                 <th>확인서번호</th>

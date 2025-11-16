@@ -372,6 +372,12 @@ a { text-decoration: none; color: inherit; }
   color: #ced4da;
   pointer-events: none;
 }
+/* 추가 css */
+.data-table th,
+.data-table td {
+  text-align: center;
+}
+
 </style>
 </head>
 <body>
@@ -429,9 +435,9 @@ a { text-decoration: none; color: inherit; }
             </div>
 
             <div class="table-wrapper">
-                <div class="table-header">
-                    <!-- <button class="table-btn btn-refresh" id="btnReset"><i class="bi bi-arrow-clockwise"></i></button> -->
-                </div>
+<!--                 <div class="table-header">
+                    <button class="table-btn btn-refresh" id="btnReset"><i class="bi bi-arrow-clockwise"></i></button>
+                </div> -->
 
                 <form id="searchForm" action="${pageContext.request.contextPath}/admin/addamount" method="post" class="table-filters">
                     

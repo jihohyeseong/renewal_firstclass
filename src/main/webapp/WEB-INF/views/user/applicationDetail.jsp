@@ -740,17 +740,11 @@ CSS
                                            class="file-download-link">
                                                              <span>
 											                  <c:choose>
-											                    <c:when test="${file.fileType == 'WAGE_PROOF'}">
-											                      (통상임금 증명자료)
-											                    </c:when>
-											                    <c:when test="${file.fileType == 'PAYMENT_FROM_EMPLOYER'}">
-											                      (사업주로부터 금품을 지급받은 자료)
-											                    </c:when>
 											                    <c:when test="${file.fileType == 'OTHER'}">
 											                      (기타 자료)
 											                    </c:when>
-											                    <c:when test="${file.fileType == 'ELIGIBILITY_PROOF'}">
-											                      (배우자/한부모/장애아동 확인 자료)
+											                    <c:when test="${file.fileType == 'CONFIRM'}">
+											                      (육아휴직 확인서)
 											                    </c:when>
 											                    <c:otherwise>
 											                      (기타 자료)

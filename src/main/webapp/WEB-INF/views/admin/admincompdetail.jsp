@@ -463,7 +463,9 @@ textarea.form-control { resize: vertical; }
   font-size:13px;
   line-height:1.5;
 }
-
+.info-table.reject-table th {
+  background: #f1c0c4;; 
+}
 </style>
 </head>
 <body>
@@ -518,35 +520,51 @@ textarea.form-control { resize: vertical; }
 
 <h1>육아휴직 확인서 상세 보기</h1>
 
-<!-- 반려 사유 안내 카드 -->
+<!-- 반려시 -->
 <c:if test="${confirmDTO.statusCode == 'ST_60'}">
-  <div class="reject-result">
-    <div class="title-section">
-      <i class="fa-solid fa-circle-xmark"></i>
-      <h3>반려</h3>
-      <span class="reason-inline">
-        <c:choose>
-          <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_10'}">계좌정보 불일치</c:when>
-          <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_20'}">필요 서류 미제출</c:when>
-          <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_30'}">신청시기 미도래</c:when>
-          <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_40'}">근속기간 미충족</c:when>
-          <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_50'}">자녀 연령 기준 초과</c:when>
-          <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_60'}">휴직 가능 기간 초과</c:when>
-          <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_70'}">제출서류 정보 불일치</c:when>
-          <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_80'}">신청서 작성 내용 미비</c:when>
-          <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_99'}">기타</c:when>
-          <c:otherwise>기타</c:otherwise>
-        </c:choose>
-      </span>
-    </div>
-    <div class="info-grid">
-      <div class="info-item">
-        <div class="label">상세 사유</div>
-        <div class="value"><c:out value="${confirmDTO.rejectComment}" /></div>
-      </div>
-    </div>
+  <div class="info-table-container">
+    <table class="info-table table-4col reject-table">
+      <colgroup>
+        <col style="width:15%"><col style="width:85%">
+      </colgroup>
+      <tbody>
+        <tr>
+          <th>반려 사유</th>
+          <td>
+	      <span class="reason-inline">
+	        <c:choose>
+	          <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_10'}">계좌정보 불일치</c:when>
+	          <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_20'}">필요 서류 미제출</c:when>
+	          <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_30'}">신청시기 미도래</c:when>
+	          <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_40'}">근속기간 미충족</c:when>
+	          <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_50'}">자녀 연령 기준 초과</c:when>
+	          <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_60'}">휴직 가능 기간 초과</c:when>
+	          <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_70'}">제출서류 정보 불일치</c:when>
+	          <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_80'}">신청서 작성 내용 미비</c:when>
+	          <c:when test="${confirmDTO.rejectionReasonCode == 'RJ_99'}">기타</c:when>
+	          <c:otherwise>기타</c:otherwise>
+	        </c:choose>
+	      </span>
+          </td>
+        </tr>
+        <tr>
+          <th>상세 사유</th>
+          <td>
+            <c:choose>
+              <c:when test="${not empty confirmDTO.rejectComment}">
+                <c:out value="${confirmDTO.rejectComment}" />
+              </c:when>
+              <c:otherwise>
+                <span class="highlight-warning">상세 사유 미입력</span>
+              </c:otherwise>
+            </c:choose>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </c:if>
+
 
 <!-- ===== 원본 정보 블록들 ===== -->
 

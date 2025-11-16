@@ -11,6 +11,7 @@
 <script
 	src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/global.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/comp.css">
 <!-- 신청서 폼 디자인을 그대로 쓰는 공통 폼 디자인 킷 (색상 변수는 그대로 사용) -->
 <style>
@@ -322,6 +323,30 @@ input[type="checkbox"]:focus {
   background: rgba(0,0,0,0.2);
   color: #000;
 }
+/* 호버 시 진한 초록으로 강제 */
+.btn-primary:hover {
+  background-color:#1e7c43 !important;
+  border-color:#1e7c43 !important;
+  box-shadow:var(--shadow-md);
+  transform:translateY(-2px);
+}
+.footer{ text-align:center; padding:20px 0; font-size:14px; color:var(--gray-color); }
+
+/* 살짝 회색톤 버튼 */
+.btn-soft{
+  background-color:#e2e5e8;
+  color:var(--dark-gray-color);
+  border:1px solid #d0d4da;
+}
+
+/* 호버 시 살짝만 진해지도록 */
+.btn-soft:hover{
+  background-color:#c0c4ca;
+  border-color:#c0c4ca;
+  box-shadow:var(--shadow-md);
+  transform:translateY(-2px);
+}
+
 </style>
 
   <title>육아휴직 확인서 제출</title>
@@ -557,7 +582,7 @@ input[type="checkbox"]:focus {
 
 
       <div class="submit-button-container">
-        <a href="${pageContext.request.contextPath}/comp/main" class="btn submit-button" style="background:#6c757d; border-color:#6c757d; color:#fff;">목록으로</a>
+        <a href="${pageContext.request.contextPath}/comp/main" class="btn btn-soft" style="background:#6c757d; border-color:#6c757d; color:#fff;">목록으로</a>
         <button type="submit" class="btn btn-primary submit-button">저장하기</button>
       </div>
     </form>
@@ -1560,27 +1585,93 @@ async function uploadAllFilesBeforeSubmit() {
   return { ok: true, skipped: false, fileId };
 }
 
-(function filePreview(){
-	  function bind(id, outId){
-	    const inp = document.getElementById(id);
-	    const out = document.getElementById(outId);
-	    if(!inp || !out) return;
-	    inp.addEventListener('change', ()=>{
-	      if(!inp.files || !inp.files.length){
-	        out.textContent = '선택된 파일 없음';
-	        return;
-	      }
-	      out.innerHTML = Array.from(inp.files).map(function(f){
-	        var mb = (f.size/1024/1024).toFixed(1);
-	        return '<div>' + f.name + ' (' + mb + 'MB)</div>';
-	      }).join('');
-	    });
-	  }
-	  bind('files_WAGE_PROOF', 'list_WAGE_PROOF');
-	  bind('files_PAYMENT_FROM_EMPLOYER', 'list_PAYMENT_FROM_EMPLOYER');
-	  bind('files_OTHER', 'list_OTHER');
-	  bind('files_ELIGIBILITY_PROOF', 'list_ELIGIBILITY_PROOF');
-	})();
+//각 첨부파일 종류별 선택된 파일들을 들고 있을 전역 저장소
+const FILE_STORE = {
+  WAGE_PROOF: [],
+  PAYMENT_FROM_EMPLOYER: [],
+  OTHER: [],
+  ELIGIBILITY_PROOF: []
+};
+
+//파일 선택 시 알약 + X 버튼으로 보여주고, 여러 번 선택해도 누적되게 처리
+(function initFilePills() {
+  const groups = [
+    { type: 'WAGE_PROOF',            inputId: 'files_WAGE_PROOF',            listId: 'list_WAGE_PROOF' },
+    { type: 'PAYMENT_FROM_EMPLOYER', inputId: 'files_PAYMENT_FROM_EMPLOYER', listId: 'list_PAYMENT_FROM_EMPLOYER' },
+    { type: 'OTHER',                 inputId: 'files_OTHER',                 listId: 'list_OTHER' },
+    { type: 'ELIGIBILITY_PROOF',     inputId: 'files_ELIGIBILITY_PROOF',     listId: 'list_ELIGIBILITY_PROOF' }
+  ];
+
+  function renderList(type, listEl) {
+    const arr = FILE_STORE[type] || [];
+
+    if (!arr.length) {
+      // 아무 파일도 없으면 안내 문구
+      listEl.textContent = '선택된 파일 없음';
+      return;
+    }
+
+    listEl.innerHTML = '';
+
+    arr.forEach((file, idx) => {
+      const pill = document.createElement('div');
+      pill.className = 'file-pill';
+
+      const sizeMb = (file.size / 1024 / 1024).toFixed(1);
+
+      const labelSpan = document.createElement('span');
+      labelSpan.textContent = file.name + ' (' + sizeMb + 'MB)';
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'file-remove-btn';
+      btn.innerHTML = '&times;';
+
+      // X 버튼 클릭 → 해당 파일 제거 후 다시 렌더
+      btn.addEventListener('click', () => {
+        FILE_STORE[type].splice(idx, 1);
+        renderList(type, listEl);
+      });
+
+      pill.appendChild(labelSpan);
+      pill.appendChild(btn);
+      listEl.appendChild(pill);
+    });
+  }
+
+  groups.forEach(g => {
+    const inputEl = document.getElementById(g.inputId);
+    const listEl  = document.getElementById(g.listId);
+    if (!inputEl || !listEl) return;
+
+    // 처음에도 "선택된 파일 없음"으로 세팅
+    renderList(g.type, listEl);
+
+    inputEl.addEventListener('change', () => {
+      if (!inputEl.files || !inputEl.files.length) return;
+
+      const storeArr = FILE_STORE[g.type];
+
+      Array.from(inputEl.files).forEach(f => {
+        // 이름 + 사이즈 + lastModified 기준으로 중복 방지 (원하면 제거해도 됨)
+        const dup = storeArr.some(x =>
+          x.name === f.name &&
+          x.size === f.size &&
+          x.lastModified === f.lastModified
+        );
+        if (!dup) {
+          storeArr.push(f);
+        }
+      });
+
+      // 선택한 뒤에는 value 비워줘야 같은 파일 다시 선택 가능
+      inputEl.value = '';
+
+      renderList(g.type, listEl);
+    });
+  });
+})();
+
 
 function stripFileInputsBeforeFinalSubmit(form) {
 	  // 파일 인풋과 fileTypes hidden 전부 전송 제외

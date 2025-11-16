@@ -392,6 +392,9 @@ textarea.form-control { resize: vertical; }
 .file-download-link:hover {
     text-decoration: underline;
 }
+.info-table.reject-table th {
+  background: #f1c0c4;; 
+}
 </style>
 </head>
 <body>
@@ -454,6 +457,46 @@ textarea.form-control { resize: vertical; }
 </div>
 <h1>육아휴직 급여 신청서 상세 보기</h1>
 
+<!-- 반려시 -->
+<c:if test="${appDTO.statusCode == 'ST_60'}">
+  <div class="info-table-container">
+    <table class="info-table table-4col reject-table">
+      <colgroup>
+        <col style="width:15%"><col style="width:85%">
+      </colgroup>
+      <tbody>
+        <tr>
+          <th>반려 사유</th>
+          <td>
+            <c:choose>
+              <c:when test="${not empty appDTO.rejectionReasonName}">
+                <c:out value="${appDTO.rejectionReasonName}" />
+              </c:when>
+              <c:otherwise>
+                <span class="highlight-warning">미입력</span>
+              </c:otherwise>
+            </c:choose>
+          </td>
+        </tr>
+        <tr>
+          <th>상세 사유</th>
+          <td>
+            <c:choose>
+              <c:when test="${not empty appDTO.rejectComment}">
+                <c:out value="${appDTO.rejectComment}" />
+              </c:when>
+              <c:otherwise>
+                <span class="highlight-warning">상세 사유 미입력</span>
+              </c:otherwise>
+            </c:choose>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</c:if>
+
+
 <!-- 접수정보 -->
 <div class="info-table-container">
   <h2 class="section-title">접수정보</h2>
@@ -486,6 +529,8 @@ textarea.form-control { resize: vertical; }
     </tbody>
   </table>
 </div>
+
+
 
 <!-- 신청인 정보 -->
 <div class="info-table-container">

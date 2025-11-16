@@ -108,7 +108,7 @@
     }
     .btn-primary { background-color: var(--primary-color); color: var(--white-color); border-color: var(--primary-color); }
     .btn-primary:hover { background-color: #364ab1; box-shadow: var(--shadow-md); transform: translateY(-2px); }
-    .btn-secondary { background-color: var(--white-color); color: var(--gray-color); border-color: var(--border-color); }
+    .btn-secondary {margin-top: 25px; background-color: var(--white-color); color: var(--gray-color); border-color: var(--border-color); }
     .btn-secondary:hover { background-color: var(--light-gray-color); color: var(--dark-gray-color); border-color: #ccc; }
     .btn-logout { background-color: var(--dark-gray-color); color: var(--white-color); border: none; }
     .btn-logout:hover { background-color: #555; }
@@ -671,9 +671,147 @@
 .btn-delete-file:hover {
     color: var(--dark-gray-color);
 }
+}
+/* ============================
+   첨부파일 섹션 전용 레이아웃
+   (이 페이지 스타일 참고한 버전)
+   ============================ */
+
+/* 첨부 섹션 전체 래퍼에 .file-section 같은 클래스가 있다면 더 좋음
+   <div class="form-section file-section"> ... 이런 식으로 */
+.file-section .form-group {
+  display: block !important;           /* 기존 grid/flex 무시 */
+  margin-bottom: 24px !important;
+}
+
+/* 레이블 박스: 왼쪽 컬러 바 + 가벼운 박스 */
+.file-section .field-title {
+  width: 100% !important;
+  font-weight: 500;
+  font-size: 16px;
+  color: #333;
+  line-height: 1.6;
+  margin-bottom: 12px;
+
+  background: #fff;
+  border-left: 4px solid var(--primary-color, #3f58d4);  /* ⬅ 여기 “선” */
+  padding: 12px 16px;
+  border-radius: 4px;
+}
+
+/* 아래쪽 내용(파일 버튼 + 리스트) */
+.file-section .input-field {
+  width: 100% !important;
+}
+
+/* 파일 선택 버튼 모양 통일 */
+.file-section input[type="file"]::file-selector-button {
+  display: inline-block;
+  padding: 8px 15px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 6px;
+  border: 1px solid var(--border-color,#dee2e6);
+  cursor: pointer;
+  transition: .2s;
+
+  background: #fff;
+  color: var(--gray-color, #868e96);
+  margin-right: 14px;
+}
+
+/* 파일 인풋 텍스트는 숨기고, 실제 선택된 파일들은 아래 .file-list/.info-box에만 보이게 */
+.file-section input[type="file"] {
+  font-size: 14px;
+  color: transparent;                  /* “선택된 파일 없음” 글자는 아래에서 처리 */
+}
+
+/* 호버 효과 */
+.file-section input[type="file"]::file-selector-button:hover {
+  background: var(--light-gray-color, #f8f9fa);
+  color: var(--dark-gray-color, #343a40);
+}
+
+/* ============================
+   파일 리스트(알약) 영역
+   기존 .file-list / .info-box 공통 사용
+   ============================ */
+
+/* 파일 내용 뜨는 박스 */
+.file-section .file-list,
+.file-section .info-box[id^="list_"] {
+  margin-top: 8px;
+  padding: 10px;
+  min-height: 48px;
+  border: 1px solid var(--border-color,#dee2e6);
+  border-radius: 6px;
+  background-color: #fff;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+/* “선택된 파일 없음” 안내 텍스트 */
+.file-section .file-list .file-empty,
+.file-section .info-box[id^="list_"]:not(:has(.file-pill)) {
+  color: var(--gray-color,#868e96);
+  font-style: italic;
+  font-size: 14px;
+  align-items: center;
+}
+
+/* 알약(파일 하나) */
+.file-section .file-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px 6px 12px;
+  border-radius: 999px;
+  background: var(--primary-light-color,#f0f2ff);
+  border: 1px solid #d1d9ff;
+  color: var(--primary-color,#3f58d4);
+  font-size: 14px;
+  font-weight: 500;
+  max-width: 100%;
+}
+
+.file-section .file-pill span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 260px;
+}
+
+/* X 버튼 */
+.file-section .file-remove-btn,
+.file-section .btn-delete-file {
+  background: none;
+  border: none;
+  color: var(--gray-color);
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  transition: background-color .2s ease, color .2s ease;
+}
+
+.file-section .file-remove-btn:hover,
+.file-section .btn-delete-file:hover {
+  background-color: #e9ecef;
+  color: var(--dark-gray-color);
+}
 
 
-    }
 </style>
 </head>
 <body>
@@ -1034,141 +1172,118 @@
                               </div>
                               <input type="hidden" name="centerId" id="centerId" value="${applicationDetailDTO.centerId}">
                         </div>
-                        <div class="form-section">
+
+<!-- 증빙서류 첨부 섹션 -->
+<div class="form-section file-section">
     <h2>증빙서류 첨부</h2>
-    
-    <%-- ▼▼▼ [수정] 육아휴직 확인서 섹션 (DTO 반영) ▼▼▼ --%>
-    <div class="form-group">
-        <label class="field-title" for="btn-add-confirm-file">육아휴직 확인서</label>
-        <div class="input-field" style="display: flex; align-items: center; gap: 10px;">
-            <input type="file" name="confirmFile" id="file-confirm" style="display: none;" 
-                   accept=".pdf,.jpg,.jpeg,.png,.gif,.hwp,.zip">
-            
-            <button type="button" class="btn btn-secondary" id="btn-add-confirm-file">파일 찾기</button>
-            
-            <%-- JSTL로 CONFIRM 파일 찾기 (DTO.files 사용) --%>
-            <c:set var="confirmFile" value="${null}" />
-            <c:if test="${not empty applicationDetailDTO.files}">
-                <c:forEach var="file" items="${applicationDetailDTO.files}">
-                    <c:if test="${empty confirmFile and file.fileType == 'CONFIRM'}">
-                        <c:set var="confirmFile" value="${file}" />
-                    </c:if>
-                </c:forEach>
-            </c:if>
-            
-            <%-- [JSTL 오류 수정] choose/when/otherwise 공백 제거 --%>
-            <c:choose><c:when test="${not empty confirmFile}">
-                <%-- [DTO 수정] file.fileUrl에서 파일명만 추출 --%>
-                <c:set var="urlParts" value="${fn:split(confirmFile.fileUrl, '/')}" />
-                <c:set var="fileName" value="${urlParts[fn:length(urlParts) - 1]}" />
 
-                <%-- 기존 파일이 있으면: display-box를 보여줌 --%>
-                <div class="file-display-box" id="file-confirm-display" style="display: flex;">
-				    <span><c:out value="${fileName}" /></span>
-				    <%-- [수정] data- 속성 추가 --%>
-				    <button type="button" class="btn-delete-file" data-target="file-confirm"
-				            data-is-existing="true"
-				            data-file-id="${confirmFile.fileId}"
-				            data-sequence="${confirmFile.sequence}">×</button>
-				</div>
-                <%-- placeholder는 숨김 --%>
-                <span id="file-confirm-placeholder" style="display: none;">
-                    선택) 선택된 파일이 없습니다.
-                </span>
-            </c:when><c:otherwise>
-                <%-- 기존 파일이 없으면: 기본 상태 (display-box 숨김, placeholder 표시) --%>
-                <div class="file-display-box" id="file-confirm-display" style="display: none;">
-                </div>
-                <span id="file-confirm-placeholder" style="color: var(--gray-color); font-size: 15px;">
-                    선택) 선택된 파일이 없습니다.
-                </span>
-            </c:otherwise></c:choose>
-        </div>
-    </div>
-    <%-- ▲▲▲ [수정] 육아휴직 확인서 섹션 끝 ▲▲▲ --%>
-	<br>
-
-    <%-- ▼▼▼ [수정] 기타 증빙서류 섹션 (DTO 반영) ▼▼▼ --%>
+    <%-- 1) 육아휴직 확인서 --%>
     <div class="form-group">
-        <label class="field-title">기타 증빙서류</label>
+        <label class="field-title">육아휴직 확인서</label>
         <div class="input-field">
-            <div id="other-files-list-container">
-                
-                <%-- [DTO 수정] applicationDetailDTO.files에서 'OTHER' 타입 파일 목록 렌더링 --%>
+
+            <%-- 숨겨진 실제 input (여기에서만 파일 선택) --%>
+            <input type="file"
+                   id="file-input-confirm"
+                   accept=".pdf,.jpg,.jpeg,.png,.gif,.hwp,.zip"
+                   multiple
+                   style="display:none;">
+
+            <button type="button"
+                    class="btn btn-secondary"
+                    id="btn-confirm-add">
+                파일 선택
+            </button>
+
+            <%-- 선택된 파일 목록 (알약 리스트) --%>
+            <div class="file-list" id="list-confirm">
+                <%-- 기존 저장된 CONFIRM 파일들을 pill로 렌더링 --%>
+                <c:set var="confirmCount" value="0" />
                 <c:if test="${not empty applicationDetailDTO.files}">
                     <c:forEach var="file" items="${applicationDetailDTO.files}">
-                        <c:if test="${file.fileType == 'OTHER'}">
-                            
-                            <%-- [DTO 수정] file.fileUrl에서 파일명만 추출 --%>
+                        <c:if test="${file.fileType == 'CONFIRM'}">
+                            <c:set var="confirmCount" value="${confirmCount + 1}" />
                             <c:set var="urlParts" value="${fn:split(file.fileUrl, '/')}" />
                             <c:set var="fileName" value="${urlParts[fn:length(urlParts) - 1]}" />
-
-                            <div class="other-file-row">
-                                <input type="file" name="otherFiles" class="other-file-input" style="display: none;" 
-                                       accept=".pdf,.jpg,.jpeg,.png,.gif,.hwp,.zip">
-                                
-                                <button type="button" class="btn btn-secondary btn-find-other-file">파일 찾기</button>
-                                
-                                <%-- 기존 파일명 표시 --%>
-                                <div class="file-display-box file-display-other" style="display: flex;">
-                                    <span><c:out value="${fileName}" /></span>
-                                </div>
-                                
-                                <%-- placeholder는 숨김 --%>
-                                <span class="other-file-placeholder" style="display: none;">
-                                    선택) 선택된 파일이 없습니다.
-                                </span>
-                                
-                                <%-- 이 행 삭제 버튼 --%>
-                                <button type="button" class="btn-delete-file btn-delete-other-row" 
-							        style="font-size: 28px; line-height: 1; padding: 0 5px; margin-left: 5px; color: #dc3545;" 
-							        title="이 행 삭제"
-							        data-is-existing="true"
-							        data-file-id="${file.fileId}"
-							        data-sequence="${file.sequence}">×</button>
+                            <div class="file-pill" data-existing="true">
+                                <span><c:out value="${fileName}" /></span>
+                                <button type="button"
+                                        class="file-remove-btn btn-delete-file"
+                                        data-is-existing="true"
+                                        data-type="CONFIRM"
+                                        data-file-id="${file.fileId}"
+                                        data-sequence="${file.sequence}">
+                                    &times;
+                                </button>
                             </div>
                         </c:if>
                     </c:forEach>
                 </c:if>
-                <%-- [수정] JSTL 반복 렌더링 끝 --%>
 
-                <%-- "새 파일 추가"를 위한 빈 행 (그대로 유지) --%>
-                <div class="other-file-row">
-                    <input type="file" name="otherFiles" class="other-file-input" style="display: none;" 
-                           accept=".pdf,.jpg,.jpeg,.png,.gif,.hwp,.zip">
-                    
-                    <button type="button" class="btn btn-secondary btn-find-other-file">파일 찾기</button>
-                    
-                    <div class="file-display-box file-display-other" style="display: none;">
-                    </div>
-                    
-                    <span class="other-file-placeholder" style="color: var(--gray-color); font-size: 15px;">
-                        선택) 선택된 파일이 없습니다.
-                    </span>
-                    
-                    <button type="button" class="btn-delete-file btn-delete-other-row" 
-                            style="font-size: 28px; line-height: 1; padding: 0 5px; margin-left: 5px; color: #dc3545;" 
-                            title="이 행 삭제">×</button>
-                </div>
-                
+                <c:if test="${confirmCount == 0}">
+                    <span class="file-empty">선택된 파일 없음</span>
+                </c:if>
             </div>
-            
-            <button type="button" id="btn-add-other-row" class="btn btn-secondary" 
-                    style="margin-top: 10px; background-color: var(--primary-light-color); color: var(--primary-color); border-color: #d1d9ff; font-weight: 500;">
-                + 파일 추가
-            </button>
         </div>
     </div>
-    <%-- ▲▲▲ [수정] 기타 증빙서류 섹션 끝 ▲▲▲ --%>
 
-    
-    <div class="info-box" style="font-size: 14px; margin-top: 10px;">
-        <strong>※ 첨부파일 안내</strong><br>
-        - 육아휴직 확인서는 확인서가 변경된 경우에만 첨부합니다. (PDF, JPG, PNG, HWP, ZIP 형식 권장)<br>
-        - 기타 증빙이 필요한 경우, '기타 증빙서류'로 여러 개의 파일을 첨부할 수 있습니다.<br>
-        - 파일명에 특수문자( \ / : * ? " < > | )는 사용할 수 없습니다.
+    <%-- 2) 기타 증빙서류 --%>
+    <div class="form-group">
+        <label class="field-title">첨부파일</label>
+        <div class="input-field">
+            <%-- 숨겨진 실제 input --%>
+            <input type="file"
+                   id="file-input-other"
+                   accept=".pdf,.jpg,.jpeg,.png,.gif,.hwp,.zip"
+                   multiple
+                   style="display:none;">
+
+            <button type="button"
+                    class="btn btn-secondary"
+                    id="btn-other-add">
+                파일 선택
+            </button>
+
+            <div class="file-list" id="list-other">
+                <%-- 기존 저장된 OTHER 파일들 pill 렌더링 --%>
+                <c:set var="otherCount" value="0" />
+                <c:if test="${not empty applicationDetailDTO.files}">
+                    <c:forEach var="file" items="${applicationDetailDTO.files}">
+                        <c:if test="${file.fileType == 'OTHER'}">
+                            <c:set var="otherCount" value="${otherCount + 1}" />
+                            <c:set var="urlParts" value="${fn:split(file.fileUrl, '/')}" />
+                            <c:set var="fileName" value="${urlParts[fn:length(urlParts) - 1]}" />
+                            <div class="file-pill" data-existing="true">
+                                <span><c:out value="${fileName}" /></span>
+                                <button type="button"
+                                        class="file-remove-btn btn-delete-file"
+                                        data-is-existing="true"
+                                        data-type="OTHER"
+                                        data-file-id="${file.fileId}"
+                                        data-sequence="${file.sequence}">
+                                    &times;
+                                </button>
+                            </div>
+                        </c:if>
+                    </c:forEach>
+                </c:if>
+
+                <c:if test="${otherCount == 0}">
+                    <span class="file-empty">선택된 파일 없음</span>
+                </c:if>
+            </div>
+
+            <div class="info-box" style="font-size: 14px; margin-top: 10px;">
+                <strong>※ 첨부파일 안내</strong><br>
+                - 육아휴직 확인서는 확인서가 변경된 경우에만 첨부합니다. (PDF, JPG, PNG, HWP, ZIP 형식 권장)<br>
+                - 기타 증빙이 필요한 경우, '기타 증빙서류'로 여러 개의 파일을 첨부할 수 있습니다.<br>
+                - 파일명에 특수문자( \ / : * ? " &lt; &gt; | )는 사용할 수 없습니다.
+            </div>
+        </div>
     </div>
 </div>
+
+
                         <div class="form-section">
                               <h2>행정정보 공동이용 동의서</h2>
                               
@@ -1746,229 +1861,298 @@ document.addEventListener('DOMContentLoaded', function () {
 	    });
 	}
 
-	// --- [1] 육아휴직 확인서 (단일 파일) ---
-	const btnConfirm = document.getElementById('btn-add-confirm-file');
-	const inputConfirm = document.getElementById('file-confirm');
-	const displayConfirm = document.getElementById('file-confirm-display');
-	const placeholderConfirm = document.getElementById('file-confirm-placeholder');
+	(function (){
 
-	if (btnConfirm && inputConfirm && displayConfirm && placeholderConfirm) {
-	    
-	    // "파일 찾기" 버튼 클릭 시, 숨겨진 input 클릭
-	    btnConfirm.addEventListener('click', function() {
-	        inputConfirm.click();
-	    });
+		  // ─────────────────────────────────────
+		  // 페이지 상태 (신규/수정 여부)
+		  // ─────────────────────────────────────
+		  const isUpdatePage = ${not empty applicationDetailDTO};
+		  let globalApplicationFileId = null; // 이 신청서의 master fileId
 
-	    // 파일이 선택되었을 때
-	    inputConfirm.addEventListener('change', function() {
-	        if (this.files && this.files.length > 0) {
-	            const file = this.files[0];
-	            // 파일명 표시 (삭제 버튼과 함께)
-	            displayConfirm.innerHTML = '<span>' + escapeHTML(file.name) + '</span>' +
-	                                       '<button type="button" class="btn-delete-file" data-target="file-confirm">×</button>';
-	            displayConfirm.style.display = 'flex';
-	            placeholderConfirm.style.display = 'none';
-	        } else {
-	            // (파일 선택 '취소' 시)
-	            inputConfirm.value = ''; // 값 초기화
-	            displayConfirm.innerHTML = '';
-	            displayConfirm.style.display = 'none';
-	            placeholderConfirm.style.display = 'inline';
-	        }
-	    });
+		  // 수정 페이지라면, 기존 파일에서 fileId 한 번 뽑아두기
+		  if (isUpdatePage) {
+		    const anyExistingBtn = document.querySelector('.btn-delete-file[data-is-existing="true"]');
+		    if (anyExistingBtn) {
+		      globalApplicationFileId = anyExistingBtn.dataset.fileId;
+		    }
+		  }
 
-	    // 파일 삭제 버튼 (이벤트 위임)
-	    displayConfirm.addEventListener('click', function(e) {
-	        if (e.target.classList.contains('btn-delete-file')) {
-	            e.preventDefault();
+		  // ▼ 이미 위쪽에 있던 escapeHTML, onlyDigits, withCommas 등 유틸/검증/기간 스크립트는 그대로 유지 ▼
+		  // (그 부분은 건드리지 말고, "파일 관련" 부분만 이걸로 바꾸면 됨)
 
-	            const btn = e.target;
-	            const isExisting = btn.dataset.isExisting === 'true';
 
-	            // [★★ 수정: 수정 페이지이고, 기존 파일일 경우 AJAX 삭제 ★★]
-	            if (isUpdatePage && isExisting) {
-	                // 1. 기존 파일 (AJAX 삭제)
-	                const fileId = btn.dataset.fileId;
-	                const sequence = btn.dataset.sequence;
+		  /* ================================
+		   *  1. 파일 저장소 (새로 추가되는 파일)
+		   * ================================ */
+		  const FILE_STORE = {
+		    CONFIRM: [],  // 육아휴직 확인서
+		    OTHER: []     // 기타 증빙서류
+		  };
 
-	                if (!fileId || !sequence) {
-	                    alert('파일 정보를 찾을 수 없습니다.');
-	                    return;
-	                }
+		  function updateEmptyState(type) {
+		    const listEl = document.getElementById(
+		      type === 'CONFIRM' ? 'list-confirm' : 'list-other'
+		    );
+		    if (!listEl) return;
 
-	                $.ajax({
-	                    url: '${pageContext.request.contextPath}/file/delete-one',
-	                    type: 'POST',
-	                    data: {
-	                        fileId: fileId,
-	                        sequence: sequence,
-	                        removePhysical: true 
-	                    },
-	                    success: function(response) {
-	                        if (response && response.deleted > 0) {
-	                            // 성공 시 DOM에서 제거
-	                            inputConfirm.value = ''; 
-	                            displayConfirm.innerHTML = '';
-	                            displayConfirm.style.display = 'none';
-	                            placeholderConfirm.style.display = 'inline';
-	                        } else {
-	                            alert('파일 삭제에 실패했습니다. (서버 응답 오류)');
-	                        }
-	                    },
-	                    error: function(xhr, status, error) {
-	                        console.error("File delete failed:", status, error);
-	                        alert('파일 삭제 중 오류가 발생했습니다.');
-	                    }
-	                });
+		    const hasExisting = listEl.querySelectorAll('.file-pill[data-existing="true"]').length > 0;
+		    const hasNew      = listEl.querySelectorAll('.file-pill[data-new="true"]').length > 0;
 
-	            } else {
-	                // 2. 새로 추가한 파일 (AJAX 불필요)
-	                inputConfirm.value = ''; // 파일 선택 초기화
-	                displayConfirm.innerHTML = '';
-	                displayConfirm.style.display = 'none';
-	                placeholderConfirm.style.display = 'inline';
-	            }
-	        }
-	    });
-	}
+		    let emptySpan = listEl.querySelector('.file-empty');
+		    if (!emptySpan) {
+		      emptySpan = document.createElement('span');
+		      emptySpan.className = 'file-empty';
+		      emptySpan.textContent = '선택된 파일이 없습니다.';
+		      listEl.appendChild(emptySpan);
+		    }
+		    emptySpan.style.display = (hasExisting || hasNew) ? 'none' : 'inline';
+		  }
 
-	// --- [2] 기타 증빙서류 (다중 파일) ---
-	// --- [★★ 수정] 기타 증빙서류 (동적 행 추가) ---
-const filesContainer = document.getElementById('other-files-list-container');
-const btnAddRow = document.getElementById('btn-add-other-row');
+		  function renderNewFiles(type) {
+		    const listEl = document.getElementById(
+		      type === 'CONFIRM' ? 'list-confirm' : 'list-other'
+		    );
+		    if (!listEl) return;
 
-// 1. 새 파일 행을 생성하는 함수
-function createOtherFileRow() {
-    const row = document.createElement('div');
-    row.className = 'other-file-row';
-    
-    // (escapeHTML은 이미 스크립트 상단에 정의되어 있음)
-    row.innerHTML = `
-        <input type="file" name="otherFiles" class="other-file-input" style="display: none;" 
-               accept=".pdf,.jpg,.jpeg,.png,.gif,.hwp,.zip">
-        
-        <button type="button" class="btn btn-secondary btn-find-other-file">파일 찾기</button>
-        
-        <div class="file-display-box file-display-other" style="display: none;">
-            </div>
-        
-        <span class="other-file-placeholder" style="color: var(--gray-color); font-size: 15px;">
-            선택) 선택된 파일이 없습니다.
-        </span>
-        
-        <button type="button" class="btn-delete-file btn-delete-other-row" 
-                style="font-size: 28px; line-height: 1; padding: 0 5px; margin-left: 5px; color: #dc3545;" 
-                title="이 행 삭제">×</button>
-    `;
-    return row;
-}
+		    // 새 파일 알약만 싹 지우고 다시 그림
+		    listEl.querySelectorAll('.file-pill[data-new="true"]').forEach(el => el.remove());
 
-// 2. "+ 파일 추가" 버튼 클릭 이벤트
-if (btnAddRow && filesContainer) {
-    btnAddRow.addEventListener('click', function() {
-        const newRow = createOtherFileRow();
-        filesContainer.appendChild(newRow);
-    });
-}
+		    const arr = FILE_STORE[type];
+		    arr.forEach((file, idx) => {
+		      const pill = document.createElement('div');
+		      pill.className = 'file-pill';
+		      pill.dataset.new = 'true';
 
-// 3. 컨테이너에 이벤트 위임 (동적으로 생성된 행 처리)
-if (filesContainer) {
-    filesContainer.addEventListener('click', function(e) {
-        const target = e.target;
-        const row = target.closest('.other-file-row');
-        if (!row) return;
+		      const sizeMb = (file.size / 1024 / 1024).toFixed(1);
+		      const labelSpan = document.createElement('span');
 
-        // 3-1. "파일 찾기" 버튼 클릭
-        if (target.classList.contains('btn-find-other-file')) {
-            const fileInput = row.querySelector('.other-file-input');
-            if (fileInput) fileInput.click();
-        }
-        
-        // 3-2. "이 행 삭제" (빨간 X) 버튼 클릭
-        if (target.classList.contains('btn-delete-other-row')) {
-            const btn = target;
-            const isExisting = btn.dataset.isExisting === 'true';
-            
-            // [★★ 수정: 수정 페이지이고, 기존 파일일 경우 AJAX 삭제 ★★]
-            if (isUpdatePage && isExisting) {
-                // 1. 기존 파일 (AJAX 삭제)
-                const fileId = btn.dataset.fileId;
-                const sequence = btn.dataset.sequence;
+		      const fileName = extractFileName(file.name || file);
+		      labelSpan.textContent = fileName + ' (' + sizeMb + 'MB)';
 
-                if (!fileId || !sequence) {
-                    alert('파일 정보를 찾을 수 없습니다.');
-                    return;
-                }
+		      const btn = document.createElement('button');
+		      btn.type = 'button';
+		      btn.className = 'file-remove-btn';
+		      btn.innerHTML = '&times;';
 
-                $.ajax({
-                    url: '${pageContext.request.contextPath}/file/delete-one',
-                    type: 'POST',
-                    data: {
-                        fileId: fileId,
-                        sequence: sequence,
-                        removePhysical: true 
-                    },
-                    success: function(response) {
-                        if (response && response.deleted > 0) {
-                            // 성공 시 DOM에서 제거
-                            row.remove();
-                        } else {
-                            alert('파일 삭제에 실패했습니다. (서버 응답 오류)');
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("File delete failed:", status, error);
-                        alert('파일 삭제 중 오류가 발생했습니다.');
-                    }
-                });
+		      btn.addEventListener('click', () => {
+		        FILE_STORE[type].splice(idx, 1);
+		        renderNewFiles(type);
+		      });
 
-            } else {
-                // 2. 새로 추가한 행 (AJAX 불필요)
-                row.remove();
-            }
-        }
-        
-        // 3-3. "파일명 옆 X" (파일 초기화) 버튼 클릭 (display-box 안에 있는 버튼)
-        const displayBox = row.querySelector('.file-display-other');
-        if (displayBox && displayBox.contains(target) && target.classList.contains('btn-delete-file')) {
-            e.preventDefault(); 
-            const fileInput = row.querySelector('.other-file-input');
-            const placeholder = row.querySelector('.other-file-placeholder');
-            
-            if (fileInput) fileInput.value = ''; // 파일 선택 초기화
-            displayBox.innerHTML = '';
-            displayBox.style.display = 'none';
-            if (placeholder) placeholder.style.display = 'inline';
-        }
-    });
+		      pill.appendChild(labelSpan);
+		      pill.appendChild(btn);
+		      listEl.appendChild(pill);
+		    });
 
-    // 4. 'change' 이벤트 위임 (파일 선택 시)
-    filesContainer.addEventListener('change', function(e) {
-        const target = e.target;
-        if (target.classList.contains('other-file-input')) {
-            const row = target.closest('.other-file-row');
-            if (!row) return;
-            
-            const displayBox = row.querySelector('.file-display-other');
-            const placeholder = row.querySelector('.other-file-placeholder');
-            
-            if (target.files && target.files.length > 0) {
-                const file = target.files[0];
-                displayBox.innerHTML = '<span>' + escapeHTML(file.name) + '</span>' +
-                                     '<button type="button" class="btn-delete-file">×</button>';
-                displayBox.style.display = 'flex';
-                if (placeholder) placeholder.style.display = 'none';
-            } else {
-                // (파일 선택 '취소' 시)
-                if (target) target.value = ''; // 값 초기화
-                displayBox.innerHTML = '';
-                displayBox.style.display = 'none';
-                if (placeholder) placeholder.style.display = 'inline';
-            }
-        }
-    });
-}
-// --- [★★ 수정] 기타 증빙서류 로직 끝 ---
+		    updateEmptyState(type);
+		  }
+
+
+		  /* ================================
+		   *  2. "파일 선택" 버튼 → 숨겨진 input 클릭
+		   * ================================ */
+		  const inputConfirm = document.getElementById('file-input-confirm');
+		  const inputOther   = document.getElementById('file-input-other');
+		  const btnConfirm   = document.getElementById('btn-confirm-add');
+		  const btnOther     = document.getElementById('btn-other-add');
+
+		  if (btnConfirm && inputConfirm) {
+		    btnConfirm.addEventListener('click', () => inputConfirm.click());
+		    inputConfirm.addEventListener('change', function () {
+		      const files = Array.from(this.files || []);
+		      files.forEach(f => FILE_STORE.CONFIRM.push(f));
+		      renderNewFiles('CONFIRM');
+		      this.value = ''; // 같은 파일 다시 선택 가능
+		    });
+		  }
+
+		  if (btnOther && inputOther) {
+		    btnOther.addEventListener('click', () => inputOther.click());
+		    inputOther.addEventListener('change', function () {
+		      const files = Array.from(this.files || []);
+		      files.forEach(f => FILE_STORE.OTHER.push(f));
+		      renderNewFiles('OTHER');
+		      this.value = '';
+		    });
+		  }
+
+
+		  /* ==============================================
+		   *  3. 기존 파일(X) 눌렀을 때 → AJAX로 바로 삭제
+		   * ============================================== */
+		  document.addEventListener('click', function (e) {
+		    const btn = e.target.closest('.btn-delete-file[data-is-existing="true"]');
+		    if (!btn) return;
+
+		    e.preventDefault();
+
+		    const fileId   = btn.dataset.fileId;
+		    const sequence = btn.dataset.sequence;
+		    const type     = btn.dataset.type; // CONFIRM / OTHER
+
+		    if (!fileId || !sequence) {
+		      alert('파일 정보를 찾을 수 없습니다.');
+		      return;
+		    }
+
+		    $.ajax({
+		      url: '${pageContext.request.contextPath}/file/delete-one',
+		      type: 'POST',
+		      data: {
+		        fileId: fileId,
+		        sequence: sequence,
+		        removePhysical: true
+		      },
+		      success: function (response) {
+		        if (response && response.deleted > 0) {
+		          const pill = btn.closest('.file-pill');
+		          if (pill) pill.remove();
+		          updateEmptyState(type);
+		        } else {
+		          alert('파일 삭제에 실패했습니다. (서버 응답 오류)');
+		        }
+		      },
+		      error: function (xhr, status, error) {
+		        console.error("File delete failed:", status, error);
+		        alert('파일 삭제 중 오류가 발생했습니다.');
+		      }
+		    });
+		  });
+
+		  // 초기 상태 정리 (기존 파일만 있는 상태에서 '선택된 파일이 없습니다' 숨기기)
+		  updateEmptyState('CONFIRM');
+		  updateEmptyState('OTHER');
+
+
+		  /* ======================================
+		   *  4. 폼 submit 시 AJAX 업로드
+		   * ====================================== */
+		  const form = document.getElementById('main-form');
+
+		  if (form) {
+		    form.addEventListener('submit', function (e) {
+		      e.preventDefault();
+		      const submitter = e.submitter;
+
+		      // 기존 검증 함수 그대로 사용
+		      if (!validateAndFocus()) {
+		        return;
+		      }
+		      if (submitter) submitter.disabled = true;
+
+		      // [AJAX] 3. 파일 데이터 준비 (새 구조)
+		      const formData = new FormData();
+		      let hasFiles = false;
+
+		      FILE_STORE.CONFIRM.forEach(file => {
+		        formData.append('files', file);
+		        formData.append('fileTypes', 'CONFIRM');
+		        hasFiles = true;
+		      });
+
+		      FILE_STORE.OTHER.forEach(file => {
+		        formData.append('files', file);
+		        formData.append('fileTypes', 'OTHER');
+		        hasFiles = true;
+		      });
+
+		      // 4. 파일 업로드 분기 (기존 로직 재사용)
+		      if (hasFiles) {
+		        if (isUpdatePage) {
+		          // A. 수정 페이지
+		          if (globalApplicationFileId) {
+		            // 기존 fileId 있음 → append
+		            formData.append('fileId', globalApplicationFileId);
+
+		            $.ajax({
+		              url: '${pageContext.request.contextPath}/file/append',
+		              type: 'POST',
+		              data: formData,
+		              processData: false,
+		              contentType: false,
+		              success: function (response) {
+		                if (response && response.ok) {
+		                  processAndSubmitForm(submitter); // 기존 함수 그대로 사용
+		                } else {
+		                  alert('파일 추가에 실패했습니다.');
+		                  if (submitter) submitter.disabled = false;
+		                }
+		              },
+		              error: function (xhr, status, error) {
+		                console.error("File append failed:", status, error);
+		                alert('파일 추가 중 오류가 발생했습니다.');
+		                if (submitter) submitter.disabled = false;
+		              }
+		            });
+
+		          } else {
+		            // 수정 페이지인데 최초 업로드 → upload
+		            $.ajax({
+		              url: '${pageContext.request.contextPath}/file/upload',
+		              type: 'POST',
+		              data: formData,
+		              processData: false,
+		              contentType: false,
+		              success: function (response) {
+		                if (response && response.fileId) {
+		                  const hidden = document.createElement('input');
+		                  hidden.type = 'hidden';
+		                  hidden.name = 'fileId';
+		                  hidden.value = response.fileId;
+		                  form.appendChild(hidden);
+		                  processAndSubmitForm(submitter);
+		                } else {
+		                  alert('파일 ID를 받지 못했습니다. 업로드에 실패했습니다.');
+		                  if (submitter) submitter.disabled = false;
+		                }
+		              },
+		              error: function (xhr, status, error) {
+		                console.error("File upload failed:", status, error);
+		                alert('파일 업로드 중 오류가 발생했습니다.');
+		                if (submitter) submitter.disabled = false;
+		              }
+		            });
+		          }
+		        } else {
+		          // B. 신규 작성 페이지
+		          $.ajax({
+		            url: '${pageContext.request.contextPath}/file/upload',
+		            type: 'POST',
+		            data: formData,
+		            processData: false,
+		            contentType: false,
+		            success: function (response) {
+		              if (response && response.fileId) {
+		                const hidden = document.createElement('input');
+		                hidden.type = 'hidden';
+		                hidden.name = 'fileId';
+		                hidden.value = response.fileId;
+		                form.appendChild(hidden);
+		                processAndSubmitForm(submitter);
+		              } else {
+		                alert('파일 ID를 받지 못했습니다. 업로드에 실패했습니다.');
+		                if (submitter) submitter.disabled = false;
+		              }
+		            },
+		            error: function (xhr, status, error) {
+		              console.error("File upload failed:", status, error);
+		              alert('파일 업로드 중 오류가 발생했습니다.');
+		              if (submitter) submitter.disabled = false;
+		            }
+		          });
+		        }
+		      } else {
+		        // 새 파일이 없으면 바로 폼 처리/제출
+		        processAndSubmitForm(submitter);
+		      }
+
+		    }); // form submit end
+		  }
+
+		  // ↓ 이하 신청 기간 / 조기복직 / 검증 / 센터 모달 등 기존 스크립트는 그대로 유지 ↓
+
+	})();
+
   // ─────────────────────────────────────
   // 공통 유틸 함수
   // ─────────────────────────────────────
@@ -2036,6 +2220,19 @@ if (filesContainer) {
     el.addEventListener('input', () => {
       el.value = (el.value || '').replace(/[^\d]/g, '');
     });
+  }
+//파일명만 추출
+  function extractFileName(raw) {
+    if (!raw) return '';
+
+    // File 객체인 경우
+    if (raw instanceof File) return raw.name;
+
+    // 나머지는 문자열로 보고 처리
+    const s = String(raw);
+    // / 또는 \ 기준으로 잘라서 마지막만
+    const parts = s.split(/[\\/]/);
+    return parts[parts.length - 1];
   }
   
   
@@ -2323,153 +2520,6 @@ if (filesContainer) {
           if (submitter) submitter.disabled = false; // 오류 시 버튼 복원
       }
     }
-
-
-    // 2. 메인 폼 이벤트 리스너 (AJAX 로직 추가)
-    if (form) {
-      form.addEventListener('submit', function(e) {
-          
-          // [공통] 0. 기본 폼 제출 방지
-          e.preventDefault();
-          const submitter = e.submitter; // 클릭된 버튼 (submit/update)
-
-          // [공통] 1. 유효성 검사
-          if (!validateAndFocus()) {
-              return; 
-          }
-          
-          // [공통] 2. 제출 버튼 비활성화
-          if (submitter) submitter.disabled = true;
-
-          // [AJAX] 3. 파일 데이터 준비
-          const fileInputConfirm = document.getElementById('file-confirm');
-          const otherFileInputs = document.querySelectorAll('.other-file-input');
-
-          const formData = new FormData();
-          let hasFiles = false;
-          
-          // '육아휴직 확인서' 파일 추가 (새로 선택된 경우)
-          if (fileInputConfirm.files.length > 0) {
-              formData.append('files', fileInputConfirm.files[0]);
-              formData.append('fileTypes', 'CONFIRM'); 
-              hasFiles = true;
-          }
-
-          // '기타 증빙서류' 파일들 추가 (새로 선택된 경우)
-          otherFileInputs.forEach(input => {
-              if (input.files.length > 0) {
-                  formData.append('files', input.files[0]); 
-                  formData.append('fileTypes', 'OTHER'); 
-                  hasFiles = true;
-              }
-          });
-
-          // [★★ 수정: 4. 파일 업로드 분기 ★★]
-          if (hasFiles) {
-              
-              if (isUpdatePage) {
-                  // [A. 수정 페이지 로직]
-                  if (globalApplicationFileId) {
-                      // A-1. 기존 fileId가 있음 -> /file/append 호출
-                      formData.append('fileId', globalApplicationFileId);
-                      
-                      $.ajax({
-                          url: '${pageContext.request.contextPath}/file/append', // <-- 수정용 API
-                          type: 'POST',
-                          data: formData,
-                          processData: false, 
-                          contentType: false, 
-                          success: function(response) {
-                              if (response && response.ok) {
-                                  // 파일 추가 성공. 메인 폼 제출
-                                  processAndSubmitForm(submitter);
-                              } else {
-                                  alert('파일 추가에 실패했습니다.');
-                                  if (submitter) submitter.disabled = false;
-                              }
-                          },
-                          error: function(xhr, status, error) {
-                              console.error("File append failed:", status, error);
-                              alert('파일 추가 중 오류가 발생했습니다.');
-                              if (submitter) submitter.disabled = false; 
-                          }
-                      });
-                      
-                  } else {
-                      // A-2. 기존 fileId가 없음 (수정 페이지지만 파일이 0개였음) -> /file/upload 호출 (신규와 동일)
-                      $.ajax({
-                          url: '${pageContext.request.contextPath}/file/upload', // <-- 신규용 API
-                          type: 'POST',
-                          data: formData,
-                          processData: false,
-                          contentType: false,
-                          success: function(response) {
-                              if (response && response.fileId) {
-                                  // 새 fileId를 폼에 추가
-                                  const fileIdInput = document.createElement('input');
-                                  fileIdInput.type = 'hidden';
-                                  fileIdInput.name = 'fileId'; 
-                                  fileIdInput.value = response.fileId;
-                                  form.appendChild(fileIdInput);
-                                  
-                                  // 메인 폼 제출
-                                  processAndSubmitForm(submitter);
-                              } else {
-                                  alert('파일 ID를 받지 못했습니다. 업로드에 실패했습니다.');
-                                  if (submitter) submitter.disabled = false;
-                              }
-                          },
-                          error: function(xhr, status, error) {
-                              console.error("File upload failed:", status, error);
-                              alert('파일 업로드 중 오류가 발생했습니다.');
-                              if (submitter) submitter.disabled = false;
-                          }
-                      });
-                  }
-              
-              } else {
-                  // [B. 신규 작성 페이지 로직] (기존 로직)
-                  $.ajax({
-                      url: '${pageContext.request.contextPath}/file/upload',
-                      type: 'POST',
-                      data: formData,
-                      processData: false,
-                      contentType: false,
-                      success: function(response) {
-                          if (response && response.fileId) {
-                              const fileIdInput = document.createElement('input');
-                              fileIdInput.type = 'hidden';
-                              fileIdInput.name = 'fileId'; 
-                              fileIdInput.value = response.fileId;
-                              form.appendChild(fileIdInput);
-                              processAndSubmitForm(submitter);
-                          } else {
-                              alert('파일 ID를 받지 못했습니다. 업로드에 실패했습니다.');
-                              if (submitter) submitter.disabled = false;
-                          }
-                      },
-                      error: function(xhr, status, error) {
-                          console.error("File upload failed:", status, error);
-                          let errorMsg = '파일 업로드 중 오류가 발생했습니다.';
-                          if (xhr.responseText) {
-                              try {
-                                  const err = JSON.parse(xhr.responseText);
-                                  errorMsg += '\n' + (err.message || err.error || '서버 오류');
-                              } catch(e) {
-                                  errorMsg += '\n서버 응답을 처리할 수 없습니다.';
-                              }
-                          }
-                          alert(errorMsg);
-                          if (submitter) submitter.disabled = false;
-                      }
-                  });
-              }
-          } else {
-              // 4-B. 업로드할 파일이 없는 경우 (AJAX 스킵)
-              processAndSubmitForm(submitter);
-          }
-      });
-  }
   
   // ─────────────────────────────────────
   // Enter로 인한 오제출 방지 (변경 없음)
