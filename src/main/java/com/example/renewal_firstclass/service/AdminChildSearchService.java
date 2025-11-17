@@ -44,40 +44,16 @@ public class AdminChildSearchService {
         
         // 검색 조건에 맞는 게시물 조회
         int totalCnt = adminChildSearchDAO.countChildSearch(search);
-        pageDTO.setTotalCnt(totalCnt); // PageDTO에 총 개수 설정 -> 페이징 계산 완료
+        pageDTO.setTotalCnt(totalCnt); 
         
         List<AdminChildListDTO> childList = adminChildSearchDAO.selectChildSearch(search);
         
-        // 각 신청서에 대한 단위 기간 조회
-        /*for (AdminChildListDTO dto : childList) {
-            if (dto.getChildResiRegiNumber() != null && !dto.getChildResiRegiNumber().isEmpty()) {
-                try {
-                    String decryptedRrn = aes256Util.decrypt(dto.getChildResiRegiNumber());
-                    dto.setChildResiRegiNumber(decryptedRrn); // DTO의 값을 복호화된 값으로 교체
-                } catch (Exception e) {
-                    // e.printStackTrace(); // 복호화 실패 시 로그
-                    dto.setChildResiRegiNumber("복호화 오류");
-                }
-            }
-
-            
-            if (dto.getConfirmNumber() != null) {
-                // 수정된 단위기간(update_at='Y') 있는지 확인
-                List<TermAmountDTO> terms = adminChildSearchDAO.selectUpdatedTermAmounts(dto.getConfirmNumber());
-
-                if (terms == null || terms.isEmpty()) {
-                    terms = adminChildSearchDAO.selectOriginalTermAmounts(dto.getConfirmNumber());
-                }
-                dto.setList(terms);
-            }
-        }*/
         for (AdminChildListDTO dto : childList) {
             if (dto.getChildResiRegiNumber() != null && !dto.getChildResiRegiNumber().isEmpty()) {
                 try {
                     String decryptedRrn = aes256Util.decrypt(dto.getChildResiRegiNumber());
-                    dto.setChildResiRegiNumber(decryptedRrn); // DTO의 값을 복호화된 값으로 교체
+                    dto.setChildResiRegiNumber(decryptedRrn); 
                 } catch (Exception e) {
-                    // e.printStackTrace(); // 복호화 실패 시 로그
                     dto.setChildResiRegiNumber("복호화 오류");
                 }
             }

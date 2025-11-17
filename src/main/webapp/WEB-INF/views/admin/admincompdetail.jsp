@@ -168,7 +168,7 @@ textarea.form-control { resize: vertical; }
 .modal-buttons {
     display:flex;justify-content:flex-end;gap:10px;margin-top:30px;
 }
-/* [추가] 하이라이팅을 위한 CSS 클래스 */
+/* 하이라이팅을 위한 CSS 클래스 */
 .highlight-warning {
     background-color: #f8d7da; /* 부드러운 빨간색 배경 */
     color: var(--danger-color); /* 진한 빨간색 텍스트 */
@@ -177,8 +177,7 @@ textarea.form-control { resize: vertical; }
     border-radius: 4px;
 }
 
-/* ===== 진행 상태 카드 ===== */
-	  /* ===== 진행 상태 카드 (Step Progress Bar) ===== */
+	/* ===== 진행 상태 카드 ===== */
 	  .progress-card {
 	    background: #fff;
 	    border: 1px solid var(--border-color);
@@ -188,7 +187,6 @@ textarea.form-control { resize: vertical; }
 	    box-shadow: var(--shadow-lg);
 	  }
 	
-	  /* ===== 진행 상태 바 개선 ===== */
 	.stepper-wrapper {
 	  display: flex;
 	  justify-content: space-between;
@@ -234,7 +232,6 @@ textarea.form-control { resize: vertical; }
 	  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 	}
 	
-	/* 단계 텍스트(결과대기 포함) 정렬 수정 */
 	.step-name {
 	  font-size: 14px;
 	  color: #333;
@@ -254,7 +251,7 @@ textarea.form-control { resize: vertical; }
 	  box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.2);
 	}
 	
-	/* 결과대기(아직 미완료) 상태 기본 */
+	/* 결과대기 상태 */
 	.stepper-item.waiting .step-counter {
 	  background-color: #dcdcdc;
 	  color: #999;
@@ -280,14 +277,13 @@ textarea.form-control { resize: vertical; }
 .judge-wrap {
   display: flex;
   align-items: center;
-  gap: 16px;             /* 라디오들 사이 간격 */
+  gap: 16px;             
   margin: 12px 0 16px;   /* 위/아래 마진 */
 }
 .judge-wrap input[type="radio"] {
-  margin-right: 6px;     /* 아이콘과 텍스트 사이 */
+  margin-right: 6px;     
 }
 
-/* ==== [추가] 버튼 리뉴얼 ==== */
 .btn{
   display:inline-flex; align-items:center; justify-content:center;
   gap:8px; padding:12px 18px; font-size:15px; font-weight:600;
@@ -306,7 +302,7 @@ textarea.form-control { resize: vertical; }
 .btn-ghost:hover{ background: var(--light-gray-color); color: var(--dark-gray-color); }
 .btn-lg{ padding:14px 24px; font-size:16px; border-radius:14px; }
 
-/* ==== [수정] 하단 버튼 바 ==== */
+/* ==== 하단 버튼 바 ==== */
 .action-bar{
   margin-top:40px;
   text-align: center;
@@ -346,10 +342,8 @@ textarea.form-control { resize: vertical; }
 }
 
 
-/* ==== [추가] 반려/부지급 사유 영역 ==== */
+/* ==== 반려/부지급 사유 영역 ==== */
 
-/* === RejectForm 레이아웃 컴팩트 (라벨 옆 공백 제거) === */
-/* === 반려 폼: 라벨-인풋 간 공백 최소화 & 정렬 안정화 === */
 #rejectForm{
   display:block;
   margin-top:10px; padding:10px 12px;
@@ -366,14 +360,12 @@ textarea.form-control { resize: vertical; }
   margin:8px 0 !important;
 }
 
-/* 라벨은 딱 맞게, 줄바꿈 금지 */
 #rejectForm label{
   margin:0 !important;
   white-space:nowrap !important;
   font-weight:700; color:#334155;
 }
 
-/* 컨트롤 기본 사이즈 */
 #rejectForm .form-control{
   width:100%;
   padding:10px 12px !important;
@@ -384,7 +376,7 @@ textarea.form-control { resize: vertical; }
 /* 셀렉트가 폭을 벌리는 문제 제거 */
 #rejectForm select{ min-width:0 !important; }
 
-/* === 상세사유만 라벨 위 / textarea 아래 (스택) === */
+/* === 상세사유만 라벨 위 / textarea 아래  === */
 #rejectForm .form-row.row-detail{ align-items: start; }
 #rejectForm .form-row.row-detail label{ margin:0 !important; }
 #rejectForm .form-row.row-detail .form-control{ grid-column: 2; }
@@ -405,7 +397,6 @@ textarea.form-control { resize: vertical; }
   background: #d6ecde;
 }
 
-/* 수정폼 테이블은 행 높이를 살짝 컴팩트하게 */
 .info-table.edit-table th,
 .info-table.edit-table td {
   padding: 10px 10px;
@@ -448,18 +439,17 @@ textarea.form-control { resize: vertical; }
 
 
 
-/* 헤더는 기본은 안 보이게 → JS에서 flex로 바꿈 */
 #edit-dynamic-header-row{
   display:none;
   font-weight:600;
   margin-bottom:8px;
 }
 
-/* 안내 문구 스타일 (테이블 아래) */
+/* 안내 문구 스타일 */
 .term-edit-notice{
   display:block;
   margin-top:8px;
-  color:#155724;   /* 초록 계열 글자 */
+  color:#155724;   
   font-size:13px;
   line-height:1.5;
 }
@@ -879,9 +869,7 @@ textarea.form-control { resize: vertical; }
   </div>
 
 <!-- 월별 지급 내역 (수정/재계산) -->
-<!-- 월별 지급 내역 (수정/재계산) -->
 <div class="info-table-container">
-  <!-- 제목 + 버튼 한 줄 -->
   <div class="term-edit-header">
     <h2 class="section-title">월별 지급 내역 (수정)</h2>
     <button type="button" id="generate-edit-forms-btn" class="btn btn-outline">
@@ -1033,7 +1021,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const ctx = '${pageContext.request.contextPath}';
     const confirmNumber = document.getElementById("confirmNumber")?.value;
 
-    // ===== 단위기간 초기 데이터 (이미 저장된 수정본 표시용) =====
+    // 단위기간 초기 데이터 (이미 저장된 수정본 표시용)
     const initialData = {
         termAmounts: ${gson.toJson(confirmDTO.updatedTermAmounts)} || [],
         originalTermAmounts: ${gson.toJson(confirmDTO.termAmounts)} || []
@@ -1046,7 +1034,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const editFormsContainer   = document.getElementById('edit-dynamic-forms-container');
     const updateBtn            = document.getElementById('updateBtn');
 
-    // ===== 숫자/날짜 유틸 =====
+    //  숫자/날짜 유틸
     function withCommas(s){return String(s).replace(/\B(?=(\d{3})+(?!\d))/g, ',');}
     function onlyDigits(s){return (s||'').replace(/[^\d]/g,'');}
 
@@ -1089,7 +1077,7 @@ document.addEventListener("DOMContentLoaded", function() {
         return nextPeriodStart;
     }
 
-    // ===== 단위기간 폼 갱신 (수정 영역) =====
+    // 단위기간 폼 갱신 (수정 영역)
     function updateTermRows(termAmounts){
         editFormsContainer.innerHTML = '';
 
@@ -1133,7 +1121,7 @@ document.addEventListener("DOMContentLoaded", function() {
         updateTermRows(initialData.termAmounts);
     }
 
-    // ===== 기간 나누기 버튼 =====
+    // 기간 나누기 버튼
 generateEditBtn?.addEventListener('click', function(){
     if (!editStartDateInput.value || !editEndDateInput.value){
         alert('육아휴직 시작일과 종료일을 먼저 입력하세요.');
@@ -1202,7 +1190,7 @@ editEndDateInput?.addEventListener('change', function(){
 });
 
 
-    // ===== 수정 저장 버튼 (단위기간 + upd* 필드 저장) =====
+    // ===== 수정 저장 버튼 이벤트 (단위기간 + upd* 필드 저장) =====
     updateBtn?.addEventListener("click", function(){
         if (!confirmNumber){
             alert('확인서 번호를 확인할 수 없습니다.');
@@ -1327,7 +1315,7 @@ editEndDateInput?.addEventListener('change', function(){
         });
     }
 
-    // 확인 버튼: 접수/반려 확정
+    // 확인 버튼이벤트 - 접수/반려 확정
     confirmBtn?.addEventListener('click', function(){
         if (!confirmNumber){
             alert('확인서 번호를 확인할 수 없습니다.');

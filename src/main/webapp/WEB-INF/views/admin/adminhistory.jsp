@@ -15,7 +15,7 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
 <style>
-	/* ==== 기본 및 변수 (File 1 스타일) ==== */
+	/* ==== 기본 및 변수 ==== */
 	:root {
 		--primary-color: #3f58d4;
 		--primary-light-color: #f0f2ff;
@@ -55,7 +55,6 @@
 		padding: 0;
 	}
 
-	/* 페이지 제목 (File 1 스타일) */
 	h2 {
 		font-size: 1.75rem;
 		font-weight: 700;
@@ -67,7 +66,7 @@
 		margin-bottom: 1.5rem;
 	}
 	
-	/* ==== 검색 폼 (File 1 필터 스타일) ==== */
+	/* ==== 검색 폼  ==== */
 	.search-form {
 		background: var(--white-color);
 		border: none;
@@ -77,7 +76,7 @@
 		margin-bottom: 1.5rem;
 	}
 
-	/* 폼 내부 레이아웃 (Bootstrap .row, .col 대체) */
+	/* 폼 내부 레이아웃  */
 	#searchForm .row {
 		display: flex;
 		flex-wrap: wrap;
@@ -100,7 +99,7 @@
 		gap: 0.5rem;
 	}
 
-	/* 폼 요소 (File 1 스타일) */
+	/* 폼 요소  */
 	.search-form .form-label {
 		font-size: .9rem;
 		font-weight: 500;
@@ -132,7 +131,7 @@
 		box-shadow: 0 0 0 3px var(--primary-light-color);
 	}
 
-	/* 폼 버튼 (File 1 스타일) */
+	/* 폼 버튼  */
 	.search-form button {
 		display: inline-flex;
 		align-items: center;
@@ -155,7 +154,7 @@
 		background-color: #f8f9fa;
 	}
 	
-	/* '검색' 버튼 (주 버튼) */
+	/* 검색 버튼  */
 	.search-form button[type="submit"] {
 		background: var(--primary-color);
 		border-color: var(--primary-color);
@@ -168,7 +167,7 @@
 		color: var(--white-color);
 	}
 	
-	/* ==== 탭 메뉴 (File 1 스타일 기반) ==== */
+	/* ==== 탭 메뉴  ==== */
 	#actionTypeTabs {
 		display: flex;
 		list-style: none;
@@ -201,7 +200,7 @@
 		font-weight: 700;
 	}
 
-	/* ==== 테이블 (File 1 스타일) ==== */
+	/* ==== 테이블 ==== */
 	.table-responsive-wrapper {
 		background: var(--white-color);
 		border: none;
@@ -222,10 +221,10 @@
 	table.table th,
 	table.table td {
 		padding: .9rem 1rem;
-		border-bottom: 1px solid var(--border-light); /* 더 연한 보더 */
+		border-bottom: 1px solid var(--border-light); 
 		vertical-align: middle;
 		font-size: .9rem;
-		white-space: nowrap; /* 기존 스타일 유지 */
+		white-space: nowrap;
 		text-align: left; /* .text-center 오버라이드 */
 	}
 	
@@ -239,20 +238,19 @@
 		letter-spacing: .5px;
 		border-bottom: 2px solid #e9ecef;
 		border-top: 1px solid #e9ecef;
-		position: sticky; /* 기존 스타일 유지 */
-		top: 0; /* 기존 스타일 유지 */
-		z-index: 10; /* 기존 스타일 유지 */
+		position: sticky; 
+		top: 0; 
+		z-index: 10; 
 	}
 
 	table.table tbody tr:hover {
-		background-color: #fcfdff; /* 매우 연한 호버 효과 */
+		background-color: #fcfdff; 
 	}
 
 	table.table tbody td {
 		color: var(--text-color);
 	}
 	
-	/* 뱃지 (File 1 스타일) */
 	.badge {
 		display: inline-block;
 		padding: .35em .65em;
@@ -268,7 +266,6 @@
 		background-color: var(--success-color) !important;
 	}
 	
-	/* ==== 수정된 칩 스타일 ==== */
 	.doc-chip {
 	  display: inline-flex;
 	  align-items: center;
@@ -282,23 +279,19 @@
 	  color: #555; /* 기본 텍스트 색상 (글자) */
 	}
 	
-	/* 아이콘은 크기만 지정 (색상은 기본 회색) */
 	.doc-chip i {
 	  font-size: 1rem;
 	  color: #555; /* 기본 회색 */
 	}
 	
-	/* chip-primary 클래스가 붙으면 아이콘만 파란색 */
 	.doc-chip.chip-primary i {
 	  color: var(--primary-color);
 	}
 	
-	/* chip-success 클래스가 붙으면 아이콘만 초록색 */
 	.doc-chip.chip-success i {
 	  color: var(--success-color);
 	}
 
-	/* 빈 데이터 메시지 */
 	table.table tbody td[colspan] {
 		text-align: center;
 		color: var(--text-muted);
@@ -315,7 +308,6 @@
 		color: var(--text-muted);
 	}
 
-	/* ==== 페이지네이션 (File 1 스타일) ==== */
 	.pagination {
 		display: flex;
 		justify-content: center;
@@ -423,7 +415,6 @@
         </form>
     </div>
 
-    <!-- [수정] 탭 메뉴 -->
     <ul class="nav nav-tabs mb-3" id="actionTypeTabs">
 		<li class="nav-item">
             <a class="nav-link ${empty search.actionType ? 'active' : ''}" href="#" data-action-type="">전체</a>
@@ -604,7 +595,7 @@
                 </table>
             </c:when>
 
-            <%-- Case 3: '전체' 선택 (기본) --%>
+            <%-- Case 3: '전체' 선택  --%>
             <c:otherwise>
                  <table class="table table-hover text-center" style="min-width: 1200px;">
                     <thead class="table-light">

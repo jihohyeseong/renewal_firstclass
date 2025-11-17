@@ -53,17 +53,16 @@ a { text-decoration: none; color: inherit; }
   padding: 2rem;
 }
 
-/* ==== 페이지 타이틀 ==== */
 .page-title {
   font-size: 1.75rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
 }
 
-/* ==== 처리상태 카드 (디자인 교체) ==== */
+/* ==== 처리상태 카드 ==== */
 .stat-cards-container {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4개 카드 */
+  grid-template-columns: repeat(4, 1fr); 
   gap: 1rem;
   margin-bottom: 2rem;
   max-width: 1600px;
@@ -84,26 +83,26 @@ a { text-decoration: none; color: inherit; }
   outline: 2px solid var(--primary-color);
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
-  border-left: none; /* 기존 스타일 제거 */
+  border-left: none; 
 }
 .stat-card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.stat-card h6 { /* stat-title */
+.stat-card h6 { 
   font-size: .9rem;
   font-weight: 700;
   color: var(--text-muted);
 }
-.stat-card h1 { /* stat-num */
+.stat-card h1 { 
   font-size: 2.2rem;
   font-weight: 800;
   color: var(--primary-color);
   line-height: 1.2;
   margin: .35rem 0 .15rem;
 }
-.stat-card small { /* stat-desc */
+.stat-card small {
   font-size: .85rem;
   color: var(--text-muted);
 }
@@ -112,7 +111,6 @@ a { text-decoration: none; color: inherit; }
   color: #adb5bd;
 }
 
-/* ==== 테이블 래퍼 (디자인 개선) ==== */
 .table-wrapper {
   background: var(--white-color);
   border: none;
@@ -198,7 +196,7 @@ a { text-decoration: none; color: inherit; }
   margin-bottom: 0.5rem;
   flex-wrap: nowrap;          /* 반응형 줄바꿈 */
 }
-/* 인풋 & 셀렉트 공통 스타일 */
+
 .table-filters input[type="text"],
 .table-filters select {
   padding: .45rem .6rem;
@@ -235,7 +233,6 @@ a { text-decoration: none; color: inherit; }
   transition: background-color .15s ease, border-color .15s ease, color .15s ease;
 }
 
-/* ==== 테이블 (디자인 개선) ==== */
 .data-table {
   width: 100%;
   border-collapse: collapse;
@@ -244,7 +241,7 @@ a { text-decoration: none; color: inherit; }
 }
 .data-table th {
   padding: .4rem 1rem;
-  border-bottom: 1px solid var(--border-light); /* 더 연한 보더 */
+  border-bottom: 1px solid var(--border-light); 
   vertical-align: middle;
   font-size: .9rem;
   text-align: center;
@@ -252,7 +249,7 @@ a { text-decoration: none; color: inherit; }
 
 .data-table td {
   padding: .9rem 1rem;
-  border-bottom: 1px solid var(--border-light); /* 더 연한 보더 */
+  border-bottom: 1px solid var(--border-light);
   vertical-align: middle;
   font-size: .9rem;
   text-align: center;
@@ -268,13 +265,12 @@ a { text-decoration: none; color: inherit; }
   border-top: 1px solid #e9ecef;
 }
 .data-table tbody tr:hover {
-  background-color: #fcfdff; /* 매우 연한 호버 효과 */
+  background-color: #fcfdff; 
 }
 .data-table tbody td {
   color: var(--text-color);
 }
 
-/* 빈 데이터 메시지 */
 .data-table tbody td[colspan] {
   text-align: center;
   color: var(--text-muted);
@@ -282,7 +278,6 @@ a { text-decoration: none; color: inherit; }
   font-size: .95rem;
 }
 
-/* 테이블 헤더 내 날짜 버튼 */
 .data-table th button {
   display: inline-flex;
   align-items: center;
@@ -358,7 +353,7 @@ a { text-decoration: none; color: inherit; }
   color: var(--white-color);
   transform: translateY(-1px);
 }
-.table-btn.btn-secondary { /* 기존 클래스 호환 */
+.table-btn.btn-secondary { 
   background: #f1f3f5;
   color: #555;
   border-color: #f1f3f5;
@@ -411,7 +406,7 @@ a { text-decoration: none; color: inherit; }
 .doc-chip .bi-patch-check {
   color: var(--success-color);
 }
-/* ==== 페이지네이션 (디자인 개선) ==== */
+
 .pagination {
   display: flex;
   justify-content: center;
@@ -718,24 +713,20 @@ a { text-decoration: none; color: inherit; }
 	            form.submit();
 	        });
 	    });
-
-	    // ---------------------------------------------
-	    // ▼ [추가] 페이징 링크 클릭 시 POST 전송
-	    // ---------------------------------------------
+		// 페이지 링크 클릭시 POST 전송
 	    document.querySelectorAll('.js-page-link').forEach(link => {
 	        link.addEventListener('click', (e) => {
 	            e.preventDefault();
 	            const newPage = link.dataset.page;
 	            
-	            // 1. 폼의 페이지(page) 값 변경
 	            pageInput.value = newPage;
 	            
-	            // 2. 폼 POST 전송
+	            // 폼 POST 전송
 	            form.submit();
 	        });
 	    });
 	    
-	 	// 달력 버튼 클릭 시 달력 열기
+	 	// 달력 버튼 클릭이벤트
 	    dateBtn.addEventListener("click", (e) => {
 	        e.preventDefault();
 	        e.stopPropagation(); 
@@ -744,18 +735,15 @@ a { text-decoration: none; color: inherit; }
 	    
 		document.getElementById('btnReset').addEventListener("click", () => {
 			
-			// 입력 초기화
 		    if(applicantNameInput) applicantNameInput.value = ''; 
 	        if(applicationNumberInput) applicationNumberInput.value = '';
 		    form.querySelector('select[name="status"]').value = '';
 		 	
-		    // date hidden input 제거
 	        const hiddenDate = form.querySelector('input[name="date"]');
 	        if (hiddenDate) {
 	            hiddenDate.remove();
 	        }
 	        
-	        // 달력 초기화
 	        fp.clear();
 	        
 		    // 전체 목록으로 다시 요청

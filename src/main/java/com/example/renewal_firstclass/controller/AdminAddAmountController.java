@@ -75,7 +75,7 @@ public class AdminAddAmountController {
     	return "admin/adminaddamountdetail";
     }
     
-    // [신규] 추가지급 신청 처리
+    // 추가지급 신청 처리
     @PostMapping("/admin/addamount/apply")
     public String applyAddAmount(
             @RequestParam("applicationNumber") Long applicationNumber,
@@ -93,7 +93,7 @@ public class AdminAddAmountController {
         } catch (IllegalArgumentException e) {
             log.warn("추가지급 신청 유효성 검사 실패: {}", e.getMessage());
             rttr.addFlashAttribute("error", e.getMessage());
-            // 실패 시 상세 페이지로 다시 리다이렉트
+            // 실패 시 상세 페이지로 리다이렉트
             return "redirect:/admin/addamount/detail?appNo=" + applicationNumber;
         } catch (Exception e) {
             log.error("추가지급 신청 처리 중 오류 발생", e);

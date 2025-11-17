@@ -52,7 +52,7 @@ public class AdminApprovalController {
         return userService.findByUsername(ud.getUsername());
     }
 
-	// 관리자 접수(승인)
+	// 관리자 접수
     @PostMapping("admin/judge/approve")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> adminApprove(@RequestBody AdminJudgeDTO judgeDTO, HttpServletRequest request){
@@ -163,7 +163,7 @@ public class AdminApprovalController {
                 return "redirect:/admin/list";
             }
             
-            // 기업(신청자) 정보 조회
+            // 신청자(기업) 정보 조회
             UserDTO userDTO = userService.findById(confirmDTO.getUserId());
             if (userDTO == null) {
                 ra.addFlashAttribute("error", "해당 신청자의 기업정보를 찾을 수 없습니다.");

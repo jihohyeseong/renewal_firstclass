@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/global.css">
 <style>
-    /* --- [수정] 다른 페이지와 동일한 테마 변수 --- */
+    /* --- 테마 유지 --- */
     :root {
         --primary-color: #3f58d4;
         --primary-color-dark: #324ca8; 
@@ -42,7 +42,7 @@
     }
     a { text-decoration: none; color: inherit; }
 
-    /* --- [수정] 레이아웃 구조 (myList.jsp와 동일하게) --- */
+    /* --- 레이아웃 구조  --- */
     .main-container {
         flex-grow: 1;
         width: 100%;
@@ -59,7 +59,7 @@
         margin-bottom: 20px;
     }
     
-    /* --- [신규] 카드 내부 헤더 (Calculator.jsp와 동일하게) --- */
+    /* --- 카드 내부 헤더 --- */
     .content-header {
         display: flex;
         justify-content: space-between;
@@ -80,9 +80,8 @@
      .content-header h2 .fa-solid {
          color: var(--primary-color);
      }
-    /* --- (여기까지 신규) --- */
 
-    /* [신규] 폼 섹션 제목 스타일 */
+    /* 폼 섹션 제목 스타일 */
     .content-wrapper h3 {
         font-size: 18px;
         font-weight: 600;
@@ -96,37 +95,35 @@
         gap: 8px;
     }
     .content-wrapper h3:first-of-type {
-        margin-top: 0; /* 첫 번째 섹션 제목은 여백 없음 */
+        margin-top: 0; 
     }
     .content-wrapper h3 .fa-solid {
         font-size: 16px;
     }
 
 
-    /* [추가] 2열 배치를 위한 스타일 */
+    /* 2열 배치 */
     .form-row {
         display: flex;
-        gap: 25px; /* 좌우 입력창 사이의 간격 */
+        gap: 25px; /* 좌우 입력창 간격 */
     }
     .form-row .form-group {
-        flex: 1; /* 양쪽이 동일한 너비를 갖도록 함 */
+        flex: 1; /* 양쪽이 동일한 너비를 갖도록 */
     }
-    /* --- */
 
     .form-group {
         margin-bottom: 25px;
     }
     
-    /* [수정] 라벨 스타일 (파란색 바 추가) */
     label {
         display: block;
         font-weight: 500;
         margin-bottom: 8px;
         font-size: 16px;
-        position: relative; /* ::before 포지셔닝 기준 */
+        position: relative; 
         padding-left: 12px; /* 바가 들어갈 공간 확보 */
     }
-    /* [신규] 라벨 왼쪽 파란색 바 */
+    /* 라벨 왼쪽 파란색 바 */
     label::before {
         content: '';
         position: absolute;
@@ -134,7 +131,7 @@
         top: 50%;
         transform: translateY(-50%);
         width: 4px;
-        height: 16px; /* 폰트 크기와 유사하게 */
+        height: 16px; 
         background-color: var(--primary-color);
         border-radius: 2px;
     }
@@ -153,7 +150,7 @@
         outline: none;
     }
     
-    /* [수정] readonly 필드 스타일 */
+    /* readonly 필드 스타일 */
     input[readonly] {
         background-color: var(--light-gray-color);
         cursor: default;
@@ -183,7 +180,7 @@
         background-color: #d1d5db;
     }
     
-    /* [신규] 아웃라인 버튼 스타일 */
+    /*  아웃라인 버튼 스타일 */
     .btn-outline-primary {
         background-color: var(--white-color);
         color: var(--primary-color);
@@ -194,7 +191,7 @@
         background-color: var(--primary-color-light);
     }
     
-    /* [수정] 우편번호 검색 영역 스타일 */
+    /* 우편번호 검색 영역 스타일 */
     .zip-search-wrapper {
         display: flex;
         gap: 10px;
@@ -204,26 +201,25 @@
         flex: 1;
     }
 
-    /* [수정] 주소검색 버튼 (스타일은 btn-outline-primary가 담당) */
+    /* 주소검색 버튼  */
     .btn-search {
         padding: 12px 20px;
     }
 
-    /* [신규] 구분선 스타일 */
     hr {
         margin: 40px 0 35px;
         border: none;
         border-top: 1px solid var(--border-color);
     }
 
-    /* [수정] 하단 버튼 영역 */
+    /* 하단 버튼 영역 */
     .submit-button-container {
         display: flex;
         justify-content: center;
         gap: 15px;
         margin-top: 40px;
-        padding-top: 30px; /* [추가] */
-        border-top: 1px solid var(--border-color); /* [추가] */
+        padding-top: 30px;
+        border-top: 1px solid var(--border-color); 
     }
     .submit-button-container .btn {
         padding: 12px 40px;
@@ -237,10 +233,7 @@
         color: var(--gray-color);
     }
 
-    /* ---------------------------------- */
-    /* 📱 [수정] 반응형 스타일 */
-    /* ---------------------------------- */
-
+	/* 반응형 스타일 */
     /* 992px 이하 (태블릿) */
     @media (max-width: 992px) {
         /* [수정] 2열 레이아웃을 1열로 변경 */
@@ -252,13 +245,12 @@
 
     /* 768px 이하 (모바일) */
     @media (max-width: 768px) {
-        /* [수정] main-container 반응형 (myList.jsp와 동일하게) */
         .main-container {
             margin: 10px auto; /* 상하 여백 축소 */
             padding: 0 10px; /* 좌우 여백 축소 */
         }
     
-        /* [수정] 카드 내부 패딩 (myList.jsp와 동일하게) */
+        /* 카드 내부 패딩 */
         .content-wrapper {
             padding: 20px 15px;
         }
@@ -276,15 +268,15 @@
             margin-bottom: 20px;
         }
 
-        /* [수정] 우편번호/주소검색 버튼 쌓기 */
+        /* 우편번호/주소검색 버튼 쌓기 */
         .zip-search-wrapper {
             flex-direction: column;
-            align-items: stretch; /* 버튼이 100% 너비를 갖도록 */
+            align-items: stretch;
             gap: 10px; /* 입력창과 버튼 사이 간격 */
         }
         
         .zip-search-wrapper input {
-            flex: none; /* flex:1 해제 */
+            flex: none; 
             width: 100%;
         }
         
@@ -296,7 +288,7 @@
             flex: 1;
         }
         
-        /* [추가] 모바일에서 iOS 자동 줌인 방지 */
+        /* 모바일에서 iOS 자동 줌인 방지 */
         input[type="text"] {
             font-size: 16px;
         }
@@ -319,12 +311,12 @@
              .btn-primary:hover { background-color: #1F8A4D; }
              .content-header h2 .fa-solid { color: var(--primary-color); }
              
-             /* [추가] 기업회원용 라벨 바 */
+             /* 기업회원용 라벨 바 */
              label::before {
                  background-color: var(--primary-color);
              }
              
-             /* [추가] 기업회원용 섹션 제목 */
+             /* 기업회원용 섹션 제목 */
              .content-wrapper h3 {
                 color: var(--primary-color);
                 border-bottom-color: var(--primary-color-light);
@@ -333,7 +325,7 @@
                 border-color: var(--primary-color);
                 box-shadow: 0 0 0 3px var(--primary-color-light);
             }
-             /* [추가] 기업회원용 아웃라인 버튼 */
+             /* 기업회원용 아웃라인 버튼 */
              .btn-outline-primary {
                 color: var(--primary-color);
                 border-color: var(--primary-color);
@@ -350,20 +342,18 @@
 
     
     <main class="main-container">
-        <!-- [신규] 카드 래퍼 -->
         <div class="content-wrapper">
     
-            <!-- [신규] 카드 헤더 -->
+            <!-- 카드 헤더 -->
             <div class="content-header">
                 <h2><i class="fa-solid fa-user-circle"></i> 마이페이지</h2>
             </div>
     
-            <!-- [수정] 폼 액션 및 버튼 텍스트 변경 -->
             <form action="${pageContext.request.contextPath}/mypage/updateAddress" method="post" onsubmit="return confirm('수정하시겠습니까?');">
                 
                 <input type="hidden" name="id" value="${user.id}" />
                 
-                <!-- [신규] 섹션 제목 -->
+                <!-- 섹션 제목 -->
                 <h3><i class="fa-solid fa-user"></i> 기본 정보</h3>
                 
                 <div class="form-row">
@@ -373,7 +363,6 @@
                     </div>
                     <div class="form-group">
                         <label>전화번호</label>
-                        <!-- [수정] readonly 제거 -->
                         <input type="text" name="phoneNumber" value="${user.phoneNumber}" readonly/>
                     </div>
                 </div>
@@ -391,10 +380,8 @@
                     </div>
                 </div>
                 
-                <!-- [수정] 인라인 style 제거 -->
                 <hr> 
 
-                <!-- [신규] 섹션 제목 -->
                 <h3><i class="fa-solid fa-map-location-dot"></i> 주소 정보</h3>
 
                 <div class="form-group">
@@ -417,9 +404,7 @@
                 </div>
 
                 <div class="submit-button-container">
-                    <!-- [수정] 버튼 텍스트 변경 -->
                     <button type="submit" class="btn btn-primary">정보 수정</button>
-                    <!-- [수정] class 변경 -->
                     <a href="${pageContext.request.contextPath}/user/main" class="btn bottom-btn btn-outline-primary">목록으로</a>
                 </div>
                     

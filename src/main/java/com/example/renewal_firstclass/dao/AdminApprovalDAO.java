@@ -48,6 +48,6 @@ public interface AdminApprovalDAO {
     // 원본 데이터 delt_at 'Y'로 변경
     int markOriginalTermsAsDeleted(@Param("confirmNumber") Long confirmNumber);
     
-    // update_at이 Y인 컬럼 확인
+    // update_at이 'Y'인 컬럼 확인
     int countUpdatedTerms(@Param("confirmNumber") Long confirmNumber);
 }

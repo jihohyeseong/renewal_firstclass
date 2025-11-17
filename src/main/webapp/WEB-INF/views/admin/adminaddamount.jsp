@@ -44,7 +44,7 @@ a { text-decoration: none; color: inherit; }
 
 /* ==== 레이아웃 ==== */
 .content-container {
-  margin-left: 0px; /* 사이드바 고려 (현재 0) */
+  margin-left: 0px; 
   width: 100%;
 }
 .main-content {
@@ -62,7 +62,7 @@ a { text-decoration: none; color: inherit; }
 /* ==== 처리상태 카드  ==== */
 .stat-cards-container {
   display: grid;
-  grid-template-columns: repeat(5, 1fr); /* 4개 카드 */
+  grid-template-columns: repeat(5, 1fr); 
   gap: 1rem;
   margin-bottom: 2rem;
 }
@@ -82,7 +82,7 @@ a { text-decoration: none; color: inherit; }
   outline: 2px solid var(--primary-color);
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
-  border-left: none; /* 기존 스타일 제거 */
+  border-left: none; 
 }
 .stat-card-header {
   display: flex;
@@ -172,7 +172,6 @@ a { text-decoration: none; color: inherit; }
   margin: 0;
 }
 
-/* 인풋 & 셀렉트 공통 스타일 */
 .table-filters input[type="text"],
 .table-filters select {
   padding: .45rem .6rem;
@@ -209,12 +208,12 @@ a { text-decoration: none; color: inherit; }
   width: 100%;
   border-collapse: collapse;
   border-spacing: 0;
-  text-align: left; /* 기본 정렬 */
+  text-align: left; 
 }
 .data-table th,
 .data-table td {
   padding: .9rem 1rem;
-  border-bottom: 1px solid var(--border-light); /* 더 연한 보더 */
+  border-bottom: 1px solid var(--border-light); 
   vertical-align: middle;
   font-size: .9rem;
 }
@@ -229,7 +228,7 @@ a { text-decoration: none; color: inherit; }
   border-top: 1px solid #e9ecef;
 }
 .data-table tbody tr:hover {
-  background-color: #fcfdff; /* 매우 연한 호버 효과 */
+  background-color: #fcfdff; 
 }
 .data-table tbody td {
   color: var(--text-color);
@@ -320,7 +319,7 @@ a { text-decoration: none; color: inherit; }
   border-color: #334abf;
   color: var(--white-color);
 }
-/* 페이징 */
+
 .pagination {
   display: flex;
   justify-content: center;
@@ -335,7 +334,7 @@ a { text-decoration: none; color: inherit; }
   width: 38px;
   height: 38px;
   border: 1px solid var(--border-color);
-  border-radius: 999px; /* 원형 버튼 */
+  border-radius: 999px;
   background: var(--white-color);
   color: var(--text-muted);
   text-decoration: none;
@@ -527,7 +526,6 @@ a { text-decoration: none; color: inherit; }
                                         </td>
                                         <td>
                                             <a href="${pageContext.request.contextPath}/admin/addamount/detail/?appNo=${app.applicationNumber}" class="table-btn btn-secondary">
-				                                <%-- [수정] '최종 지급 승인'일 때만 '신청'으로 표시 --%>
 				                                <c:choose>
 				                                    <c:when test="${app.statusName == '최종 지급 승인'}">추가지급 신청</c:when>
 				                                    <c:otherwise>상세보기</c:otherwise>

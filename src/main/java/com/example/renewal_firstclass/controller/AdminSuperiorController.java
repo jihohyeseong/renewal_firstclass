@@ -53,14 +53,14 @@ public class AdminSuperiorController {
     	//페이징 DTO 생성
     	int pageSize = 10;
  		PageDTO pageDTO = new PageDTO(page, pageSize); 	// 10개씩 보여줌 
- 		//서비스 호출
+
  		Map<String, Object> result = adminSuperiorService.getPagedApplicationsAndCounts(nameKeyword, appNoKeyword, status, date, pageDTO);
 
 	    model.addAttribute("applicationList", result.get("list"));
 	    model.addAttribute("pageDTO", result.get("pageDTO"));
 	    model.addAttribute("counts", result.get("counts"));
         
-        // 사용자가 입력한 검색어와 상태를 다시 화면에 전달하여 유지시킴
+        // 사용자가 입력한 검색어와 상태를 다시 화면에 전달해서 유지
         model.addAttribute("nameKeyword", nameKeyword);
         model.addAttribute("appNoKeyword", appNoKeyword);
         model.addAttribute("status", status);
@@ -185,6 +185,7 @@ public class AdminSuperiorController {
 	     }
 	     return resp;
 	 }
+	 
 	 //추가지급 지급 처리
 	 @PostMapping("/admin/superior/addamount/approve")
 	    @ResponseBody
@@ -204,7 +205,6 @@ public class AdminSuperiorController {
 		             return resp;
 	            }
 	            
-	            // 새 서비스 호출
 	            adminSuperiorService.processAddAmount(applicationNumber, "ST_50");
 	            
 	            resp.put("message", "추가지급 '지급' 처리가 완료되었습니다.");
@@ -235,7 +235,6 @@ public class AdminSuperiorController {
 		             return resp;
 	            }
 	            
-	            // 새 서비스 호출
 	            adminSuperiorService.processAddAmount(applicationNumber, "ST_60");
 	            
 	            resp.put("message", "추가지급 '부지급' 처리가 완료되었습니다.");

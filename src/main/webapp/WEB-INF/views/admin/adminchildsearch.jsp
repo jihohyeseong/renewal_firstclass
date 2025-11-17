@@ -95,7 +95,7 @@
         }
         
         .status-form input[type="text"],
-        .status-form select { /* [수정] 입력창/선택창 스타일 */
+        .status-form select { 
             padding: .5rem .75rem;
 		  border: 1px solid var(--border-color);
 		  border-radius: .375rem;
@@ -113,7 +113,6 @@
 		  box-shadow: 0 0 0 3px var(--primary-light-color);
 		}
         
-        /* ==== 필터 버튼 (디자인 개선) ==== */
 		.status-form button {
 		  display: inline-flex;
 		  align-items: center;
@@ -147,7 +146,6 @@
 		  color: var(--white-color);
 		}
 		
-    /* ==== 테이블 래퍼 (디자인 개선) ==== */
 	.table-wrapper {
 	  background: var(--white-color);
 	  border: none;
@@ -169,7 +167,7 @@
 	  font-weight: 700;
 	}
 
-      /* Table */
+      /* 테이블 */
     table.result-table {
         width: 100%;
         border-collapse: collapse;
@@ -207,7 +205,6 @@
 	  color: var(--text-color);
 	}
 
-    /* ==== 페이지네이션 (디자인 개선) ==== */
 	.pagination {
 	  display: flex;
 	  justify-content: center;
@@ -381,33 +378,32 @@ $(document).ready(function() {
     let pageLinkClicked = false;
 
     $('.js-page-link').on('click', function(e) {
-        e.preventDefault(); // a 태그의 기본 동작(링크 이동)을 막습니다.
+        e.preventDefault(); 
 
-        // 클릭한 링크의 data-page 값을 가져옵니다.
+        // 클릭한 링크의 data-page 값을 가져옴
         const newPage = $(this).data('page');
 
-        // 폼 내부의 hidden input (pageNum) 값을 새 페이지로 변경합니다.
+        // 폼 내부의 hidden input (pageNum) 값을 새 페이지로 변경
         $('#pageInput').val(newPage);
         
-        // [중요] 페이지 링크가 클릭되었다고 플래그를 설정합니다.
+        // 페이지 링크가 클릭되었다고 플래그 설정
         pageLinkClicked = true;
         
-        // 폼을 수동으로 전송합니다.
+        // 폼을 수동으로 전송
         $('#statusForm').submit();
     });
     
     $('#statusForm').on('submit', function() {
         
-        // 페이지 링크로 인해 전송된 것이라면, 플래그가 true입니다.
+        // 페이지 링크로 인해 전송된 것이라면, 플래그가 true
         if (pageLinkClicked) {
-            // 플래그를 리셋하고, pageNum을 1로 덮어쓰지 않고 그대로 전송합니다.
+            // 플래그를 리셋하고, pageNum을 1로 덮어쓰지 않고 그대로 전송
             pageLinkClicked = false;
         } else {
-            // 페이지 링크가 아닌 '검색' 버튼으로 전송된 것이므로, pageNum을 1로 리셋합니다.
+            // 페이지 링크가 아닌 '검색' 버튼으로 전송된 것이므로, pageNum을 1로 리셋
             $('#pageInput').val(1);
         }
         
-        // 폼 전송을 계속 진행합니다.
     });
 
 });
