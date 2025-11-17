@@ -36,12 +36,12 @@ public class AdminAddAmountService {
     private final AES256Util aes256Util;
     private final UserApplyDAO userApplyDAO;
     
-    // [수정] 목록 조회 + Stat 카드
+    // 목록 조회
     public Map<String, Object> getPagedApplicationsAndCounts(String nameKeyword, Long appNoKeyword, String status, String date,
             PageDTO pageDTO) {
         Map<String, Object> result = new HashMap<>();
         
-        // 1. 검색 조건에 맞는 페이징된 목록 조회
+        // 검색 조건에 맞는 페이징된 목록 조회
         int totalCnt = adminAddAmountDAO.selectTotalCount(nameKeyword, appNoKeyword, status, date);
         pageDTO.setTotalCnt(totalCnt); 
         
@@ -54,18 +54,19 @@ public class AdminAddAmountService {
 
         List<AdminUserApprovalDTO> applicationList = adminAddAmountDAO.selectApplicationList(search);
 
-        // 2. [수정] 상태별 건수 조회 (selectTotalCount 재사용)
+        // 상태별 건수 조회
         Map<String, Integer> counts = new HashMap<>();
-        // (필터 없이) status = null (전체)
+        // 전체
         counts.put("total", adminAddAmountDAO.selectTotalCount(null, null, null, null));
-        // (필터 없이) status = "PENDING"
+        counts.put("possible", adminAddAmountDAO.selectTotalCount(null, null, "POSSIBLE", null));
+        // 대기상태
         counts.put("pending", adminAddAmountDAO.selectTotalCount(null, null, "PENDING", null));
-        // (필터 없이) status = "APPROVED"
+        // 승인상태
         counts.put("approved", adminAddAmountDAO.selectTotalCount(null, null, "APPROVED", null));
-        // (필터 없이) status = "REJECTED"
+        // 반려상태
         counts.put("rejected", adminAddAmountDAO.selectTotalCount(null, null, "REJECTED", null));
         
-        // 3. 결과 반환
+        // 결과 반환
         result.put("list", applicationList);
         result.put("pageDTO", pageDTO);
         result.put("counts", counts);
@@ -100,7 +101,6 @@ public class AdminAddAmountService {
             }
         } catch (Exception ignore) {}
 
-        // 상세 조회
         AdminUserApprovalDTO appDTO = adminAddAmountDAO.selectAppDetailByAppNo(applicationNumber);
         if (dto == null) {
             model.addAttribute("error", "존재하지 않는 신청입니다.");

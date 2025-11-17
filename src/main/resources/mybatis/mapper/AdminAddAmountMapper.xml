@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.renewal_firstclass.dao.AdminAddAmountDAO">
-
+	<!-- 검색 조건 -->
     <sql id="searchCondition">
         <where>
             <if test="nameKeyword != null and nameKeyword != ''">
@@ -15,8 +15,11 @@
             
             <if test="status != null and status != ''">
                 <choose>
-                    <when test="status == 'PENDING'">
+                    <when test="status == 'POSSIBLE'">
                         AND a.application_number IS NULL
+                    </when>
+                    <when test="status == 'PENDING'">
+                        AND a.status_code = 'ST_40'
                     </when>
                     <when test="status == 'APPROVED'">
                         AND a.status_code = 'ST_50'
@@ -182,7 +185,7 @@
             a.term_id
     </select>
     
-	<!-- 추가지급 신청 -->
+	<!-- 추가지급 신청 부분 -->
 	<insert id="applyAddAmount" parameterType="java.util.List">
 		BEGIN
 		  <foreach collection="add" item="a">

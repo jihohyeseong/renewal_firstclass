@@ -53,17 +53,16 @@ a { text-decoration: none; color: inherit; }
   padding: 2rem;
 }
 
-/* ==== 페이지 타이틀 ==== */
 .page-title {
   font-size: 1.75rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
 }
 
-/* ==== 처리상태 카드 (디자인 교체) ==== */
+/* ==== 처리상태 카드  ==== */
 .stat-cards-container {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4개 카드 */
+  grid-template-columns: repeat(5, 1fr); /* 4개 카드 */
   gap: 1rem;
   margin-bottom: 2rem;
 }
@@ -90,19 +89,19 @@ a { text-decoration: none; color: inherit; }
   align-items: center;
   justify-content: space-between;
 }
-.stat-card h6 { /* stat-title */
+.stat-card h6 { 
   font-size: .9rem;
   font-weight: 700;
   color: var(--text-muted);
 }
-.stat-card h1 { /* stat-num */
+.stat-card h1 { 
   font-size: 2.2rem;
   font-weight: 800;
   color: var(--primary-color);
   line-height: 1.2;
   margin: .35rem 0 .15rem;
 }
-.stat-card small { /* stat-desc */
+.stat-card small {
   font-size: .85rem;
   color: var(--text-muted);
 }
@@ -111,7 +110,6 @@ a { text-decoration: none; color: inherit; }
   color: #adb5bd;
 }
 
-/* ==== 테이블 래퍼 (디자인 개선) ==== */
 .table-wrapper {
   background: var(--white-color);
   border: none;
@@ -153,20 +151,18 @@ a { text-decoration: none; color: inherit; }
 
 .table-filters {
   display: flex;
-  align-items: center;      /* 수직 중앙정렬 */
+  align-items: center;      
   gap: .4rem;
   margin-bottom: 1.5rem;
-  flex-wrap: nowrap;          /* 반응형 줄바꿈 */
+  flex-wrap: nowrap;      
 }
 
-/* 필터 그룹 (라벨 + 입력창을 가로로 정렬) */
 .filter-group {
   display: flex;
   align-items: center;
   gap: 0;
 }
 
-/* 라벨 왼쪽 배치 */
 .filter-group label,
 .filter-group input {
   font-size: .85rem;
@@ -209,7 +205,6 @@ a { text-decoration: none; color: inherit; }
   color: var(--white-color);
 }
 
-/* ==== 테이블 (디자인 개선) ==== */
 .data-table {
   width: 100%;
   border-collapse: collapse;
@@ -240,7 +235,6 @@ a { text-decoration: none; color: inherit; }
   color: var(--text-color);
 }
 
-/* 빈 데이터 메시지 */
 .data-table tbody td[colspan] {
   text-align: center;
   color: var(--text-muted);
@@ -248,7 +242,6 @@ a { text-decoration: none; color: inherit; }
   font-size: .95rem;
 }
 
-/* 테이블 헤더 내 날짜 버튼 */
 .data-table th button {
   border: none;
   background: none;
@@ -327,7 +320,7 @@ a { text-decoration: none; color: inherit; }
   border-color: #334abf;
   color: var(--white-color);
 }
-/* ==== 페이지네이션 (디자인 개선) ==== */
+/* 페이징 */
 .pagination {
   display: flex;
   justify-content: center;
@@ -372,7 +365,6 @@ a { text-decoration: none; color: inherit; }
   color: #ced4da;
   pointer-events: none;
 }
-/* 추가 css */
 .data-table th,
 .data-table td {
   text-align: center;
@@ -399,12 +391,23 @@ a { text-decoration: none; color: inherit; }
 	                    </div>
 	                </div>
                 </a>
+                
+                <a class="js-status-card" data-status="POSSIBLE" style="cursor: pointer;">
+	                <div class="stat-card ${status == 'POSSIBLE' ? 'active' : ''}">
+	                    <div class="stat-card-header">
+	                        <div>
+	                            <h6>추가지급 신청 가능</h6><h1>${counts.possible}</h1><small>추가지급 신청 가능</small>
+	                        </div>
+	                        <i class="bi bi-files"></i>
+	                    </div>
+	                </div>
+                </a>
 
                 <a class="js-status-card" data-status="PENDING" style="cursor: pointer;">
 	                <div class="stat-card ${status == 'PENDING' ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
-	                            <h6>대기 중 신청서</h6><h1>${counts.pending}</h1><small>현재 결재가 필요한 신청서</small>
+	                            <h6>대기 중 신청서</h6><h1>${counts.pending}</h1><small>결재가 필요한 신청서</small>
 	                        </div>
 	                        <i class="bi bi-clock-history"></i>
 	                    </div>
@@ -415,7 +418,7 @@ a { text-decoration: none; color: inherit; }
 	                <div class="stat-card ${status == 'APPROVED' ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
-	                            <h6>승인된 신청서</h6><h1>${counts.approved}</h1><small>성공적으로 승인된 신청서</small>
+	                            <h6>승인된 신청서</h6><h1>${counts.approved}</h1><small>승인된 신청서</small>
 	                        </div>
 	                        <i class="bi bi-check-circle"></i>
 	                    </div>
@@ -426,7 +429,7 @@ a { text-decoration: none; color: inherit; }
 	                <div class="stat-card ${status == 'REJECTED' ? 'active' : ''}">
 	                    <div class="stat-card-header">
 	                        <div>
-	                            <h6>반려된 신청서</h6><h1>${counts.rejected}</h1><small>문제가 있어 반려된 신청서</small>
+	                            <h6>반려된 신청서</h6><h1>${counts.rejected}</h1><small>반려된 신청서</small>
 	                        </div>
 	                        <i class="bi bi-x-circle"></i>
 	                    </div>
@@ -435,9 +438,6 @@ a { text-decoration: none; color: inherit; }
             </div>
 
             <div class="table-wrapper">
-<!--                 <div class="table-header">
-                    <button class="table-btn btn-refresh" id="btnReset"><i class="bi bi-arrow-clockwise"></i></button>
-                </div> -->
 
                 <form id="searchForm" action="${pageContext.request.contextPath}/admin/addamount" method="post" class="table-filters">
                     
@@ -460,6 +460,7 @@ a { text-decoration: none; color: inherit; }
 				    	<label for="statusSelect">처리상태</label>
 				        <select name="status" id="statusSelect" onchange="this.form.submit()">
 				            <option value="">전체</option>
+							<option value="POSSIBLE" ${status == 'POSSIBLE' ? 'selected' : ''}>추가지급 신청가능</option>
 				            <option value="PENDING" ${status == 'PENDING' ? 'selected' : ''}>추가지급 대기</option>
 				    		<option value="APPROVED" ${status == 'APPROVED' ? 'selected' : ''}>추가지급 승인</option>
 				    		<option value="REJECTED" ${status == 'REJECTED' ? 'selected' : ''}>추가지급 반려</option>
@@ -620,23 +621,19 @@ a { text-decoration: none; color: inherit; }
 	        });
 	    });
 
-	    // ---------------------------------------------
-	    // ▼ [추가] 페이징 링크 클릭 시 POST 전송
-	    // ---------------------------------------------
 	    document.querySelectorAll('.js-page-link').forEach(link => {
 	        link.addEventListener('click', (e) => {
 	            e.preventDefault();
 	            const newPage = link.dataset.page;
 	            
-	            // 1. 폼의 페이지(page) 값 변경
 	            pageInput.value = newPage;
 	            
-	            // 2. 폼 POST 전송
+	            // 폼 POST 전송
 	            form.submit();
 	        });
 	    });
 	    
-	 	// 달력 버튼 클릭 시 달력 열기
+	 	// 달력 버튼 클릭 이벤트
 	    dateBtn.addEventListener("click", (e) => {
 	        e.preventDefault();
 	        e.stopPropagation(); 
@@ -645,18 +642,15 @@ a { text-decoration: none; color: inherit; }
 	    
 		document.getElementById('btnReset').addEventListener("click", () => {
 			
-			// 입력 초기화
 		    if(applicantNameInput) applicantNameInput.value = ''; 
 	        if(applicationNumberInput) applicationNumberInput.value = '';
 		    form.querySelector('select[name="status"]').value = '';
 		 	
-		    // date hidden input 제거
 	        const hiddenDate = form.querySelector('input[name="date"]');
 	        if (hiddenDate) {
 	            hiddenDate.remove();
 	        }
 	        
-	        // 달력 초기화
 	        fp.clear();
 	        
 		    // 전체 목록으로 다시 요청
