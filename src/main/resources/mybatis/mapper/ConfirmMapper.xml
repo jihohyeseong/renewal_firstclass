@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.renewal_firstclass.dao.ConfirmApplyDAO">
 
+<!-- 확인서 등록 -->
 <insert id="insertConfirmApplication"
         parameterType="com.example.renewal_firstclass.domain.ConfirmApplyDTO"
         useGeneratedKeys="true"
@@ -30,6 +31,7 @@
   )
 </insert>
 
+<!-- 확인서 수정 -->
  <update id="updateConfirm"
           parameterType="com.example.renewal_firstclass.domain.ConfirmApplyDTO">
     UPDATE TB_CONFIRM_APPLICATION
@@ -61,6 +63,7 @@
        AND NVL(delt_at, 'N') = 'N'
   </update>
 
+<!-- 확인서 상세페이지 정보 불러오기 -->
 <select id="selectByConfirmNumber"
         parameterType="long"
         resultType="com.example.renewal_firstclass.domain.ConfirmApplyDTO">
@@ -90,12 +93,12 @@
     sc.name  AS statusName,
 
     -- 센터 정보
-    ctr.center_name        	 	AS centerName,
-    ctr.center_phone_number	 	AS centerPhoneNumber,
-    ctr.center_URL				AS centerURL,
-    ctr.center_zip_code			AS centerZipCode,
-    ctr.center_address_base		AS centerAddressBase,
-    ctr.center_address_detail	AS centerAddressDetail,
+    ctr.center_name,
+    ctr.center_phone_number,
+    ctr.center_URL,
+    ctr.center_zip_code,
+    ctr.center_address_base,
+    ctr.center_address_detail,
 
     -- 반려 코드/사유 
     ca.rejection_reason_code,
@@ -110,6 +113,7 @@
     AND NVL(ca.delt_at, 'N') = 'N'
 </select>
 
+<!-- 확인서 반려 -->
   <update id="recallConfirm">
     UPDATE TB_CONFIRM_APPLICATION
        SET status_code = 'ST_10',
@@ -120,6 +124,7 @@
        AND NVL(delt_at, 'N') = 'N'
   </update>
   
+<!-- 확인서 리스트 -->
 <select id="selectConfirmListSearch"
         parameterType="map"
         resultType="com.example.renewal_firstclass.domain.ConfirmListDTO">
@@ -162,6 +167,7 @@
   OFFSET #{offset} ROWS FETCH NEXT #{size} ROWS ONLY
 </select>
 
+<!-- 확인서 리스트 페이징용 개수세기 -->
 <select id="countConfirmListSearch"
         parameterType="map"
         resultType="int">
@@ -212,6 +218,7 @@
   OFFSET #{offset} ROWS FETCH NEXT #{size} ROWS ONLY
 </select>
 
+<!-- 확인서 페이징용(전체페이지) -->
 <select id="countConfirmList"
         parameterType="map"
         resultType="int">
@@ -221,6 +228,7 @@
     AND delt_at = 'N'
 </select>
 
+<!-- 확인서에서 동일기간에 접수하지 못하도록 유효성검사용-->
 <select id="findLatestPeriodByPerson"
         parameterType="map"
         resultType="map">
@@ -249,6 +257,7 @@
   FETCH FIRST 1 ROWS ONLY
 </select>
 
+<!-- 확인서삭제 -->
 <update id="deleteConfirm">
   UPDATE TB_CONFIRM_APPLICATION
      SET delt_at = 'Y'
@@ -258,6 +267,7 @@
      AND status_code NOT IN ('ST_50','ST_60')
 </update>
 
+<!-- 확인서 첨부파일(수정시 같은 파일id로들어가게 하는 용도) -->
 <select id="findFileIdByConfirmNumber"
         parameterType="long"
         resultType="long">
@@ -267,6 +277,7 @@
     AND delt_at = 'N'
 </select>
 
+<!-- 확인서 번호로 신청자 찾기 -->
 <select id="findUserIdByConfirmNumber"
         parameterType="long"
         resultType="long">
@@ -276,6 +287,7 @@
     AND delt_at = 'N'
 </select>
 
+<!-- 배치기능(자동으로 접수처리용) -->
 <update id="approveConfirmByBatch">
   UPDATE TB_CONFIRM_APPLICATION
      SET status_code = 'ST_50'

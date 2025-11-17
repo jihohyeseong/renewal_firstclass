@@ -9,8 +9,8 @@
   <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/comp.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/global.css">
 
-  <!-- 신청서 폼 디자인과 동일한 공통 스타일 -->
   <style>
     /* 타이틀 */
     h1{ text-align:center; margin-bottom:30px; font-size:28px; }
@@ -23,7 +23,7 @@
     .form-section{ margin-bottom:40px; }
     .form-section + .form-section{ border-top:1px solid var(--border-color,#dee2e6); padding-top:30px; }
 
-    /* 폼 라인: 신청서와 동일한 그리드 레이아웃 */
+    /* 폼*/
     .form-group{
       display: grid !important;
       grid-template-columns: 200px minmax(0,1fr) !important;
@@ -68,7 +68,6 @@
 
     .radio-group, .checkbox-group{ display:flex; align-items:center; gap:15px; }
 
-    /* 안내박스 & 센터 디스플레이 */
     .info-box{
       background:var(--primary-light-color,#f0f2ff); border:1px solid #d1d9ff; padding:15px; margin-top:10px; border-radius:6px; font-size:14px;
     }
@@ -85,12 +84,129 @@
     }
     .center-display-box.filled p{ display:block; }
 
-    /* 동적 월별 행 */
     .dynamic-form-container{ margin-top:10px; border-top:1px solid var(--border-color,#dee2e6); padding-top:10px; }
     .dynamic-form-row{ display:flex; align-items:center; gap:15px; padding:10px; border-radius:6px; margin-bottom:10px; }
     .dynamic-form-row:nth-child(odd){ background:var(--primary-light-color,#f0f2ff); }
     .date-range-display{ font-weight:500; flex-basis:300px; flex-shrink:0; text-align:center; }
     .payment-input-field{ flex:1; display:flex; justify-content:flex-end; }
+    
+
+.form-group-vertical {
+  display: block !important;
+  margin-bottom: 25px !important;
+}
+
+.form-group-vertical .field-title {
+  width: 100% !important;
+  font-weight: 500;
+  font-size: 16px;
+  color: #333;
+  line-height: 1.6;
+  margin-bottom: 12px;
+
+  background: white;
+  border-left: 4px solid var(--primary-color, #3f58d4);
+  padding: 12px 15px;
+  border-radius: 4px;
+}
+
+.form-group-vertical .input-field {
+  width: 100% !important;
+}
+ 
+.form-section input[type="file"]::file-selector-button {
+  display: inline-block;
+  padding: 8px 15px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 6px;
+  border: 1px solid var(--border-color,#dee2e6);
+  cursor: pointer;
+  transition: .2s;
+
+  background: #fff;
+  color: var(--gray-color, #868e96);
+  margin-right: 15px;
+}
+
+.form-section input[type="file"]::file-selector-button:hover {
+  background: var(--light-gray-color, #f8f9fa);
+  color: var(--dark-gray-color, #343a40);
+}
+
+.form-section input[type="file"] {
+  font-size: 14px;
+  color: transparent;
+}
+
+.form-section .info-box[id^="list_"] {
+  background-color: #fff;
+  border: 1px solid var(--border-color, #dee2e6);
+  min-height: 50px;
+  padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.form-section .info-box[id^="list_"]:not(:has(.file-pill)):not(:has(.file-chip)) {
+  color: var(--gray-color, #868e96);
+  font-style: italic;
+  align-items: center;
+}
+
+.form-section .info-box[id^="list_"] .file-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 8px 6px 12px;
+  background: var(--primary-light-color, #f0f2ff);
+  border: 1px solid #d1d9ff;
+  color: var(--primary-color, #3f58d4);
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 0 !important;
+}
+
+.form-section .info-box[id^="list_"] .file-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 8px 6px 12px;
+  background: var(--primary-light-color, #f0f2ff);
+  border: 1px solid #d1d9ff;
+  color: var(--primary-color, #3f58d4);
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 0 !important;
+}
+
+.file-remove-btn,
+.btn-del-exist {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.1);
+  color: var(--primary-color, #3f58d4);
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1;
+  margin-left: 8px;
+  cursor: pointer;
+  transition: .2s;
+  padding: 0;
+}
+
+.file-remove-btn:hover,
+.btn-del-exist:hover {
+  background: rgba(0,0,0,0.2);
+  color: #000;
+}
+    
   </style>
 
   <title>육아휴직 확인서 제출(수정)</title>
@@ -316,31 +432,30 @@
         </div>
       </div>
       
-<!-- 첨부파일 (신청페이지와 동일 4박스, 각 박스에 기존 파일도 함께 표시) -->
+<!-- 첨부파일 -->
 <div class="form-section">
   <h2>첨부파일</h2>
   <input type="hidden" id="fileId" name="fileId" value="${confirmDTO.fileId}" />
 
   <c:set var="TYPE_WAGE" value="WAGE_PROOF"/>
   <c:set var="TYPE_PAY"  value="PAYMENT_FROM_EMPLOYER"/>
-  <c:set var="TYPE_OTHER" value="OTHER"/>
   <c:set var="TYPE_ELIG" value="ELIGIBILITY_PROOF"/>
+  <c:set var="TYPE_OTHER" value="OTHER"/>
 
-  <%-- 공통: 파일명 추출 유틸(경로 → 파일명) --%>
   <c:set var="__normTmp" value=""/>
 
-  <%-- 1) 통상임금 증명자료 --%>
-  <div class="form-group">
+  <!-- 1. 통상임금 증명자료 -->
+  <div class="form-group form-group-vertical">
     <label class="field-title">통상임금을 확인할 수 있는 증명자료(임금대장, 근로계약서 등)</label>
     <div class="input-field">
       <input type="hidden" name="fileTypes" value="${TYPE_WAGE}">
+      <br>
       <input type="file" name="files" id="files_${TYPE_WAGE}" multiple
              accept=".pdf,.jpg,.jpeg,.png,.heic,.gif,.bmp,.tif,.tiff,.hwp,.hwpx,.doc,.docx,.xls,.xlsx">
-
-      <div class="info-box" style="margin-top:8px;">
-        <!-- 기존 파일 -->
-        <div class="existed-list" id="exist_${TYPE_WAGE}" style="margin-bottom:6px;">
+      <div id="list_${TYPE_WAGE}" class="info-box" style="margin-top:8px; min-height:40px;">
+        <div class="existed-list" id="exist_${TYPE_WAGE}">
           <c:forEach var="f" items="${files}">
+            <!-- 🔥 여기 TYPE_WAGE 로 수정 -->
             <c:if test="${f.fileType == TYPE_WAGE}">
               <div class="file-chip" data-seq="${f.sequence}" style="display:flex; align-items:center; gap:8px; margin:4px 0;">
                 <span class="chip-label" style="flex:1; word-break:break-all;">
@@ -348,30 +463,33 @@
                   <c:set var="__parts" value="${fn:split(__norm, '/')}"/>
                   ${__parts[fn:length(__parts)-1]}
                 </span>
-                <button type="button" class="btn btn-secondary btn-sm btn-del-exist" data-type="${TYPE_WAGE}" data-seq="${f.sequence}">
-                  삭제
-                </button>
+                 <button type="button"
+                class="btn-del-exist"
+                data-type="${TYPE_WAGE}"
+                data-seq="${f.sequence}">
+		          &times;
+		        </button>
               </div>
             </c:if>
           </c:forEach>
         </div>
-        <!-- 새로 선택됨 미리보기 -->
-        <div class="selected-list" id="sel_${TYPE_WAGE}" style="border-top:1px dashed #d9d9d9; padding-top:6px;">
+        <div class="selected-list" id="sel_${TYPE_WAGE}">
           <em style="color:#666;">선택된 파일 없음</em>
         </div>
       </div>
     </div>
   </div>
 
-  <%-- 2) 사업주 금품 지급 확인 자료 --%>
-  <div class="form-group">
+  <!-- 2. 사업주 지급액 자료 -->
+  <div class="form-group form-group-vertical">
     <label class="field-title">육아휴직 기간 동안 사업주로부터 금품을 지급받은 경우 확인 자료</label>
     <div class="input-field">
       <input type="hidden" name="fileTypes" value="${TYPE_PAY}">
+      <br>
       <input type="file" name="files" id="files_${TYPE_PAY}" multiple
              accept=".pdf,.jpg,.jpeg,.png,.heic,.gif,.bmp,.tif,.tiff,.hwp,.hwpx,.doc,.docx,.xls,.xlsx">
-      <div class="info-box" style="margin-top:8px;">
-        <div class="existed-list" id="exist_${TYPE_PAY}" style="margin-bottom:6px;">
+      <div id="list_${TYPE_PAY}" class="info-box" style="margin-top:8px; min-height:40px;">
+        <div class="existed-list" id="exist_${TYPE_PAY}">
           <c:forEach var="f" items="${files}">
             <c:if test="${f.fileType == TYPE_PAY}">
               <div class="file-chip" data-seq="${f.sequence}" style="display:flex; align-items:center; gap:8px; margin:4px 0;">
@@ -380,60 +498,33 @@
                   <c:set var="__parts" value="${fn:split(__norm, '/')}"/>
                   ${__parts[fn:length(__parts)-1]}
                 </span>
-                <button type="button" class="btn btn-secondary btn-sm btn-del-exist" data-type="${TYPE_PAY}" data-seq="${f.sequence}">
-                  삭제
-                </button>
+                <button type="button"
+                class="btn-del-exist"
+                data-type="${TYPE_WAGE}"
+                data-seq="${f.sequence}">
+		          &times;
+		        </button>
               </div>
             </c:if>
           </c:forEach>
         </div>
-        <div class="selected-list" id="sel_${TYPE_PAY}" style="border-top:1px dashed #d9d9d9; padding-top:6px;">
+        <div class="selected-list" id="sel_${TYPE_PAY}">
           <em style="color:#666;">선택된 파일 없음</em>
         </div>
       </div>
     </div>
   </div>
 
-  <%-- 3) 기타 --%>
-  <div class="form-group">
-    <label class="field-title">기타 자료</label>
-    <div class="input-field">
-      <input type="hidden" name="fileTypes" value="${TYPE_OTHER}">
-      <input type="file" name="files" id="files_${TYPE_OTHER}" multiple
-             accept=".pdf,.jpg,.jpeg,.png,.heic,.gif,.bmp,.tif,.tiff,.hwp,.hwpx,.doc,.docx,.xls,.xlsx">
-      <div class="info-box" style="margin-top:8px;">
-        <div class="existed-list" id="exist_${TYPE_OTHER}" style="margin-bottom:6px;">
-          <c:forEach var="f" items="${files}">
-            <c:if test="${f.fileType == TYPE_OTHER}">
-              <div class="file-chip" data-seq="${f.sequence}" style="display:flex; align-items:center; gap:8px; margin:4px 0;">
-                <span class="chip-label" style="flex:1; word-break:break-all;">
-                  <c:set var="__norm"  value="${fn:replace(f.fileUrl, '\\\\', '/')}"/>
-                  <c:set var="__parts" value="${fn:split(__norm, '/')}"/>
-                  ${__parts[fn:length(__parts)-1]}
-                </span>
-                <button type="button" class="btn btn-secondary btn-sm btn-del-exist" data-type="${TYPE_OTHER}" data-seq="${f.sequence}">
-                  삭제
-                </button>
-              </div>
-            </c:if>
-          </c:forEach>
-        </div>
-        <div class="selected-list" id="sel_${TYPE_OTHER}" style="border-top:1px dashed #d9d9d9; padding-top:6px;">
-          <em style="color:#666;">선택된 파일 없음</em>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <%-- 4) 자격 확인 자료 --%>
-  <div class="form-group">
+  <!-- 3. 자격 확인 자료 -->
+  <div class="form-group form-group-vertical">
     <label class="field-title">자격 확인 자료(배우자 3개월 이상 육휴/한부모/중증장애아동 부모 등)</label>
     <div class="input-field">
       <input type="hidden" name="fileTypes" value="${TYPE_ELIG}">
+      <br>
       <input type="file" name="files" id="files_${TYPE_ELIG}" multiple
              accept=".pdf,.jpg,.jpeg,.png,.heic,.gif,.bmp,.tif,.tiff,.hwp,.hwpx,.doc,.docx,.xls,.xlsx">
-      <div class="info-box" style="margin-top:8px;">
-        <div class="existed-list" id="exist_${TYPE_ELIG}" style="margin-bottom:6px;">
+      <div id="list_${TYPE_ELIG}" class="info-box" style="margin-top:8px; min-height:40px;">
+        <div class="existed-list" id="exist_${TYPE_ELIG}">
           <c:forEach var="f" items="${files}">
             <c:if test="${f.fileType == TYPE_ELIG}">
               <div class="file-chip" data-seq="${f.sequence}" style="display:flex; align-items:center; gap:8px; margin:4px 0;">
@@ -442,14 +533,52 @@
                   <c:set var="__parts" value="${fn:split(__norm, '/')}"/>
                   ${__parts[fn:length(__parts)-1]}
                 </span>
-                <button type="button" class="btn btn-secondary btn-sm btn-del-exist" data-type="${TYPE_ELIG}" data-seq="${f.sequence}">
-                  삭제
-                </button>
+                <button type="button"
+                class="btn-del-exist"
+                data-type="${TYPE_WAGE}"
+                data-seq="${f.sequence}">
+		          &times;
+		        </button>
               </div>
             </c:if>
           </c:forEach>
         </div>
-        <div class="selected-list" id="sel_${TYPE_ELIG}" style="border-top:1px dashed #d9d9d9; padding-top:6px;">
+        <div class="selected-list" id="sel_${TYPE_ELIG}">
+          <em style="color:#666;">선택된 파일 없음</em>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. 기타 자료 -->
+  <div class="form-group form-group-vertical">
+    <label class="field-title">기타 자료</label>
+    <div class="input-field">
+      <input type="hidden" name="fileTypes" value="${TYPE_OTHER}">
+      <br>
+      <input type="file" name="files" id="files_${TYPE_OTHER}" multiple
+             accept=".pdf,.jpg,.jpeg,.png,.heic,.gif,.bmp,.tif,.tiff,.hwp,.hwpx,.doc,.docx,.xls,.xlsx">
+      <div id="list_${TYPE_OTHER}" class="info-box" style="margin-top:8px; min-height:40px;">
+        <div class="existed-list" id="exist_${TYPE_OTHER}">
+          <c:forEach var="f" items="${files}">
+            <c:if test="${f.fileType == TYPE_OTHER}">
+              <div class="file-chip" data-seq="${f.sequence}" style="display:flex; align-items:center; gap:8px; margin:4px 0;">
+                <span class="chip-label" style="flex:1; word-break:break-all;">
+                  <c:set var="__norm"  value="${fn:replace(f.fileUrl, '\\\\', '/')}"/>
+                  <c:set var="__parts" value="${fn:split(__norm, '/')}"/>
+                  ${__parts[fn:length(__parts)-1]}
+                </span>
+                <button type="button"
+                class="btn-del-exist"
+                data-type="${TYPE_WAGE}"
+                data-seq="${f.sequence}">
+		          &times;
+		        </button>
+              </div>
+            </c:if>
+          </c:forEach>
+        </div>
+        <div class="selected-list" id="sel_${TYPE_OTHER}">
           <em style="color:#666;">선택된 파일 없음</em>
         </div>
       </div>
@@ -1041,7 +1170,9 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-}); // DOMContentLoaded 끝
+  bindUnifiedFileUI();
+  bindFileDeleteInline();  
+});
 
 // ─────────────────────────────────────
 // 직원 주민번호로 이름 자동 채우기
@@ -1200,52 +1331,116 @@ async function showPrevPeriodAlert() {
 // ─────────────────────────────────────
 // 파일 UI: 같은 박스에서 "기존 + 새 선택 파일" 함께 표시
 // ─────────────────────────────────────
+
 (function bindUnifiedFileUI(){
   const groups = [
-    { id: 'files_WAGE_PROOF',              selList: 'sel_WAGE_PROOF' },
-    { id: 'files_PAYMENT_FROM_EMPLOYER',   selList: 'sel_PAYMENT_FROM_EMPLOYER' },
-    { id: 'files_OTHER',                   selList: 'sel_OTHER' },
-    { id: 'files_ELIGIBILITY_PROOF',       selList: 'sel_ELIGIBILITY_PROOF' }
+    { boxId: 'list_WAGE_PROOF',            inputId: 'files_WAGE_PROOF',            selId: 'sel_WAGE_PROOF' },
+    { boxId: 'list_PAYMENT_FROM_EMPLOYER', inputId: 'files_PAYMENT_FROM_EMPLOYER', selId: 'sel_PAYMENT_FROM_EMPLOYER' },
+    { boxId: 'list_OTHER',                 inputId: 'files_OTHER',                 selId: 'sel_OTHER' },
+    { boxId: 'list_ELIGIBILITY_PROOF',     inputId: 'files_ELIGIBILITY_PROOF',     selId: 'sel_ELIGIBILITY_PROOF' }
   ];
+
   function fileNiceName(f){
     if (f && typeof f.name === 'string' && f.name.trim() !== '') return f.name;
     if (f && typeof f.webkitRelativePath === 'string' && f.webkitRelativePath.trim() !== '') {
-      const parts = f.webkitRelativePath.split('/'); return parts[parts.length - 1] || '파일';
+      const parts = f.webkitRelativePath.split('/');
+      return parts[parts.length - 1] || '파일';
     }
     return '파일';
   }
-  function fileNiceSizeMB(f){ if (!f || typeof f.size !== 'number' || isNaN(f.size)) return '?'; return (f.size / (1024 * 1024)).toFixed(1); }
-  function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+
+  function fileNiceSizeMB(f){
+    if (!f || typeof f.size !== 'number' || isNaN(f.size)) return '?';
+    return (f.size / (1024 * 1024)).toFixed(1);
+  }
+
+  function escapeHtml(s){
+    return String(s)
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+      .replace(/'/g,'&#39;');
+  }
+
+  function refreshEmptyState(boxEl){
+    if (!boxEl) return;
+
+    const hasAnyFile = !!boxEl.querySelector('.file-chip, .file-pill');
+    const sel = boxEl.querySelector('.selected-list');
+    if (!sel) return;
+
+    if (hasAnyFile) {
+      const em = sel.querySelector('em');
+      if (em) em.remove();
+    } else {
+      sel.innerHTML = '<em style="color:#666;">선택된 파일 없음</em>';
+    }
+  }
+
+  function renderSelected(input, out){
+    const box = out.closest('.info-box');
+    const fl = input.files;
+
+    if (!fl || fl.length === 0) {
+      const hasExisting = !!(box && box.querySelector('.existed-list .file-chip'));
+      if (hasExisting) {
+        out.innerHTML = '';
+      } else {
+        out.innerHTML = '<em style="color:#666;">선택된 파일 없음</em>';
+      }
+      return;
+    }
+
+    out.innerHTML = '';
+
+    Array.from(fl).forEach((f, idx) => {
+      const pill = document.createElement('div');
+      pill.className = 'file-chip';
+
+      const label = document.createElement('span');
+      label.className = 'chip-label';
+      label.style.flex = '1';
+      label.style.wordBreak = 'break-all';
+
+      const sizeMb = fileNiceSizeMB(f);
+      const sizeSuffix = sizeMb !== '?' ? ' (' + sizeMb + 'MB)' : '';
+      label.textContent = fileNiceName(f) + sizeSuffix;
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'file-remove-btn';
+      btn.innerHTML = '&times;';
+
+      btn.addEventListener('click', () => {
+        const dt = new DataTransfer();
+        Array.from(input.files).forEach((file, i) => {
+          if (i !== idx) dt.items.add(file);
+        });
+        input.files = dt.files;
+        renderSelected(input, out);
+      });
+
+      pill.appendChild(label);
+      pill.appendChild(btn);
+      out.appendChild(pill);
+    });
+
+    refreshEmptyState(box);
+  }
 
   groups.forEach(g => {
-    const inp = document.getElementById(g.id);
-    const out = document.getElementById(g.selList);
-    if(!inp || !out) return;
-    inp.addEventListener('change', ()=>{
-      const fl = inp.files;
-      if (!fl || fl.length === 0) {
-        out.innerHTML = '<em style="color:#666;">선택된 파일 없음</em>';
-        return;
-      }
-      const rows = [];
-      for (const f of fl) {
-        const name = escapeHtml(fileNiceName(f));
-        const mb   = fileNiceSizeMB(f);
-        const sizeSuffix = (mb !== '?') ? ' (' + mb + 'MB)' : '';
-        rows.push(
-          '<div class="file-chip" style="display:flex; align-items:center; gap:8px; margin:4px 0;">' +
-            '<span class="chip-label" style="flex:1; word-break:break-all;">' + name + sizeSuffix + '</span>' +
-            '<span style="font-size:12px; color:#888;">새로 선택됨</span>' +
-          '</div>'
-        );
-      }
-      out.innerHTML = rows.join('');
-    });
+    const inp = document.getElementById(g.inputId);
+    const out = document.getElementById(g.selId);
+    const box = document.getElementById(g.boxId);
+    if (!inp || !out || !box) return;
+
+    inp.addEventListener('change', () => renderSelected(inp, out));
+    refreshEmptyState(box);
   });
 })();
 
-// 기존 파일 inline 삭제
-(function bindFileDeleteInline(){
+function bindFileDeleteInline(){
   const CTX  = '${pageContext.request.contextPath}';
   const csrf = document.querySelector('input[name="_csrf"]')?.value || '';
   const fileIdEl = document.getElementById('fileId');
@@ -1270,11 +1465,17 @@ async function showPrevPeriodAlert() {
       headers:{ 'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8' },
       body
     });
-    if (!resp.ok) { alert('삭제 실패'); return; }
+
+    if (!resp.ok) {
+      alert('삭제 실패');
+      return;
+    }
+
     const row = e.target.closest('.file-chip');
     if (row) row.remove();
   });
-})();
+}
+
 
 // 제출 직전 업로드(수정: fileId 있으면 /file/append, 없으면 /file/upload)
 async function uploadAllFilesBeforeSubmit() {

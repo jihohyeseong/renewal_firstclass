@@ -8,8 +8,6 @@ import org.apache.ibatis.annotations.Param;
 
 import com.example.renewal_firstclass.domain.AttachedFileDTO;
 
-import lombok.RequiredArgsConstructor;
-
 @Mapper
 public interface AttachedFileDAO {
 

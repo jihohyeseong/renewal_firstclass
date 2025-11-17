@@ -118,8 +118,8 @@
     c.child_name,
     c.child_resi_regi_number,
     c.child_birth_date,
-    c.registration_number        AS applicantResiRegiNumber, -- 근로자 주민번호(확인서에 저장됨)
-    c.name                       AS applicantNameFromCA,     -- 근로자 이름(확인서에 저장)
+    c.registration_number        AS applicantResiRegiNumber, -- 근로자 주민번호
+    c.name                       AS applicantNameFromCA,     -- 근로자 이름
     c.response_name,
     c.response_phone_number,
     c.user_id        AS corpUserId,   -- 회사계정 ID (참고용 필요시)
@@ -134,7 +134,7 @@
     
 
     /* ===== 신청자(USER, from PLA.user_id) ===== */
-    au.name                      AS applicantName,           -- 신청자 이름(사용자 테이블)
+    au.name                      AS applicantName,           -- 신청자 이름
     au.phone_number              AS applicantPhoneNumber,
     au.zip_number				 AS applicantZipNumber,
     au.address_base              AS applicantAddrBase,
