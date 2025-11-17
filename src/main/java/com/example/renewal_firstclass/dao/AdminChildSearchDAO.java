@@ -16,8 +16,4 @@ public interface AdminChildSearchDAO {
     
     int countChildSearch(CompSearchDTO searchDTO);
     
-    /*List<TermAmountDTO> selectOriginalTermAmounts(@Param("confirmNumber") Long confirmNumber);
-    
-    // 수정된(update_at='Y') 단위기간 조회
-    List<TermAmountDTO> selectUpdatedTermAmounts(@Param("confirmNumber") Long confirmNumber);*/
 }

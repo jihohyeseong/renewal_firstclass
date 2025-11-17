@@ -67,7 +67,7 @@ public class AdminSuperiorService {
         combinedList.addAll(applicationList);
         combinedList.addAll(addAmountList);
 
-        // 병합된 리스트 정렬 (예: 신청일 내림차순)
+        // 병합된 리스트 정렬
         combinedList.sort(Comparator.comparing(
                 AdminUserApprovalDTO::getSubmittedDate, 
                 Comparator.nullsLast(Comparator.reverseOrder())
@@ -96,7 +96,7 @@ public class AdminSuperiorService {
         int rejectedApp = adminSuperiorDAO.selectStatusCount("ST_60", "N");
         int totalApp = pendingApp+approvedApp+rejectedApp;
         
-        // 추가지급 건수 (새 DAO 메소드 사용)
+        // 추가지급 건수 
         int totalAdd = adminSuperiorDAO.selectAddAmountTotalCount();
         int pendingAdd = adminSuperiorDAO.selectAddAmountStatusCount("ST_40");
         int approvedAdd = adminSuperiorDAO.selectAddAmountStatusCount("ST_50");
@@ -196,10 +196,10 @@ public class AdminSuperiorService {
         
         List<AdminAddAmountDTO> addAmountList = adminSuperiorDAO.selectAddAmountListByAppNo(applicationNumber);
         
-        // (1) 버튼 표시 조건 및 기본 정보 출력을 위해 리스트 자체를 담음
+        // 버튼 표시 조건 및 기본 정보 출력을 위해 리스트 자체
         model.addAttribute("addAmountData", addAmountList); 
 
-        // (2) JSP 테이블 매핑을 위해 termId를 Key로 하는 Map 생성
+        // JSP 테이블 매핑을 위해 termId를 Key로 하는 Map 생성
         Map<Long, AdminAddAmountDTO> addAmountMap = new HashMap<>();
         if (addAmountList != null) {
             for (AdminAddAmountDTO item : addAmountList) {
@@ -212,13 +212,13 @@ public class AdminSuperiorService {
         model.addAttribute("addAmountMap", addAmountMap);
         model.addAttribute("appDTO", appDTO);
         model.addAttribute("terms", terms);
-        // (JSP에서 구분을 위해)
+        
         model.addAttribute("isAddAmountDetail", true); 
     }
     //추가지급 지급/부지급 처리
     @Transactional
     public void processAddAmount(long applicationNumber, String statusCode) {
-        // 'ST_50' (지급) 또는 'ST_60' (부지급)
+        // 'ST_50' 또는 'ST_60' 
         int updated = adminSuperiorDAO.updateAddAmountStatus(applicationNumber, statusCode);
         
         if (updated == 0) {
@@ -227,17 +227,16 @@ public class AdminSuperiorService {
        
     }
     
-    /**최종 지급 확정*/
+    //최종 지급 확정
     @Transactional
     public void approveLevel2ToSecondReview(long applicationNumber, long superiorId) {
         int updated = adminSuperiorDAO.approveApplicationLevel2(applicationNumber, superiorId);
         if (updated == 0) {
-            // 상태 조건 불일치 등으로 갱신 실패
             throw new IllegalStateException("지급 확정 처리가 불가능한 상태이거나 이미 처리되었습니다.");
         }
     }
 
-    /**부지급 확정*/
+    //부지급 확정
     @Transactional
     public void rejectApplication(long applicationNumber, String rejectionReasonCode, String rejectComment, long superiorId) {
         int updated = adminSuperiorDAO.rejectApplication(applicationNumber, rejectionReasonCode, rejectComment, superiorId);
@@ -252,7 +251,7 @@ public class AdminSuperiorService {
 
         if (confirmNumber == null || src == null || src.isEmpty()) return;
 
-        // 3) confirm_number만 채운 복제 리스트 구성
+        // 확인서번호만 채운 복제 리스트 구성
         List<TermAmountDTO> toInsert = new java.util.ArrayList<>(src.size());
         for (TermAmountDTO t : src) {
             TermAmountDTO copy = new TermAmountDTO();
@@ -269,7 +268,7 @@ public class AdminSuperiorService {
         termAmountDAO.insertTermAmount(toInsert);
     }
 
-    /**부지급 사유 코드 목록 */
+    //부지급 사유 코드 목록
     public List<CodeDTO> getRejectCodes() {
         return codeDAO.findAllRejectCode();
     }

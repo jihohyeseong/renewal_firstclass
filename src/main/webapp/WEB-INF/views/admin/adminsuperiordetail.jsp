@@ -61,7 +61,6 @@
 		padding-bottom:10px;margin-bottom:25px;font-size:20px;
 	}
 	
-	/* 섹션 타이틀 */
 	.section-title{
 		font-size:20px;font-weight:700;color:var(--dark-gray-color);
 		margin-bottom:15px;border-left:4px solid var(--primary-color);padding-left:10px;
@@ -149,7 +148,7 @@
 	.modal-buttons {
 		display:flex;justify-content:flex-end;gap:10px;margin-top:30px;
 	}
-	/* [추가] 하이라이팅을 위한 CSS 클래스 */
+	/* 하이라이팅을 위한 CSS 클래스 */
 	.highlight-warning {
 		background-color: #f8d7da; /* 부드러운 빨간색 배경 */
 		color: var(--danger-color); /* 진한 빨간색 텍스트 */
@@ -158,7 +157,7 @@
 		border-radius: 4px;
 	}
 	
-	/* ===== 진행 상태 카드 (Step Progress Bar) - Blue Theme (5단계) ===== */
+	/* ===== 진행 상태 카드(5단계) ===== */
 	.progress-card {
 		background: #fff;
 		border: 1px solid var(--border-color);
@@ -248,7 +247,7 @@
 	    font-size: 14px;
 	  }
 	  
-	/* ===== [신규] 부지급 사유 영역  ===== */
+	/* ===== 부지급 사유 영역  ===== */
 	#rejectForm{
 	  display:none;
 	  margin-top:10px; padding:10px 12px;
@@ -256,7 +255,7 @@
 	}
 	#rejectForm.active {
 	  display: block;
-	  animation: fadeInDown 0.3s ease-out; /* 가지고 계신 애니메이션 적용 */
+	  animation: fadeInDown 0.3s ease-out;
 	}
 	
 	/* 공통 행: 라벨 110px + 인풋 1fr */
@@ -276,7 +275,6 @@
 	  font-weight:700; color:#334155;
 	}
 	
-	/* 컨트롤 기본 사이즈 */
 	#rejectForm .form-control{
 	  width:100%;
 	  padding:10px 12px !important;
@@ -287,12 +285,12 @@
 	/* 셀렉트가 폭을 벌리는 문제 제거 */
 	#rejectForm select{ min-width:0 !important; }
 	
-	/* === 상세사유만 라벨 위 / textarea 아래 (스택) === */
+	/* 상세사유만 라벨 위 / textarea 아래  */
 	#rejectForm .form-row.row-detail{ align-items: start; }
 	#rejectForm .form-row.row-detail label{ margin:0 !important; }
 	#rejectForm .form-row.row-detail .form-control{ grid-column: 2; }
 	#rejectForm .form-row.row-detail textarea.form-control{
-	  min-height:140px;    /* 필요하면 160~200px로 늘리면 됨 */
+	  min-height:140px;  
 	  line-height:1.5;
 	  resize:vertical;
 	}
@@ -850,10 +848,10 @@ document.addEventListener("DOMContentLoaded", function () {
 	const rejectCommentEl = document.getElementById("rejectComment");
 	const applicationNumber = document.getElementById("applicationNumber")?.value;
 	
-	// [추가] userId 값 읽기
+	//  userId 값 읽기
 	const userId = document.getElementById("userId")?.value;
 
-	// [추가] 푸시 알림 전송 및 후속 처리를 위한 헬퍼 함수
+	// 푸시 알림 전송 및 후속 처리를 위한 헬퍼 함수
 	function sendPushAndFinalize(userId, data, defaultMessage) {
 		const successMessage = data.message || defaultMessage;
 		
@@ -899,7 +897,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (rejectBtnAction) {
                 rejectBtnAction.setAttribute('aria-pressed', 'false');
             }
-            //지급 버튼 자신도 눌린 상태 해제
+            //지급 버튼 눌린 상태 해제
             approveBtnAction.setAttribute('aria-pressed', 'false');
             
 			if (!confirm('지급 확정하시겠습니까?')) return;
@@ -917,12 +915,12 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 	}
 	
-	// '부지급' 버튼 리스너 (폼 열기 + 사유 로드)
+	// '부지급' 버튼 리스너
 	if (rejectBtnAction) {
 		rejectBtnAction.addEventListener('click', function() {
 			rejectForm.classList.add('active'); // 폼 표시
 			
-			// [수정] '부지급' 버튼을 눌린 상태(회색)로 변경
+			// '부지급' 버튼을 눌린 상태로 변경
             rejectBtnAction.setAttribute('aria-pressed', 'true');
             if (approveBtnAction) {
                 approveBtnAction.setAttribute('aria-pressed', 'false');
@@ -935,8 +933,7 @@ document.addEventListener("DOMContentLoaded", function () {
 				})
 				.then(res => res.json())
 				.then(list => {
-					// [수정된 부분 1/2] : <option> 태그로 변경
-	                let optionsHTML = '<option value="">사유를 선택하세요</option>'; // 기본 프롬프트
+	                let optionsHTML = '<option value="">사유를 선택하세요</option>'; 
 
 	                if (Array.isArray(list) && list.length > 0) {
 	                    optionsHTML += list
@@ -965,7 +962,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	if (cancelBtn) {
 		cancelBtn.addEventListener('click', function() {
 			rejectForm.classList.remove('active'); // 폼 숨기기
-			// [수정] '부지급' 버튼을 눌리지 않은 상태(기본)로 변경
+			// '부지급' 버튼을 눌리지 않은 상태로 변경
             if (rejectBtnAction) {
                 rejectBtnAction.setAttribute('aria-pressed', 'false');
             }

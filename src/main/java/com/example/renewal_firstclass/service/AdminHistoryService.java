@@ -64,7 +64,7 @@ public class AdminHistoryService {
                         .userName(app.getUserName())
                         .userRegiNumber(decryptedUserRegNo)
                         
-                        // (App 전용 필드)
+                        // 신청서 전용 필드
                         .historyId_App(app.getHistoryId())
                         .applicationNumber(app.getApplicationNumber())
                         .bankCode(app.getBankCode())
@@ -109,7 +109,7 @@ public class AdminHistoryService {
                         .userName(cnf.getName())
                         .userRegiNumber(decUserRegNo) 
                         
-                        // (Cnf 전용 필드)
+                        // 확인서 전용 필드
                         .historyId_Cnf(cnf.getHistoryId())
                         .confirmNumber_Cnf(cnf.getConfirmNumber())
                         .applyDt(cnf.getApplyDt())
@@ -161,7 +161,7 @@ public class AdminHistoryService {
         }
         pageDTO.setTotalCnt(totalCnt);
 
-        int start = pageDTO.getStartList(); // (pageNum - 1) * listSize
+        int start = pageDTO.getStartList(); 
         int end = Math.min(start + pageDTO.getListSize(), totalCnt);
         
         if (start >= totalCnt) {

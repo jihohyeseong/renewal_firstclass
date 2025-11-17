@@ -238,7 +238,7 @@
                     </c:otherwise>
                 </c:choose>
             </li>
-            <li><a class="nav-link ${fn:contains(currentURI, '/main') ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/addamount">추가지급</a></li>
+            <li><a class="nav-link ${fn:contains(currentURI, 'addamount') ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/addamount">추가지급</a></li>
     		<li><a class="nav-link ${fn:contains(currentURI, 'childsearch') ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/childsearch">동일 영아 조회</a></li>
     		<li><a class="nav-link ${fn:contains(currentURI, 'history') ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/history">활동 이력 조회</a></li>
     	</ul>

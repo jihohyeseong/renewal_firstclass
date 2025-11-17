@@ -38,7 +38,7 @@ a{text-decoration:none;color:inherit}
 }
 h1{text-align:center;margin-bottom:30px;font-size:28px}
 h2{
-  color:var(--primary-color);border-bottom:2px solid var(--primary-light-color);
+  color:var(--primary-color);border-bottom:2px solid #f0f2ff;
   padding-bottom:10px;margin-bottom:25px;font-size:20px;
 }
 .section-title{
@@ -100,6 +100,19 @@ h2{
 /* PDF 생성 시 숨길 요소 */
 .pdf-hide {
     display: none !important;
+}
+
+/* [추가] 첫 번째 파일의 파일 링크 스타일 */
+.file-download-link {
+    color: var(--primary-color);
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.file-download-link:hover {
+    text-decoration: underline;
 }
 </style>
 </head>
@@ -271,69 +284,80 @@ h2{
       </div>
     </c:if>
   </div>
+  
   <c:if test="${not empty confirmDTO}">
     <div class="info-table-container">
       <h2 class="section-title">첨부파일</h2>
-      <c:choose>
-        <c:when test="${not empty files}">
-            <table class="info-table">
+      
+      <table class="info-table">
+        <colgroup>
+          <col style="width:15%"><col style="width:85%">
+        </colgroup>
+        <tbody>
 
-              <tbody>
-                <c:forEach var="f" items="${files}">
-                  <%-- 표시용 파일명 추출 --%>
-                  <c:set var="parts1" value="${fn:split(f.fileUrl, '/')}"/>
-                  <c:choose>
-                    <c:when test="${fn:length(parts1) > 1}">
-                      <c:set var="displayName" value="${parts1[fn:length(parts1)-1]}"/>
-                    </c:when>
-                    <c:otherwise>
-                      <c:set var="parts2" value="${fn:split(f.fileUrl, '&#92;')}"/>
-                      <c:set var="displayName" value="${parts2[fn:length(parts2)-1]}"/>
-                    </c:otherwise>
-                  </c:choose>
+          <c:if test="${empty files}">
+            <tr>
+              <th style="text-align:center;">파일 목록</th>
+              <td style="color:var(--gray-color);">
+                등록된 첨부파일이 없습니다.
+              </td>
+            </tr>
+          </c:if>
 
-                  <%-- 파일 타입 4개 라벨 --%>
-                  <c:set var="typeLabel">
-                    <c:choose>
-                      <c:when test="${f.fileType == 'WAGE_PROOF'}">통상임금을 확인할 수 있는 증명자료</c:when>
-                      <c:when test="${f.fileType == 'PAYMENT_FROM_EMPLOYER'}">사업주로부터 금품을 지급받은 자료</c:when>
-                      <c:when test="${f.fileType == 'ELIGIBILITY_PROOF'}">배우자/한부모/장애아동 확인 자료</c:when>
-                      <c:when test="${f.fileType == 'OTHER'}">기타 자료</c:when>
-                      <c:otherwise>기타 자료</c:otherwise>
-                    </c:choose>
-                  </c:set>
+          <c:if test="${not empty files}">
+            <c:forEach var="f" items="${files}" varStatus="st">
 
-                  <tr>
-                    <th>
-                      <span style="display:inline-block;padding:2px 10px;border-radius:999px;background:var(--light-gray-color);">
-                        <c:out value="${typeLabel}"/>
-                      </span>
-                    </th>
-                    <td>
-                      <a href="<c:url value='/file/download'><c:param name='fileId' value='${f.fileId}'/><c:param name='seq' value='${f.sequence}'/></c:url>"
-                         style="text-decoration:none; color:var(--primary-color); word-break:break-all;">
-                        <c:out value="${displayName}"/>
-                      </a>
-                    </td>
-                    <td>
-                      <a class="btn btn-secondary"
-                         href="<c:url value='/file/download'><c:param name='fileId' value='${f.fileId}'/><c:param name='seq' value='${f.sequence}'/></c:url>">다운로드</a>
-                    </td>
-                  </tr>
-                </c:forEach>
-              </tbody>
-            </table>
-        </c:when>
-        <c:otherwise>
-          <div style="text-align:center; color:var(--gray-color); padding:14px;">등록된 첨부파일이 없습니다.</div>
-        </c:otherwise>
-      </c:choose>
+              <%-- 표시용 파일명 추출 --%>
+              <c:set var="parts1" value="${fn:split(f.fileUrl, '/')}" />
+              <c:choose>
+                <c:when test="${fn:length(parts1) > 1}">
+                  <c:set var="displayName" value="${parts1[fn:length(parts1)-1]}" />
+                </c:when>
+                <c:otherwise>
+                  <c:set var="parts2" value="${fn:split(f.fileUrl, '\\\\')}" />
+                  <c:set var="displayName" value="${parts2[fn:length(parts2)-1]}" />
+                </c:otherwise>
+              </c:choose>
+
+              <%-- 파일 타입 라벨 (기존 파일의 라벨 유지) --%>
+              <c:set var="typeLabel">
+                <c:choose>
+                  <c:when test="${f.fileType == 'WAGE_PROOF'}">통상임금을 확인할 수 있는 증명자료</c:when>
+                  <c:when test="${f.fileType == 'PAYMENT_FROM_EMPLOYER'}">사업주로부터 금품을 지급받은 자료</c:when>
+                  <c:when test="${f.fileType == 'ELIGIBILITY_PROOF'}">배우자/한부모/장애아동 확인 자료</c:when>
+                  <c:when test="${f.fileType == 'OTHER'}">기타 자료</c:when>
+                  <c:otherwise>기타 자료</c:otherwise>
+                </c:choose>
+              </c:set>
+
+              <tr>
+                <c:if test="${st.first}">
+                  <th rowspan="${fn:length(files)}" style="text-align:center; vertical-align: middle;">
+		                    파일 목록
+                  </th>
+                </c:if>
+
+                <td>
+                  <a href="<c:url value='/file/download'>
+                              <c:param name='fileId' value='${f.fileId}'/>
+                              <c:param name='seq'   value='${f.sequence}'/>
+                           </c:url>"
+                     class="file-download-link">
+                    <span>(<c:out value='${typeLabel}'/>)</span>
+                    <c:out value="${displayName}" />
+                  </a>
+                </td>
+              </tr>
+            </c:forEach>
+          </c:if>
+
+        </tbody>
+      </table>
     </div>
 
     <div class="button-container">
       <a href="${pageContext.request.contextPath}/user/confirm/check" class="btn bottom-btn btn-secondary">목록</a>
-
-      <button type="button" id="btn-pdf-download" class="btn bottom-btn btn-primary">PDF 다운로드</button>
+      <button type"button" id="btn-pdf-download" class="btn bottom-btn btn-primary">PDF 다운로드</button>
     </div>
   </c:if>
 </main>
@@ -345,7 +369,7 @@ h2{
 <script>
 (function(){
   var s = '<fmt:formatDate value="${confirmDTO.startDate}" pattern="yyyy-MM-dd"/>';
-  var e = '<fmt:formatDate value="${confirmDTO.endDate}"    pattern="yyyy-MM-dd"/>';
+  var e = '<fmt:formatDate value="${confirmDTO.endDate}"   pattern="yyyy-MM-dd"/>';
 
   if (!s || !e) return;
   var start = new Date(s + 'T00:00:00');

@@ -61,7 +61,6 @@
 		padding-bottom:10px;margin-bottom:25px;font-size:20px;
 	}
 	
-	/* 섹션 타이틀 */
 	.section-title{
 		font-size:20px;font-weight:700;color:var(--dark-gray-color);
 		margin-bottom:15px;border-left:4px solid var(--primary-color);padding-left:10px;
@@ -149,7 +148,7 @@
 	.modal-buttons {
 		display:flex;justify-content:flex-end;gap:10px;margin-top:30px;
 	}
-	/* [추가] 하이라이팅을 위한 CSS 클래스 */
+	/* 하이라이팅을 위한 CSS 클래스 */
 	.highlight-warning {
 		background-color: #f8d7da; /* 부드러운 빨간색 배경 */
 		color: var(--danger-color); /* 진한 빨간색 텍스트 */
@@ -158,7 +157,7 @@
 		border-radius: 4px;
 	}
 	
-	/* ===== 진행 상태 카드 (Step Progress Bar) - Blue Theme (5단계) ===== */
+	/* ===== 진행 상태 카드(5단계) ===== */
 	.progress-card {
 		background: #fff;
 		border: 1px solid var(--border-color);
@@ -252,7 +251,7 @@
     	padding: 10px 4px;
     	height: 38px;
 	}
-	/* ===== [신규] 부지급 사유 영역  ===== */
+	/* ===== 부지급 사유 영역  ===== */
 	#rejectForm{
 	  display:none;
 	  margin-top:10px; padding:10px 12px;
@@ -273,14 +272,12 @@
 	  margin:8px 0 !important;
 	}
 	
-	/* 라벨은 딱 맞게, 줄바꿈 금지 */
 	#rejectForm label{
 	  margin:0 !important;
 	  white-space:nowrap !important;
 	  font-weight:700; color:#334155;
 	}
 	
-	/* 컨트롤 기본 사이즈 */
 	#rejectForm .form-control{
 	  width:100%;
 	  padding:10px 12px !important;
@@ -291,7 +288,7 @@
 	/* 셀렉트가 폭을 벌리는 문제 제거 */
 	#rejectForm select{ min-width:0 !important; }
 	
-	/* === 상세사유만 라벨 위 / textarea 아래 (스택) === */
+	/* 상세사유만 라벨 위 / textarea 아래  */
 	#rejectForm .form-row.row-detail{ align-items: start; }
 	#rejectForm .form-row.row-detail label{ margin:0 !important; }
 	#rejectForm .form-row.row-detail .form-control{ grid-column: 2; }
@@ -947,8 +944,8 @@
         	<c:choose>
         	<c:when test="${addAmountData[0].statusCode == 'ST_50' || addAmountData[0].statusCode == 'ST_60' }">
 		        <div class="button-row">
-				<a href="${pageContext.request.contextPath}/admin/superior" class="btn btn-outline btn-lg">
-		            목록으로 돌아가기</a>
+				<a href="${pageContext.request.contextPath}/admin/superior" class="btn btn-outline"
+				 style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">목록으로 돌아가기</a>
 				</div>
 			</c:when>
 			<c:otherwise>
@@ -962,8 +959,8 @@
 	        </div>
 	        
 	        <div class="button-row">
-	        	<a href="${pageContext.request.contextPath}/admin/superior" class="btn btn-outline btn-lg">
-		            목록으로 돌아가기</a>
+	        	<a href="${pageContext.request.contextPath}/admin/superior" class="btn btn-outline"
+	        	 style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">목록으로 돌아가기</a>
 	        </div>
 	        
 	        <%-- <div id="rejectForm">
@@ -989,7 +986,7 @@
 		</c:choose>
     	</div>
 </main>
-<%-- (hidden inputs - applicationNumber는 폼 안으로 이동, userId는 스크립트용으로 남김) --%>
+
 <input type="hidden" id="userId" value="${appDTO.userId}" />
 <input type="hidden" id="applicationNumber" value="${appDTO.applicationNumber}" />
 
@@ -1012,10 +1009,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const btnApprove = document.getElementById("btnAddAmountApprove");
     const btnReject = document.getElementById("btnAddAmountReject");
 	
-	// [추가] userId 값 읽기
+	// userId 값 읽기
 	const userId = document.getElementById("userId")?.value;
 
-	// [추가] 푸시 알림 전송 및 후속 처리를 위한 헬퍼 함수
+	// 푸시 알림 전송 및 후속 처리를 위한 헬퍼 함수
 	function sendPushAndFinalize(userId, data, defaultMessage) {
 		const successMessage = data.message || defaultMessage;
 		
@@ -1051,52 +1048,6 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 	}
 
-	// [신규] 폼 유효성 검사
-    /* if (form) {
-        form.addEventListener("submit", function(e) {
-            
-            // 1. 사유 선택 검사
-            if (!reasonSelect.value) {
-                alert("추가지급 사유를 선택하세요.");
-                reasonSelect.focus();
-                e.preventDefault(); // 폼 제출 중단
-                return;
-            }
-
-            // 2. '기타' 선택 시 상세 사유 검사
-            if (reasonCodeStr === 'AR_30' && reasonText === '') {
-                alert("'기타' 사유를 선택한 경우, 상세 사유를 반드시 입력해야 합니다.");
-                document.getElementById("addReason").focus();
-                e.preventDefault();
-                return;
-            }
-
-            // 3. 최소 1개 이상 금액 입력 검사
-            const amountInputs = document.querySelectorAll("input[name='amount']");
-            let totalAmountEntered = 0;
-            let hasValidInput = false;
-            
-            amountInputs.forEach(input => {
-                const value = parseInt(input.value, 10);
-                if (!isNaN(value) && value > 0) {
-                    totalAmountEntered += value;
-                    hasValidInput = true;
-                }
-            });
-
-            if (!hasValidInput) {
-                alert("추가지급액을 1개 이상 입력하세요 (0원 이상).");
-                amountInputs[0].focus();
-                e.preventDefault();
-                return;
-            }
-
-            // 모든 검사 통과
-            if (!confirm("총 " + totalAmountEntered.toLocaleString() + "원의 추가지급을 신청하시겠습니까?")) {
-                e.preventDefault(); // 사용자가 '취소' 누르면 제출 중단
-            }
-        });
-    } */
     // 상위 관리자 추가지급 결재 버튼 핸들러
     if (btnApprove) {
         btnApprove.addEventListener("click", function() {
@@ -1128,7 +1079,7 @@ document.addEventListener("DOMContentLoaded", function () {
   		
   		setTimeout(function() {
         if (!confirm("이 추가지급 신청을 '" + actionText + "' 처리하시겠습니까?")) {
-        	// "취소"를 누르면 버튼 '눌림' 상태를 다시 해제합니다.
+        	// 취소 누르면 버튼  눌린상태 해제
             if (clickedButton) clickedButton.setAttribute('aria-pressed', 'false');
         
             return;

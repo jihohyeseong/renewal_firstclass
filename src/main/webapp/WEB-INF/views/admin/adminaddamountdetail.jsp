@@ -149,7 +149,7 @@
 	.modal-buttons {
 		display:flex;justify-content:flex-end;gap:10px;margin-top:30px;
 	}
-	/* [추가] 하이라이팅을 위한 CSS 클래스 */
+	/* 하이라이팅을 위한 CSS 클래스 */
 	.highlight-warning {
 		background-color: #f8d7da; /* 부드러운 빨간색 배경 */
 		color: var(--danger-color); /* 진한 빨간색 텍스트 */
@@ -158,7 +158,7 @@
 		border-radius: 4px;
 	}
 	
-	/* ===== 진행 상태 카드 (Step Progress Bar) - Blue Theme (5단계) ===== */
+	/* ===== 진행 상태 카드(5단계) ===== */
 	.progress-card {
 		background: #fff;
 		border: 1px solid var(--border-color);
@@ -208,25 +208,23 @@
 		width: 0%; max-width: 88%; transition: width .35s ease;
 	}
 	
-	/* ===== 버튼 영역 수정 ===== */
 	  .button-container {
 	    text-align: center;
 	    margin-top: 20px;
 	    padding-bottom: 20px;
 	  }
 	
-	  .judge-actions { /* [수정] 반려 폼 내부 버튼 정렬용 */
+	  .judge-actions { /* 반려 폼 내부 버튼 정렬 */
 		text-align: right; 
 		margin-top: 20px; 
 		padding-bottom: 20px;
 	}
 	  
 	  .btn-primary, .btn-secondary {
-	    padding: 6px 14px; /* 패딩 축소 */
+	    padding: 6px 14px; 
 	    font-size: 14px;
 	  }
 	  
-	  /* ===== [신규] 반려 버튼 ===== */
 	.btn-danger {
 		padding: 6px 14px;
 		font-size: 14px;
@@ -843,11 +841,11 @@
 
 <!-- 추가지급 --> 
 <c:choose>
-    <%-- [조건 1] 추가지급 신청 전 (데이터 없음, ST_50 상태) --%>
+    <%-- 추가지급 신청 전 (데이터 없음, ST_50 상태) --%>
     <c:when test="${empty addAmountData}">
 	<form id="addAmountForm" action="${pageContext.request.contextPath}/admin/addamount/apply" method="POST">
 		
-	    <%-- 컨트롤러로 넘길 신청번호 (필수) --%>
+	    <%-- 컨트롤러로 넘길 신청번호  --%>
 	    <input type="hidden" name="applicationNumber" value="${appDTO.applicationNumber}" />
 	<div class="info-table-container">
 		<h2 class="section-title">급여 신청 기간 및 월별 내역(추가지급)</h2>
@@ -1215,10 +1213,10 @@ document.addEventListener("DOMContentLoaded", function () {
 	const ctx = '${pageContext.request.contextPath}';
 	const applicationNumber = document.getElementById("applicationNumber")?.value;
 	
-	// [추가] userId 값 읽기
+	// userId 값 읽기
 	const userId = document.getElementById("userId")?.value;
 
-	// [추가] 푸시 알림 전송 및 후속 처리를 위한 헬퍼 함수
+	// 푸시 알림 전송 및 후속 처리를 위한 헬퍼 함수
 	function sendPushAndFinalize(userId, data, defaultMessage) {
 		const successMessage = data.message || defaultMessage;
 		
@@ -1256,11 +1254,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	const form = document.getElementById("addAmountForm");
 
-	// [신규] 폼 유효성 검사
+	// 폼 유효성 검사
     if (form) {
         form.addEventListener("submit", function(e) {
             
-            // 1. 사유 선택 검사
+            // 사유 선택 검사
             const reasonSelect = document.getElementById("codeId");
             if (!reasonSelect.value) {
                 alert("추가지급 사유를 선택하세요.");
@@ -1269,9 +1267,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // 2. '기타' 선택 시 상세 사유 검사
+            // '기타' 선택 시 상세 사유 검사
             const selectedOption = reasonSelect.options[reasonSelect.selectedIndex];
-            const reasonCodeStr = selectedOption.getAttribute("data-code-str"); // "AR_30"
+            const reasonCodeStr = selectedOption.getAttribute("data-code-str"); 
             const reasonText = document.getElementById("addReason").value.trim();
             
             if (reasonCodeStr === 'AR_30' && reasonText === '') {
@@ -1281,7 +1279,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // 3. 최소 1개 이상 금액 입력 검사
+            // 최소 1개 이상 금액 입력 검사
             const amountInputs = document.querySelectorAll("input[name='amount']");
             let totalAmountEntered = 0;
             let hasValidInput = false;
