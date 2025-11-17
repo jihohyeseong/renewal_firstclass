@@ -166,11 +166,11 @@ a { text-decoration: none; color: inherit; }
   font-weight: 600;
   color: #555;
   white-space: nowrap;
-  margin: 0;
+  margin-right: 5px;
   display: flex;
 }
 .filter-label {
-  font-size: .9rem;
+  font-size: .5rem;
   font-weight: 500;
   color: var(--text-muted);
 }
@@ -179,13 +179,17 @@ a { text-decoration: none; color: inherit; }
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
-  gap: .5rem;
+  gap: .25rem;
+  flex-grow: 1;
+  justify-content: flex-start;
 }
 
 /* 오른쪽 필터 묶음 */
 .filter-right {
   display: flex;
-    gap: 10px;
+  gap: 0.5rem;
+  flex-wrap: nowrap;
+  align-items: center;
 }
 .table-filters {
   display: flex;
@@ -238,12 +242,20 @@ a { text-decoration: none; color: inherit; }
   border-spacing: 0;
   text-align: left; /* 기본 정렬 */
 }
-.data-table th,
+.data-table th {
+  padding: .4rem 1rem;
+  border-bottom: 1px solid var(--border-light); /* 더 연한 보더 */
+  vertical-align: middle;
+  font-size: .9rem;
+  text-align: center;
+}
+
 .data-table td {
   padding: .9rem 1rem;
   border-bottom: 1px solid var(--border-light); /* 더 연한 보더 */
   vertical-align: middle;
   font-size: .9rem;
+  text-align: center;
 }
 .data-table thead th {
   background: var(--white-color);
@@ -516,12 +528,6 @@ a { text-decoration: none; color: inherit; }
 				        <label for="searchNumber">신청번호</label>
 				        <input type="text" name="appNoKeyword" id="searchNumber" placeholder="신청번호..." value="${appNoKeyword}">
 				    </div>
-					<button type="button" id="selectDate" style="background:none; border:none; cursor:pointer; margin-left:5px;">
-                                    <i class="bi bi-calendar-week"></i>
-                                </button>
-                                <c:if test="${not empty date}">
-                                    <span style="font-size:0.85em; color:#666;">(${date})</span>
-                                </c:if>
 					</div>
 				    <%-- 처리 상태 필터 --%>
 					<div class="filter-right">
@@ -563,7 +569,13 @@ a { text-decoration: none; color: inherit; }
                         	<th style="margin-left: 20px">구분</th>
                             <th>신청서 번호</th>
                             <th>신청자 이름</th>
-                            <th>신청일</th>
+                            <th>신청일
+                            <button type="button" id="selectDate" style="background:none; border:none; cursor:pointer; margin-left:5px;">
+                                    <i class="bi bi-calendar-week"></i>
+                                </button>
+                                <c:if test="${not empty date}">
+                                    <span style="font-size:0.85em; color:#666;">(${date})</span>
+                                </c:if></th>
                             <th>상태</th>
                             <th>검토</th>
                         </tr>

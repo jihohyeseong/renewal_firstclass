@@ -947,8 +947,8 @@
         	<c:choose>
         	<c:when test="${addAmountData[0].statusCode == 'ST_50' || addAmountData[0].statusCode == 'ST_60' }">
 		        <div class="button-row">
-				<a href="${pageContext.request.contextPath}/admin/superior" class="btn btn-outline btn-lg">
-		            목록으로 돌아가기</a>
+				<a href="${pageContext.request.contextPath}/admin/superior" class="btn btn-outline"
+				 style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">목록으로 돌아가기</a>
 				</div>
 			</c:when>
 			<c:otherwise>
@@ -962,8 +962,8 @@
 	        </div>
 	        
 	        <div class="button-row">
-	        	<a href="${pageContext.request.contextPath}/admin/superior" class="btn btn-outline btn-lg">
-		            목록으로 돌아가기</a>
+	        	<a href="${pageContext.request.contextPath}/admin/superior" class="btn btn-outline"
+	        	 style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">목록으로 돌아가기</a>
 	        </div>
 	        
 	        <%-- <div id="rejectForm">
