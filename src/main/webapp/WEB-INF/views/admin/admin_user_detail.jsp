@@ -547,9 +547,7 @@ textarea.form-control { resize: vertical; }
         <th>주민등록번호</th>
         <td>
           <c:if test="${not empty appDTO.applicantResiRegiNumber}">
-            <c:set var="rrnRaw" value="${appDTO.applicantResiRegiNumber}" />
-            <c:set var="rrnDigits" value="${fn:replace(fn:replace(fn:trim(rrnRaw), '-', ''), ' ', '')}" />
-            ${fn:substring(rrnDigits,0,6)}-${fn:substring(rrnDigits,6,13)}
+            ${fn:substring(appDTO.applicantResiRegiNumber,0,6)}-${fn:substring(appDTO.applicantResiRegiNumber,6,13)}
           </c:if>
           <c:if test="${empty appDTO.applicantResiRegiNumber}">
             <span class="highlight-warning">미입력</span>
@@ -619,19 +617,11 @@ textarea.form-control { resize: vertical; }
               <span class="highlight-warning">미입력</span>
             </c:when>
             <c:otherwise>
-              <c:set var="bizRaw" value="${appDTO.businessRegiNumber}" />
-              <c:set var="bizDigits" value="${fn:replace(fn:replace(fn:replace(fn:trim(bizRaw), '-', ''), ' ', ''), ',', '')}" />
-              <c:choose>
-                <c:when test="${fn:length(bizDigits) == 10}">
-                  ${fn:substring(bizDigits,0,3)}-${fn:substring(bizDigits,3,5)}-${fn:substring(bizDigits,5,10)}
-                </c:when>
-                <c:otherwise>
-                  <span class="highlight-warning"><c:out value="${bizRaw}" /></span>
-                </c:otherwise>
-              </c:choose>
+                  ${appDTO.businessRegiNumber}
             </c:otherwise>
           </c:choose>
         </td>
+
 
         <th>사업장 주소</th>
         <td>
@@ -815,7 +805,7 @@ textarea.form-control { resize: vertical; }
         <th>주민등록번호</th>
         <td colspan="3">
           <c:if test="${not empty appDTO.childResiRegiNumber}">
-            ${fn:substring(appDTO.childResiRegiNumber, 0, 6)}-${fn:substring(appDTO.childResiRegiNumber, 6, 7)}******
+            ${fn:substring(appDTO.childResiRegiNumber, 0, 6)}-${fn:substring(appDTO.childResiRegiNumber, 6,13)}
           </c:if>
         </td>
       </tr>
