@@ -1,6 +1,5 @@
 package com.example.renewal_firstclass.controller;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -130,9 +129,7 @@ public class AdminUserApprovalController {
     }
     
 
- // =========================
- // 지급(2차 심사: ST_40)
- // =========================
+ // 지급(2차 심사  ST_40 으로 변경)
  @PostMapping("/admin/user/approve")
  @ResponseBody
  public Map<String, Object> approveToSecondReview(@RequestBody Map<String, Object> payload) {
@@ -161,9 +158,7 @@ public class AdminUserApprovalController {
      return resp;
  }
 
- // =========================
  // 부지급 확정
- // =========================
  @PostMapping("/admin/user/reject")
  @ResponseBody
  public Map<String, Object> reject(@RequestBody Map<String, Object> payload) {

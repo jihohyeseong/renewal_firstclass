@@ -42,9 +42,8 @@ public class AdminUserApprovalService {
         
         // 검색 조건에 맞는 게시물 조회
         int totalCnt = adminUserApprovalDAO.selectTotalCount(keyword, status, date);
-        pageDTO.setTotalCnt(totalCnt); // PageDTO에 총 개수 설정 -> 페이징 계산 완료
-        
-        // DTO로 묶어서 전달
+        pageDTO.setTotalCnt(totalCnt);
+
         ApplicationSearchDTO search = new ApplicationSearchDTO();
         search.setKeyword(keyword);
         search.setStatus(status);
@@ -59,7 +58,7 @@ public class AdminUserApprovalService {
         // 전체 신청 건수
         counts.put("total", adminUserApprovalDAO.selectTotalCount(null, null, null));
 
-        // 대기 건수 ='제출'(ST_20) + '심사중'(ST_30) + '2차 심사중'(ST_40)
+        // 대기 건수 =제출(ST_20) + 심사중(ST_30) + 2차 심사중(ST_40)
         List<String> pendingStatusCodes = Arrays.asList("ST_20", "ST_30", "ST_40");
         counts.put("pending", adminUserApprovalDAO.selectStatusCountIn(pendingStatusCodes));
         
@@ -77,14 +76,13 @@ public class AdminUserApprovalService {
     
     @Transactional
     public AdminUserApprovalDTO userApplyDetail(long applicationNumber, Model model) {
-        // 화면 진입 시 상태 "검토중" 전환
         adminUserApprovalDAO.whenOpenChangeState(applicationNumber);
 
-        // 상세 조회 (한 번만)
+        // 상세 조회
         AdminUserApprovalDTO appDTO = adminUserApprovalDAO.selectAppDetailByAppNo(applicationNumber);
         if (appDTO == null) {
             model.addAttribute("error", "존재하지 않는 신청입니다.");
-            return null;   // ← 이제 리턴 타입이 있으니 null 리턴
+            return null;
         }
 
         try {
@@ -111,14 +109,11 @@ public class AdminUserApprovalService {
             }
         } catch (Exception ignore) {}
 
-        // ===== 월별 단위기간 내역 조회 =====
         List<TermAmountDTO> terms = termAmountDAO.selectByConfirmId(appDTO.getConfirmNumber());
 
-        // ===== 화면에서 쓸 데이터 model에 적재 =====
         model.addAttribute("appDTO", appDTO);
         model.addAttribute("terms", terms);
 
-        // 컨트롤러에서 파일 조회 등 추가 작업할 수 있게 DTO 반환
         return appDTO;
     }
 
@@ -128,7 +123,6 @@ public class AdminUserApprovalService {
     public void approveLevel1ToSecondReview(long applicationNumber, Long processorId) {
         int updated = adminUserApprovalDAO.approveApplicationLevel1(applicationNumber, processorId);
         if (updated == 0) {
-            // 상태 조건 불일치 등으로 갱신 실패
             throw new IllegalStateException("지급 확정 처리가 불가능한 상태이거나 이미 처리되었습니다.");
         }
     }
@@ -178,26 +172,32 @@ public class AdminUserApprovalService {
                                 String updChildResiRegiNumber,
                                 String updBankCode,
                                 String updAccountNumber, Model model) {
+
         AdminUserApprovalDTO dto = adminUserApprovalDAO.selectAppDetailByAppNo(applicationNumber);
         if (dto == null) {
             model.addAttribute("error", "존재하지 않는 신청입니다.");
+            return 0;
         }
+
+        String encChildResiRegiNumber = updChildResiRegiNumber;
+        String encAccountNumber = updAccountNumber;
+
         try {
-            if (dto.getUpdChildResiRegiNumber() != null && !dto.getUpdChildResiRegiNumber().trim().isEmpty()) {
-                dto.setUpdChildResiRegiNumber(aes256Util.encrypt(dto.getUpdChildResiRegiNumber()));
+            if (encChildResiRegiNumber != null && !encChildResiRegiNumber.trim().isEmpty()) {
+                encChildResiRegiNumber = aes256Util.encrypt(encChildResiRegiNumber);
             }
-        } catch (Exception ignore) {}
-        try {
-            if (dto.getUpdAccountNumber() != null && !dto.getUpdAccountNumber().trim().isEmpty()) {
-                dto.setUpdAccountNumber(aes256Util.encrypt(dto.getUpdAccountNumber()));
+            if (encAccountNumber != null && !encAccountNumber.trim().isEmpty()) {
+                encAccountNumber = aes256Util.encrypt(encAccountNumber);
             }
-        } catch (Exception ignore) {}
+        } catch (Exception e) {
+            throw new IllegalStateException("암호화 실패", e);
+        }
 
         int updatedBank  = adminUserApprovalDAO
-                .updateBankInfoByAppNo(applicationNumber, updBankCode, updAccountNumber);
+                .updateBankInfoByAppNo(applicationNumber, updBankCode, encAccountNumber);
 
         int updatedChild = adminUserApprovalDAO
-                .updateChildInfoByAppNo(applicationNumber, updChildName, updChildBirthDate, updChildResiRegiNumber);
+                .updateChildInfoByAppNo(applicationNumber, updChildName, updChildBirthDate, encChildResiRegiNumber);
 
         return updatedBank + updatedChild;
     }

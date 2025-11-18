@@ -996,7 +996,7 @@ textarea.form-control { resize: vertical; }
 							  <c:forEach var="b" items="${bankCodes}">
 							    <option value="${b.code}"
 							      <c:if test="${b.code == appDTO.updBankCode}">selected</c:if>>
-							      ${b.name} (${b.code})
+							      ${b.name}
 							    </option>
 							  </c:forEach>
 							</select>

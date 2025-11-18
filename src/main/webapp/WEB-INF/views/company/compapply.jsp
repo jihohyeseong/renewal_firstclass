@@ -1528,34 +1528,34 @@ async function showPrevPeriodAlert() {
 
 
 //⬇︎ 기존 uploadAllFilesBeforeSubmit 완전히 교체
+//⬇︎ 기존 uploadAllFilesBeforeSubmit 완전히 교체
 async function uploadAllFilesBeforeSubmit() {
-  const groups = [
-    { id: 'files_WAGE_PROOF', type: 'WAGE_PROOF' },
-    { id: 'files_PAYMENT_FROM_EMPLOYER', type: 'PAYMENT_FROM_EMPLOYER' },
-    { id: 'files_OTHER', type: 'OTHER' },
-    { id: 'files_ELIGIBILITY_PROOF', type: 'ELIGIBILITY_PROOF' }
-  ];
-
   const fd = new FormData();
   let fileCount = 0;
 
-  for (const g of groups) {
-    const input = document.getElementById(g.id);
-    if (input?.files?.length) {
-      for (const f of input.files) {
-        fd.append('files', f);
-        fd.append('fileTypes', g.type);
-        fileCount++;
-      }
-    }
-  }
+  // 업로드 순서 유지하고 싶으면 이렇게 타입 순서 고정
+  const typeOrder = [
+    'WAGE_PROOF',
+    'PAYMENT_FROM_EMPLOYER',
+    'OTHER',
+    'ELIGIBILITY_PROOF'
+  ];
 
-  // 파일이 하나도 없으면 업로드 건너뜀
+  typeOrder.forEach(type => {
+    const arr = FILE_STORE[type] || [];
+    arr.forEach(f => {
+      fd.append('files', f);        // 실제 파일
+      fd.append('fileTypes', type); // 이 파일의 타입
+      fileCount++;
+    });
+  });
+
+  // 파일이 하나도 없으면 업로드 생략
   if (fileCount === 0) {
     return { ok: true, skipped: true, fileId: null };
   }
 
-  const CTX = '${pageContext.request.contextPath}';
+  const CTX  = '${pageContext.request.contextPath}';
   const csrf = document.querySelector('input[name="_csrf"]')?.value;
 
   const resp = await fetch(CTX + '/file/upload', {
@@ -1566,7 +1566,7 @@ async function uploadAllFilesBeforeSubmit() {
   });
 
   if (!resp.ok) {
-    console.error('[upload] HTTP', resp.status, await resp.text().catch(()=>''));
+    console.error('[upload] HTTP', resp.status, await resp.text().catch(()=> ''));
     return { ok: false, skipped: false, fileId: null };
   }
 

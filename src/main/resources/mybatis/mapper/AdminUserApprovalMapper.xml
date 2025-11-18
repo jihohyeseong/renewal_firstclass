@@ -87,7 +87,7 @@
 <select id="selectAppDetailByAppNo"
         resultType="com.example.renewal_firstclass.domain.AdminUserApprovalDTO">
   SELECT
-    /* ===== 신청서(PLA) ===== */
+    /* ===== 신청서 ===== */
     p.application_number,
     p.status_code,
     st_app.name                  AS statusName,
@@ -110,7 +110,7 @@
     p.upd_account_number,
     p.file_id,
 
-    /* ===== 확인서(CA) ===== */
+    /* ===== 확인서 ===== */
     c.start_date,
     c.end_date,
     c.weekly_hours,
@@ -128,12 +128,30 @@
     c.upd_end_date,
     c.upd_weekly_hours,
     c.upd_regular_wage,
-    c.upd_child_name,
-    c.upd_child_resi_regi_number,
-    c.upd_child_birth_date,
+    
+    CASE
+      WHEN c.upd_child_name IS NULL
+        OR c.upd_child_name = c.child_name
+      THEN NULL
+      ELSE c.upd_child_name
+    END AS upd_child_name,
+
+    CASE
+      WHEN c.upd_child_resi_regi_number IS NULL
+        OR c.upd_child_resi_regi_number = c.child_resi_regi_number
+      THEN NULL
+      ELSE c.upd_child_resi_regi_number
+    END AS upd_child_resi_regi_number,
+
+    CASE
+      WHEN c.upd_child_birth_date IS NULL
+        OR c.upd_child_birth_date = c.child_birth_date
+      THEN NULL
+      ELSE c.upd_child_birth_date
+    END AS upd_child_birth_date,
     
 
-    /* ===== 신청자(USER, from PLA.user_id) ===== */
+    /* ===== 신청자 ===== */
     au.name                      AS applicantName,           -- 신청자 이름
     au.phone_number              AS applicantPhoneNumber,
     au.zip_number				 AS applicantZipNumber,
@@ -141,14 +159,14 @@
     au.address_detail            AS applicantAddrDetail,
     
 
-    /* ===== 회사(USER, from CA.user_id) ===== */
+    /* ===== 회사===== */
     cu.name                      AS businessName,            -- 회사명
     cu.zip_number                  AS businessZipNumber,
     cu.address_base              AS businessAddrBase,
     cu.address_detail            AS businessAddrDetail,
     cu.buisiness_regi_number     AS businessRegiNumber,
 
-    /* ===== 처리자(USER) ===== */
+    /* ===== 처리자 ===== */
     pu.name                      AS processorName
 
   FROM TB_PARENTAL_LEAVE_APPLICATION p

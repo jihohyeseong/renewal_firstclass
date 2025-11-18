@@ -1331,8 +1331,10 @@ async function showPrevPeriodAlert() {
 // ─────────────────────────────────────
 // 파일 UI: 같은 박스에서 "기존 + 새 선택 파일" 함께 표시
 // ─────────────────────────────────────
-
-(function bindUnifiedFileUI(){
+// ─────────────────────────────────────
+// 파일 UI: 같은 박스에서 "기존 + 새 선택 파일" 함께 표시
+// ─────────────────────────────────────
+function bindUnifiedFileUI(){
   const groups = [
     { boxId: 'list_WAGE_PROOF',            inputId: 'files_WAGE_PROOF',            selId: 'sel_WAGE_PROOF' },
     { boxId: 'list_PAYMENT_FROM_EMPLOYER', inputId: 'files_PAYMENT_FROM_EMPLOYER', selId: 'sel_PAYMENT_FROM_EMPLOYER' },
@@ -1438,43 +1440,8 @@ async function showPrevPeriodAlert() {
     inp.addEventListener('change', () => renderSelected(inp, out));
     refreshEmptyState(box);
   });
-})();
-
-function bindFileDeleteInline(){
-  const CTX  = '${pageContext.request.contextPath}';
-  const csrf = document.querySelector('input[name="_csrf"]')?.value || '';
-  const fileIdEl = document.getElementById('fileId');
-
-  document.addEventListener('click', async (e)=>{
-    if (!e.target.classList.contains('btn-del-exist')) return;
-    if (!fileIdEl?.value) return;
-
-    const seq = e.target.dataset.seq;
-    if (!seq) return;
-    if (!confirm('이 파일을 삭제하시겠습니까?')) return;
-
-    const body = new URLSearchParams();
-    body.append('fileId', fileIdEl.value);
-    body.append('sequence', String(seq));
-    body.append('removePhysical', 'true');
-    if (csrf) body.append('_csrf', csrf);
-
-    const resp = await fetch(CTX + '/file/delete-one', {
-      method:'POST',
-      credentials:'same-origin',
-      headers:{ 'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8' },
-      body
-    });
-
-    if (!resp.ok) {
-      alert('삭제 실패');
-      return;
-    }
-
-    const row = e.target.closest('.file-chip');
-    if (row) row.remove();
-  });
 }
+
 
 
 // 제출 직전 업로드(수정: fileId 있으면 /file/append, 없으면 /file/upload)
