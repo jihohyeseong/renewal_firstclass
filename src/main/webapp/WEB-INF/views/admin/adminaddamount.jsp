@@ -153,25 +153,47 @@ a { text-decoration: none; color: inherit; }
   display: flex;
   align-items: center;      
   gap: .4rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.0rem;
   flex-wrap: nowrap;      
 }
 
 .filter-group {
   display: flex;
   align-items: center;
-  gap: 0;
+  gap: 10px;
+  height: 45px;
 }
 
 .filter-group label,
 .filter-group input {
-  font-size: .85rem;
+  font-size: .8rem;
   font-weight: 600;
-  color: #555;
+  color: var(--text-muted);
   white-space: nowrap;
   margin: 0;
 }
+.filter-label {
+  font-size: .9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+/* 왼쪽 필터 묶음 */
+.filter-left {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: .25rem;
+  flex-grow: 1;
+  justify-content: flex-start;
+}
 
+/* 오른쪽 필터 묶음 */
+.filter-right {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: nowrap;
+  align-items: center;
+}
 .table-filters input[type="text"],
 .table-filters select {
   padding: .45rem .6rem;
@@ -441,23 +463,10 @@ a { text-decoration: none; color: inherit; }
                 <form id="searchForm" action="${pageContext.request.contextPath}/admin/addamount" method="post" class="table-filters">
                     
                     <input type="hidden" name="page" value="${pageDTO.pageNum}">
-                    
-                    <%-- 신청자 이름 필터 --%>
-				    <div class="filter-group">
-				        <label for="searchName">신청자 이름</label>
-				        <input type="text" name="nameKeyword" id="searchName" placeholder="신청자 이름..." value="${nameKeyword}">
-				    </div>
-				
-				    <%-- 신청번호 필터 --%>
-				    <div class="filter-group">
-				        <label for="searchNumber">신청번호</label>
-				        <input type="text" name="appNoKeyword" id="searchNumber" placeholder="신청번호..." value="${appNoKeyword}">
-				    </div>
-				
-				    <%-- 처리 상태 필터 --%>
-				    <div class="filter-group">
-				    	<label for="statusSelect">처리상태</label>
-				        <select name="status" id="statusSelect" onchange="this.form.submit()">
+                    <div class="filter-left">
+                    <%-- 처리 상태 필터 --%>
+				    <div class="filter-group"><label for="statusSelect">처리상태</label>
+						<select name="status" id="statusSelect" onchange="this.form.submit()">
 				            <option value="">전체</option>
 							<option value="POSSIBLE" ${status == 'POSSIBLE' ? 'selected' : ''}>추가지급 신청가능</option>
 				            <option value="PENDING" ${status == 'PENDING' ? 'selected' : ''}>추가지급 대기</option>
@@ -465,11 +474,19 @@ a { text-decoration: none; color: inherit; }
 				    		<option value="REJECTED" ${status == 'REJECTED' ? 'selected' : ''}>추가지급 반려</option>
 				        </select>
 				    </div>
-				
+					</div>
+					<div class="filter-right">
+					<%-- 신청자 이름 필터 --%>
+				    <div class="filter-group">
+						<label for="searchName">신청자 이름</label><input type="text" name="nameKeyword" id="searchName" placeholder="신청자 이름..." value="${nameKeyword}">
+					</div>
+					<%-- 신청번호 필터 --%>
+					<div class="filter-group">
+						<label for="searchNumber">신청번호</label><input type="text" name="appNoKeyword" id="searchNumber" placeholder="신청번호..." value="${appNoKeyword}">
+					</div>
 					<%-- 검색 버튼 --%>
 				    <button type="button" id="btnSearch" class="table-btn">조회</button>
-				    
-				    <button type="button" class="btn-refresh" id="btnReset" style="height: 40px; width: 40px;">
+					<button type="button" class="btn-refresh" id="btnReset" style="height: 40px; width: 40px;">
 				        <i class="bi bi-arrow-clockwise"></i>
 				    </button> 
 				
@@ -477,7 +494,7 @@ a { text-decoration: none; color: inherit; }
     				<c:if test="${not empty date}">
         				<input type="hidden" name="date" value="${date}">
     				</c:if>
-                    
+                    </div>
                 </form>
 
                 <table class="data-table">

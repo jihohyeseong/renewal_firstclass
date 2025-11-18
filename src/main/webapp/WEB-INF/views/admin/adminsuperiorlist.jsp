@@ -162,7 +162,7 @@ a { text-decoration: none; color: inherit; }
 .filter-group input {
   font-size: .85rem;
   font-weight: 600;
-  color: #555;
+  color: var(--text-muted);
   white-space: nowrap;
   margin-right: 5px;
   display: flex;
@@ -193,7 +193,7 @@ a { text-decoration: none; color: inherit; }
   display: flex;
   align-items: center;      /* 수직 중앙정렬 */
   gap: .4rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.85rem;
   flex-wrap: nowrap;          /* 반응형 줄바꿈 */
 }
 
@@ -515,18 +515,6 @@ a { text-decoration: none; color: inherit; }
                     <%-- 신청자 이름 필터 --%>
                     <div class="filter-left">
                     <div class="filter-group">
-				        <label for="searchName" class="filter-label">신청자 이름</label>
-				        <input type="text" name="nameKeyword" id="searchName" placeholder="신청자 이름..." value="${nameKeyword}">
-				    </div>
-				    <%-- 신청번호 필터 --%>
-				    <div class="filter-group">
-				        <label for="searchNumber">신청번호</label>
-				        <input type="text" name="appNoKeyword" id="searchNumber" placeholder="신청번호..." value="${appNoKeyword}">
-				    </div>
-					</div>
-				    <%-- 처리 상태 필터 --%>
-					<div class="filter-right">
-				    <div class="filter-group">
 				    	<label for="statusSelect" class="filter-label">처리상태  </label>
 						<select name="status" id="statusSelect" onchange="this.form.submit()">
 				            <option value="">전체</option>
@@ -535,7 +523,17 @@ a { text-decoration: none; color: inherit; }
 				    		<option value="REJECTED" ${status == 'REJECTED' ? 'selected' : ''}>반려</option>
 				        </select>
 				    </div>
-				
+					</div>
+				    <%-- 처리 상태 필터 --%>
+					<div class="filter-right">
+					<div class="filter-group">
+				        <label for="searchName" class="filter-label">신청자 이름</label>
+					<input type="text" name="nameKeyword" id="searchName" placeholder="신청자 이름..." value="${nameKeyword}">
+					</div>
+					<%-- 신청번호 필터 --%>
+					<div class="filter-group"><label for="searchNumber">신청번호</label>
+					<input type="text" name="appNoKeyword" id="searchNumber" placeholder="신청번호..." value="${appNoKeyword}">
+				    </div>
 					<%-- 검색 버튼 --%>
 					<button type="submit" id="btnSearch" class="btn-search">조회</button>
 					<button type="button" class="btn-refresh" id="btnReset" style="height: 40px; width: 40px;">
