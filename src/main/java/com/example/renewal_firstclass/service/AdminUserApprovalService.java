@@ -108,6 +108,12 @@ public class AdminUserApprovalService {
                 appDTO.setUpdAccountNumber(aes256Util.decrypt(appDTO.getUpdAccountNumber()));
             }
         } catch (Exception ignore) {}
+        
+        try {
+            if (appDTO.getAccountNumber() != null && !appDTO.getAccountNumber().trim().isEmpty()) {
+                appDTO.setAccountNumber(aes256Util.decrypt(appDTO.getAccountNumber()));
+            }
+        } catch (Exception ignore) {}
 
         List<TermAmountDTO> terms = termAmountDAO.selectByConfirmId(appDTO.getConfirmNumber());
 
