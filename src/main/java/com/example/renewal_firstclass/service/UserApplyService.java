@@ -56,6 +56,8 @@ public class UserApplyService {
 			applicationDTO.setRegistrationNumber(aes256Util.decrypt(applicationDTO.getRegistrationNumber()));
 			if(applicationDTO.getChildResiRegiNumber() != null)
 				applicationDTO.setChildResiRegiNumber(aes256Util.decrypt(applicationDTO.getChildResiRegiNumber()));
+			if(applicationDTO.getAccountNumber() != null)
+				applicationDTO.setAccountNumber(aes256Util.decrypt(applicationDTO.getAccountNumber()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -88,6 +90,8 @@ public class UserApplyService {
 			applicationDTO.setRegistrationNumber(aes256Util.decrypt(applicationDTO.getRegistrationNumber()));
 			if(applicationDTO.getChildResiRegiNumber() != null)
 				applicationDTO.setChildResiRegiNumber(aes256Util.decrypt(applicationDTO.getChildResiRegiNumber()));
+			if(applicationDTO.getAccountNumber() != null)
+				applicationDTO.setAccountNumber(aes256Util.decrypt(applicationDTO.getAccountNumber()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -118,6 +122,7 @@ public class UserApplyService {
 		try {
 			applicationDTO.setRegistrationNumber(aes256Util.encrypt(applicationDTO.getRegistrationNumber()));
 			applicationDTO.setChildResiRegiNumber(aes256Util.encrypt(applicationDTO.getChildResiRegiNumber()));
+			applicationDTO.setAccountNumber(aes256Util.encrypt(applicationDTO.getAccountNumber()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -147,6 +152,8 @@ public class UserApplyService {
 				dto.setRegistrationNumber(aes256Util.decrypt(dto.getRegistrationNumber()));
 				if(dto.getChildResiRegiNumber() != null)
 					dto.setChildResiRegiNumber(aes256Util.decrypt(dto.getChildResiRegiNumber()));
+				if(dto.getAccountNumber() != null)
+					dto.setAccountNumber(aes256Util.decrypt(dto.getAccountNumber()));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -183,6 +190,7 @@ public class UserApplyService {
 		
 		try {
 			applicationDTO.setChildResiRegiNumber(aes256Util.encrypt(applicationDTO.getChildResiRegiNumber()));
+			applicationDTO.setAccountNumber(aes256Util.encrypt(applicationDTO.getAccountNumber()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

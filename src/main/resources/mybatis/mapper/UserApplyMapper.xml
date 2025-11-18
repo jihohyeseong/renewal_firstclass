@@ -310,7 +310,7 @@
 	        A.reject_comment,
 	        A.status_code,
 	        A.bank_code,
-	        A.account_number,
+	        COALESCE(A.upd_account_number, A.account_number) AS account_number,
 	        A.gov_info_agree,
 	        
 	        U_APP.id AS id,
