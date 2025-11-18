@@ -134,6 +134,11 @@ public class AdminSuperiorService {
             }
         } catch (Exception ignore) {}
         try {
+            if (dto.getAccountNumber() != null && !dto.getAccountNumber().trim().isEmpty()) {
+                dto.setAccountNumber(aes256Util.decrypt(dto.getAccountNumber()));
+            }
+        } catch (Exception ignore) {}
+        try {
             if (dto.getUpdChildResiRegiNumber() != null && !dto.getUpdChildResiRegiNumber().trim().isEmpty()) {
                 dto.setUpdChildResiRegiNumber(aes256Util.decrypt(dto.getUpdChildResiRegiNumber()));
             }

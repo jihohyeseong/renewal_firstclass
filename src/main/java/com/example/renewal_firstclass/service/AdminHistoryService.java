@@ -56,6 +56,12 @@ public class AdminHistoryService {
                 String decryptedUserRegNo = (app.getUserRegiNumber() == null || app.getUserRegiNumber().isEmpty())
                                             ? null
                                             : aes256Util.decrypt(app.getUserRegiNumber());
+                String decryptedAccNum = (app.getAccountNumber() == null || app.getAccountNumber().isEmpty())
+                        ? null
+                        : aes256Util.decrypt(app.getAccountNumber());
+                String decryptedUpdAccNum = (app.getUpdAccountNumber() == null || app.getUpdAccountNumber().isEmpty())
+                        ? null
+                        : aes256Util.decrypt(app.getUpdAccountNumber());
 
                 mergedList.add(AdminHistoryDTO.builder()
                         .formType("신청서")
@@ -68,7 +74,7 @@ public class AdminHistoryService {
                         .historyId_App(app.getHistoryId())
                         .applicationNumber(app.getApplicationNumber())
                         .bankCode(app.getBankCode())
-                        .accountNumber(app.getAccountNumber())
+                        .accountNumber(decryptedAccNum)
                         .statusCode_App(app.getStatusCode())
                         .paymentResult(app.getPaymentResult())
                         .rejectionReasonCode_App(app.getRejectionReasonCode())
@@ -82,7 +88,7 @@ public class AdminHistoryService {
                         .govInfoAgree(app.getGovInfoAgree()) 
                         .centerId_App(app.getCenterId()) 
                         .updBankCode(app.getUpdBankCode()) 
-                        .updAccountNumber(app.getUpdAccountNumber()) 
+                        .updAccountNumber(decryptedUpdAccNum) 
                         .fileId_App(app.getFileId())
                         .build());
             }
