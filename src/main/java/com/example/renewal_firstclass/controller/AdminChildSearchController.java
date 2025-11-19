@@ -58,9 +58,6 @@ public class AdminChildSearchController {
         Map<String, Object> response = new HashMap<>();
         response.put("childList", list);
         response.put("pageDTO", pageDTO);
-        /*model.addAttribute("status", status);
-        model.addAttribute("nameKeyword", nameKeyword);
-        model.addAttribute("regNoKeyword", regNoKeyword);*/
 
         return response;
     }
