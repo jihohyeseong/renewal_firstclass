@@ -276,8 +276,7 @@
 
 <div class="table-wrapper">
 
-    <form id="statusForm" class="status-form" method="post"
-			action="${pageContext.request.contextPath}/admin/childsearch">
+    <form id="statusForm" class="status-form">
 		<input type="hidden" name="page" id="pageInput" value="${pageDTO.pageNum}">
         <input type="hidden" name="size" value="${pageDTO.listSize}">
         
@@ -324,88 +323,117 @@
                 <th>육아휴직 기간</th>
             </tr>
         </thead>
-        <tbody>
-            <c:choose>
-                <c:when test="${empty childList}">
-                    <tr>
-                        <td colspan="7">조회된 신청서가 없습니다.</td>
-                    </tr>
-                </c:when>
-                <c:otherwise>
-                    <c:forEach var="child" items="${childList}">
-                        <tr>
-                            <td>${child.confirmNumber}</td>
-                            <td>${child.childName}</td>
-                            <td>${child.childResiRegiNumber}</td> <td>${child.name}</td>
-                            <td>${child.statusName}</td>
-                            <td>
-                            	<fmt:formatDate value="${child.startDate}" pattern="yyyy-MM-dd" />
-                            ~	<fmt:formatDate value="${child.endDate}" pattern="yyyy-MM-dd" />
-                            </td>
-                            
-                        </tr>
-                    </c:forEach>
-                </c:otherwise>
-            </c:choose>
-        </tbody>
+        <tbody id="searchResultBody">
+		    <tr>
+		        <td colspan="6">검색 조건을 입력하고 조회 버튼을 눌러주세요.</td>
+		    </tr>
+		</tbody>
     </table>
     
 </div>
 
-<div class="pagination">
-	    <!-- 이전 버튼 (항상 활성화) -->
-    				<a class="js-page-link prev" data-page="${pageDTO.pageNum - 1}" style="cursor: pointer;">&laquo;</a>
-				
-				    <c:forEach begin="${pageDTO.paginationStart}" end="${pageDTO.paginationEnd}" var="p">
-				        <c:choose>
-				            <c:when test="${p == pageDTO.pageNum}">
-				                <span class="active">${p}</span> </c:when>
-				            <c:otherwise>
-				                <a class="js-page-link" data-page="${p}" style="cursor: pointer;">${p}</a>
-				            </c:otherwise>
-				        </c:choose>
-				    </c:forEach>
-				
-				    <!-- 다음 버튼 (항상 활성화) -->
-    				<a class="js-page-link next" data-page="${pageDTO.pageNum + 1}" style="cursor: pointer;">&raquo;</a>
-	</div>
+<div class="pagination" id="paginationArea">
+    </div>
 </main>
 </div>
 <script>
 $(document).ready(function() {
+    loadData(1);
     
-    // 페이지 링크가 클릭되었는지 확인하기 위한 플래그
-    let pageLinkClicked = false;
-
-    $('.js-page-link').on('click', function(e) {
+    $('#statusForm').on('submit', function(e) {
         e.preventDefault(); 
-
-        // 클릭한 링크의 data-page 값을 가져옴
-        const newPage = $(this).data('page');
-
-        // 폼 내부의 hidden input (pageNum) 값을 새 페이지로 변경
-        $('#pageInput').val(newPage);
-        
-        // 페이지 링크가 클릭되었다고 플래그 설정
-        pageLinkClicked = true;
-        
-        // 폼을 수동으로 전송
-        $('#statusForm').submit();
+        $('#pageInput').val(1); 
+        loadData(1); 
     });
-    
-    $('#statusForm').on('submit', function() {
-        
-        // 페이지 링크로 인해 전송된 것이라면, 플래그가 true
-        if (pageLinkClicked) {
-            // 플래그를 리셋하고, pageNum을 1로 덮어쓰지 않고 그대로 전송
-            pageLinkClicked = false;
-        } else {
-            // 페이지 링크가 아닌 '검색' 버튼으로 전송된 것이므로, pageNum을 1로 리셋
-            $('#pageInput').val(1);
+
+    $(document).on('click', '.js-page-link', function(e) {
+        e.preventDefault();
+        const page = $(this).data('page');
+        loadData(page); 
+    });
+
+    function loadData(page) {
+        const formData = {
+            page: page,
+            size: 10,
+            status: $('#status').val(),
+            nameKeyword: $('input[name="nameKeyword"]').val(),
+            regNoKeyword: $('input[name="regNoKeyword"]').val()
+        };
+
+        $.ajax({
+            url: '${pageContext.request.contextPath}/admin/childsearch',
+            type: 'POST',
+            data: formData,
+            dataType: 'json', 
+            success: function(response) {
+                renderTable(response.childList);
+                renderPagination(response.pageDTO);
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+                alert('데이터 조회 중 오류가 발생했습니다.');
+            }
+        });
+    }
+
+    function renderTable(list) {
+        const $tbody = $('#searchResultBody');
+        $tbody.empty(); 
+
+        if (!list || list.length === 0) {
+            $tbody.html('<tr><td colspan="6">조회된 신청서가 없습니다.</td></tr>');
+            return;
         }
-        
-    });
 
+        let html = '';
+        $.each(list, function(index, item) {
+            // 날짜 포맷팅 
+            const startDate = formatDate(item.startDate);
+            const endDate = formatDate(item.endDate);
+
+            html += '<tr>';
+            html += '<td>' + item.confirmNumber + '</td>';
+            html += '<td>' + item.childName + '</td>';
+            html += '<td>' + item.childResiRegiNumber + '</td>'; // 복호화된 주민번호
+            html += '<td>' + item.name + '</td>';
+            html += '<td>' + item.statusName + '</td>';
+            html += '<td>' + startDate + ' ~ ' + endDate + '</td>';
+            html += '</tr>';
+        });
+        $tbody.html(html);
+    }
+
+    function renderPagination(pageDTO) {
+        const $area = $('#paginationArea');
+        $area.empty();
+
+        let html = '';
+
+        html += '<a class="js-page-link prev" data-page="' + (pageDTO.pageNum - 1) + '" style="cursor: pointer;">&laquo;</a>';
+
+        for (let p = pageDTO.paginationStart; p <= pageDTO.paginationEnd; p++) {
+            if (p === pageDTO.pageNum) {
+                html += '<span class="active">' + p + '</span>';
+            } else {
+                html += '<a class="js-page-link" data-page="' + p + '" style="cursor: pointer;">' + p + '</a>';
+            }
+        }
+
+        html += '<a class="js-page-link next" data-page="' + (pageDTO.pageNum + 1) + '" style="cursor: pointer;">&raquo;</a>';
+
+        $area.html(html);
+    }
+
+    // 날짜 변환 헬퍼 함수
+    function formatDate(timestamp) {
+        if(!timestamp) return "";
+        const date = new Date(timestamp);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return year + "-" + month + "-" + day;
+    }
 });
 </script>
 </body>
