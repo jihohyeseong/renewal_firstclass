@@ -36,43 +36,6 @@ public class AdminUserApprovalService {
     private final AES256Util aes256Util;
     private final UserApplyDAO userApplyDAO;
 
-    public Map<String, Object> getPagedApplicationsAndCounts(String keyword, String status, String date,
-    		PageDTO pageDTO) {
-        Map<String, Object> result = new HashMap<>();
-        
-        // 검색 조건에 맞는 게시물 조회
-        int totalCnt = adminUserApprovalDAO.selectTotalCount(keyword, status, date);
-        pageDTO.setTotalCnt(totalCnt);
-
-        ApplicationSearchDTO search = new ApplicationSearchDTO();
-        search.setKeyword(keyword);
-        search.setStatus(status);
-        search.setDate(date);
-        search.setPageDTO(pageDTO);
-
-        List<AdminUserApprovalDTO> applicationList = adminUserApprovalDAO.selectApplicationList(search);
-
-        // 상태별 건수 조회
-        Map<String, Integer> counts = new HashMap<>();
-        
-        // 전체 신청 건수
-        counts.put("total", adminUserApprovalDAO.selectTotalCount(null, null, null));
-
-        // 대기 건수 =제출(ST_20) + 심사중(ST_30) + 2차 심사중(ST_40)
-        List<String> pendingStatusCodes = Arrays.asList("ST_20", "ST_30", "ST_40");
-        counts.put("pending", adminUserApprovalDAO.selectStatusCountIn(pendingStatusCodes));
-        
-        // 승인/반려
-        counts.put("approved", adminUserApprovalDAO.selectStatusCount("ST_50", "Y"));
-        counts.put("rejected", adminUserApprovalDAO.selectStatusCount("ST_50", "N")); 
-        
-        //결과 반환
-        result.put("list", applicationList);
-        result.put("pageDTO", pageDTO);
-        result.put("counts", counts);
-
-        return result;
-    }
     
     @Transactional
     public AdminUserApprovalDTO userApplyDetail(long applicationNumber, Model model) {

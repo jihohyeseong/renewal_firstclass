@@ -5,7 +5,7 @@
 
 <mapper namespace="com.example.renewal_firstclass.dao.AdminListDAO">
 
-  <!-- ================= 공통 필터 ================= -->
+  <!--공통 필터 -->
   <sql id="allFilters">
     <where>
       <if test="docType != null">
@@ -42,8 +42,7 @@
     </where>
   </sql>
 
-  <!-- ================= 내부(타입별) 추가 필터 ================= -->
-  <!-- 신청서 전용: 상태명/코드값-->
+  <!-- 신청서-->
   <sql id="applyFilters">
     <if test="applyDate != null">
       AND TO_CHAR(p.submitted_dt, 'YYYY-MM-DD') = #{applyDate}
@@ -57,7 +56,7 @@
 
   </sql>
 
-  <!-- 확인서 전용-->
+  <!-- 확인서 -->
   <sql id="confirmFilters">
     <if test="confirmDate != null">
       AND TO_CHAR(c.apply_dt, 'YYYY-MM-DD') = #{confirmDate}
@@ -71,7 +70,7 @@
 
   </sql>
 
-  <!-- ================= 목록 ================= -->
+  <!--목록 -->
   <select id="selectApplyAndConfirm" resultType="com.example.renewal_firstclass.domain.AdminListDTO">
     SELECT
 	  t.application_number,
@@ -122,7 +121,7 @@
     OFFSET #{startList} ROWS FETCH NEXT #{listSize} ROWS ONLY
   </select>
 
-  <!-- ================= 카운트 ================= -->
+  <!--카운트-->
    <select id="countApplyAndConfirm" resultType="int">
     SELECT COUNT(*)
     FROM (

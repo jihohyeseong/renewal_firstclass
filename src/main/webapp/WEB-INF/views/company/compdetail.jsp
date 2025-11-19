@@ -232,6 +232,24 @@ h2{
         </tbody>
       </table>
     </div>
+    
+        <!-- 확인서 담당자 정보 -->
+    <div class="info-table-container">
+        <h2 class="section-title">확인서 작성자 정보</h2>
+		  <table class="info-table table-4col">
+		    <colgroup>
+		      <col style="width:15%"><col style="width:35%">
+		      <col style="width:15%"><col style="width:35%">
+		    </colgroup>
+		    <tbody>
+          <tr>
+            <th>성명</th><td>${confirmDTO.responseName}</td>
+            <th>전화번호</th>
+            <td>${confirmDTO.responsePhoneNumber}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <!-- 근로자 정보 -->
     <div class="info-table-container">
@@ -452,9 +470,7 @@ h2{
           <div class="button-left">
             <a href="${pageContext.request.contextPath}/comp/main"
                class="btn bottom-btn btn-secondary">목록으로 돌아기기</a>
-          </div>
-          <div class="button-center">
-            <a href="${pageContext.request.contextPath}/comp/update?confirmNumber=${confirmDTO.confirmNumber}"
+                           <a href="${pageContext.request.contextPath}/comp/update?confirmNumber=${confirmDTO.confirmNumber}"
                class="btn bottom-btn btn-soft">내용 수정</a>
 
             <form method="post"
@@ -467,6 +483,10 @@ h2{
               	  최종 제출
               </button>
             </form>
+          </div>
+          
+          <div class="button-center">
+
           </div>
 
           <div class="button-right">

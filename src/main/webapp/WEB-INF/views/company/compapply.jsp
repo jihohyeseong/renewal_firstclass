@@ -11,448 +11,536 @@
 <script
 	src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/global.css">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/comp.css">
-<!-- 신청서 폼 디자인을 그대로 쓰는 공통 폼 디자인 킷 (색상 변수는 그대로 사용) -->
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/resources/css/global.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/resources/css/comp.css">
 <style>
-  /* 타이틀 */
-  h1{ text-align:center; margin-bottom:30px; font-size:28px; }
-  h2{
-    color:var(--primary-color); border-bottom:2px solid var(--primary-light-color,#f0f2ff);
-    padding-bottom:10px; margin-bottom:25px; font-size:20px;
-  }
-
-  /* 섹션 */
-  .form-section{ margin-bottom:40px; }
-  .form-section + .form-section{ border-top:1px solid var(--border-color,#dee2e6); padding-top:30px; }
-
-  /* 폼 라인: 신청서와 동일한 flex 레이아웃 */
-  .form-group{
-	  display: grid !important;
-	  grid-template-columns: 200px minmax(0,1fr) !important;
-	  align-items: flex-start !important;
-	  gap: 20px !important;
-	  margin-bottom: 20px !important;
-	}
-	.form-group .field-title{
-	  width: auto !important;    /* 그리드가 폭 관리 */
-	  padding-top: 10px !important;
-	}
-	.form-group .input-field{ min-width: 0 !important; }
-  /* 인풋 공통 */
-  .input-field input[type="text"],
-  .input-field input[type="date"],
-  .input-field input[type="number"],
-  .input-field input[type="password"],
-  .input-field select{
-    width:100%; padding:10px; border:1px solid var(--border-color,#dee2e6); border-radius:6px; transition:.2s;
-  }
-  .input-field input:focus, .input-field select:focus{
-    border-color:var(--primary-color); box-shadow:0 0 0 3px rgba(63,88,212,.15); outline:none;
-  }
-  .readonly-like, .input-field input[readonly], .input-field input:disabled{ background:var(--light-gray-color,#f8f9fa); cursor:not-allowed; }
-
-  /* 버튼 (색은 기존 변수 사용) */
-  .btn{
-    display:inline-block; padding:10px 20px; font-size:15px; font-weight:500; border-radius:8px;
-    border:1px solid var(--border-color,#dee2e6); cursor:pointer; transition:.2s; text-align:center;
-  }
-  .btn-primary{ background:var(--primary-color); color:#fff; border-color:var(--primary-color); }
-  .btn-primary:hover{ filter:brightness(.95); transform:translateY(-2px); box-shadow: var(--shadow-md,0 4px 8px rgba(0,0,0,.07)); }
-  .btn-secondary{ background:#fff; color:var(--gray-color,#868e96); }
-  .btn-secondary:hover{ background:var(--light-gray-color,#f8f9fa); color:var(--dark-gray-color,#343a40); }
-
-  .submit-button-container{ text-align:center; margin-top:30px; display:flex; gap:10px; justify-content:center; }
-  .submit-button{ padding:12px 30px; font-size:1.1em; }
-
-  /* 라디오/체크 그룹 */
-  .radio-group, .checkbox-group{ display:flex; align-items:center; gap:15px; }
-
-  /* 안내박스 & 센터 디스플레이 (신청서와 동일) */
-  .info-box{
-    background:var(--primary-light-color,#f0f2ff); border:1px solid #d1d9ff; padding:15px; margin-top:10px; border-radius:6px; font-size:14px;
-  }
-  .center-display-box{
-    background:#fff; border:2px dashed var(--border-color,#dee2e6); padding:20px; min-height:100px; transition:.3s; text-align:center;
-    display:flex; justify-content:center; align-items:center;
-  }
-  .center-display-box:not(.filled)::before{
-    content:'센터 찾기 버튼을 클릭하여 관할 센터를 선택하세요.'; font-style:italic; color:var(--gray-color,#868e96); font-size:15px;
-  }
-  .center-display-box:not(.filled) p{ display:none; }
-  .center-display-box.filled{
-    background:var(--primary-light-color,#f0f2ff); border-style:solid; border-color:#d1d9ff; text-align:left; display:block;
-  }
-  .center-display-box.filled p{ display:block; }
-
-  /* 동적 월별 행 (신청서 동일 룩) */
-  .dynamic-form-container{ margin-top:10px; border-top:1px solid var(--border-color,#dee2e6); padding-top:10px; }
-  .dynamic-form-row{ display:flex; align-items:center; gap:15px; padding:10px; border-radius:6px; margin-bottom:10px; }
-  .dynamic-form-row:nth-child(odd){ background:var(--primary-light-color,#f0f2ff); }
-  .date-range-display{ font-weight:500; flex-basis:300px; flex-shrink:0; text-align:center; }
-  .payment-input-field{ flex:1; display:flex; justify-content:flex-end; }
-
-	input[type="checkbox"] {
-  /* 브라우저 기본 스타일 제거 */
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  
-  /* 커스텀 박스 디자인 */
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--border-color, #dee2e6);
-  border-radius: 4px; /* 폼의 다른 요소와 통일 */
-  background-color: #fff;
-  cursor: pointer;
-  transition: .2s;
-  
-  /* 텍스트와 정렬 */
-  vertical-align: middle;
-  position: relative;
-  top: -2px; /* 텍스트 라인과 미세조정 */
-  
-  /* 체크마크를 중앙에 배치하기 위한 설정 */
-  display: inline-grid;
-  place-content: center;
+/* 타이틀 */
+h1 {
+	text-align: center;
+	margin-bottom: 30px;
+	font-size: 28px;
 }
 
-/* 체크마크 (SVG 아이콘 사용) - 기본 숨김 */
+h2 {
+	color: var(- -primary-color);
+	border-bottom: 2px solid var(- -primary-light-color, #f0f2ff);
+	padding-bottom: 10px;
+	margin-bottom: 25px;
+	font-size: 20px;
+}
+
+/* 섹션 */
+.form-section {
+	margin-bottom: 40px;
+}
+
+.form-section+.form-section {
+	border-top: 1px solid var(- -border-color, #dee2e6);
+	padding-top: 30px;
+}
+
+.form-group {
+	display: grid !important;
+	grid-template-columns: 200px minmax(0, 1fr) !important;
+	align-items: flex-start !important;
+	gap: 20px !important;
+	margin-bottom: 20px !important;
+}
+
+.form-group .field-title {
+	width: auto !important;
+	padding-top: 10px !important;
+}
+
+.form-group .input-field {
+	min-width: 0 !important;
+}
+
+.input-field input[type="text"], .input-field input[type="date"],
+	.input-field input[type="number"], .input-field input[type="password"],
+	.input-field select {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid var(- -border-color, #dee2e6);
+	border-radius: 6px;
+	transition: .2s;
+}
+
+.input-field input:focus, .input-field select:focus {
+	border-color: var(- -primary-color);
+	box-shadow: 0 0 0 3px rgba(63, 88, 212, .15);
+	outline: none;
+}
+
+.readonly-like, .input-field input[readonly], .input-field input:disabled
+	{
+	background: var(- -light-gray-color, #f8f9fa);
+	cursor: not-allowed;
+}
+
+/* 버튼 */
+.btn {
+	display: inline-block;
+	padding: 10px 20px;
+	font-size: 15px;
+	font-weight: 500;
+	border-radius: 8px;
+	border: 1px solid var(- -border-color, #dee2e6);
+	cursor: pointer;
+	transition: .2s;
+	text-align: center;
+}
+
+.btn-primary {
+	background: var(- -primary-color);
+	color: #fff;
+	border-color: var(- -primary-color);
+}
+
+.btn-primary:hover {
+	filter: brightness(.95);
+	transform: translateY(-2px);
+	box-shadow: var(- -shadow-md, 0 4px 8px rgba(0, 0, 0, .07));
+}
+
+.btn-secondary {
+	background: #fff;
+	color: var(- -gray-color, #868e96);
+}
+
+.btn-secondary:hover {
+	background: var(- -light-gray-color, #f8f9fa);
+	color: var(- -dark-gray-color, #343a40);
+}
+
+.submit-button-container {
+	text-align: center;
+	margin-top: 30px;
+	display: flex;
+	gap: 10px;
+	justify-content: center;
+}
+
+.submit-button {
+	padding: 12px 30px;
+	font-size: 1.1em;
+}
+
+/* 라디오/체크 그룹 */
+.radio-group, .checkbox-group {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+}
+
+/* 안내박스  */
+.info-box {
+	background: var(- -primary-light-color, #f0f2ff);
+	border: 1px solid #d1d9ff;
+	padding: 15px;
+	margin-top: 10px;
+	border-radius: 6px;
+	font-size: 14px;
+}
+
+.center-display-box {
+	background: #fff;
+	border: 2px dashed var(- -border-color, #dee2e6);
+	padding: 20px;
+	min-height: 100px;
+	transition: .3s;
+	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.center-display-box:not (.filled )::before {
+	content: '센터 찾기 버튼을 클릭하여 관할 센터를 선택하세요.';
+	font-style: italic;
+	color: var(- -gray-color, #868e96);
+	font-size: 15px;
+}
+
+.center-display-box:not (.filled ) p {
+	display: none;
+}
+
+.center-display-box.filled {
+	background: var(- -primary-light-color, #f0f2ff);
+	border-style: solid;
+	border-color: #d1d9ff;
+	text-align: left;
+	display: block;
+}
+
+.center-display-box.filled p {
+	display: block;
+}
+
+/* 월별 단위기간 생성 */
+.dynamic-form-container {
+	margin-top: 10px;
+	border-top: 1px solid var(- -border-color, #dee2e6);
+	padding-top: 10px;
+}
+
+.dynamic-form-row {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	padding: 10px;
+	border-radius: 6px;
+	margin-bottom: 10px;
+}
+
+.dynamic-form-row:nth-child(odd) {
+	background: var(- -primary-light-color, #f0f2ff);
+}
+
+.date-range-display {
+	font-weight: 500;
+	flex-basis: 300px;
+	flex-shrink: 0;
+	text-align: center;
+}
+
+.payment-input-field {
+	flex: 1;
+	display: flex;
+	justify-content: flex-end;
+}
+
+input[type="checkbox"] {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	width: 20px;
+	height: 20px;
+	border: 2px solid var(- -border-color, #dee2e6);
+	border-radius: 4px;
+	background-color: #fff;
+	cursor: pointer;
+	transition: .2s;
+	vertical-align: middle;
+	position: relative;
+	top: -2px;
+	display: inline-grid;
+	place-content: center;
+}
+
 input[type="checkbox"]::before {
-  content: '';
-  width: 11px; /* 20px 박스 안에 적절한 크기 */
-  height: 11px;
-  
-  /* 흰색 체크마크 SVG (URL-encoded) */
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M2 8l4 4 8-8'/%3e%3c/svg%3e");
-  background-size: contain;
-  background-repeat: no-repeat;
-  
-  transform: scale(0); /* 기본 숨김 */
-  transition: .1s transform ease-in-out;
+	content: '';
+	width: 11px;
+	height: 11px;
+	background-image:
+		url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M2 8l4 4 8-8'/%3e%3c/svg%3e");
+	background-size: contain;
+	background-repeat: no-repeat;
+	transform: scale(0);
+	transition: .1s transform ease-in-out;
 }
 
-/* 체크되었을 때 스타일 */
 input[type="checkbox"]:checked {
-  background-color: var(--primary-color, #3f58d4);
-  border-color: var(--primary-color, #3f58d4);
+	background-color: var(- -primary-color, #3f58d4);
+	border-color: var(- -primary-color, #3f58d4);
 }
 
-/* 체크되었을 때 체크마크 보이기 */
 input[type="checkbox"]:checked::before {
-  transform: scale(1);
+	transform: scale(1);
 }
 
-/* 포커스 스타일 (다른 input과 통일) */
 input[type="checkbox"]:focus {
-   border-color: var(--primary-color); 
-   box-shadow: 0 0 0 3px rgba(63,88,212,.15); 
-   outline: none;
+	border-color: var(- -primary-color);
+	box-shadow: 0 0 0 3px rgba(63, 88, 212, .15);
+	outline: none;
 }
 
-
-/* 2. 요청사항: 첨부파일 섹션 디자인 개선 
-*/
-
-/* '파일 선택' 버튼을 사이트의 다른 버튼과 유사하게 변경 */
 .form-section input[type="file"]::file-selector-button {
-  /* .btn-secondary 스타일 재활용 */
-  display: inline-block;
-  padding: 8px 15px; /* 기본 버튼보다 살짝 작게 */
-  font-size: 14px;
-  font-weight: 500;
-  border-radius: 6px; /* 폼 요소와 통일 */
-  border: 1px solid var(--border-color,#dee2e6);
-  cursor: pointer;
-  transition: .2s;
-  
-  background: #fff;
-  color: var(--gray-color, #868e96);
-  margin-right: 15px; /* 버튼과 '선택된 파일 없음' 텍스트 간격 */
+	display: inline-block;
+	padding: 8px 15px;
+	font-size: 14px;
+	font-weight: 500;
+	border-radius: 6px;
+	border: 1px solid var(- -border-color, #dee2e6);
+	cursor: pointer;
+	transition: .2s;
+	background: #fff;
+	color: var(- -gray-color, #868e96);
+	margin-right: 15px;
 }
 
-/* 버튼 호버 효과 */
 .form-section input[type="file"]::file-selector-button:hover {
-  background: var(--light-gray-color, #f8f9fa);
-  color: var(--dark-gray-color, #343a40);
+	background: var(- -light-gray-color, #f8f9fa);
+	color: var(- -dark-gray-color, #343a40);
 }
 
-/* '선택된 파일 없음' 텍스트 스타일 */
 .form-section input[type="file"] {
-  font-size: 14px;
-  color: transparent;
+	font-size: 14px;
+	color: transparent;
 }
 
-/* 파일 목록이 표시되는 .info-box 개선 */
 .form-section .info-box[id^="list_"] {
-  background-color: #fff; /* 기존 파란 배경 대신 깔끔한 흰색 */
-  border: 1px solid var(--border-color, #dee2e6); /* 일반 테두리 */
-  min-height: 50px;
-  padding: 10px;
-  display: flex; /* 파일 '알약'들을 정렬하기 위해 */
-  flex-wrap: wrap; /* 파일이 많으면 줄바꿈 */
-  gap: 8px; /* 알약 사이 간격 */
+	background-color: #fff;
+	border: 1px solid var(- -border-color, #dee2e6);
+	min-height: 50px;
+	padding: 10px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
 }
 
-/* 파일이 없을 때 (JS가 '선택된 파일 없음' 텍스트만 넣음):
-  :not(:has(div)) -> 자식으로 <div>(파일 알약)가 없는 상태 
-*/
-.form-section .info-box[id^="list_"]:not(:has(div)) {
-   color: var(--gray-color, #868e96);
-   font-style: italic;
-   align-items: center; /* 텍스트를 수직 중앙 정렬 */
+.form-section .info-box[id^="list_"]:not (:has(div) ) {
+	color: var(- -gray-color, #868e96);
+	font-style: italic;
+	align-items: center;
 }
 
-/* 파일이 선택되었을 때 (JS가 <div>를 넣음) '알약' 스타일 */
 .form-section .info-box[id^="list_"] div {
-  display: inline-block;
-  padding: 6px 12px;
-  background: var(--primary-light-color, #f0f2ff);
-  border: 1px solid #d1d9ff;
-  color: var(--primary-color, #3f58d4);
-  border-radius: 20px; /* 둥근 알약 모양 */
-  font-size: 14px;
-  font-weight: 500;
-  
-  /* JS가 강제로 margin-bottom을 주므로 초기화 */
-  margin-bottom: 0 !important; 
+	display: inline-block;
+	padding: 6px 12px;
+	background: var(- -primary-light-color, #f0f2ff);
+	border: 1px solid #d1d9ff;
+	color: var(- -primary-color, #3f58d4);
+	border-radius: 20px; /
+	font-size: 14px;
+	font-weight: 500;
+	margin-bottom: 0 !important;
 }
+
 .checkbox-group span {
-  font-size: 15px; /* 기본 폰트(16px)보다 약간 작게 */
-  color: #333;
-  line-height: 1.5; /* 줄간격이 필요한 경우 대비 */
+	font-size: 15px;
+	color: #333;
+	line-height: 1.5;
 }
 
-/* '해외자녀' 케이스 (align-items:flex-start)에서
-   체크박스가 텍스트 첫 줄과 정렬되도록 미세 조정 */
 .checkbox-group[style*="flex-start"] input[type="checkbox"] {
-   margin-top: 4px; /* 텍스트 첫 줄의 중앙 부근으로 이동 */
-   top: 0; /* 기존 top:-2px가 있다면 리셋 */
+	margin-top: 4px;
+	top: 0;
 }
 
-/* '임신 중' 케이스 (align-items:center)는
-   flex-center가 잘 정렬해주므로 기존 top값만 리셋 */
 .checkbox-group[style*="align-items:center"] input[type="checkbox"] {
-   top: 0;
+	top: 0;
 }
 
-
-/* 2. 요청사항: 첨부파일 수직 레이아웃 및 알약/X버튼 디자인 */
-
-/* 1단계에서 추가한 .form-group-vertical 클래스 스타일 */
 .form-group-vertical {
-  display: block !important; /* grid 레이아웃 무시 */
-  margin-bottom: 25px !important; /* 각 파일 항목 간 간격 */
+	display: block !important;
+	margin-bottom: 25px !important;
 }
 
 .form-group-vertical .field-title {
-  /* --- 기본 스타일 (너비, 폰트 등) --- */
-  width: 100% !important;
-  font-weight: 500;
-  font-size: 16px;
-  color: #333;
-  line-height: 1.6;
-  margin-bottom: 12px;
-
-  /* --- [신규] 구분되는 디자인 적용 --- */
-  background: white; /* 연한 회색 배경 */
-  border-left: 4px solid var(--primary-color, #3f58d4); /* 왼쪽 강조선 */
-  padding: 12px 15px; /* 안쪽 여백 */
-  border-radius: 4px; /* 폼 요소와 통일 */
+	width: 100% !important;
+	font-weight: 500;
+	font-size: 16px;
+	color: #333;
+	line-height: 1.6;
+	margin-bottom: 12px;
+	background: white;
+	border-left: 4px solid var(- -primary-color, #3f58d4);
+	padding: 12px 15px;
+	border-radius: 4px;
 }
 
 .form-group-vertical .input-field {
-  width: 100% !important;
+	width: 100% !important;
 }
 
-/* 파일 목록이 표시되는 .info-box (알약 디자인 적용) */
 .form-section .info-box[id^="list_"] {
-  background-color: #fff;
-  border: 1px solid var(--border-color, #dee2e6);
-  min-height: 50px;
-  padding: 10px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+	background-color: #fff;
+	border: 1px solid var(- -border-color, #dee2e6);
+	min-height: 50px;
+	padding: 10px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
 }
 
-/* 파일이 없을 때 ('선택된 파일 없음' 텍스트) */
-.form-section .info-box[id^="list_"]:not(:has(.file-pill)) {
-   color: var(--gray-color, #868e96);
-   font-style: italic;
-   align-items: center;
+.form-section .info-box[id^="list_"]:not (:has (.file-pill )) {
+	color: var(- -gray-color, #868e96);
+	font-style: italic;
+	align-items: center;
 }
 
-/* 파일 '알약' 스타일 */
 .form-section .info-box[id^="list_"] .file-pill {
-  display: inline-flex; /* 텍스트와 X버튼 정렬 */
-  align-items: center;
-  padding: 6px 8px 6px 12px; /* X버튼을 위해 오른쪽 패딩 축소 */
-  background: var(--primary-light-color, #f0f2ff);
-  border: 1px solid #d1d9ff;
-  color: var(--primary-color, #3f58d4);
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 500;
-  
-  /* 혹시 모를 div의 margin 제거 */
-  margin-bottom: 0 !important; 
+	display: inline-flex;
+	align-items: center;
+	padding: 6px 8px 6px 12px;
+	background: var(- -primary-light-color, #f0f2ff);
+	border: 1px solid #d1d9ff;
+	color: var(- -primary-color, #3f58d4);
+	border-radius: 20px;
+	font-size: 14px;
+	font-weight: 500;
+	margin-bottom: 0 !important;
 }
 
-/* 파일 '알약' 내부의 X 버튼 */
 .file-remove-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(0,0,0,0.1);
-  color: var(--primary-color, #3f58d4);
-  font-size: 16px;
-  font-weight: bold;
-  line-height: 1;
-  margin-left: 8px;
-  cursor: pointer;
-  transition: .2s;
-  padding: 0; /* 버튼 기본 패딩 제거 */
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	border: none;
+	background: rgba(0, 0, 0, 0.1);
+	color: var(- -primary-color, #3f58d4);
+	font-size: 16px;
+	font-weight: bold;
+	line-height: 1;
+	margin-left: 8px;
+	cursor: pointer;
+	transition: .2s;
+	padding: 0;
 }
 
 .file-remove-btn:hover {
-  background: rgba(0,0,0,0.2);
-  color: #000;
+	background: rgba(0, 0, 0, 0.2);
+	color: #000;
 }
-/* 호버 시 진한 초록으로 강제 */
+
 .btn-primary:hover {
-  background-color:#1e7c43 !important;
-  border-color:#1e7c43 !important;
-  box-shadow:var(--shadow-md);
-  transform:translateY(-2px);
-}
-.footer{ text-align:center; padding:20px 0; font-size:14px; color:var(--gray-color); }
-
-/* 살짝 회색톤 버튼 */
-.btn-soft{
-  background-color:#e2e5e8;
-  color:var(--dark-gray-color);
-  border:1px solid #d0d4da;
+	background-color: #1e7c43 !important;
+	border-color: #1e7c43 !important;
+	box-shadow: var(- -shadow-md);
+	transform: translateY(-2px);
 }
 
-/* 호버 시 살짝만 진해지도록 */
-.btn-soft:hover{
-  background-color:#c0c4ca;
-  border-color:#c0c4ca;
-  box-shadow:var(--shadow-md);
-  transform:translateY(-2px);
+.footer {
+	text-align: center;
+	padding: 20px 0;
+	font-size: 14px;
+	color: var(- -gray-color);
 }
 
+.btn-soft {
+	background-color: #e2e5e8;
+	color: var(- -dark-gray-color);
+	border: 1px solid #d0d4da;
+}
+
+.btn-soft:hover {
+	background-color: #c0c4ca;
+	border-color: #c0c4ca;
+	box-shadow: var(- -shadow-md);
+	transform: translateY(-2px);
+}
 </style>
 
-  <title>육아휴직 확인서 제출</title>
+<title>육아휴직 확인서 제출</title>
 </head>
 <body>
 
-<%@ include file="compheader.jsp" %>
+	<%@ include file="compheader.jsp"%>
 
-<main class="main-container">
-  <div class="content-wrapper">
+	<main class="main-container">
+	<div class="content-wrapper">
+		<h1>육아휴직 확인서 제출</h1>
 
-    <!-- 기존 .content-header는 숨겼으므로 h1로 통일 -->
-    <h1>육아휴직 확인서 제출</h1>
 
-      
-      <form id="confirm-form" action="${pageContext.request.contextPath}/comp/apply/save" method="post" enctype="multipart/form-data">
-      <sec:csrfInput/>
+		<form id="confirm-form"
+			action="${pageContext.request.contextPath}/comp/apply/save"
+			method="post" enctype="multipart/form-data">
+			<sec:csrfInput />
 
-      <!-- 근로자 정보 -->
-      <div class="form-section">
-        <h2>근로자 정보</h2>
-        <div class="form-group">
-          <label class="field-title" for="employee-name">근로자 성명</label>
-          <div class="input-field">
-            <input type="text" id="employee-name" name="name" placeholder="버튼을 누르면 자동으로 채워집니다." readonly>
-          </div>
-        </div>
-        <div class="form-group">
-		  <label class="field-title" for="employee-rrn-a">근로자 주민등록번호</label>
-		  <div class="input-field" style="display:flex; align-items:center; gap:10px;">
-		    <input type="text" id="employee-rrn-a" maxlength="6" placeholder="앞 6자리" style="flex:1;">
-		    <span class="hyphen">-</span>
-		    <input type="password" id="employee-rrn-b" maxlength="7" placeholder="뒤 7자리" style="flex:1;">
-		    <input type="hidden" name="registrationNumber" id="employee-rrn-hidden">
-		    <!-- ⬇︎ 추가 -->
-		    <button type="button" id="find-employee-btn" class="btn btn-secondary" style="white-space:nowrap;">
-		      근로자 확인
-		    </button>
-		  </div>
-		</div>
-      </div>
+			<!-- 근로자 정보 -->
+			<div class="form-section">
+				<h2>근로자 정보</h2>
+				<div class="form-group">
+					<label class="field-title" for="employee-name">근로자 성명</label>
+					<div class="input-field">
+						<input type="text" id="employee-name" name="name"
+							placeholder="버튼을 누르면 자동으로 채워집니다." readonly>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="field-title" for="employee-rrn-a">근로자 주민등록번호</label>
+					<div class="input-field"
+						style="display: flex; align-items: center; gap: 10px;">
+						<input type="text" id="employee-rrn-a" maxlength="6"
+							placeholder="앞 6자리" style="flex: 1;"> <span
+							class="hyphen">-</span> <input type="password"
+							id="employee-rrn-b" maxlength="7" placeholder="뒤 7자리"
+							style="flex: 1;"> <input type="hidden"
+							name="registrationNumber" id="employee-rrn-hidden">
+						<button type="button" id="find-employee-btn"
+							class="btn btn-secondary" style="white-space: nowrap;">
+							근로자 확인</button>
+					</div>
+				</div>
+			</div>
 
-      
-            <!-- 대상 자녀 정보 -->
-      <div class="form-section">
-        <h2>대상 자녀 정보</h2>
-        <input type="hidden" name="childBirthDate" id="childBirthDateHidden">
-        <div class="form-group">
-          <label class="field-title" for="child-date">출산(예정)일</label>
-          <div class="input-field">
-            <input type="date" id="child-date" min="1900-01-01" max="2200-12-31">
-            <small style="color:#666; display:block; margin-top:8px;">※ 출산 전일시 출산(예정)일만 입력해주세요.</small>
-          </div>
-        </div>
 
-        <div id="born-fields">
-          <div class="form-group">
-            <label class="field-title" for="child-name">자녀 이름 </label>
-            <div class="input-field"><input type="text" id="child-name" name="childName" maxlength="50"></div>
-          </div>
-          <div class="form-group">
-		  <label class="field-title" for="child-rrn-a">
-		    자녀 주민등록번호 </label>
-		
-		 <div class="input-field"
-		     style="display:flex; align-items:center; gap:12px; flex-wrap:nowrap; width:100%;">
-		  <input type="text" id="child-rrn-a" maxlength="6" placeholder="앞 6자리"
-		         style="flex:1 1 0;">
-		  <span class="hyphen" style="flex:0 0 auto;">-</span>
-		  <input type="password" id="child-rrn-b" maxlength="7" placeholder="뒤 7자리"
-		         style="flex:1 1 0;">
-		  <input type="hidden" name="childResiRegiNumber" id="child-rrn-hidden">
-		
-		  <!-- 오른쪽 끝으로 보내되, 텍스트 줄바꿈은 방지 -->
-		  <label class="checkbox-group"
-		         style="margin-left:auto; display:flex; align-items:center; gap:8px; white-space:nowrap;">
-		    <input type="checkbox" id="pregnant-leave" name="pregnantLeave">
-		    <span>임신 중 육아휴직</span>
-		  </label>
-		</div>
-		
-		</div>
-		<div class="form-group">
-		  <div class="field-title"></div>
-		  <div class="input-field">
-		    <label class="checkbox-group" style="display:flex; align-items:flex-start; gap:8px;">
-		      <input type="checkbox" id="no-rrn-foreign" name="childRrnUnverified">
-		      <span>해외자녀 등 영아 주민등록번호가 미발급되어 확인되지 않는 경우에만 체크합니다</span>
-		    </label>
-		  </div>
-		</div>
-        </div>
-      </div>
-      
+			<!-- 대상 자녀 정보 -->
+			<div class="form-section">
+				<h2>대상 자녀 정보</h2>
+				<input type="hidden" name="childBirthDate" id="childBirthDateHidden">
+				<div class="form-group">
+					<label class="field-title" for="child-date">출산(예정)일</label>
+					<div class="input-field">
+						<input type="date" id="child-date" min="1900-01-01"
+							max="2200-12-31"> <small
+							style="color: #666; display: block; margin-top: 8px;">※
+							출산 전일시 출산(예정)일만 입력해주세요.</small>
+					</div>
+				</div>
 
-      <!-- 육아휴직 및 지급액 -->
-      <div class="form-section">
-        <h2>육아휴직 및 지급액 정보</h2>
-        <div class="form-group">
-          <label class="field-title" for="start-date">육아휴직 기간</label>
-          <div class="input-field" style="display:flex; align-items:center; gap:10px;">
-            <input type="date" id="start-date" name="startDate" style="flex:1;" min="1900-01-01" max="2200-12-31">
-            <span>~</span>
-            <input type="date" id="end-date" name="endDate" style="flex:1;" min="1900-01-01" max="2200-12-31">
-          </div>
-        </div>
+				<div id="born-fields">
+					<div class="form-group">
+						<label class="field-title" for="child-name">자녀 이름 </label>
+						<div class="input-field">
+							<input type="text" id="child-name" name="childName"
+								maxlength="50">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="field-title" for="child-rrn-a"> 자녀 주민등록번호 </label>
+
+						<div class="input-field"
+							style="display: flex; align-items: center; gap: 12px; flex-wrap: nowrap; width: 100%;">
+							<input type="text" id="child-rrn-a" maxlength="6"
+								placeholder="앞 6자리" style="flex: 1 1 0;"> <span
+								class="hyphen" style="flex: 0 0 auto;">-</span> <input
+								type="password" id="child-rrn-b" maxlength="7"
+								placeholder="뒤 7자리" style="flex: 1 1 0;"> <input
+								type="hidden" name="childResiRegiNumber" id="child-rrn-hidden">
+							<label class="checkbox-group"
+								style="margin-left: auto; display: flex; align-items: center; gap: 8px; white-space: nowrap;">
+								<input type="checkbox" id="pregnant-leave" name="pregnantLeave">
+								<span>임신 중 육아휴직</span>
+							</label>
+						</div>
+
+					</div>
+					<div class="form-group">
+						<div class="field-title"></div>
+						<div class="input-field">
+							<label class="checkbox-group"
+								style="display: flex; align-items: flex-start; gap: 8px;">
+								<input type="checkbox" id="no-rrn-foreign"
+								name="childRrnUnverified"> <span>해외자녀 등 영아
+									주민등록번호가 미발급되어 확인되지 않는 경우에만 체크합니다</span>
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<!-- 육아휴직 및 지급액 -->
+			<div class="form-section">
+				<h2>육아휴직 및 지급액 정보</h2>
+				<div class="form-group">
+					<label class="field-title" for="start-date">육아휴직 기간</label>
+					<div class="input-field"
+						style="display: flex; align-items: center; gap: 10px;">
+						<input type="date" id="start-date" name="startDate"
+							style="flex: 1;" min="1900-01-01" max="2200-12-31"> <span>~</span>
+						<input type="date" id="end-date" name="endDate" style="flex: 1;"
+							min="1900-01-01" max="2200-12-31">
+					</div>
+				</div>
 
 				<div class="form-group">
 					<label class="field-title">단위기간별 지급액</label>
@@ -476,134 +564,148 @@ input[type="checkbox"]:focus {
 					<div class="date-range-display">
 						<span>신청기간</span>
 					</div>
-					<div class="payment-input-field" style="padding-right: 150px; ">
+					<div class="payment-input-field" style="padding-right: 150px;">
 						<span>사업장 지급액(원)</span>
 					</div>
 				</div>
 
 				<div id="dynamic-forms-container" class="dynamic-form-container"></div>
 
-        <div class="form-group">
-          <label class="field-title" for="weeklyHours">월 소정근로시간</label>
-          <div class="input-field"><input type="number" id="weeklyHours" name="weeklyHours" placeholder="예: 209"></div>
-        </div>
-        <div class="form-group">
-          <label class="field-title" for="regularWage">통상임금 (월)</label>
-          <div class="input-field"><input type="text" id="regularWage" name="regularWage" placeholder="숫자만 입력" autocomplete="off"></div>
-        </div>
-      </div>
+				<div class="form-group">
+					<label class="field-title" for="weeklyHours">월 소정근로시간</label>
+					<div class="input-field">
+						<input type="number" id="weeklyHours" name="weeklyHours"
+							placeholder="예: 209">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="field-title" for="regularWage">통상임금 (월)</label>
+					<div class="input-field">
+						<input type="text" id="regularWage" name="regularWage"
+							placeholder="숫자만 입력" autocomplete="off">
+					</div>
+				</div>
+			</div>
 
 
-      <!-- 센터 선택 -->
-      <div class="form-section">
-        <h2>접수 센터 선택</h2>
-        <div class="form-group">
-          <label class="field-title">접수센터 기준</label>
-          <div class="input-field radio-group">
-            <input type="radio" id="center-work" name="center" value="work" checked disabled>
-            <label for="center-work">사업장 주소</label>
-            <button type="button" id="find-center-btn" class="btn btn-primary" style="margin-left:10px;">센터 찾기</button>
-          </div>
-        </div>
-        <div class="info-box center-display-box">
-          <p><strong>관할센터:</strong> <span id="center-name-display"></span></p>
-          <p><strong>대표전화:</strong> <span id="center-phone-display"></span></p>
-          <p><strong>주소:</strong> <span id="center-address-display"></span></p>
-        </div>
-        <input type="hidden" name="centerId" id="centerId" value="">
-      </div>
+			<!-- 센터 선택 -->
+			<div class="form-section">
+				<h2>접수 센터 선택</h2>
+				<div class="form-group">
+					<label class="field-title">접수센터 기준</label>
+					<div class="input-field radio-group">
+						<input type="radio" id="center-work" name="center" value="work"
+							checked disabled> <label for="center-work">사업장 주소</label>
+						<button type="button" id="find-center-btn" class="btn btn-primary"
+							style="margin-left: 10px;">센터 찾기</button>
+					</div>
+				</div>
+				<div class="info-box center-display-box">
+					<p>
+						<strong>관할센터:</strong> <span id="center-name-display"></span>
+					</p>
+					<p>
+						<strong>대표전화:</strong> <span id="center-phone-display"></span>
+					</p>
+					<p>
+						<strong>주소:</strong> <span id="center-address-display"></span>
+					</p>
+				</div>
+				<input type="hidden" name="centerId" id="centerId" value="">
+			</div>
 
-      <!-- 작성자 -->
-      <div class="form-section">
-        <h2>확인서 작성자 정보</h2>
-        <div class="form-group">
-          <label class="field-title" for="response-name">담당자 이름</label>
-          <div class="input-field"><input type="text" id="response-name" name="responseName" maxlength="50"></div>
-        </div>
-        <div class="form-group">
-          <label class="field-title" for="response-phone">담당자 전화번호</label>
-          <div class="input-field"><input type="text" id="response-phone" name="responsePhoneNumber" value="${userDTO.phoneNumber}" readonly></div>
-        </div>
-      </div>
-      
-<!-- 첨부파일 -->
-<div class="form-section">
-  <h2>첨부파일</h2>
+			<!-- 작성자 -->
+			<div class="form-section">
+				<h2>확인서 작성자 정보</h2>
+				<div class="form-group">
+					<label class="field-title" for="response-name">담당자 이름</label>
+					<div class="input-field">
+						<input type="text" id="response-name" name="responseName"
+							maxlength="50">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="field-title" for="response-phone">담당자 전화번호</label>
+					<div class="input-field">
+						<input type="text" id="response-phone" name="responsePhoneNumber"
+							value="${userDTO.phoneNumber}" readonly>
+					</div>
+				</div>
+			</div>
 
-  <!-- 1) 통상임금 증명자료 -->
-  <div class="form-group form-group-vertical">
-    <label class="field-title">통상임금을 확인할 수 있는 증명자료(임금대장, 근로계약서 등)</label>
-    <div class="input-field">
-      <!-- ✅ fileTypes 먼저 선언해야 files와 순서 맞음 -->
-      <input type="hidden" name="fileTypes" value="WAGE_PROOF">
-      <br>
-      <input type="file" name="files" id="files_WAGE_PROOF" multiple
-             accept=".pdf,.jpg,.jpeg,.png,.heic,.gif,.bmp,.tif,.tiff,.hwp,.hwpx,.doc,.docx,.xls,.xlsx">
-      <div id="list_WAGE_PROOF" class="info-box" style="margin-top:8px; min-height:40px;">선택된 파일 없음</div>
-    </div>
-  </div>
+			<!-- 첨부파일 -->
+			<div class="form-section">
+				<h2>첨부파일</h2>
+				<div class="form-group form-group-vertical">
+					<label class="field-title">통상임금을 확인할 수 있는 증명자료(임금대장, 근로계약서
+						등)</label>
+					<div class="input-field">
+						<input type="hidden" name="fileTypes" value="WAGE_PROOF">
+						<br> <input type="file" name="files" id="files_WAGE_PROOF"
+							multiple
+							accept=".pdf,.jpg,.jpeg,.png,.heic,.gif,.bmp,.tif,.tiff,.hwp,.hwpx,.doc,.docx,.xls,.xlsx">
+						<div id="list_WAGE_PROOF" class="info-box"
+							style="margin-top: 8px; min-height: 40px;">선택된 파일 없음</div>
+					</div>
+				</div>
+				<div class="form-group form-group-vertical">
+					<label class="field-title">육아휴직 기간 동안 사업주로부터 금품을 지급받은경우 이를
+						확인할 수 있는 자료</label>
+					<div class="input-field">
+						<input type="hidden" name="fileTypes"
+							value="PAYMENT_FROM_EMPLOYER"> <br> <input
+							type="file" name="files" id="files_PAYMENT_FROM_EMPLOYER"
+							multiple
+							accept=".pdf,.jpg,.jpeg,.png,.heic,.gif,.bmp,.tif,.tiff,.hwp,.hwpx,.doc,.docx,.xls,.xlsx">
+						<div id="list_PAYMENT_FROM_EMPLOYER" class="info-box"
+							style="margin-top: 8px; min-height: 40px;">선택된 파일 없음</div>
+					</div>
+				</div>
+				<div class="form-group form-group-vertical">
+					<label class="field-title">기타 자료</label>
+					<div class="input-field">
+						<input type="hidden" name="fileTypes" value="OTHER"> <br>
+						<input type="file" name="files" id="files_OTHER" multiple
+							accept=".pdf,.jpg,.jpeg,.png,.heic,.gif,.bmp,.tif,.tiff,.hwp,.hwpx,.doc,.docx,.xls,.xlsx">
+						<div id="list_OTHER" class="info-box"
+							style="margin-top: 8px; min-height: 40px;">선택된 파일 없음</div>
+					</div>
+				</div>
+				<div class="form-group form-group-vertical">
+					<label class="field-title">배우자가 3개월 이상 육아휴직을 사용, 한부모,
+						중증장애아동의 부모 중 어느 하나에 해당함을 확인할 수 있는 증명자료사본</label>
+					<div class="input-field">
+						<input type="hidden" name="fileTypes" value="ELIGIBILITY_PROOF">
+						<br> <input type="file" name="files"
+							id="files_ELIGIBILITY_PROOF" multiple
+							accept=".pdf,.jpg,.jpeg,.png,.heic,.gif,.bmp,.tif,.tiff,.hwp,.hwpx,.doc,.docx,.xls,.xlsx">
+						<div id="list_ELIGIBILITY_PROOF" class="info-box"
+							style="margin-top: 8px; min-height: 40px;">선택된 파일 없음</div>
+					</div>
+				</div>
+			</div>
 
-  <!-- 2) 사업주 금품 지급 확인 자료 -->
-  <div class="form-group form-group-vertical">
-    <label class="field-title">육아휴직 기간 동안 사업주로부터 금품을 지급받은경우 이를 확인할 수 있는 자료</label>
-    <div class="input-field">
-      <input type="hidden" name="fileTypes" value="PAYMENT_FROM_EMPLOYER">
-      <br>
-      <input type="file" name="files" id="files_PAYMENT_FROM_EMPLOYER" multiple
-             accept=".pdf,.jpg,.jpeg,.png,.heic,.gif,.bmp,.tif,.tiff,.hwp,.hwpx,.doc,.docx,.xls,.xlsx">
-      <div id="list_PAYMENT_FROM_EMPLOYER" class="info-box" style="margin-top:8px; min-height:40px;">선택된 파일 없음</div>
-    </div>
-  </div>
-
-  <!-- 3) 기타 자료 -->
-  <div class="form-group form-group-vertical">
-    <label class="field-title">기타 자료</label>
-    <div class="input-field">
-      <input type="hidden" name="fileTypes" value="OTHER">
-      <br>
-      <input type="file" name="files" id="files_OTHER" multiple
-             accept=".pdf,.jpg,.jpeg,.png,.heic,.gif,.bmp,.tif,.tiff,.hwp,.hwpx,.doc,.docx,.xls,.xlsx">
-      <div id="list_OTHER" class="info-box" style="margin-top:8px; min-height:40px;">선택된 파일 없음</div>
-    </div>
-  </div>
-
-  <!-- 4) 배우자/한부모/장애아동 확인 자료 -->
-  <div class="form-group form-group-vertical">
-    <label class="field-title">배우자가 3개월 이상 육아휴직을 사용, 한부모, 중증장애아동의 부모 중 어느 하나에 해당함을 확인할 수 있는 증명자료사본</label>
-    <div class="input-field">
-      <input type="hidden" name="fileTypes" value="ELIGIBILITY_PROOF">
-      <br>
-      <input type="file" name="files" id="files_ELIGIBILITY_PROOF" multiple
-             accept=".pdf,.jpg,.jpeg,.png,.heic,.gif,.bmp,.tif,.tiff,.hwp,.hwpx,.doc,.docx,.xls,.xlsx">
-      <div id="list_ELIGIBILITY_PROOF" class="info-box" style="margin-top:8px; min-height:40px;">선택된 파일 없음</div>
-    </div>
-  </div>
-</div>
+			<div class="submit-button-container">
+				<a href="${pageContext.request.contextPath}/comp/main"
+					class="btn btn-soft"
+					style="background: #6c757d; border-color: #6c757d; color: #fff;">목록으로</a>
+				<button type="submit" class="btn btn-primary submit-button">저장하기</button>
+			</div>
+		</form>
 
 
-      <div class="submit-button-container">
-        <a href="${pageContext.request.contextPath}/comp/main" class="btn btn-soft" style="background:#6c757d; border-color:#6c757d; color:#fff;">목록으로</a>
-        <button type="submit" class="btn btn-primary submit-button">저장하기</button>
-      </div>
-    </form>
-    
-    
-  </div>
-</main>
+	</div>
+	</main>
 
+	<%@ include file="/WEB-INF/views/conponent/centerModal.jsp"%>
 
-<%@ include file="/WEB-INF/views/conponent/centerModal.jsp"%>
+	<footer class="footer">
+		<p>&copy; 2025 육아휴직 서비스. All Rights Reserved.</p>
+	</footer>
 
-<footer class="footer">
-	<p>&copy; 2025 육아휴직 서비스. All Rights Reserved.</p>
-</footer>
-
-<script>
+	<script>
 document.addEventListener('DOMContentLoaded', function () {
-
-    // ─────────────────────────────────────
     // 공통 유틸 및 입력 필드 바인딩
-    // ─────────────────────────────────────
     function withCommas(s){ return String(s).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
     function onlyDigits(s){ return (s||'').replace(/[^\d]/g,''); }
     function bindDigitsOnly(el){ if(el) el.addEventListener('input', () => { el.value = (el.value || '').replace(/[^\d]/g, ''); }); }
@@ -650,7 +752,6 @@ document.addEventListener('DOMContentLoaded', function () {
     		    const y = digits.slice(0, 4);
     		    const m = digits.slice(4, 6);
     		    const d = digits.slice(6, 8);
-
     		    // 입력 중에도 즉시 yyyy-mm-dd 형태로 보이게
     		    el.value = [y, m, d].filter(Boolean).join('-');
     		  });
@@ -740,9 +841,7 @@ function guardBeforeGenerate() {
 
 
     
-    // ────────────────────────────────────
     // 단위기간 생성 로직 
-    // ─────────────────────────────────────
    var startDateInput = document.getElementById('start-date');
    var endDateInput = document.getElementById('end-date');
    var generateBtn = document.getElementById('generate-forms-btn');
@@ -777,20 +876,20 @@ function guardBeforeGenerate() {
    }
 
    generateBtn.addEventListener('click',  async function() {
-	   // 0) UI 초기화(겹침/제약 실패 시 깔끔히 비우기 용)
+	   // UI 초기화
 	   function resetUI() {
 	     formsContainer.innerHTML = '';
 	     if (noPaymentWrapper) noPaymentWrapper.style.display = 'none';
 	     if (headerRow) headerRow.style.display = 'none';
 	   }
 
-	   // 1) 임신/출산 제약 + 자녀이름/주민번호 조건 (너의 원래 함수 그대로 사용)
+	   // 임신/출산 제약 + 자녀이름/주민번호 조건
 	   if (!guardBeforeGenerate()) {
 	     resetUI();
 	     return;
 	   }
 
-	   // 2) 기본 날짜 존재/역전 체크
+	   // 기본 날짜 존재/역전 체크
 	   if (!startDateInput.value || !endDateInput.value) {
 	     alert('육아휴직 시작일과 종료일을 모두 선택해주세요.');
 	     resetUI();
@@ -804,14 +903,14 @@ function guardBeforeGenerate() {
 	     return;
 	   }
 
-	   // 3) 이전 확인서 기간 겹침 조회 (겹치면 경고 후 중단)
+	   // 이전 확인서 기간 겹침 조회 
 	   const okPrev = await showPrevPeriodAlert();
 	   if (!okPrev) {
 	     resetUI();
 	     return;
 	   }
 
-	   // 4) 최소 1개월 / 최대 12개월
+	   // 최소 1개월 / 최대 12개월
 	   const firstPeriodEndDate = getPeriodEndDate(originalStartDate, 1);
 	   if (finalEndDate < firstPeriodEndDate) {
 	     alert('신청 기간은 최소 1개월 이상이어야 합니다.');
@@ -828,7 +927,6 @@ function guardBeforeGenerate() {
 	     return;
 	   }
 
-	   // 5) (이하 기존 분할 생성 로직 동일)
 	   formsContainer.innerHTML = '';
 	   if (noPaymentWrapper) noPaymentWrapper.style.display = 'none';
 	   if (headerRow) headerRow.style.display = 'none';
@@ -896,16 +994,16 @@ function guardBeforeGenerate() {
 	   }
 	   formsContainer.innerHTML = '';
 	   if (noPaymentWrapper) noPaymentWrapper.style.display = 'none';
-	   if (headerRow) headerRow.style.display = 'none';   // ← 추가
+	   if (headerRow) headerRow.style.display = 'none';
 	 });
 
 	 endDateInput.addEventListener('change', function () {
 	   formsContainer.innerHTML = '';
 	   if (noPaymentWrapper) noPaymentWrapper.style.display = 'none';
-	   if (headerRow) headerRow.style.display = 'none';   // ← 추가
+	   if (headerRow) headerRow.style.display = 'none';
 	 });
 	 
-	// ⬇︎ 기간 규칙 검증: 임신/출산 모드 + 출산(예정)일 + 시작/종료일 유효성
+	// 임신/출산체크 + 출산(예정)일 + 시작/종료일 유효성 검사
 	 function validatePeriodRules() {
 	   const chkPregnant = document.getElementById('pregnant-leave');
 	   const childDateEl = document.getElementById('child-date');
@@ -924,23 +1022,18 @@ function guardBeforeGenerate() {
 	   if (!childDate)              return { ok:false, msg:'출산(예정)일을 먼저 입력해 주세요.' };
 
 	   if (isPregnant) {
-	     // 임신 중: [시작일 < 출산일] AND [종료일 ≤ 출산일-1]
+	     // 임신 중: 시작일 < 출산일, 종료일 ≤ 출산일-1
 	     if (endDate >= childDate)  return { ok:false, msg:'임신 중 육아휴직은 출산(예정)일 전날까지만 가능합니다.' };
 	     if (startDate >= childDate)return { ok:false, msg:'임신 중 육아휴직은 출산(예정)일 이전에만 시작할 수 있습니다.' };
 	   } else {
-	     // 출산 후: [시작일 ≥ 출산일]
+	     // 출산 후: 시작일 ≥ 출산일
 	     if (startDate < childDate) return { ok:false, msg:'출산 후 육아휴직은 출산(예정)일 이후로만 시작할 수 있습니다.' };
 	   }
 
 	   return { ok:true, msg:'' };
 	 }
 
-	// ================================
 	// 임신중/출산후 규칙 (입력 중에는 알림/리셋 없음)
-	// ================================
-	// ================================
-	// 임신중/출산후 규칙 (입력 중엔 min/max만; alert/reset 없음)
-	// ================================
 	(function applyPregnancyRules() {
 	  const chkPregnant = document.getElementById('pregnant-leave');
 	  const chkNoRRN    = document.getElementById('no-rrn-foreign');
@@ -968,7 +1061,6 @@ function guardBeforeGenerate() {
 	    if (on) el.value = '';
 	  }
 
-	  // min/max만 조용히 업데이트(경고/리셋/값보정 없음)
 	  function enforceDateBoundsSoft() {
 	    const isPregnant = !!chkPregnant?.checked;
 	    const childDate  = parseDate(childDateEl?.value);
@@ -981,11 +1073,9 @@ function guardBeforeGenerate() {
 	    if (!childDate) return;
 
 	    if (isPregnant) {
-	      // 임신중: 종료일은 출산(예정)일 전날까지만 선택되도록 max 힌트
 	      const last = new Date(childDate); last.setDate(last.getDate() - 1);
 	      endDateInput && (endDateInput.max = ymd(last));
 	    } else {
-	      // 출산후: 시작일은 출산(예정)일 이후로 선택되도록 min 힌트
 	      startDateInput && (startDateInput.min = ymd(childDate));
 	    }
 	  }
@@ -1022,37 +1112,33 @@ function guardBeforeGenerate() {
 	    toggleDisabled(rrnB, noRRN);
 	  });
 
-	  // 초기 1회
 	  onAnyChangeSoft();
 	})();
 
 
-    /* ================================
-       출생일 입력 시 
-    ================================== */
+       //출생일 입력 시 
    (function syncChildDateHidden(){
 	   const dateEl = document.getElementById('child-date');
 	   const hidden = document.getElementById('childBirthDateHidden');
 	   function sync(){ if (hidden) hidden.value = dateEl?.value || ''; }
 	   if (dateEl){
 	     dateEl.addEventListener('change', sync);
-	     sync(); // 초기 1회
+	     sync();
 	   }
 	 })();
-   /* ================================
-   저장 버튼 클릭 시 - 누락 + 겹침 최종 검사 (async)
-================================ */
+
+   //저장 버튼 클릭 시  누락 최종 검사
+
 (function wireSubmitValidation(){
   const form = document.getElementById('confirm-form');
   if (!form) return;
 
   const onlyDigits = s => (s || '').replace(/[^\d]/g, '');
 
-  // 중복 제출 방지 플래그
   let submitting = false;
 
   form.addEventListener('submit', async function(e){
-    e.preventDefault(); // 비동기 검증을 위해 기본 제출 막기
+    e.preventDefault();
     if (submitting) return;
     submitting = true;
 
@@ -1060,7 +1146,6 @@ function guardBeforeGenerate() {
       const missing = [];
       let firstBadEl = null;
 
-      // 간단 필수체크 함수
       function need(el, label){
         if (!el) return;
         const v = (el.value||'').trim();
@@ -1070,7 +1155,6 @@ function guardBeforeGenerate() {
         }
       }
 
-      // 필드 목록
       const empName   = document.getElementById('employee-name');
       const empA      = document.getElementById('employee-rrn-a');
       const empB      = document.getElementById('employee-rrn-b');
@@ -1082,7 +1166,6 @@ function guardBeforeGenerate() {
       const respName  = document.getElementById('response-name');
       const centerId  = document.getElementById('centerId');
 
-      // === 기본 필수항목 ===
       need(empName,   '근로자 성명');
       need(startDate, '육아휴직 시작일');
       need(endDate,   '육아휴직 종료일');
@@ -1105,7 +1188,7 @@ function guardBeforeGenerate() {
         if (!firstBadEl) firstBadEl = empB;
       }
 
-      // 출산 후일 경우 자녀 이름 + 주민번호 or 미발급 체크
+      // 출산 후일 경우 자녀 이름 , 주민번호  미발급 확인
       const isPregnant = !!document.getElementById('pregnant-leave')?.checked;
       if (!isPregnant) {
         const nameEl = document.getElementById('child-name');
@@ -1127,11 +1210,9 @@ function guardBeforeGenerate() {
         }
       }
 
-      // === 누락 항목이 있으면 중단
       if (missing.length){
         const uniq = [...new Set(missing)];
         alert('모든 필수 항목을 입력해야 저장할 수 있습니다.\n\n누락 항목:\n- ' + uniq.join('\n- '));
-        // 첫 누락 항목으로 스크롤 & 포커스
         if (firstBadEl && typeof firstBadEl.focus === 'function') {
           firstBadEl.scrollIntoView({behavior:'smooth', block:'center'});
           setTimeout(()=> firstBadEl.focus(), 200);
@@ -1142,15 +1223,11 @@ function guardBeforeGenerate() {
 
       const ok = await showPrevPeriodAlert();
       if (!ok) {
-        // 겹치거나(=false) 조회 오류/조건 미충족으로 막을 때
         submitting = false;
         return;
       }
-
-   	  // === 여기까지 통과 → 최종 정리 후 실제 제출
       doFinalNormalizeBeforeSubmit();
-
-   // 파일 먼저 업로드 
+      
       const up = await uploadAllFilesBeforeSubmit();
 
       if (!up.ok) {
@@ -1159,7 +1236,6 @@ function guardBeforeGenerate() {
         return;
       }
 
-      // 파일이 있을 때만 hidden 주입, 없으면 hidden 제거
       let hidden = form.querySelector('input[name="fileId"]');
       if (!up.skipped) {
         if (!hidden) {
@@ -1175,7 +1251,6 @@ function guardBeforeGenerate() {
 
       stripFileInputsBeforeFinalSubmit(form);
 
-      // 제출
       form.removeEventListener('submit', arguments.callee);
       form.submit();
 
@@ -1187,9 +1262,7 @@ function guardBeforeGenerate() {
     }
   });
 })();
-//─────────────────────────────────────
-//최종 제출 직전 데이터 정리 (함수화)
-//─────────────────────────────────────
+//최종 제출 직전 데이터 정리
 function doFinalNormalizeBeforeSubmit() {
 // 금액 필드에서 콤마 제거
 document.querySelectorAll('#regularWage, input[name^="monthlyCompanyPay"]').forEach(el => {
@@ -1204,7 +1277,7 @@ if (empRrnHidden) {
    (document.getElementById('employee-rrn-b').value || '').replace(/[^\d]/g,'');
 }
 
-// 자녀 주민번호 합치기 (미발급이면 공백)
+// 자녀 주민번호 합치기 
 const childRrnHidden = document.getElementById('child-rrn-hidden');
 if (childRrnHidden) {
  const a = (document.getElementById('child-rrn-a').value || '').replace(/[^\d]/g,'');
@@ -1212,14 +1285,12 @@ if (childRrnHidden) {
  childRrnHidden.value = (a.length === 6 && b.length === 7) ? (a + b) : '';
 }
 
-// 출생(예정)일 hidden name 처리
+// 출생(예정)일 
 const hidden = document.getElementById('childBirthDateHidden');
 if (hidden && !hidden.value) hidden.removeAttribute('name');
 }
 
-    // ─────────────────────────────────────
     // 엔터 막기
-    // ─────────────────────────────────────
     {
   const formEl = document.getElementById('confirm-form');
   if (formEl) {
@@ -1240,9 +1311,7 @@ if (hidden && !hidden.value) hidden.removeAttribute('name');
     });
   }
 }
-    // ─────────────────────────────────────
     // 센터 찾기 모달 처리
-    // ─────────────────────────────────────
     const findCenterBtn = document.getElementById('find-center-btn');
     const centerModal = document.getElementById('center-modal');
     const closeModalBtn = centerModal.querySelector('.close-modal-btn');
@@ -1324,9 +1393,7 @@ if (hidden && !hidden.value) hidden.removeAttribute('name');
     
 });
 
-//─────────────────────────────────────
 //주민번호로 이름 자동 채우기
-//─────────────────────────────────────
 (function wireFindName(){
   const btn   = document.getElementById('find-employee-btn');
   const aEl   = document.getElementById('employee-rrn-a');
@@ -1396,16 +1463,11 @@ if (hidden && !hidden.value) hidden.removeAttribute('name');
   });
 })();
 
-//─────────────────────────────────────
-//이전 육휴기간(최신 1건) 조회 & 표시
-//─────────────────────────────────────
-// === 클라이언트 알림 유틸 ===
+//이전 육휴기간(최신 1건) 조회 
 function renderClientAlert({ type = 'info', html = '' }) {
-  // type: success | warning | danger | info
   const wrap = document.getElementById('client-alerts');
   if (!wrap) return;
 
-  // 기존 동일 타입 알림은 한 개만 유지(원하면 누적되게 바꿔도 ok)
   const prev = wrap.querySelector(`.alert.alert-${type}`);
   if (prev) prev.remove();
 
@@ -1413,11 +1475,11 @@ function renderClientAlert({ type = 'info', html = '' }) {
   div.className = `alert alert-${type}`;
   div.style.marginTop = '10px';
   div.innerHTML = html;
-  wrap.prepend(div); // 최신 내용이 항상 위로
+  wrap.prepend(div);
   div.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-// === 이전 기간 조회 후 알림으로 표시 ===
+// 이전 기간 조회 후 유효성검사
 async function showPrevPeriodAlert() {
   try {
     const nameEl = document.getElementById('employee-name');
@@ -1463,7 +1525,6 @@ async function showPrevPeriodAlert() {
     }
     const data = JSON.parse(text) || {};
 
-    // ---- 파서/유틸 ----
     function toDateSafe(v){
       if (v == null) return null;
       if (typeof v === 'number' || /^\d+$/.test(String(v))) {
@@ -1495,7 +1556,6 @@ async function showPrevPeriodAlert() {
     const prevS = toDateSafe(startRaw);
     const prevE = toDateSafe(endRaw);
 
-    // 이전 기간이 없으면 조용히 통과
     if (!prevS || !prevE) {
       window.prevPeriod = { start:null, end:null, overlap:false };
       return true;
@@ -1521,19 +1581,15 @@ async function showPrevPeriodAlert() {
   } catch (e) {
     console.error(e);
     window.prevPeriod = { start:null, end:null, overlap:false };
-    // 오류도 사용자 방해 없이 진행
     return true;
   }
 }
 
 
-//⬇︎ 기존 uploadAllFilesBeforeSubmit 완전히 교체
-//⬇︎ 기존 uploadAllFilesBeforeSubmit 완전히 교체
 async function uploadAllFilesBeforeSubmit() {
   const fd = new FormData();
   let fileCount = 0;
 
-  // 업로드 순서 유지하고 싶으면 이렇게 타입 순서 고정
   const typeOrder = [
     'WAGE_PROOF',
     'PAYMENT_FROM_EMPLOYER',
@@ -1544,13 +1600,12 @@ async function uploadAllFilesBeforeSubmit() {
   typeOrder.forEach(type => {
     const arr = FILE_STORE[type] || [];
     arr.forEach(f => {
-      fd.append('files', f);        // 실제 파일
-      fd.append('fileTypes', type); // 이 파일의 타입
+      fd.append('files', f);
+      fd.append('fileTypes', type);
       fileCount++;
     });
   });
 
-  // 파일이 하나도 없으면 업로드 생략
   if (fileCount === 0) {
     return { ok: true, skipped: true, fileId: null };
   }
@@ -1585,7 +1640,6 @@ async function uploadAllFilesBeforeSubmit() {
   return { ok: true, skipped: false, fileId };
 }
 
-//각 첨부파일 종류별 선택된 파일들을 들고 있을 전역 저장소
 const FILE_STORE = {
   WAGE_PROOF: [],
   PAYMENT_FROM_EMPLOYER: [],
@@ -1593,7 +1647,6 @@ const FILE_STORE = {
   ELIGIBILITY_PROOF: []
 };
 
-//파일 선택 시 알약 + X 버튼으로 보여주고, 여러 번 선택해도 누적되게 처리
 (function initFilePills() {
   const groups = [
     { type: 'WAGE_PROOF',            inputId: 'files_WAGE_PROOF',            listId: 'list_WAGE_PROOF' },
@@ -1606,7 +1659,6 @@ const FILE_STORE = {
     const arr = FILE_STORE[type] || [];
 
     if (!arr.length) {
-      // 아무 파일도 없으면 안내 문구
       listEl.textContent = '선택된 파일 없음';
       return;
     }
@@ -1627,7 +1679,6 @@ const FILE_STORE = {
       btn.className = 'file-remove-btn';
       btn.innerHTML = '&times;';
 
-      // X 버튼 클릭 → 해당 파일 제거 후 다시 렌더
       btn.addEventListener('click', () => {
         FILE_STORE[type].splice(idx, 1);
         renderList(type, listEl);
@@ -1644,7 +1695,6 @@ const FILE_STORE = {
     const listEl  = document.getElementById(g.listId);
     if (!inputEl || !listEl) return;
 
-    // 처음에도 "선택된 파일 없음"으로 세팅
     renderList(g.type, listEl);
 
     inputEl.addEventListener('change', () => {
@@ -1653,7 +1703,6 @@ const FILE_STORE = {
       const storeArr = FILE_STORE[g.type];
 
       Array.from(inputEl.files).forEach(f => {
-        // 이름 + 사이즈 + lastModified 기준으로 중복 방지 (원하면 제거해도 됨)
         const dup = storeArr.some(x =>
           x.name === f.name &&
           x.size === f.size &&
@@ -1664,7 +1713,6 @@ const FILE_STORE = {
         }
       });
 
-      // 선택한 뒤에는 value 비워줘야 같은 파일 다시 선택 가능
       inputEl.value = '';
 
       renderList(g.type, listEl);
@@ -1674,12 +1722,10 @@ const FILE_STORE = {
 
 
 function stripFileInputsBeforeFinalSubmit(form) {
-	  // 파일 인풋과 fileTypes hidden 전부 전송 제외
 	  form.querySelectorAll('input[name="files"], input[name="fileTypes"]').forEach(el => {
 	    el.removeAttribute('name');
 	    el.disabled = true;
 	  });
-	  // 멀티파트 해제
 	  form.removeAttribute('enctype');
 	  form.enctype = 'application/x-www-form-urlencoded';
 	}

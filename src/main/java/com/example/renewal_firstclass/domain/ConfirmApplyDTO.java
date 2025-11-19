@@ -51,7 +51,7 @@ public class ConfirmApplyDTO {
     private String statusName;
     private Long processorId;               // 관리자 유저 id
     private Long centerId;                  // 센터 id
-    private Long userId;                    // 신청하는 기업(유저) id
+    private Long userId;                    // 신청하는 기업 id
     
     //센터정보
     private String centerName;

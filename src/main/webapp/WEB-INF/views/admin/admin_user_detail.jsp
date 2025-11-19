@@ -641,6 +641,24 @@ textarea.form-control { resize: vertical; }
   </table>
 </div>
 
+        <!-- 확인서 담당자 정보 -->
+    <div class="info-table-container">
+        <h2 class="section-title">확인서 작성자 정보</h2>
+		  <table class="info-table table-4col">
+		    <colgroup>
+		      <col style="width:15%"><col style="width:35%">
+		      <col style="width:15%"><col style="width:35%">
+		    </colgroup>
+		    <tbody>
+          <tr>
+            <th>성명</th><td>${appDTO.responseName}</td>
+            <th>전화번호</th>
+            <td>${appDTO.responsePhoneNumber}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
 
 <!-- [블록 1] 급여 신청 기간 -->
 <div class="info-table-container">

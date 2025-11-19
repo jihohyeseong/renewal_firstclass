@@ -77,7 +77,7 @@ public class CompanyApplyController {
         return "company/compmain";
     }
 
-    /* 유틸: 공백/빈문자 -> null */
+    /* 공백/빈문자 널로 반환 */
     private String normalize(String s) {
         if (s == null) return null;
         String t = s.trim();
@@ -213,7 +213,6 @@ public class CompanyApplyController {
             return "redirect:/login";
         }
 
-        // 로그인 사용자 -> userId 주입
         Long userId = userService.findByUsername(principal.getName()).getId();
         form.setUserId(userId);
         
@@ -316,7 +315,6 @@ public class CompanyApplyController {
         }
 
         try {
-            // 소유자 검증 
             boolean mine = companyApplyService.compDetailCheck(confirmNumber, me.getId());
             if (!mine) {
                 ra.addFlashAttribute("error", "접근 권한이 없습니다.");
@@ -510,7 +508,6 @@ public class CompanyApplyController {
             return "redirect:/login";
         }
 
-        // ★ 빈문자 -> null로 정규화
         nameKeyword = normalize(nameKeyword);
         regNoKeyword = normalize(regNoKeyword);
         status = (status == null || status.trim().isEmpty()) ? "ALL" : status.trim();
@@ -518,15 +515,12 @@ public class CompanyApplyController {
         int total;
         List<ConfirmListDTO> list;
 
-        // ★ 조건 분기: 상태/키워드 중 하나라도 있으면 조건검색, 전부 없으면 전체
         boolean onlyStatusAll = "ALL".equals(status) && nameKeyword == null && regNoKeyword == null;
 
         if (onlyStatusAll) {
-            // 전체
             total = companyApplyService.countConfirmList(user.getId());
             list  = companyApplyService.getConfirmList(user.getId(), page, size);
         } else {
-            // 상태는 항상 전달(ALL이면 Mapper에서 무시), 키워드는 null이면 Mapper에서 무시
             total = companyApplyService.countConfirmList(user.getId(), status, nameKeyword, regNoKeyword);
             list  = companyApplyService.getConfirmList(user.getId(), status, nameKeyword, regNoKeyword, page, size);
         }
