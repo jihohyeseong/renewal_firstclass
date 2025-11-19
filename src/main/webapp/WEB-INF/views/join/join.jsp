@@ -59,32 +59,18 @@
         .step-number {
             width: 30px; height: 30px; border-radius: 50%;
             background-color: var(--white-color);
-            /* [수정] !important 를 추가하여 hover 시 테두리 색상 변경을 방지합니다 */
             border: 2px solid var(--border-color) !important;
             display: flex; justify-content: center; align-items: center;
             font-weight: 500; margin-bottom: 8px; transition: all 0.3s ease;
             color: var(--gray-color) !important;
         }
-        
-        /* [수정] hover 시 색상 변경 규칙이 더 이상 필요 없으므로 삭제합니다.
-        .signup-option-card:hover .step-number {
-            border-color: var(--primary-color);
-        }
-        */
-
+     
         .back-link { margin-top: 30px; text-align: center; animation: fadeInUp 1s ease-out 0.6s forwards; opacity: 0; }
         .back-link a { color: rgba(255, 255, 255, 0.8); text-decoration: none; font-size: 14px; transition: color 0.3s ease; }
         .back-link a:hover { color: var(--white-color); text-decoration: underline; }
         @keyframes wave-animation { from { background-position-x: 0; } to { background-position-x: -1440px; } }
         @keyframes floatUp { from { transform: translateY(0); opacity: 1; } to { transform: translateY(-110vh); opacity: 0; } }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        /* ---------------------------------- */
-        /* 📱 반응형 스타일 (Tablet & Mobile) */
-        /* ---------------------------------- */
-
-        /* * 태블릿 (900px 이하) 
-         * - 카드를 세로로 쌓습니다.
-         */
         @media (max-width: 900px) { 
             .signup-options-wrapper { 
                 flex-direction: column; 
@@ -93,16 +79,13 @@
             } 
             .signup-option-card { 
                 width: 100%; 
-                max-width: 450px; /* 태블릿에서는 최대 너비 450px */
+                max-width: 450px;
             } 
         }
 
-        /* * 모바일 (600px 이하) 
-         * - 여백과 폰트 크기를 작은 화면에 맞게 최적화합니다.
-         */
         @media (max-width: 600px) {
             .signup-container {
-                padding: 30px 15px; /* 페이지 전체 여백 축소 */
+                padding: 30px 15px;
             }
             
             .signup-header {
@@ -110,31 +93,31 @@
             }
 
             .signup-header h1 {
-                font-size: 26px; /* 메인 타이틀 폰트 축소 */
+                font-size: 26px; 
             }
 
             .signup-header p {
-                font-size: 14px; /* 부제목 폰트 축소 */
+                font-size: 14px; 
             }
 
             .signup-option-card {
-                padding: 20px; /* 카드 내부 여백 축소 */
-                max-width: 100%; /* 모바일에서는 최대 너비 제한 해제 */
+                padding: 20px; 
+                max-width: 100%; 
             }
 
             .icon-wrapper {
-                width: 60px; /* 아이콘 배경 크기 축소 */
+                width: 60px; 
                 height: 60px;
                 margin-bottom: 15px;
             }
             
             .icon-wrapper svg {
-                width: 40px; /* SVG 아이콘 크기 조절 */
+                width: 40px;
                 height: 40px;
             }
 
             .signup-option-card h2 {
-                font-size: 20px; /* 카드 제목 폰트 축소 */
+                font-size: 20px;
                 margin-bottom: 20px;
             }
 
@@ -150,10 +133,9 @@
                 font-size: 13px;
             }
 
-            /* 스텝 인디케이터 텍스트 */
             .step {
                 font-size: 11px;
-                word-break: keep-all; /* 단어 안 깨지게 */
+                word-break: keep-all; 
             }
             
             .step-number {
@@ -165,8 +147,8 @@
             justify-content: center;
             gap: 30px;
             flex-wrap: wrap;
-            width: 100%;      /* <-- 이 줄 추가 */
-            max-width: 830px; /* <-- 이 줄 추가 */
+            width: 100%;   
+            max-width: 830px; 
         }
         }
     </style>
