@@ -5,6 +5,8 @@
 
 <!DOCTYPE html>
 <html lang="ko">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,20 +19,19 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/global.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/comp.css">
 <style>
-    /* --- 테마 색상 및 기본 스타일 --- */
     :root {
         --primary-color: #24A960;
         --primary-color-dark: #1e8a4e;
-        --primary-color-light: #f0fdf6; /* 아주 연한 녹색 */
+        --primary-color-light: #f0fdf6;
         
-        --status-approved: #24A960; /* 승인 (메인 녹색) */
-        --status-pending: #f59e0b;  /* 대기 (황색) */
-        --status-rejected: #ef4444; /* 반려 (적색) */
+        --status-approved: #24A960;
+        --status-pending: #f59e0b;
+        --status-rejected: #ef4444;
         
         --text-color: #333;
         --text-color-light: #555;
         --border-color: #e0e0e0;
-        --bg-color-soft: #f9fafb; /* 연한 회색 배경 */
+        --bg-color-soft: #f9fafb;
         --white: #ffffff;
     }
 
@@ -41,7 +42,6 @@
         padding: 0 20px;
     }
 
-    /* --- 콘텐츠 래퍼 (카드 디자인) --- */
     .content-wrapper {
         background-color: var(--white);
         border-radius: 12px;
@@ -65,10 +65,9 @@
         font-weight: 700;
     }
     .content-header-right {
- 	 display:flex; align-items:center; gap:8px; /* 필터와 버튼 간격 */
+ 	 display:flex; align-items:center; gap:8px;
 	}
 
-    /* --- 버튼 (comp.css 오버라이드) --- */
     .btn {
         display: inline-flex;
         align-items: center;
@@ -100,7 +99,6 @@
         background-color: #d1d5db;
     }
 
-    /* --- 안내 상자 --- */
     .notice-box {
         background-color: var(--primary-color-light);
         border: 1px solid var(--primary-color);
@@ -131,17 +129,16 @@
     }
     .notice-box li:last-child { margin-bottom: 0; }
 
-    /* --- 리스트 테이블 --- */
     .list-table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: fixed;          /* 고정 레이아웃 유지 */
+    table-layout: fixed;
     font-size: 15px;
 	}
 	
 	.list-table th, .list-table td {
-	    padding: 14px 16px;           /* 헤더/바디 패딩 동일 */
-	    box-sizing: border-box;       /* 패딩 포함해서 폭 계산 -> 오차 방지 */
+	    padding: 14px 16px; 
+	    box-sizing: border-box; 
 	    vertical-align: middle;
 	    text-align: center; 
 	}
@@ -152,10 +149,9 @@
 	    color: var(--white);
 	    border-bottom: 2px solid var(--primary-color-dark);
 	}
-	
-	/* 정렬만 다르게 */
+
     .list-table tbody tr:hover { 
-        background: var(--primary-color-light); /* 연한 녹색 호버 */
+        background: var(--primary-color-light);
     }
 
     /* --- 상태 배지 --- */
@@ -183,21 +179,19 @@
 	    background-color: #c6c6cc;
 	    color: #4b5563;
 	}
-	.status-badge.status-ST_50 { /* 승인완료 */
+	.status-badge.status-ST_50 {
 	    background-color: #d2f8de !important;
 	    color: var(--primary-color-dark) !important;
 	}
-	.status-badge.status-ST_60 { /* 반려 */
+	.status-badge.status-ST_60 {
 	    background-color: #ffebeb !important; 
 	    color: #b91c1c !important;
 	}
 
-    /* 상태 셀 중앙 정렬 */
     .list-table td.status-cell {
         text-align: center;
     }
 
-    /* --- 테이블 내부 버튼 (기존 오버라이드 유지 및 수정) --- */
     .list-table .btn {
         padding: 6px 20px;
         font-size: 13px;
@@ -212,7 +206,6 @@
         white-space: nowrap;
     }
 
-    /* --- 빈 상태 박스 --- */
     .empty-state-box {
         text-align: center;
         padding: 60px 40px;
@@ -220,11 +213,10 @@
         border-radius: 10px;
         border: 1px dashed var(--border-color);
     }
-    /* Font Awesome 아이콘 추가 */
     .empty-state-box::before {
         font-family: "Font Awesome 6 Free";
         font-weight: 900;
-        content: "\f115"; /* fa-folder-open */
+        content: "\f115";
         font-size: 40px;
         color: var(--primary-color);
         display: block;
@@ -246,7 +238,7 @@
     /* 페이징처리용 */ 
 .pagination-wrap{
   display:flex;
-  justify-content:center;   /* 가운데로 */
+  justify-content:center;
   align-items:center;
   margin-top:18px;
 }
@@ -281,19 +273,16 @@
   outline: none;
 }
 
-/* --- 검색 필터 (추가/수정) --- */
-/* --- 검색 필터 (수정) --- */
     .filters-row {
         display: flex;
-		justify-content: center; /* ★ 중앙 정렬 ★ */
+		justify-content: center;
         align-items: center;
-        margin-top: 0; /* 헤더와 이미 분리됨. 0 또는 16px */
+        margin-top: 0;
         margin-bottom: 24px;
-        padding: 20px; /* ★ 시각적 그룹화를 위한 패딩 */
-        border-radius: 10px; /* ★ 둥근 모서리 */
+        padding: 20px;
+        border-radius: 10px;
     }
 
-    /* 폼 자체의 불필요한 마진 제거 */
     .filters-row .status-form,
     .filters-row .keyword-form {
         margin: 0;
@@ -308,17 +297,16 @@
 .keyword-form .form-group {
   display: flex;
   align-items: center;
-  gap: 8px; /* 라벨과 인풋 사이의 간격 */
+  gap: 8px;
 }
 
 .keyword-form .form-group label {
   font-size: 15px;
   font-weight: 500;
   color: var(--text-color-light);
-  white-space: nowrap; /* '주민번호' 줄바꿈 방지 */
+  white-space: nowrap;
 }
 
-/* 기존 .input-text 스타일 오버라이드 (깔끔하게) */
 .keyword-form .input-text {
   height: 40px;
   padding: 0 14px;
@@ -334,11 +322,9 @@
   outline: none;
 }
 
-/* 인풋박스 너비 고정 (필요에 따라 조절) */
 .keyword-form #nameKeywordInput { width: 140px; }
 .keyword-form #regNoDisplay { width: 160px; }
 
-/* 검색 버튼 높이 맞춤 */
 .keyword-form .btn {
   height: 40px;
 }
@@ -374,11 +360,10 @@
   <h2>${userDTO.name}님의신청 내역</h2>
 
   <div class="content-header-right">
-    <!-- 상태 전용 폼: 상태 변경 시 즉시 제출 -->
     <form id="statusForm" class="status-form" method="post"
           action="${pageContext.request.contextPath}/comp/searchStatus">
       <label for="status" class="sr-only">상태 선택</label>
-      <select id="status" name="status" onchange="this.form.submit()" class="status-select">
+      <select id="status" name="status" class="status-select">
         <option value="ALL" ${status=='ALL'  ? 'selected' : ''}>전체</option>
         <option value="ST_10" ${status=='ST_10' ? 'selected' : ''}>등록(임시저장)</option>
         <option value="ST_20" ${status=='ST_20' ? 'selected' : ''}>제출</option>
@@ -418,7 +403,7 @@
 							<th>상세보기</th>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody id="confirm-tbody">
 						<c:forEach var="app" items="${confirmList}">
 							<tr>
 								<td>${app.confirmNumber}</td>
@@ -446,38 +431,38 @@
 
 				<c:url var="pageUrl" value="/comp/main" />
 
-				<!-- 페이지 네비게이션 -->
+				<!-- 페이징 -->
 				<c:if test="${totalPages > 1}">
-					<nav class="pagination-wrap" aria-label="pagination">
-						<ul class="pagination">
-
-							<!-- 처음/이전 -->
-							<li class="page-item ${page == 1 ? 'disabled' : ''}"><a
-								class="page-link" href="${pageUrl}?page=1&size=${size}">«</a></li>
-							<li class="page-item ${page == 1 ? 'disabled' : ''}"><a
-								class="page-link" href="${pageUrl}?page=${page-1}&size=${size}">‹
-									이전</a></li>
-
-							<!-- 번호 -->
-							<c:forEach var="p" begin="1" end="${totalPages}">
-								<li class="page-item ${p == page ? 'active' : ''}"><a
-									class="page-link" href="${pageUrl}?page=${p}&size=${size}">${p}</a>
-								</li>
-							</c:forEach>
-
-							<!-- 다음/마지막 -->
-							<li class="page-item ${page == totalPages ? 'disabled' : ''}">
-								<a class="page-link"
-								href="${pageUrl}?page=${page+1}&size=${size}">다음 ›</a>
-							</li>
-							<li class="page-item ${page == totalPages ? 'disabled' : ''}">
-								<a class="page-link"
-								href="${pageUrl}?page=${totalPages}&size=${size}">»</a>
-							</li>
-
-						</ul>
-					</nav>
+				  <nav class="pagination-wrap" aria-label="pagination">
+				    <ul class="pagination">
+				
+				      <!-- 처음/이전 -->
+				      <li class="page-item ${page == 1 ? 'disabled' : ''}">
+				        <a class="page-link" href="#" data-page="1">«</a>
+				      </li>
+				      <li class="page-item ${page == 1 ? 'disabled' : ''}">
+				        <a class="page-link" href="#" data-page="${page-1}">‹ 이전</a>
+				      </li>
+				
+				      <!-- 번호 -->
+				      <c:forEach var="p" begin="1" end="${totalPages}">
+				        <li class="page-item ${p == page ? 'active' : ''}">
+				          <a class="page-link" href="#" data-page="${p}">${p}</a>
+				        </li>
+				      </c:forEach>
+				
+				      <!-- 다음/마지막 -->
+				      <li class="page-item ${page == totalPages ? 'disabled' : ''}">
+				        <a class="page-link" href="#" data-page="${page+1}">다음 ›</a>
+				      </li>
+				      <li class="page-item ${page == totalPages ? 'disabled' : ''}">
+				        <a class="page-link" href="#" data-page="${totalPages}">»</a>
+				      </li>
+				
+				    </ul>
+				  </nav>
 				</c:if>
+
 
 			</c:otherwise>
 		</c:choose>
@@ -496,52 +481,145 @@
 </c:if>
 
 <script>
-(function () {
-	  const raw  = document.getElementById('regNoRaw');      // hidden (name="regNoKeyword")
-	  const disp = document.getElementById('regNoDisplay');  // 표시용
-	  const form = document.getElementById('statusForm');
-	  if (!raw || !disp || !form) return;
+  const contextPath = '${pageContext.request.contextPath}';
+  function loadList(page) {
+    const status = $('#status').val();
+    const size   = ${size};
 
-	  // ★ 이름 입력
-	  const nameInput = form.querySelector('input[name="nameKeyword"]');
+    $.ajax({
+      url: contextPath + '/comp/list',
+      method: 'GET',
+      data: {
+        status: status,
+        page: page || 1,
+        size: size
+      },
+      success: function (res) {
+        if (res.error === 'UNAUTHORIZED') {
+          alert('로그인이 필요합니다.');
+          location.href = contextPath + '/login';
+          return;
+        }
 
-	  const onlyDigits = s => String(s||'').replace(/\D/g,'').slice(0,13);
-	  const fmt = d => d.length<=6 ? d : d.slice(0,6)+'-'+d.slice(6);
+        renderTable(res.list);
+        renderPagination(res.page, res.totalPages, res.size, res.status);
+      },
+      error: function () {
+        alert('목록을 불러오는 중 오류가 발생했습니다.');
+      }
+    });
+  }
 
-	  disp.value = raw.value ? fmt(onlyDigits(raw.value)) : '';
+  // 테이블 렌더링
+  function renderTable(list) {
+    const $tbody = $('#confirm-tbody');
+    $tbody.empty();
 
-	  disp.addEventListener('input', () => {
-	    const d = onlyDigits(disp.value);
-	    disp.value = fmt(d);
-	    raw.value  = d;
-	  });
+    if (!list || list.length === 0) {
+      $tbody.append(
+        '<tr><td colspan="5" style="padding:40px 0; text-align:center; color:#6b7280;">' +
+        '조회 결과가 없습니다.' +
+        '</td></tr>'
+      );
+      return;
+    }
 
-	  disp.addEventListener('paste', e => {
-	    e.preventDefault();
-	    const d = onlyDigits((e.clipboardData||window.clipboardData).getData('text')||'');
-	    disp.value = fmt(d); raw.value = d;
-	  });
+    list.forEach(function (app) {
+      const applyDt = app.applyDt ? app.applyDt : '신청 전';
 
-	  form.addEventListener('submit', () => {
-	    // 주민등록번호 hidden
-	    const d = onlyDigits(disp.value);
-	    if (d.length === 0) {
-	      raw.disabled = true;     // 전송 제외
-	    } else {
-	      raw.disabled = false;
-	      raw.value = d;
-	    }
+      let stCode = app.statusCode;
+      let stName = '';
+      if (stCode === 'ST_10') stName = '등록(임시저장)';
+      else if (stCode === 'ST_20' || stCode === 'ST_30') stName = '제출';
+      else if (stCode === 'ST_50') stName = '접수';
+      else if (stCode === 'ST_60') stName = '반려';
 
-	    // ★ 이름 입력 비어있으면 전송 제외
-	    if (nameInput && !nameInput.value.trim()) {
-	      nameInput.disabled = true;
-	    }
-	  });
-	})();
+      const statusBadge =
+        '<span class="status-badge status-' + stCode + '">' + stName + '</span>';
 
+      const rowHtml =
+        '<tr>' +
+          '<td>' + app.confirmNumber + '</td>' +
+          '<td>' + applyDt + '</td>' +
+          '<td>' + app.name + '</td>' +
+          '<td class="status-cell">' + statusBadge + '</td>' +
+          '<td class="actions">' +
+            '<a href="' + contextPath +
+              '/comp/detail?confirmNumber=' + app.confirmNumber +
+              '" class="btn btn-secondary">상세보기</a>' +
+          '</td>' +
+        '</tr>';
 
+      $tbody.append(rowHtml);
+    });
+  }
 
+  // 페이징 렌더링
+  function renderPagination(page, totalPages, size, status) {
+    const $wrap = $('.pagination-wrap');
+    const $ul   = $wrap.find('.pagination');
+    $ul.empty();
+
+    if (!totalPages || totalPages <= 1) {
+      $wrap.hide();
+      return;
+    }
+    $wrap.show();
+
+    // 이전/처음
+    const disabledPrev = (page === 1) ? ' disabled' : '';
+    $ul.append(
+      '<li class="page-item' + disabledPrev + '">' +
+        '<a class="page-link" href="#" data-page="1">«</a>' +
+      '</li>'
+    );
+    $ul.append(
+      '<li class="page-item' + disabledPrev + '">' +
+        '<a class="page-link" href="#" data-page="' + (page - 1) + '">‹ 이전</a>' +
+      '</li>'
+    );
+
+    for (let p = 1; p <= totalPages; p++) {
+      const active = (p === page) ? ' active' : '';
+      $ul.append(
+        '<li class="page-item' + active + '">' +
+          '<a class="page-link" href="#" data-page="' + p + '">' + p + '</a>' +
+        '</li>'
+      );
+    }
+
+    const disabledNext = (page === totalPages) ? ' disabled' : '';
+    $ul.append(
+      '<li class="page-item' + disabledNext + '">' +
+        '<a class="page-link" href="#" data-page="' + (page + 1) + '">다음 ›</a>' +
+      '</li>'
+    );
+    $ul.append(
+      '<li class="page-item' + disabledNext + '">' +
+        '<a class="page-link" href="#" data-page="' + totalPages + '">»</a>' +
+      '</li>'
+    );
+  }
+
+// 이벤트 바인딩
+$(function () {
+  $('#status').on('change', function () {
+    loadList(1);
+  });
+
+  $('.pagination-wrap').on('click', '.page-link', function (e) {
+    const $a = $(this);
+    const targetPage = parseInt($a.data('page'), 10);
+
+    if (!isNaN(targetPage)) {
+      e.preventDefault();
+      if ($a.closest('.page-item').hasClass('disabled')) return;
+      loadList(targetPage);
+    }
+  });
+});
 </script>
+
 
 </body>
 </html>

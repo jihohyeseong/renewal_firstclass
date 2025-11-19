@@ -76,6 +76,57 @@ public class CompanyApplyController {
 
         return "company/compmain";
     }
+    
+    @GetMapping("/comp/list")
+    @ResponseBody
+    public Map<String, Object> listAjax(@RequestParam(defaultValue = "ALL") String status,
+                                        @RequestParam(required = false) String nameKeyword,
+                                        @RequestParam(required = false) String regNoKeyword,
+                                        @RequestParam(defaultValue = "1") int page,
+                                        @RequestParam(defaultValue = "10") int size) {
+
+        UserDTO user = currentUserOrNull();
+        if (user == null || user.getId() == null) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", "UNAUTHORIZED");
+            return error;
+        }
+
+        nameKeyword = normalize(nameKeyword);
+        regNoKeyword = normalize(regNoKeyword);
+        status = (status == null || status.trim().isEmpty()) ? "ALL" : status.trim();
+
+        int total;
+        List<ConfirmListDTO> list;
+
+        boolean onlyStatusAll = "ALL".equals(status) && nameKeyword == null && regNoKeyword == null;
+
+        if (onlyStatusAll) {
+            total = companyApplyService.countConfirmList(user.getId());
+            list  = companyApplyService.getConfirmList(user.getId(), page, size);
+        } else {
+            total = companyApplyService.countConfirmList(user.getId(), status, nameKeyword, regNoKeyword);
+            list  = companyApplyService.getConfirmList(user.getId(), status, nameKeyword, regNoKeyword, page, size);
+        }
+
+        int totalPages = (int) Math.ceil((double) total / Math.max(1, size));
+        if (page < 1) page = 1;
+        if (totalPages > 0 && page > totalPages) page = totalPages;
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("list", list);
+        res.put("status", status);
+        res.put("nameKeyword", nameKeyword);
+        res.put("regNoKeyword", regNoKeyword);
+        res.put("page", page);
+        res.put("size", size);
+        res.put("total", total);
+        res.put("totalPages", totalPages);
+
+        return res;
+    }
+
+    
 
     /* 공백/빈문자 널로 반환 */
     private String normalize(String s) {
@@ -84,7 +135,7 @@ public class CompanyApplyController {
         return t.isEmpty() ? null : t;
     }
 
-    /* 메인에서 검색 */
+/*     메인에서 검색 
     @PostMapping("/comp/searchStatus")
     public String searchStatus(@RequestParam(defaultValue = "ALL") String status,
                          @RequestParam(required = false) String nameKeyword,
@@ -133,7 +184,7 @@ public class CompanyApplyController {
     }
 
 
-
+*/
 
     
 

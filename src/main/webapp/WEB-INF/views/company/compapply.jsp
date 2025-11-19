@@ -24,8 +24,8 @@ h1 {
 }
 
 h2 {
-	color: var(- -primary-color);
-	border-bottom: 2px solid var(- -primary-light-color, #f0f2ff);
+	color: var(--primary-color);
+	border-bottom: 2px solid var(--primary-light-color, #f0f2ff);
 	padding-bottom: 10px;
 	margin-bottom: 25px;
 	font-size: 20px;
@@ -37,7 +37,7 @@ h2 {
 }
 
 .form-section+.form-section {
-	border-top: 1px solid var(- -border-color, #dee2e6);
+	border-top: 1px solid var(--border-color, #dee2e6);
 	padding-top: 30px;
 }
 
@@ -63,20 +63,20 @@ h2 {
 	.input-field select {
 	width: 100%;
 	padding: 10px;
-	border: 1px solid var(- -border-color, #dee2e6);
+	border: 1px solid var(--border-color, #dee2e6);
 	border-radius: 6px;
 	transition: .2s;
 }
 
 .input-field input:focus, .input-field select:focus {
-	border-color: var(- -primary-color);
+	border-color: var(--primary-color);
 	box-shadow: 0 0 0 3px rgba(63, 88, 212, .15);
 	outline: none;
 }
 
 .readonly-like, .input-field input[readonly], .input-field input:disabled
 	{
-	background: var(- -light-gray-color, #f8f9fa);
+	background: var(--light-gray-color, #f8f9fa);
 	cursor: not-allowed;
 }
 
@@ -87,32 +87,32 @@ h2 {
 	font-size: 15px;
 	font-weight: 500;
 	border-radius: 8px;
-	border: 1px solid var(- -border-color, #dee2e6);
+	border: 1px solid var(--border-color, #dee2e6);
 	cursor: pointer;
 	transition: .2s;
 	text-align: center;
 }
 
 .btn-primary {
-	background: var(- -primary-color);
+	background: var(--primary-color);
 	color: #fff;
-	border-color: var(- -primary-color);
+	border-color: var(--primary-color);
 }
 
 .btn-primary:hover {
 	filter: brightness(.95);
 	transform: translateY(-2px);
-	box-shadow: var(- -shadow-md, 0 4px 8px rgba(0, 0, 0, .07));
+	box-shadow: var(--shadow-md, 0 4px 8px rgba(0, 0, 0, .07));
 }
 
 .btn-secondary {
 	background: #fff;
-	color: var(- -gray-color, #868e96);
+	color: var(--gray-color, #868e96);
 }
 
 .btn-secondary:hover {
-	background: var(- -light-gray-color, #f8f9fa);
-	color: var(- -dark-gray-color, #343a40);
+	background: var(--light-gray-color, #f8f9fa);
+	color: var(--dark-gray-color, #343a40);
 }
 
 .submit-button-container {
@@ -137,7 +137,7 @@ h2 {
 
 /* 안내박스  */
 .info-box {
-	background: var(- -primary-light-color, #f0f2ff);
+	background: var(--primary-light-color, #f0f2ff);
 	border: 1px solid #d1d9ff;
 	padding: 15px;
 	margin-top: 10px;
@@ -147,7 +147,7 @@ h2 {
 
 .center-display-box {
 	background: #fff;
-	border: 2px dashed var(- -border-color, #dee2e6);
+	border: 2px dashed var(--border-color, #dee2e6);
 	padding: 20px;
 	min-height: 100px;
 	transition: .3s;
@@ -160,7 +160,7 @@ h2 {
 .center-display-box:not (.filled )::before {
 	content: '센터 찾기 버튼을 클릭하여 관할 센터를 선택하세요.';
 	font-style: italic;
-	color: var(- -gray-color, #868e96);
+	color: var(--gray-color, #868e96);
 	font-size: 15px;
 }
 
@@ -169,7 +169,7 @@ h2 {
 }
 
 .center-display-box.filled {
-	background: var(- -primary-light-color, #f0f2ff);
+	background: var(--primary-light-color, #f0f2ff);
 	border-style: solid;
 	border-color: #d1d9ff;
 	text-align: left;
@@ -183,7 +183,7 @@ h2 {
 /* 월별 단위기간 생성 */
 .dynamic-form-container {
 	margin-top: 10px;
-	border-top: 1px solid var(- -border-color, #dee2e6);
+	border-top: 1px solid var(--border-color, #dee2e6);
 	padding-top: 10px;
 }
 
@@ -197,7 +197,7 @@ h2 {
 }
 
 .dynamic-form-row:nth-child(odd) {
-	background: var(- -primary-light-color, #f0f2ff);
+	background: var(--primary-light-color, #f0f2ff);
 }
 
 .date-range-display {
@@ -219,7 +219,7 @@ input[type="checkbox"] {
 	appearance: none;
 	width: 20px;
 	height: 20px;
-	border: 2px solid var(- -border-color, #dee2e6);
+	border: 2px solid var(--border-color, #dee2e6);
 	border-radius: 4px;
 	background-color: #fff;
 	cursor: pointer;
@@ -244,8 +244,8 @@ input[type="checkbox"]::before {
 }
 
 input[type="checkbox"]:checked {
-	background-color: var(- -primary-color, #3f58d4);
-	border-color: var(- -primary-color, #3f58d4);
+	background-color: var(--primary-color, #3f58d4);
+	border-color: var(--primary-color, #3f58d4);
 }
 
 input[type="checkbox"]:checked::before {
@@ -253,7 +253,7 @@ input[type="checkbox"]:checked::before {
 }
 
 input[type="checkbox"]:focus {
-	border-color: var(- -primary-color);
+	border-color: var(--primary-color);
 	box-shadow: 0 0 0 3px rgba(63, 88, 212, .15);
 	outline: none;
 }
@@ -264,17 +264,17 @@ input[type="checkbox"]:focus {
 	font-size: 14px;
 	font-weight: 500;
 	border-radius: 6px;
-	border: 1px solid var(- -border-color, #dee2e6);
+	border: 1px solid var(--border-color, #dee2e6);
 	cursor: pointer;
 	transition: .2s;
 	background: #fff;
-	color: var(- -gray-color, #868e96);
+	color: var(--gray-color, #868e96);
 	margin-right: 15px;
 }
 
 .form-section input[type="file"]::file-selector-button:hover {
-	background: var(- -light-gray-color, #f8f9fa);
-	color: var(- -dark-gray-color, #343a40);
+	background: var(--light-gray-color, #f8f9fa);
+	color: var(--dark-gray-color, #343a40);
 }
 
 .form-section input[type="file"] {
@@ -284,7 +284,7 @@ input[type="checkbox"]:focus {
 
 .form-section .info-box[id^="list_"] {
 	background-color: #fff;
-	border: 1px solid var(- -border-color, #dee2e6);
+	border: 1px solid var(--border-color, #dee2e6);
 	min-height: 50px;
 	padding: 10px;
 	display: flex;
@@ -301,9 +301,9 @@ input[type="checkbox"]:focus {
 .form-section .info-box[id^="list_"] div {
 	display: inline-block;
 	padding: 6px 12px;
-	background: var(- -primary-light-color, #f0f2ff);
+	background: var(--primary-light-color, #f0f2ff);
 	border: 1px solid #d1d9ff;
-	color: var(- -primary-color, #3f58d4);
+	color: var(--primary-color, #3f58d4);
 	border-radius: 20px; /
 	font-size: 14px;
 	font-weight: 500;
@@ -338,7 +338,7 @@ input[type="checkbox"]:focus {
 	line-height: 1.6;
 	margin-bottom: 12px;
 	background: white;
-	border-left: 4px solid var(- -primary-color, #3f58d4);
+	border-left: 4px solid var(--primary-color, #3f58d4);
 	padding: 12px 15px;
 	border-radius: 4px;
 }
@@ -349,7 +349,7 @@ input[type="checkbox"]:focus {
 
 .form-section .info-box[id^="list_"] {
 	background-color: #fff;
-	border: 1px solid var(- -border-color, #dee2e6);
+	border: 1px solid var(--border-color, #dee2e6);
 	min-height: 50px;
 	padding: 10px;
 	display: flex;
@@ -358,7 +358,7 @@ input[type="checkbox"]:focus {
 }
 
 .form-section .info-box[id^="list_"]:not (:has (.file-pill )) {
-	color: var(- -gray-color, #868e96);
+	color: var(--gray-color, #868e96);
 	font-style: italic;
 	align-items: center;
 }
@@ -367,9 +367,9 @@ input[type="checkbox"]:focus {
 	display: inline-flex;
 	align-items: center;
 	padding: 6px 8px 6px 12px;
-	background: var(- -primary-light-color, #f0f2ff);
+	background: var(--primary-light-color, #f0f2ff);
 	border: 1px solid #d1d9ff;
-	color: var(- -primary-color, #3f58d4);
+	color: var(--primary-color, #3f58d4);
 	border-radius: 20px;
 	font-size: 14px;
 	font-weight: 500;
@@ -385,7 +385,7 @@ input[type="checkbox"]:focus {
 	border-radius: 50%;
 	border: none;
 	background: rgba(0, 0, 0, 0.1);
-	color: var(- -primary-color, #3f58d4);
+	color: var(--primary-color, #3f58d4);
 	font-size: 16px;
 	font-weight: bold;
 	line-height: 1;
@@ -403,27 +403,27 @@ input[type="checkbox"]:focus {
 .btn-primary:hover {
 	background-color: #1e7c43 !important;
 	border-color: #1e7c43 !important;
-	box-shadow: var(- -shadow-md);
+	box-shadow: var(--shadow-md);
 	transform: translateY(-2px);
-}
+}	
 
 .footer {
 	text-align: center;
 	padding: 20px 0;
 	font-size: 14px;
-	color: var(- -gray-color);
+	color: var(--gray-color);
 }
 
 .btn-soft {
 	background-color: #e2e5e8;
-	color: var(- -dark-gray-color);
+	color: var(--dark-gray-color);
 	border: 1px solid #d0d4da;
 }
 
 .btn-soft:hover {
 	background-color: #c0c4ca;
 	border-color: #c0c4ca;
-	box-shadow: var(- -shadow-md);
+	box-shadow: var(--shadow-md);
 	transform: translateY(-2px);
 }
 </style>
