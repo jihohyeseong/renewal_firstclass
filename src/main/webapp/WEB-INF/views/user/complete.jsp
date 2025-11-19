@@ -27,7 +27,6 @@
     --shadow-md: 0 4px 8px rgba(0,0,0,0.07);
 }
 
-/* 기본 스타일 */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { height: 100%; }
 body {
@@ -39,8 +38,6 @@ body {
     color: var(--dark-gray-color);
 }
 a { text-decoration: none; color: inherit; }
-
-/* [삭제] 헤더/푸터 (global.css 또는 comp.css에 있다고 가정) */
 
 .main-container {
     flex-grow: 1;
@@ -59,7 +56,6 @@ a { text-decoration: none; color: inherit; }
     margin-bottom: 50px;
     color: var(--dark-gray-color);
 }
-/* 버튼 */
 .btn {
     display: inline-block;
     padding: 10px 20px;
@@ -113,11 +109,8 @@ h2.section-title {
 .info-table td { color: var(--dark-gray-color); font-weight: 400; word-break: break-all; }
 .info-table .data-title { width: 150px; background-color: var(--light-gray-color); color: var(--gray-color); font-weight: 500; }
 
-/* 2열 레이아웃 */
 .table-2col th { width: 120px; }
 .table-2col .data-title { width: 120px; }
-
-/* 자세히 보기 버튼 */
 .detail-btn {
     display: inline-block;
     padding: 3px 8px;
@@ -133,7 +126,6 @@ h2.section-title {
 }
 .detail-btn:hover { background-color: var(--primary-color); color: var(--white-color); }
 
-/* 성공 아이콘*/
 .completion-icon {
     width: 80px;
     height: 80px;
@@ -177,14 +169,11 @@ h2.section-title {
     font-size: 1.1em;
 }
 
-/* ---------------------------------- */
-/* 📱 [추가] 반응형 스타일 */
-/* ---------------------------------- */
 @media (max-width: 768px) {
     .main-container {
         max-width: 100%;
         margin: 0;
-        padding: 40px 25px; /* 상하 여백, 좌우 패딩 */
+        padding: 40px 25px;
         border-radius: 0;
         box-shadow: none;
     }
@@ -206,14 +195,13 @@ h2.section-title {
     h2.section-title {
         font-size: 19px;
         margin-bottom: 10px;
-        width: 100%; /* 제목도 100% */
+        width: 100%;
     }
     
-    /* [수정] 테이블을 스택 레이아웃으로 변경 */
     .info-table {
         border-top: none; 
         border-bottom: none;
-        table-layout: auto; /* fixed 해제 */
+        table-layout: auto;
     }
     
     .info-table tbody,
@@ -225,7 +213,7 @@ h2.section-title {
     .info-table th,
     .info-table td {
         display: block;
-        width: 100% !important; /* th 너비 강제 해제 */
+        width: 100% !important;
         text-align: left !important;
         padding-left: 0;
         padding-right: 0;
@@ -239,25 +227,23 @@ h2.section-title {
         color: var(--gray-color);
         font-weight: 500;
         font-size: 14px;
-        border-bottom: none; /* 라벨은 보더 X */
+        border-bottom: none;
     }
     
     .info-table td {
         padding-top: 0;
         padding-bottom: 15px;
-        font-weight: 500; /* 값 강조 */
+        font-weight: 500;
         font-size: 16px;
     }
     
-    /* 각 테이블의 마지막 td 보더 제거 */
     .info-table tr:last-child td:last-child {
          border-bottom: none;
     }
     .info-table-container:last-of-type .info-table tr:last-child td:last-child {
-         border-bottom: 1px solid var(--border-color); /* 마지막 테이블은 유지 */
+         border-bottom: 1px solid var(--border-color);
     }
 
-    /* [수정] 버튼을 세로로 쌓기 */
     .main-container .button-container {
         flex-direction: column;
         align-items: stretch;
@@ -266,10 +252,10 @@ h2.section-title {
     }
     .main-container .button-container .btn {
         width: 100%;
-        font-size: 16px; /* iOS 줌인 방지 */
+        font-size: 16px;
     }
     .detail-btn {
-        font-size: 14px; /* 13px -> 14px */
+        font-size: 14px;
     }
 }
 </style>
@@ -335,8 +321,6 @@ h2.section-title {
     </footer>
     
     <script type="text/javascript">
-        // 페이지 로드 시점에 vo 객체의 applicationNumber가 없는 경우 (새로고침 등)
-        // 메인 페이지로 이동시킵니다.
         if (!'${vo.applicationNumber}') {
             alert('신청 정보가 확인되지 않습니다. 메인 페이지로 이동합니다.');
             window.location.href = "${pageContext.request.contextPath}/user/main";

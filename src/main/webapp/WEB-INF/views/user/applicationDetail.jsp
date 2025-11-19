@@ -38,7 +38,6 @@
 	--shadow-md:0 4px 8px rgba(0,0,0,0.07);
 }
 
-/* 기본 스타일 */
 *{margin:0;padding:0;box-sizing:border-box}
 html{height:100%}
 body{
@@ -59,13 +58,11 @@ h2{
 	padding-bottom:10px;margin-bottom:25px;font-size:20px;
 }
 
-/* 섹션 타이틀 */
 .section-title{
 	font-size:20px;font-weight:700;color:var(--dark-gray-color);
 	margin-bottom:15px;border-left:4px solid var(--primary-color);padding-left:10px;
 }
 
-/* 테이블 */
 .info-table-container{margin-bottom:30px}
 .info-table{
   width:100%;
@@ -103,8 +100,6 @@ h2{
   border-top:1px solid var(--border-color);
 }
 
-
-/* 월별 내역 테이블(데이터 그리드) 스크롤 컨테이너 */
 .data-grid-container {
 	overflow-x: auto;
 	-webkit-overflow-scrolling: touch;
@@ -123,8 +118,6 @@ h2{
 	text-align: center;
 }
 
-
-/* 버튼 */
 .btn{
 	display:inline-block;padding:10px 20px;font-size:15px;font-weight:500;
 	border-radius:8px;border:1px solid var(--border-color);cursor:pointer;
@@ -142,8 +135,6 @@ h2{
 .btn-danger { background-color: var(--danger-color); color: #fff; border-color: var(--danger-color); }
 .btn-danger:hover { background-color: #c82333; border-color: #bd2130; transform:translateY(-2px); box-shadow:var(--shadow-md); }
 
-
-/* 하단 버튼 컨테이너 스타일 */
 .button-container{
 	display: flex;
     justify-content: center;
@@ -186,39 +177,23 @@ h2{
        color: var(--gray-color);
    }
 .file-download-link {
-    color: var(--primary-color); /* 테마 색상 적용 */
+    color: var(--primary-color);
     font-weight: 500;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    gap: 8px; /* 아이콘과 텍스트 간격 */
+    gap: 8px;
 }
 .file-download-link:hover {
     text-decoration: underline;
 }
 
-
-네, '최종승인'과 '반려' 상태의 디자인을 더 눈에 띄고 명확하게 바꿔보겠습니다.
-
-기존의 텍스트와 노란색 경고창 대신, 성공(초록색)과 위험(붉은색)을 나타내는 명확한 '상태 알림 박스' 스타일을 추가하는 것이 좋겠습니다.
-
-아래 2단계를 적용해 주세요.
-
-1단계: CSS 스타일 추가
-먼저, <style> 태그 최하단 (미디어 쿼리 @media 시작 전)에 아래의 새로운 CSS 코드를 복사하여 붙여넣으세요.
-
-CSS
-
-/* ... 기존 file-download-link::before ... */
 .file-download-link::before {
     content: '📎';
     font-size: 1.1em;
     color: var(--gray-color);
 }
 
-/* ================================== */
-/* ✅ [추가] 승인/반려 상태 박스 스타일 */
-/* ================================== */
 .status-notification {
 	background-color: var(--white-color); 
 	border: 1px solid var(--border-color);
@@ -235,8 +210,6 @@ CSS
 	gap: 15px;
 	flex-wrap: wrap; 
 }
-
-/* 2. 상태 뱃지 (은은한 스타일) */
 .status-badge {
 	display: inline-block;
 	padding: 6px 14px;
@@ -245,18 +218,16 @@ CSS
 	border-radius: 20px;
 	flex-shrink: 0;
 	
-	color: #ffffff; /* (기본값, 덮어씌워짐) */
-	background-color: #888; /* (기본값, 덮어씌워짐) */
+	color: #ffffff; 
+	background-color: #888;
 }
 
-/* 3. 메인 텍스트 (중립색) */
 .status-main-text {
 	font-size: 20px;
 	font-weight: 700;
 	color: var(--dark-gray-color); 
 }
 
-/* 4. 상세 내용 (심플한 구분선) */
 .status-detail-content {
 	font-size: 15px;
 	line-height: 1.6;
@@ -282,35 +253,27 @@ CSS
 }
 
 
-/* 5. '최종승인' 스타일 (★ 푸른색 계열로 변경) */
 .status-notification.success {
-	/* 흰색 배경 유지 */
+
 }
 .status-notification.success .status-badge {
-	/* [변경] 연한 파랑 배경 + 진한 파랑 텍스트 */
-	background-color: var(--primary-light-color); /* #f0f2ff */
-	color: var(--primary-color) !important; /* #3f58d4 */
+	background-color: var(--primary-light-color); 
+	color: var(--primary-color) !important; 
 }
 
-
-/* 6. '반려' 스타일 (★ 기존 붉은색 계열 유지) */
 .status-notification.danger {
-	/* 흰색 배경 유지 */
+
 }
 .status-notification.danger .status-badge {
-	/* [유지] 연한 빨강 배경 + 진한 빨강 텍스트 */
 	background-color: #fbebee;
 	color: #721c24 !important;
 }
 .status-notification.danger .status-detail-content {
-	border-top-color: #f5c6cb; /* 구분선만 연한 붉은색 (유지) */
+	border-top-color: #f5c6cb; 
 }
 .status-notification.danger .status-detail-content strong {
 	color: #721c24; 
 }
-/* ---------------------------------- */
-/* 📱 반응형 스타일 */
-/* ---------------------------------- */
 
 @media (max-width: 992px) {
 	.main-container {
@@ -640,12 +603,7 @@ CSS
 					</table>
 				</div>
 			</div>
-			
-		<%-- ✅ 1페이지 캡처 영역 끝 --%>
 		</div>
-
-
-		<%-- ✅ 2페이지 캡처 영역 시작 --%>
 		<div id="pdf-content-part-2">
 	
 			<div class="info-table-container">
@@ -781,12 +739,8 @@ CSS
                     </tbody>
                 </table>
             </div>
-            <%-- ✅ 2페이지 캡처 영역 끝 --%>
         </div>
 		
-	
-		<%-- 버튼 컨테이너 (캡처 영역 밖) --%>
-		<%-- ✅ [오류 수정 2] <c:when>과 <c:otherwise> 사이의 빈 줄(공백) 제거 --%>
 		<c:choose>
 			<c:when test="${dto.statusCode == 'ST_10'}">
 				<div class="button-container" style="display: flex; align-items: center; width: 100%;">
@@ -848,7 +802,6 @@ CSS
 				</div>
 			</c:when>
 			<c:when test="${dto.statusCode == 'ST_50'}">
-				<%-- [DESIGN UPDATE] 뱃지 스타일 --%>
 				<div class="status-notification success">
 					<div class="status-title-area">
 						<span class="status-badge">최종승인</span>
@@ -861,15 +814,12 @@ CSS
 					<a href="${pageContext.request.contextPath}/user/main" class="btn bottom-btn btn-secondary">목록으로 돌아가기</a>
 				</div>
 			</c:when>
-									
-			<%-- ST_60: 반려 --%>
+
 			<c:when test="${dto.statusCode == 'ST_60'}">
-				
-				<%-- [DESIGN UPDATE] 뱃지 스타일 --%>
+
 				<div class="status-notification danger">
 					<div class="status-title-area">
 						<span class="status-badge">반려</span>
-						<%-- 반려 사유 코드를 뱃지 옆 메인 텍스트로 사용 --%>
 						<span class="status-main-text">
 							<c:choose>
 								<c:when test="${dto.rejectionReasonCode == 'RJ_10'}">계좌정보 불일치</c:when>
@@ -885,7 +835,6 @@ CSS
 						</span>
 					</div>
 					
-					<%-- 상세 반려 사유 (rejectComment) --%>
 					<c:if test="${not empty dto.rejectComment}">
 						<div class="status-detail-content">
 							<strong>상세 내용:</strong>
@@ -947,8 +896,6 @@ $(document).ready(function() {
 			}
 		});
 		
-		
-		// --- PDF 다운로드 버튼 클릭 이벤트 핸들러 (2페이지 분할 로직) ---
 		$('#btn-pdf-download').on('click', async function() {
 			const btn = $(this);
 			const originalText = btn.text();
@@ -964,11 +911,7 @@ $(document).ready(function() {
 			const applicationNumber = "${dto.applicationNumber}";
 			const filename = `육아휴직_급여신청서_${applicationNumber}.pdf`;
 
-			/**
-			 * ✨ [수정] PDF 변환 함수 (JPEG 압축 적용)
-			 */
 			function addCanvasToPdf(canvas, pdf) {
-				// ✨ 1. PNG를 고압축 JPEG로 변경 (0.75 = 75% 품질)
 				const imgData = canvas.toDataURL('image/jpeg', 0.75); 
 				const imgWidth = canvas.width;
 				const imgHeight = canvas.height;
@@ -984,7 +927,6 @@ $(document).ready(function() {
 					}
 					let position = pageInnerHeight * (page - 1);
 					
-					// ✨ 2. 이미지 포맷을 'JPEG'로 명시
 					pdf.addImage(imgData, 'JPEG', margin, margin - position, pdfWidth, pdfImgHeight); 
 					heightLeft = pdfImgHeight - (pageInnerHeight * page);
 				}

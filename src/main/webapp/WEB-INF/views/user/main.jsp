@@ -16,32 +16,31 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/comp.css">
 <style>
-    /* --- 테마 색상 및 기본 스타일 (파란색 테마) --- */
     :root {
         --primary-color: #3f58d4;
-        --primary-color-dark: #324ca8; /* 더 어두운 파란색 */
-        --primary-color-light: #f0f3fd; /* 아주 연한 파란색 */
+        --primary-color-dark: #324ca8; 
+        --primary-color-light: #f0f3fd; 
         
-        --status-approved: #3f58d4; /* 승인 (메인 파란색) */
-        --status-pending: #f59e0b;  /* 대기 (황색) */
-        --status-rejected: #ef4444; /* 반려 (적색) */
+        --status-approved: #3f58d4; 
+        --status-pending: #f59e0b;  
+        --status-rejected: #ef4444; 
         
         --text-color: #333;
         --text-color-light: #555;
         --border-color: #e0e0e0;
-        --bg-color-soft: #f9fafb; /* 연한 회색 배경 */
+        --bg-color-soft: #f9fafb; 
         --white: #ffffff;
     }
 
     body {
         font-family: 'Noto Sans KR', sans-serif;
-        background-color: var(--bg-color-soft); /* 전체 페이지 배경색 */
+        background-color: var(--bg-color-soft); 
         color: var(--text-color);
         line-height: 1.6;
         display: flex;
         flex-direction: column;
-        min-height: 100vh; /* 뷰포트 전체 높이 */
-        margin: 0; /* body의 기본 마진 제거 */
+        min-height: 100vh; 
+        margin: 0; 
     }
 
     .main-container {
@@ -51,7 +50,6 @@
         flex-grow: 1;
     }
 
-    /* --- 콘텐츠 래퍼 (카드 디자인) --- */
     .content-wrapper {
         background-color: var(--white);
         border-radius: 12px;
@@ -75,14 +73,13 @@
         font-weight: 700;
     }
 
-    /* --- [수정] 헤더 버튼 영역 --- */
     .header-actions {
         display: flex;
         align-items: center;
-        gap: 10px; /* 버튼 사이 간격 */
+        gap: 10px; 
     }
 
-    /* --- 버튼 (comp.css 오버라이드) --- */
+
     .btn {
         display: inline-flex;
         align-items: center;
@@ -118,7 +115,6 @@
         background-color: #d1d5db;
     }
     
-    /* --- [신규] 아웃라인 버튼 스타일 (페이지 테마에 맞춤) --- */
     .btn-outline-primary {
         background-color: var(--white);
         color: var(--primary-color);
@@ -128,44 +124,42 @@
         background-color: var(--primary-color-light);
     }
 
-    /* --- [신규] 커스텀 툴팁 스타일 --- */
     .tooltip-wrapper {
-        position: relative; /* 툴팁을 이 요소 기준으로 위치시킴 */
+        position: relative;
         display: inline-block;
     }
 
     .custom-tooltip {
-        visibility: hidden; /* 기본 숨김 */
+        visibility: hidden;
         opacity: 0;
         
         position: absolute;
-        bottom: 125%; /* 버튼 위에 위치 */
+        bottom: 125%; 
         left: 50%;
-        transform: translateX(-50%); /* 중앙 정렬 */
+        transform: translateX(-50%);
         
-        background-color: #333; /* 어두운 배경 */
+        background-color: #333;
         color: var(--white);
         text-align: center;
         padding: 8px 12px;
         border-radius: 6px;
         font-size: 13px;
         font-weight: 500;
-        white-space: nowrap; /* 툴팁 텍스트가 줄바꿈되지 않도록 */
+        white-space: nowrap;
         
         z-index: 10;
         transition: opacity 0.2s ease, visibility 0.2s ease;
     }
 
-    /* 툴팁 꼬리 (화살표) */
     .custom-tooltip::after {
         content: "";
         position: absolute;
-        top: 100%; /* 툴팁 하단 중앙 */
+        top: 100%;
         left: 50%;
         margin-left: -5px;
         border-width: 5px;
         border-style: solid;
-        border-color: #333 transparent transparent transparent; /* 위쪽을 가리키는 삼각형 */
+        border-color: #333 transparent transparent transparent; 
     }
 
     .tooltip-wrapper:hover .custom-tooltip {
@@ -173,8 +167,6 @@
         opacity: 1;
     }
 
-
-    /* --- 안내 상자 (생략) --- */
     .notice-box { background-color: var(--primary-color-light); border: 1px solid var(--primary-color); border-left-width: 5px; border-radius: 8px; padding: 20px; }
     .notice-box .title { display: flex; align-items: center; font-size: 18px; font-weight: 700; color: var(--primary-color-dark); margin-bottom: 12px; }
     .notice-box .title .fa-solid { margin-right: 10px; font-size: 20px; }
@@ -182,7 +174,6 @@
     .notice-box li { margin-bottom: 6px; }
     .notice-box li:last-child { margin-bottom: 0; }
 
-    /* --- 리스트 테이블 (생략) --- */
     .list-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 15px; }
     .list-table thead th { padding: 14px 16px; font-weight: 600; background-color: var(--primary-color); color: var(--white); text-align: left; border-bottom: 2px solid var(--primary-color-dark); }
     .list-table thead th:nth-child(4), .list-table thead th:nth-child(5) { text-align: center; }
@@ -198,62 +189,55 @@
     .list-table .btn { padding: 6px 12px; font-size: 13px; font-weight: 500; line-height: 1; border-radius: 6px; margin: 0 2px; }
     .list-table td.actions { text-align: right; white-space: nowrap; }
     
-    /* --- 빈 상태 박스 (생략) --- */
     .empty-state-box { text-align: center; padding: 60px 40px; background-color: #fcfcfc; border-radius: 10px; border: 1px dashed var(--border-color); }
     .empty-state-box::before { font-family: "Font Awesome 6 Free"; font-weight: 900; content: "\f115"; font-size: 40px; color: var(--primary-color); display: block; margin-bottom: 20px; opacity: 0.6; }
     .empty-state-box h3 { font-size: 22px; color: var(--text-color); margin-top: 0; margin-bottom: 12px; }
     .empty-state-box p { font-size: 16px; color: var(--text-color-light); margin: 0; }
     
-  /* ---------------------------------- */
-        /* 📱 반응형 스타일 (Tablet & Mobile) */
-        /* ---------------------------------- */
         @media (max-width: 768px) {
             .main-container {
-                margin: 10px auto; /* 상하 여백 축소 */
-                padding: 0 10px; /* 좌우 여백 축소 */
+                margin: 10px auto;
+                padding: 0 10px;
             }
 
             .content-wrapper {
-                padding: 20px 15px; /* 카드 내부 여백 축소 */
+                padding: 20px 15px;
             }
 
-            /* --- 헤더 [수정] --- */
             .content-header {
-                flex-direction: column; /* 제목과 버튼을 세로로 쌓음 */
-                align-items: flex-start; /* 좌측 정렬 */
-                gap: 15px; /* 제목과 버튼 영역 사이 간격 */
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
                 padding-bottom: 20px;
             }
 
             .content-header h2 {
-                font-size: 22px; /* 제목 폰트 축소 */
+                font-size: 22px;
             }
 
             .header-actions {
-                flex-direction: row;  /* 버튼은 가로로 유지 */
-                flex-wrap: wrap;      /* 화면 작으면 줄바꿈 */
-                justify-content: flex-end; /* 우측 정렬 */
-                width: 100%;          /* 정렬을 위해 너비 100% */
-                gap: 8px;           /* 버튼 사이 간격 */
+                flex-direction: row; 
+                flex-wrap: wrap; 
+                justify-content: flex-end;
+                width: 100%; 
+                gap: 8px; 
             }
             
             .header-actions .tooltip-wrapper,
             .header-actions form {
-                display: inline-block; /* 버튼들 가로 배치 */
+                display: inline-block;
             }
             
-            /* [수정] 버튼 크기 줄이기 */
             .header-actions .btn {
-                 width: auto; /* 100% 너비 제거 */
-                 padding: 8px 14px; /* 패딩 축소 */
-                 font-size: 14px;   /* 폰트 축소 */
+                 width: auto;
+                 padding: 8px 14px; 
+                 font-size: 14px; 
             }
             
             .header-actions form {
                 display: inline-block;
             }
 
-            /* --- 안내 박스 --- */
             .notice-box {
                 padding: 15px;
             }
@@ -265,23 +249,20 @@
                 padding-left: 18px;
             }
 
-            /* --- 신청내역 테이블 [수정] --- */
             .list-table {
-                /* display: block; 와 overflow-x: auto; 제거 */
-                table-layout: fixed; /* 고정 레이아웃 사용 */
+                table-layout: fixed;
                 width: 100%;
-                word-break: break-all; /* 긴 텍스트(신청번호 등) 강제 줄바꿈 */
+                word-break: break-all;
             }
 
             .list-table thead th,
             .list-table tbody td {
-                white-space: normal; /* [수정] 줄바꿈 허용 */
+                white-space: normal;
                 font-size: 14px;
-                padding: 12px 8px; /* 패딩 축소 */
-                vertical-align: middle; /* 세로 중앙 정렬 */
+                padding: 12px 8px;
+                vertical-align: middle;
             }
             
-            /* [수정] 인라인 스타일 너비를 %로 덮어쓰기 */
             .list-table th:nth-child(1) { width: 25% !important; } /* 신청번호 */
             .list-table th:nth-child(2) { width: 25% !important; } /* 신청일 */
             .list-table th:nth-child(3) { width: 15% !important; } /* 이름 */
@@ -289,24 +270,22 @@
             .list-table th:nth-child(5) { width: 20% !important; } /* 작업 */
 
             .list-table td.actions {
-                text-align: center; /* 작업 버튼을 중앙 정렬 */
+                text-align: center;
             }
             
             .list-table td.actions .btn {
-                 width: 100%; /* 셀 너비에 꽉 차게 */
-                 max-width: 100px; /* 너무 커지진 않게 */
+                 width: 100%;
+                 max-width: 100px;
                  padding: 6px 8px;
                  font-size: 12px;
             }
             
-            /* --- 툴팁 --- */
             .custom-tooltip {
-                white-space: normal; /* 툴팁 텍스트가 길면 줄바꿈 허용 */
-                max-width: 80vw; /* 화면 너비보다 커지지 않게 */
+                white-space: normal; 
+                max-width: 80vw;
                 font-size: 12px;
             }
             
-            /* --- 빈 상태 박스 --- */
             .empty-state-box {
                 padding: 40px 20px;
             }
@@ -318,9 +297,6 @@
             }
         }
         
-        /* ---------------------------------- */
-        /* 📱 더 작은 화면 (e.g., iPhone SE) */
-        /* ---------------------------------- */
         @media (max-width: 480px) {
             .content-wrapper {
                 padding: 15px;
@@ -336,8 +312,8 @@
 
             .list-table thead th,
             .list-table tbody td {
-                font-size: 12px; /* 폰트 더 줄이기 */
-                padding: 10px 5px; /* 패딩 더 줄이기 */
+                font-size: 12px;
+                padding: 10px 5px;
             }
             
             .status-badge {
@@ -480,7 +456,6 @@
     <script>
     $(document).ready(function() {
         
-        // --- 1. 스코프 내 변수 설정 ---
         const VAPID_KEY = "BBc3HyjOmOGy5y6MK6fMzBazOvOIMdx7WJ0VIA7AM-pdzF-dBk6cBbwThsHHnVt1XFRt6J_uqF-EmjxLXEB7BLI";
         const CONTEXT_PATH = "${pageContext.request.contextPath}";
         
@@ -502,8 +477,6 @@
         const tooltip = document.getElementById('push-btn-tooltip');
         const messaging = firebase.messaging();
 
-        
-        // --- 2. UI 업데이트 함수 ---
         function updateButtonUI(status, token) {
             token = token || null;
             
@@ -515,20 +488,20 @@
             pushButton.dataset.token = token;
 
             switch (status) {
-                case 'denied': // (조건 1)
+                case 'denied':
                     pushButton.textContent = '🔔 알림 차단됨';
                     pushButton.classList.add('btn-secondary');
                     pushButton.disabled = true;
                     tooltip.textContent = '브라우저 상단 주소창 왼쪽의 ⓘ 버튼을 클릭해 알림 권한을 허용해주세요';
                     break;
-                case 'subscribed': // (조건 2: 켜짐 + true)
+                case 'subscribed':
                     pushButton.textContent = '🔔 푸시 알림ON';
-                    pushButton.classList.add('btn-primary'); // (채움)
+                    pushButton.classList.add('btn-primary');
                     tooltip.textContent = '심사 완료 시 알림을 받습니다.';
                     break;
-                case 'unsubscribed': // (조건 3: 켜짐 + false)
+                case 'unsubscribed':
                     pushButton.textContent = '🔔 푸시 알림OFF';
-                    pushButton.classList.add('btn-outline-primary'); // (비움)
+                    pushButton.classList.add('btn-outline-primary');
                     tooltip.textContent = '심사 완료 시 알림을 받지 않습니다.';
                     break;
                 case 'unsupported':
@@ -543,7 +516,7 @@
                     pushButton.disabled = true;
                     tooltip.textContent = '상태 확인 중...';
                     break;
-                default: // 'default' (기본 상태)
+                default:
                     pushButton.textContent = '🔔 푸시 알림받기';
                     pushButton.classList.add('btn-outline-primary');
                     tooltip.textContent = '클릭하여 알림 허용하기';
@@ -551,12 +524,6 @@
             }
         }
         
-        // --- 3. Firebase 및 서버 통신 함수 ---
-
-        /**
-         * Firebase로부터 현재 기기의 토큰을 가져옵니다.
-         * @returns {Promise<string>} FCM 토큰
-         */
         function getFirebaseToken() {
             return new Promise(function(resolve, reject) {
                 navigator.serviceWorker.register(CONTEXT_PATH + "/firebase-messaging-sw.js")
@@ -581,39 +548,24 @@
             });
         }
 
-        /**
-         * (AJAX) 현재 기기 토큰을 가져와서 서버에 등록 여부를 확인합니다.
-         * @returns {Promise<{isSubscribed: boolean, token: string | null}>} 
-         */
         function checkTokenOnServer() {
-            // 1. 먼저 Firebase에서 토큰을 가져옵니다.
             return getFirebaseToken().then(function(token) {
                 
-                // 2. 토큰을 서버로 보내 확인합니다.
                 return $.ajax({
                     url: CHECK_URL,
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({ fcmToken: token })
                 }).then(function(response) {
-                    // 3. 서버 응답(true/false)과 토큰을 함께 반환합니다.
                     return { isSubscribed: response === true, token: token };
                 });
 
             }).catch(function(err) {
-                // getFirebaseToken() 실패 또는 ajax 실패
                 console.error('서버 토큰 확인 프로세스 실패:', err);
-                // 실패 시, 비구독 상태와 null 토큰 반환
                 return { isSubscribed: false, token: null }; 
             });
         }
         
-        /**
-         * (AJAX) 토큰을 서버에 저장(구독)하거나 삭제(구독해지)합니다.
-         * @param {'save' | 'delete'} action - 수행할 작업
-         * @param {string} token - 대상 FCM 토큰
-         * @returns {Promise<void>}
-         */
         function sendTokenToServer(action, token) {
             var url = (action === 'save') ? SAVE_URL : DELETE_URL;
             
@@ -625,11 +577,6 @@
             });
         }
 
-        // --- 4. 메인 로직 (구독/해지) ---
-
-        /**
-         * (클릭 시) 구독 처리 (권한 요청 + 토큰 발급 + 서버 전송)
-         */
         function subscribeUser() {
             updateButtonUI('loading');
             
@@ -661,9 +608,6 @@
             });
         }
         
-        /**
-         * (클릭 시) 구독 해지 (서버 토큰 삭제)
-         */
         function unsubscribeUser() {
             const token = pushButton.dataset.token;
             if (!token) {
@@ -684,8 +628,6 @@
                 });
         }
         
-        // --- 5. 페이지 로드 시 초기 상태 설정 ---
-        
         function initializePushState() {
             if (!("Notification" in window) || !("serviceWorker" in navigator)) {
                 updateButtonUI('unsupported');
@@ -695,35 +637,26 @@
             const permission = Notification.permission;
 
             if (permission === 'denied') {
-                // (조건 1)
                 updateButtonUI('denied');
             } else if (permission === 'default') {
-                // (기본 상태)
                 updateButtonUI('default');
             } else { 
-                // (조건 2 또는 3)
                 updateButtonUI('loading');
-                
-                // [수정] checkTokenOnServer가 토큰 가져오기 및 서버 확인을 모두 처리
+
                 checkTokenOnServer()
-                    .then(function(result) { // result = { isSubscribed: boolean, token: string }
+                    .then(function(result) {
                         if (result.isSubscribed) {
-                            // (조건 2) 켜짐 + true
                             updateButtonUI('subscribed', result.token);
                         } else {
-                            // (조건 3) 켜짐 + false
                             updateButtonUI('unsubscribed', result.token);
                         }
                     })
                     .catch(function(err) {
-                        // checkTokenOnServer 내부에서 catch되었지만, 만약의 경우
                         console.error('초기화 중 오류:', err);
-                        updateButtonUI('unsubscribed', null); // 오류 시 비구독 상태로 간주
+                        updateButtonUI('unsubscribed', null);
                     });
             }
         }
-        
-        // --- 6. 이벤트 리스너 연결 ---
         
         initializePushState();
 
@@ -738,6 +671,6 @@
             }
         });
         
-    }); // <-- $(document).ready() 끝
+    });
     </script>
 </html>

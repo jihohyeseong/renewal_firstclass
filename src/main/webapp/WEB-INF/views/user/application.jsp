@@ -87,7 +87,6 @@
     }
     input[readonly], input.readonly-like, input:disabled { background-color: var(--light-gray-color); cursor: not-allowed; }
     
-    /* [★★ 수정 1-1 ★★] 주소 잘림 문제 해결을 위한 새 클래스 */
     .readonly-field {
         width: 100%;
         padding: 10px;
@@ -96,9 +95,9 @@
         background-color: var(--light-gray-color);
         cursor: not-allowed;
         font-size: 15px;
-        line-height: 1.6; /* 줄바꿈 허용 */
-        word-break: keep-all; /* 단어 단위 줄바꿈 */
-        overflow-wrap: break-word; /* 긴 텍스트 강제 줄바꿈 */
+        line-height: 1.6;
+        word-break: keep-all;
+        overflow-wrap: break-word;
     }
     
     .btn {
@@ -188,7 +187,7 @@
         border-bottom: 1px solid var(--border-color);
         padding-bottom: 15px;
         margin-bottom: 20px;
-        flex-shrink: 0; /* 헤더는 줄어들지 않음 */
+        flex-shrink: 0;
     }
     .modal-header h2 {
         margin: 0;
@@ -206,8 +205,8 @@
     }
     .modal-body {
         overflow-y: auto;
-        flex-grow: 1; /* 남은 공간 차지 */
-        min-height: 0; /* flex-grow가 작동하도록 */
+        flex-grow: 1;
+        min-height: 0;
     }
     .center-table {
         width: 100%;
@@ -263,11 +262,6 @@
         display: block; 
     }
 
-    /* ---------------------------------- */
-    /* 📱 [수정] 반응형 스타일 */
-    /* ---------------------------------- */
-
-    /* 992px 이하 (태블릿) */
     @media (max-width: 992px) {
         .main-container {
             max-width: 95% !important;
@@ -312,26 +306,22 @@
     margin-bottom: 10px;
 }
 
-/* '파일 찾기' 버튼 */
 .other-file-row .btn-find-other-file {
-    flex-shrink: 0; /* 버튼 크기 유지 */
+    flex-shrink: 0;
 }
 
-/* '파일 없음' 플레이스홀더 */
 .other-file-row .other-file-placeholder {
-    flex-grow: 1; /* 남은 공간 차지 (파일 없을 때) */
+    flex-grow: 1; 
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-/* [★★ 디자인 요청 ★★] 파일명 표시 박스 (확인서 박스와 유사하게) */
 .other-file-row .file-display-other {
-    flex-grow: 1; /* 남은 공간 차지 (파일 있을 때) */
+    flex-grow: 1; 
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* .file-display-box의 기존 스타일 상속 */
     padding: 10px;
     border: 1px solid var(--border-color);
     border-radius: 6px;
@@ -339,20 +329,18 @@
 }
 
 .other-file-row .file-display-other span {
-    /* 긴 파일명 ... 처리 */
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    padding-right: 10px; /* X버튼과 여백 */
+    padding-right: 10px; 
     font-weight: 500;
     font-size: 15px;
     line-height: 1.6;
 }
 
-/* 행 삭제 버튼 (X) */
 .other-file-row .btn-delete-other-row {
     flex-shrink: 0;
-    color: #dc3545; /* 빨간색 */
+    color: #dc3545;
     background: none;
     border: none;
     cursor: pointer;
@@ -364,10 +352,10 @@
     background: none;
     border: none;
     color: var(--gray-color);
-    font-size: 22px; /* 기본값 (행 삭제 버튼이 이 값을 상속함) */
+    font-size: 22px; 
     font-weight: bold;
     cursor: pointer;
-    padding: 0 5px; /* 기본값 (행 삭제 버튼이 이 값을 상속함) */
+    padding: 0 5px;
     line-height: 1;
     flex-shrink: 0;
 }
@@ -376,13 +364,12 @@
     color: var(--dark-gray-color);
 }
 
-/* [디자인 수정] 파일 박스 내부의 'X' 버튼만 원형으로 변경 (행 삭제 버튼 제외) */
 .btn-delete-file:not(.btn-delete-other-row) {
     width: 26px;
     height: 26px;
-    padding: 0; /* 덮어쓰기 */
+    padding: 0;
     border-radius: 50%;
-    font-size: 18px; /* 덮어쓰기 */
+    font-size: 18px; 
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -391,10 +378,9 @@
 
 .btn-delete-file:not(.btn-delete-other-row):hover {
     color: var(--dark-gray-color);
-    background-color: #e9ecef; /* 연한 회색 배경 */
+    background-color: #e9ecef; 
 }
 
-    /* 768px 이하 (모바일) */
     @media (max-width: 768px) {
         .main-container {
             max-width: 100% !important;
@@ -402,22 +388,20 @@
             padding: 0 !important;
         }
         .other-file-row {
-        flex-wrap: wrap; /* 모바일에서 줄바꿈 허용 */
+        flex-wrap: wrap; 
     }
     .other-file-row .btn-find-other-file {
-        /* '파일찾기' 버튼이 100% 너비를 차지하지 않도록 */
         width: auto; 
         flex-basis: auto;
     }
     .other-file-row .btn-delete-other-row {
-         margin-left: auto; /* 삭제 버튼을 오른쪽으로 밀기 */
+         margin-left: auto;
     }
     .other-file-row .file-display-other,
     .other-file-row .other-file-placeholder {
-        /* 파일명/플레이스홀더는 100% 너비 차지 (버튼 아래로) */
         width: 100%;
         flex-basis: 100%;
-        order: 2; /* 순서 변경 */
+        order: 2;
         margin-left: 0;
     }
     .other-file-row .btn-find-other-file { order: 1; }
@@ -431,7 +415,7 @@
         
         input[type="text"], input[type="date"], input[type="number"], 
         input[type="password"], select, .btn, .readonly-field {
-            font-size: 16px !important; /* [★★ 수정 ★★] iOS 줌인 방지 */
+            font-size: 16px !important; 
         }
         .info-box, .notice-box, .center-display-box:not(.filled)::before,
         .checkbox-group label {
@@ -465,7 +449,7 @@
             background-color: var(--white-color) !important; 
         }
         .dynamic-form-row:nth-child(even) {
-             background-color: #fcfcfd !important; /* [수정] 짝수행 구분 */
+             background-color: #fcfcfd !important;
         }
 
         .period-checkbox-wrapper {
@@ -533,17 +517,16 @@
              font-weight: 700;
          }
 
-        /* [★★ 수정 3-1 ★★] 부정수급 안내 동의 (어색한 위치 수정) */
         .checkbox-group[style*="justify-content: center"] {
             justify-content: flex-start !important;
             gap: 10px;
-            align-items: flex-start; /* 상단 정렬 */
+            align-items: flex-start; 
         }
         .checkbox-group[style*="justify-content: center"] input[type="checkbox"] {
-             margin-right: 0; /* -10px 제거 */
+             margin-right: 0; 
              flex-shrink: 0;
              transform: scale(1.3);
-             margin-top: 4px; /* 라벨 텍스트와 세로 정렬 */
+             margin-top: 4px; 
         }
         .checkbox-group[style*="justify-content: center"] label {
              text-align: left;
@@ -559,14 +542,13 @@
             width: 100%;
         }
         
-        /* [★★ 수정 2-1 ★★] 모달: 모바일에서 100% 화면 사용 */
         .modal-content {
             width: 100vw;
             height: 100vh;
             max-width: 100vw;
             max-height: 100vh; 
             border-radius: 0;
-            padding: 20px; /* [수정] 패딩 20px */
+            padding: 20px;
             justify-content: flex-start; 
         }
         .modal-header {
@@ -577,18 +559,17 @@
         
         .modal-body {
             overflow-y: auto; 
-            overflow-x: auto; /* [수정] 가로/세로 모두 스크롤 */
+            overflow-x: auto;
             -webkit-overflow-scrolling: touch;
             height: 100%; 
         }
-        
-        /* [★★ 수정 2-2 ★★] 모달 테이블 모바일 뷰 (카드 리스트) */
+
         .modal-body .center-table {
-            min-width: 100%; /* 600px 최소 너비 제거 */
+            min-width: 100%;
             border: none;
         }
         .modal-body .center-table thead {
-            display: none; /* 테이블 헤더 숨기기 */
+            display: none;
         }
         .modal-body .center-table tr {
             display: block;
@@ -596,7 +577,7 @@
             border-radius: 8px;
             margin-bottom: 15px;
             padding: 15px;
-            background: var(--white-color) !important; /* 짝수행 배경색 무시 */
+            background: var(--white-color) !important;
         }
         .modal-body .center-table td {
             display: block;
@@ -604,49 +585,45 @@
             border: none;
             padding: 8px 0;
             text-align: left !important;
-            font-size: 15px; /* 폰트 15px */
+            font-size: 15px;
             line-height: 1.6;
         }
-        /* TD에 라벨(::before) 추가 */
         .modal-body .center-table td:nth-of-type(1)::before { content: '센터명: '; font-weight: 500; color: var(--gray-color); margin-right: 5px; }
         .modal-body .center-table td:nth-of-type(2)::before { content: '주소: '; font-weight: 500; color: var(--gray-color); margin-right: 5px; }
         .modal-body .center-table td:nth-of-type(3)::before { content: '대표전화: '; font-weight: 500; color: var(--gray-color); margin-right: 5px; }
         
-        /* "선택" 버튼이 있는 마지막 TD */
         .modal-body .center-table td:nth-of-type(4) {
             padding-top: 15px;
             margin-top: 10px;
             border-top: 1px dashed var(--border-color);
         }
         .modal-body .center-table .btn-select-center {
-            width: 100%; /* 버튼 100% 너비 */
+            width: 100%; 
             font-size: 16px;
         }
         .file-display-box {
-    flex-grow: 1; /* 남은 공간 차지 */
+    flex-grow: 1;
     padding: 10px;
     border: 1px solid var(--border-color);
     border-radius: 6px;
-    background-color: #fcfcfd; /* 약간 다른 배경색 */
+    background-color: #fcfcfd;
     font-size: 15px;
-    min-height: 42px; /* input 높이와 비슷하게 */
-    position: relative; /* 삭제 버튼 위치 기준 */
+    min-height: 42px;
+    position: relative;
     line-height: 1.6;
 }
 
-/* 단일 파일 (확인서) 표시 영역 */
 #file-confirm-display {
     display: flex;
-    justify-content: space-between; /* 파일명과 X버튼 양쪽 정렬 */
+    justify-content: space-between;
     align-items: center;
 }
 
 #file-confirm-display span {
-    /* 긴 파일명 ... 처리 */
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    padding-right: 10px; /* X버튼과 여백 */
+    padding-right: 10px; 
     font-weight: 500;
 }
 
@@ -655,7 +632,6 @@
     border-bottom: none;
 }
 
-/* 파일 삭제(X) 버튼 공통 스타일 */
 .btn-delete-file {
     background: none;
     border: none;
@@ -665,26 +641,19 @@
     cursor: pointer;
     padding: 0 5px;
     line-height: 1;
-    flex-shrink: 0; /* 줄어들지 않음 (단일파일용) */
+    flex-shrink: 0;
 }
 
 .btn-delete-file:hover {
     color: var(--dark-gray-color);
 }
 }
-/* ============================
-   첨부파일 섹션 전용 레이아웃
-   (이 페이지 스타일 참고한 버전)
-   ============================ */
 
-/* 첨부 섹션 전체 래퍼에 .file-section 같은 클래스가 있다면 더 좋음
-   <div class="form-section file-section"> ... 이런 식으로 */
 .file-section .form-group {
-  display: block !important;           /* 기존 grid/flex 무시 */
+  display: block !important; 
   margin-bottom: 24px !important;
 }
 
-/* 레이블 박스: 왼쪽 컬러 바 + 가벼운 박스 */
 .file-section .field-title {
   width: 100% !important;
   font-weight: 500;
@@ -694,17 +663,15 @@
   margin-bottom: 12px;
 
   background: #fff;
-  border-left: 4px solid var(--primary-color, #3f58d4);  /* ⬅ 여기 “선” */
+  border-left: 4px solid var(--primary-color, #3f58d4); 
   padding: 12px 16px;
   border-radius: 4px;
 }
 
-/* 아래쪽 내용(파일 버튼 + 리스트) */
 .file-section .input-field {
   width: 100% !important;
 }
 
-/* 파일 선택 버튼 모양 통일 */
 .file-section input[type="file"]::file-selector-button {
   display: inline-block;
   padding: 8px 15px;
@@ -720,24 +687,16 @@
   margin-right: 14px;
 }
 
-/* 파일 인풋 텍스트는 숨기고, 실제 선택된 파일들은 아래 .file-list/.info-box에만 보이게 */
 .file-section input[type="file"] {
   font-size: 14px;
-  color: transparent;                  /* “선택된 파일 없음” 글자는 아래에서 처리 */
+  color: transparent;
 }
 
-/* 호버 효과 */
 .file-section input[type="file"]::file-selector-button:hover {
   background: var(--light-gray-color, #f8f9fa);
   color: var(--dark-gray-color, #343a40);
 }
 
-/* ============================
-   파일 리스트(알약) 영역
-   기존 .file-list / .info-box 공통 사용
-   ============================ */
-
-/* 파일 내용 뜨는 박스 */
 .file-section .file-list,
 .file-section .info-box[id^="list_"] {
   margin-top: 8px;
@@ -753,7 +712,6 @@
   align-items: flex-start;
 }
 
-/* “선택된 파일 없음” 안내 텍스트 */
 .file-section .file-list .file-empty,
 .file-section .info-box[id^="list_"]:not(:has(.file-pill)) {
   color: var(--gray-color,#868e96);
@@ -762,7 +720,6 @@
   align-items: center;
 }
 
-/* 알약(파일 하나) */
 .file-section .file-pill {
   display: inline-flex;
   align-items: center;
@@ -784,7 +741,6 @@
   max-width: 260px;
 }
 
-/* X 버튼 */
 .file-section .file-remove-btn,
 .file-section .btn-delete-file {
   background: none;
@@ -874,7 +830,6 @@
                               </div>
                         </div>
                         
-                        <%-- [★★ 수정 1-2 ★★] 신청인 주소: input -> div.readonly-field --%>
                         <div class="form-group">
                               <label class="field-title">주소</label>
                               <div class="input-field">
@@ -915,7 +870,6 @@
                                   </div>
                         </div>
                         
-                        <%-- [★★ 수정 1-3 ★★] 사업장 주소: 3개 input -> 1개 div.readonly-field --%>
                         <div class="form-group">
                               <label class="field-title">사업장 주소</label>
                               <div class="input-field">
@@ -926,7 +880,6 @@
                         </div>
                    </div>
                    
-                   <%-- (JSTL 스캔 로직은 변경 없음) --%>
                    <c:set var="earlyReturnTerm" value="${null}" />
                    <c:if test="${not empty applicationDTO.list}">
                          <c:forEach var="term" items="${applicationDTO.list}">
@@ -1112,16 +1065,11 @@
                               <div class="form-group">
 								    <label class="field-title" for="child-name">자녀 이름</label>
 								    
-								    <%-- .input-field 하나로 통합하고, 내부를 flex로 변경 --%>
 								    <div class="input-field" style="display: flex; align-items: center; gap: 15px;">
 								        
-								        <%-- 1. 자녀 이름 입력칸 (flex-grow: 1로 설정) --%>
 								        <input type="text" id="child-name" name="childName" value="${applicationDTO.childName}" style="flex-grow: 1;">
-								        
-								        <%-- 2. 출산 전 체크박스 (flex-shrink: 0로 설정) --%>
 								        <div class="checkbox-group" style="flex-shrink: 0; white-space: nowrap;">
 								            
-								            <%-- [요청 1 반영] childName이 비어있으면 'checked' --%>
 								            <input type="checkbox" id="before-birth-chk" style="transform: scale(1.2);" ${empty applicationDTO.childName ? 'checked' : ''}>
 								            
 								            <label for="before-birth-chk" style="font-weight: 500; color: var(--primary-color);">
@@ -1138,9 +1086,7 @@
                                          <input type="date" id="birth-date" name="childBirthDate" value="${applicationDTO.childBirthDate}">
                                     </div>
                               </div>
-                              
-                              
-                              <%-- [★★ 수정 1-4 ★★] 자녀 주민번호 폼 그룹 수정 --%>
+
                               <div class="form-group">
                                     <label class="field-title" for="child-rrn-a">자녀 주민등록번호</label>
                                      <div class="input-field"
@@ -1195,16 +1141,13 @@
                               <input type="hidden" name="centerId" id="centerId" value="${applicationDetailDTO.centerId}">
                         </div>
 
-<!-- 증빙서류 첨부 섹션 -->
 <div class="form-section file-section">
     <h2>증빙서류 첨부</h2>
 
-    <%-- 1) 육아휴직 확인서 --%>
     <div class="form-group">
         <label class="field-title">육아휴직 확인서</label>
         <div class="input-field">
 
-            <%-- 숨겨진 실제 input (여기에서만 파일 선택) --%>
             <input type="file"
                    id="file-input-confirm"
                    accept=".pdf,.jpg,.jpeg,.png,.gif,.hwp,.zip"
@@ -1216,10 +1159,7 @@
                     id="btn-confirm-add">
                 파일 선택
             </button>
-
-            <%-- 선택된 파일 목록 (알약 리스트) --%>
             <div class="file-list" id="list-confirm">
-                <%-- 기존 저장된 CONFIRM 파일들을 pill로 렌더링 --%>
                 <c:set var="confirmCount" value="0" />
                 <c:if test="${not empty applicationDetailDTO.files}">
                     <c:forEach var="file" items="${applicationDetailDTO.files}">
@@ -1249,11 +1189,9 @@
         </div>
     </div>
 
-    <%-- 2) 기타 증빙서류 --%>
     <div class="form-group">
         <label class="field-title">첨부파일</label>
         <div class="input-field">
-            <%-- 숨겨진 실제 input --%>
             <input type="file"
                    id="file-input-other"
                    accept=".pdf,.jpg,.jpeg,.png,.gif,.hwp,.zip"
@@ -1267,7 +1205,6 @@
             </button>
 
             <div class="file-list" id="list-other">
-                <%-- 기존 저장된 OTHER 파일들 pill 렌더링 --%>
                 <c:set var="otherCount" value="0" />
                 <c:if test="${not empty applicationDetailDTO.files}">
                     <c:forEach var="file" items="${applicationDetailDTO.files}">
@@ -1337,8 +1274,7 @@
                                          반환해야 합니다. 또한, 추가적인 반환금액이 발생할 수 있으며 경우에 따라서는 형사 처벌도 받을 수 있습니다.</p>
                               </div>
                         </div>
-                        
-                        <%-- [★★ 수정 3-2 ★★] 어색한 체크박스 위치 수정 (인라인 스타일 제거) --%>
+
                         <div class="checkbox-group"
                            style="justify-content: center; margin-top: 20px;">
                               <input type="checkbox" id="agree-notice" name="agreeNotice">
@@ -1367,96 +1303,78 @@
     <footer class="footer">
       <p>&copy; 2025 육아휴직 서비스. All Rights Reserved.</p>
     </footer>
-    <!-- ▼▼▼ [수정] 폼 검토하기 툴팁 시스템 (CSS, HTML, JS) ▼▼▼ -->
 
-<!-- ▼▼▼ [수정] 폼 검토하기 툴팁 시스템 (CSS, HTML, JS) ▼▼▼ -->
-
-<!-- 1. 툴팁 가이드용 CSS -->
 <style>
 	#start-review-btn {
-    /* 1. 모양: 동그란 물음표 아이콘 */
     width: 36px;
     height: 36px;
-    border-radius: 50%; /* 원으로 만들기 */
+    border-radius: 50%;
     border: none;
-    background-color: #3f58d4; /* 파란색 배경 */
-    color: white; /* 흰색 '?' */
+    background-color: #3f58d4;
+    color: white; 
     font-size: 22px;
     font-weight: bold;
     cursor: pointer;
-    
-    /* 2. 위치: 오른쪽 상단 고정 */
-    position: absolute;
-    top: 25px;  /* 상단에서의 거리 (h1과 맞춤) */
-    right: 30px; /* 우측에서의 거리 */
-    z-index: 100; /* 다른 요소들 위에 표시 */
 
-    /* 3. '?' 글자 정중앙 정렬 */
+    position: absolute;
+    top: 25px; 
+    right: 30px;
+    z-index: 100;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    line-height: 1; /* 글자 세로 정렬을 위함 */
+    line-height: 1; 
 }
 
 #start-review-btn:hover {
-    background-color: #0056b3; /* 마우스 오버 시 색상 */
+    background-color: #0056b3; 
 }
 #start-review-btn::after {
-    content: '폼 작성 안내사항'; /* 툴팁에 표시될 텍스트 */
+    content: '폼 작성 안내사항'; 
     position: absolute;
-    top: 48px; /* 버튼 높이 36px + 화살표 5px + 여백 7px */
-    right: 0; /* 버튼 오른쪽에 정렬 */
+    top: 48px;
+    right: 0;
     
-    background-color: #333; /* 검정 배경 */
-    color: white; /* 흰색 글씨 */
+    background-color: #333;
+    color: white;
     padding: 6px 10px;
     border-radius: 4px;
-    z-index: 101; /* 폼 검토 툴팁보다 위에 표시 */
-    
-    /* 폰트 스타일 리셋 (버튼의 'i' 스타일 상속 방지) */
+    z-index: 101; 
     font-size: 13px; 
     font-weight: normal;
     font-style: normal;
     font-family: Arial, sans-serif;
-    white-space: nowrap; /* 줄바꿈 방지 */
-    
-    /* 숨김/표시 트랜지션 */
+    white-space: nowrap;
     visibility: hidden;
     opacity: 0;
     transition: opacity 0.2s ease;
 }
 
-/* 툴팁 화살표 (::before) */
 #start-review-btn::before {
     content: '';
     position: absolute;
-    top: 42px; /* 버튼 높이 36px + 여백 6px (텍스트 박스보다 6px 위에) */
-    right: 13px; /* 버튼 중앙 (너비 36px/2 - 화살표폭 5px) = 13px */
+    top: 42px; 
+    right: 13px; 
     
     border-width: 5px;
     border-style: solid;
-    border-color: transparent transparent #333 transparent; /* 위쪽을 가리키는 삼각형 */
+    border-color: transparent transparent #333 transparent; 
     z-index: 101;
 
-    /* 숨김/표시 트랜지션 */
     visibility: hidden;
     opacity: 0;
     transition: opacity 0.2s ease;
 }
 
-/* 'i' 버튼에 마우스 호버 시 툴팁과 화살표 표시 */
 #start-review-btn:hover::before,
 #start-review-btn:hover::after {
     visibility: visible;
     opacity: 1;
 }
 
-/* 중요: 버튼의 position: absolute 기준점이 될 
-   .content-wrapper에 이 스타일이 꼭 필요합니다! 
-*/
 .content-wrapper {
     position: relative;
-    /* .content-wrapper의 기존 padding이나 width는 그대로 둡니다 */
 }
     #review-overlay {
         position: fixed;
@@ -1476,14 +1394,13 @@
         color: white;
         padding: 15px 20px;
         border-radius: 8px;
-        z-index: 10000; /* 오버레이와 하이라이트보다 위에 */
+        z-index: 10000; 
         display: none;
         width: 320px;
         max-width: 90%;
         box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     }
 
-    /* 툴팁 꼬리 (방향 자동) */
     #review-tooltip::after {
         content: '';
         position: absolute;
@@ -1510,7 +1427,7 @@
     }
     
     #review-tooltip-content strong {
-        color: #55d9b1; /* 강조 색상 */
+        color: #55d9b1; 
     }
 
     #review-tooltip-nav {
@@ -1532,33 +1449,22 @@
         background: #aaa;
     }
 
-    /* ▼▼▼ [수정] .form-section 강조 스타일 (문제 1: 빛나는 패딩) ▼▼▼ */
     div.form-section.review-highlight {
         position: relative; 
         z-index: 9999;
-        background: #ffffff; /* 1. DIV 자체를 하얗게 */
+        background: #ffffff;
         border-radius: 12px; 
         transition: all 0.2s ease-in-out;
-        
-        /* [문제 1 수정] 
-           box-shadow를 중첩하여 '빛나는 패딩' 효과 구현
-           - 1. 8px짜리 하얀색(패딩) 그림자
-           - 2. 10px짜리 파란색(테두리) 그림자 (하얀 그림자 밖으로 2px 보임)
-        */
         box-shadow: 0 0 0 25px #ffffff, 0 0 0 10px #007bff;
     }
     
-    /* ▼▼▼ [수정] 중첩 하이라이트 방지 (문제 2) ▼▼▼ */
-    /* 하이라이트된 섹션 내부의 자식 섹션은 다시 원래대로 돌림 */
     div.form-section.review-highlight > div.form-section {
-        background: none; /* 배경색 없음 */
-        border-radius: 0; /* 둥근 모서리 없음 */
-        box-shadow: none; /* [문제 2 수정] 부모로부터 받은 box-shadow 제거 */
+        background: none; 
+        border-radius: 0; 
+        box-shadow: none; 
     }
-    /* ▲▲▲ [수정] 여기까지 ▲▲▲ */
 </style>
 
-<!-- 2. 툴팁 가이드용 HTML -->
 <div id="review-overlay"></div>
 <div id="review-tooltip">
     <div id="review-tooltip-content"></div>
@@ -1571,14 +1477,11 @@
     </div>
 </div>
 
-<!-- 3. 툴팁 가이드용 JavaScript (jQuery 필요) -->
 <script>
 $(document).ready(function() {
     
-    // 1-1. 기본 대상 목록 (h2, h3)을 배열로 변환
     let reviewTargets = $('.form-section h2, .form-section h3').toArray();
     
-    // 1-2. 기본 툴팁 내용
     let tooltips = [
         "**신청인 정보**<br>회원님의 가입 정보를 기반으로 자동 입력됩니다. 수정이 필요한 경우, '회원정보 수정' 메뉴를 이용해주세요.",
         "**사업장 정보**<br>회원님이 '육아휴직 확인서'를 통해 승인받은 사업장의 정보입니다.",
@@ -1591,7 +1494,6 @@ $(document).ready(function() {
         "**부정수급 안내**<br>중요 안내사항입니다. 내용을 반드시 읽고, 동의하시면 하단의 체크박스를 선택해주세요. 이 체크박스는 신청서 제출/수정을 위한 필수 항목입니다."
     ];
 
- // 1-3. "급여 신청 기간" h2의 인덱스 찾기
     let h2_급여 = $('h2:contains("급여 신청 기간")');
     let insertIndex = -1;
     
@@ -1599,13 +1501,12 @@ $(document).ready(function() {
         let h2_element = h2_급여[0];
         for (let i = 0; i < reviewTargets.length; i++) {
             if (reviewTargets[i] === h2_element) {
-                insertIndex = i + 1; // "급여 신청 기간" h2 *다음* 인덱스
+                insertIndex = i + 1; 
                 break;
             }
         }
     }
 
-    // 1-4. 찾은 인덱스에 "조기복직" 툴팁과 대상(label) 삽입
     if (insertIndex > -1) {
         let checkboxLabel = $('label[for="early-return-chk"]');
         if (checkboxLabel.length > 0) {
@@ -1623,7 +1524,6 @@ $(document).ready(function() {
     let currentStep = -1;
     let lastHighlightedSection = null;
 
-    // 2. '폼 검토하기' 버튼 클릭 이벤트
     $('#start-review-btn').on('click', function() {
         if (reviewTargets.length === 0 || tooltips.length === 0) {
             alert('검토할 항목이 없습니다.');
@@ -1634,40 +1534,32 @@ $(document).ready(function() {
         showTooltip(currentStep);
     });
 
-    // ▼▼▼ [수정] 3. "다음" 버튼 이벤트 (기존과 동일) ▼▼▼
     $('#review-next').on('click', function() {
         if (currentStep < reviewTargets.length - 1) {
             currentStep++;
             showTooltip(currentStep);
         } else {
-            // 마지막 단계에서 "완료" 버튼을 누르면 종료
             endReview();
         }
     });
 
-    // ▼▼▼ [추가] 3-B. "이전" 버튼 이벤트 ▼▼▼
     $('#review-prev').on('click', function() {
         if (currentStep > 0) {
             currentStep--;
             showTooltip(currentStep);
         }
     });
-    // ▲▲▲ [추가] 3-B. "이전" 버튼 이벤트 (여기까지) ▲▲▲
 
-
-    // 4. 툴팁 '종료' 및 오버레이 클릭 이벤트
     $('#review-close, #review-overlay').on('click', function() {
         endReview();
     });
 
-    // 5. 툴팁 보여주기 함수
     function showTooltip(index) {
         if (index >= reviewTargets.length) {
             endReview();
             return;
         }
 
-        // 1. 하이라이트 처리
         const targetElement = $(reviewTargets[index]);
         const newSection = targetElement.closest('.form-section');
 
@@ -1677,11 +1569,9 @@ $(document).ready(function() {
         newSection.addClass('review-highlight');
         lastHighlightedSection = newSection; 
 
-        // 2. 툴팁 내용 설정
         let content = tooltips[index].replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         $('#review-tooltip-content').html(content);
 
-        // 3. 위치 계산 로직
         const tooltip = $('#review-tooltip');
         const targetOffset = targetElement.offset();
         const sectionOffset = newSection.offset();
@@ -1716,30 +1606,23 @@ $(document).ready(function() {
             'left': tooltipLeft
         });
 
-        // ▼▼▼ [수정] 4. 네비게이션 버튼 상태 관리 ▼▼▼
-        
-        // "이전" 버튼
         if (index === 0) {
             $('#review-prev').hide();
         } else {
             $('#review-prev').show();
         }
 
-        // "다음" / "완료" 버튼
         if (index === reviewTargets.length - 1) {
             $('#review-next').text('완료');
         } else {
             $('#review-next').text('다음');
         }
-        // ▲▲▲ [수정] 4. 네비게이션 버튼 상태 관리 (여기까지) ▲▲▲
 
-        // 5. 스크롤
         $('html, body').animate({
             scrollTop: targetOffset.top - 100
         }, 300);
     }
 
-    // ▼▼▼ [수정] 6. 투어 종료 함수 (버튼 초기화) ▼▼▼
     function endReview() {
         $('#review-overlay, #review-tooltip').hide();
         
@@ -1749,28 +1632,16 @@ $(document).ready(function() {
         
         currentStep = -1;
         lastHighlightedSection = null;
-        
-        // 버튼 텍스트와 상태 초기화
+
         $('#review-next').text('다음');
         $('#review-prev').hide(); 
     }
 });
 </script>
 
-<!-- ▲▲▲ [수정] 폼 검토하기 툴팁 시스템 ▲▲▲ -->
-
-
-<!-- ▲▲▲ [수정] 폼 검토하기 툴팁 시스템 ▲▲▲ -->
-
-
-<%-- (모달 JSP는 변경 없음) --%>
 <%@ include file="/WEB-INF/views/conponent/centerModal.jsp" %>
 
-<%-- (스크립트는 원본과 100% 동일) --%>
 <script>
-// ─────────────────────────────────────
-// 다음 주소 API (전역 함수)
-// ─────────────────────────────────────
 function execDaumPostcode(prefix) {
   new daum.Postcode({
     oncomplete: function(data) {
@@ -1785,9 +1656,6 @@ function execDaumPostcode(prefix) {
   }).open();
 }
 
-// ─────────────────────────────────────
-// 은행 코드 로딩 (jQuery)
-// ─────────────────────────────────────
 $(function () {
   const $sel = $('#bankCode');
   const selected = $sel.data('selected'); 
@@ -1799,9 +1667,6 @@ $(function () {
   });
 });
 
-// ─────────────────────────────────────
-// (신규 신청) 페이지 접근 권한 확인
-// ─────────────────────────────────────
 $(function () {
     const confirmNumber = "${confirmNumber}";
     const isUpdatePage = ${not empty applicationDetailDTO}; 
@@ -1833,18 +1698,12 @@ $(function () {
                 url: `${pageContext.request.contextPath}/user/check/\${confirmNumberForUpdate}/complete`, // 요청하신 API 엔드포인트
                 dataType: "json",
                 success: function(response) {
-                    // API 응답에서 success가 false이면 (즉, 완료된 신청이면)
                     if (response.success === false) { 
-                        // 1. 메시지 띄우기
                         alert(response.message); 
-                        // 2. redirectUrl로 이동
                         window.location.href = contextPath + (response.redirectUrl || "/user/main");
                     }
-                    // response.success === true 이면 (완료되지 않은 신청이면)
-                    // 아무 일도 하지 않고 페이지에 머무릅니다.
                 },
                 error: function(xhr, status, error) {
-                    // API 호출 자체에 실패한 경우 (서버 오류 등)
                     console.error("Complete check failed:", status, error);
                     alert("신청서 완료 상태 확인 중 오류가 발생했습니다. 관리자에게 문의하세요.");
                 }
@@ -1853,17 +1712,12 @@ $(function () {
     }
 });
 
-
-// ─────────────────────────────────────
-// 페이지 로드 후 실행되는 메인 스크립트
-// ─────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function () {
 	
 	const isUpdatePage = ${not empty applicationDetailDTO};
-    let globalApplicationFileId = null; // Master fileId for this application
+    let globalApplicationFileId = null; 
 
     if (isUpdatePage) {
-        // 페이지 로드 시, 기존 파일에서 마스터 fileId를 찾아 저장
         const anyExistingFileBtn = document.querySelector('.btn-delete-file[data-is-existing="true"]');
         if (anyExistingFileBtn) {
             globalApplicationFileId = anyExistingFileBtn.dataset.fileId;
@@ -1885,13 +1739,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	(function (){
 
-		  // ─────────────────────────────────────
-		  // 페이지 상태 (신규/수정 여부)
-		  // ─────────────────────────────────────
 		  const isUpdatePage = ${not empty applicationDetailDTO};
-		  let globalApplicationFileId = null; // 이 신청서의 master fileId
+		  let globalApplicationFileId = null; 
 
-		  // 수정 페이지라면, 기존 파일에서 fileId 한 번 뽑아두기
 		  if (isUpdatePage) {
 		    const anyExistingBtn = document.querySelector('.btn-delete-file[data-is-existing="true"]');
 		    if (anyExistingBtn) {
@@ -1899,16 +1749,9 @@ document.addEventListener('DOMContentLoaded', function () {
 		    }
 		  }
 
-		  // ▼ 이미 위쪽에 있던 escapeHTML, onlyDigits, withCommas 등 유틸/검증/기간 스크립트는 그대로 유지 ▼
-		  // (그 부분은 건드리지 말고, "파일 관련" 부분만 이걸로 바꾸면 됨)
-
-
-		  /* ================================
-		   *  1. 파일 저장소 (새로 추가되는 파일)
-		   * ================================ */
 		  const FILE_STORE = {
-		    CONFIRM: [],  // 육아휴직 확인서
-		    OTHER: []     // 기타 증빙서류
+		    CONFIRM: [],
+		    OTHER: []
 		  };
 
 		  function updateEmptyState(type) {
@@ -1936,7 +1779,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		    );
 		    if (!listEl) return;
 
-		    // 새 파일 알약만 싹 지우고 다시 그림
 		    listEl.querySelectorAll('.file-pill[data-new="true"]').forEach(el => el.remove());
 
 		    const arr = FILE_STORE[type];
@@ -1969,10 +1811,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		    updateEmptyState(type);
 		  }
 
-
-		  /* ================================
-		   *  2. "파일 선택" 버튼 → 숨겨진 input 클릭
-		   * ================================ */
 		  const inputConfirm = document.getElementById('file-input-confirm');
 		  const inputOther   = document.getElementById('file-input-other');
 		  const btnConfirm   = document.getElementById('btn-confirm-add');
@@ -1984,7 +1822,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		      const files = Array.from(this.files || []);
 		      files.forEach(f => FILE_STORE.CONFIRM.push(f));
 		      renderNewFiles('CONFIRM');
-		      this.value = ''; // 같은 파일 다시 선택 가능
+		      this.value = '';
 		    });
 		  }
 
@@ -1998,10 +1836,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		    });
 		  }
 
-
-		  /* ==============================================
-		   *  3. 기존 파일(X) 눌렀을 때 → AJAX로 바로 삭제
-		   * ============================================== */
 		  document.addEventListener('click', function (e) {
 		    const btn = e.target.closest('.btn-delete-file[data-is-existing="true"]');
 		    if (!btn) return;
@@ -2010,7 +1844,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 		    const fileId   = btn.dataset.fileId;
 		    const sequence = btn.dataset.sequence;
-		    const type     = btn.dataset.type; // CONFIRM / OTHER
+		    const type     = btn.dataset.type; 
 
 		    if (!fileId || !sequence) {
 		      alert('파일 정보를 찾을 수 없습니다.');
@@ -2041,14 +1875,9 @@ document.addEventListener('DOMContentLoaded', function () {
 		    });
 		  });
 
-		  // 초기 상태 정리 (기존 파일만 있는 상태에서 '선택된 파일이 없습니다' 숨기기)
 		  updateEmptyState('CONFIRM');
 		  updateEmptyState('OTHER');
 
-
-		  /* ======================================
-		   *  4. 폼 submit 시 AJAX 업로드
-		   * ====================================== */
 		  const form = document.getElementById('main-form');
 
 		  if (form) {
@@ -2056,13 +1885,11 @@ document.addEventListener('DOMContentLoaded', function () {
 		      e.preventDefault();
 		      const submitter = e.submitter;
 
-		      // 기존 검증 함수 그대로 사용
 		      if (!validateAndFocus()) {
 		        return;
 		      }
 		      if (submitter) submitter.disabled = true;
 
-		      // [AJAX] 3. 파일 데이터 준비 (새 구조)
 		      const formData = new FormData();
 		      let hasFiles = false;
 
@@ -2078,12 +1905,9 @@ document.addEventListener('DOMContentLoaded', function () {
 		        hasFiles = true;
 		      });
 
-		      // 4. 파일 업로드 분기 (기존 로직 재사용)
 		      if (hasFiles) {
 		        if (isUpdatePage) {
-		          // A. 수정 페이지
 		          if (globalApplicationFileId) {
-		            // 기존 fileId 있음 → append
 		            formData.append('fileId', globalApplicationFileId);
 
 		            $.ajax({
@@ -2094,7 +1918,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		              contentType: false,
 		              success: function (response) {
 		                if (response && response.ok) {
-		                  processAndSubmitForm(submitter); // 기존 함수 그대로 사용
+		                  processAndSubmitForm(submitter); 
 		                } else {
 		                  alert('파일 추가에 실패했습니다.');
 		                  if (submitter) submitter.disabled = false;
@@ -2108,7 +1932,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		            });
 
 		          } else {
-		            // 수정 페이지인데 최초 업로드 → upload
 		            $.ajax({
 		              url: '${pageContext.request.contextPath}/file/upload',
 		              type: 'POST',
@@ -2136,7 +1959,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		            });
 		          }
 		        } else {
-		          // B. 신규 작성 페이지
 		          $.ajax({
 		            url: '${pageContext.request.contextPath}/file/upload',
 		            type: 'POST',
@@ -2164,20 +1986,14 @@ document.addEventListener('DOMContentLoaded', function () {
 		          });
 		        }
 		      } else {
-		        // 새 파일이 없으면 바로 폼 처리/제출
 		        processAndSubmitForm(submitter);
 		      }
 
-		    }); // form submit end
+		    }); 
 		  }
-
-		  // ↓ 이하 신청 기간 / 조기복직 / 검증 / 센터 모달 등 기존 스크립트는 그대로 유지 ↓
 
 	})();
 
-  // ─────────────────────────────────────
-  // 공통 유틸 함수
-  // ─────────────────────────────────────
   function withCommas(s){ return String(s).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
   function onlyDigits(s){ return (s||'').replace(/[^\d]/g,''); }
 
@@ -2193,7 +2009,7 @@ document.addEventListener('DOMContentLoaded', function () {
            if (/\d/.test(el.value[i])) cur++;
            if (cur>=digitsBefore){ pos=i+1; break; }
       }
-      if (pos === 0 && el.value.length > 0) pos = el.value.length; // 맨 끝으로 이동
+      if (pos === 0 && el.value.length > 0) pos = el.value.length; 
       el.setSelectionRange(pos,pos);
     }
     el.addEventListener('keydown', e=>{
@@ -2243,32 +2059,18 @@ document.addEventListener('DOMContentLoaded', function () {
       el.value = (el.value || '').replace(/[^\d]/g, '');
     });
   }
-//파일명만 추출
   function extractFileName(raw) {
     if (!raw) return '';
 
-    // File 객체인 경우
     if (raw instanceof File) return raw.name;
-
-    // 나머지는 문자열로 보고 처리
     const s = String(raw);
-    // / 또는 \ 기준으로 잘라서 마지막만
     const parts = s.split(/[\\/]/);
     return parts[parts.length - 1];
   }
   
-  
-  // ─────────────────────────────────────
-  // 변수 선언
-  // ─────────────────────────────────────
-  
   const form = document.getElementById('main-form'); 
   const agreeChk = document.getElementById('agree-notice');
   const submitButton = document.querySelector('button[name="action"][value="submit"], button[name="action"][value="update"]');
-
-  // ─────────────────────────────────────
-  // 입력 필드 바인딩(숫자/서식)
-  // ─────────────────────────────────────
   const wageEl = document.getElementById('regularWage');
   if (wageEl) allowDigitsOnlyAndCommasDisplay(wageEl, 19);
 
@@ -2296,26 +2098,18 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
   
-  // ─────────────────────────────────────
-  // 자녀 주민등록번호 
-  // ─────────────────────────────────────
   const rrnAEl = document.getElementById('child-rrn-a');
   const rrnBEl = document.getElementById('child-rrn-b');
   bindDigitsOnly(rrnAEl);
   bindDigitsOnly(rrnBEl);
   
-//─────────────────────────────────────
-    // [신규] 출산 전 체크박스 로직
-    // ─────────────────────────────────────
-    const beforeBirthChk = document.getElementById('before-birth-chk');
-    const childNameEl = document.getElementById('child-name'); // 자녀 이름 input
-    // const rrnAEl, rrnBEl는 상단에 이미 선언되어 있음
+  const beforeBirthChk = document.getElementById('before-birth-chk');
+  const childNameEl = document.getElementById('child-name'); 
 
     if (beforeBirthChk && childNameEl && rrnAEl && rrnBEl) {
        
        function toggleChildFields(isDisabled) {
            if (isDisabled) {
-               // 1. 비활성화 및 값 비우기
                childNameEl.disabled = true;
                rrnAEl.disabled = true;
                rrnBEl.disabled = true;
@@ -2324,7 +2118,6 @@ document.addEventListener('DOMContentLoaded', function () {
                rrnAEl.value = '';
                rrnBEl.value = '';
            } else {
-               // 2. 활성화
                childNameEl.disabled = false;
                rrnAEl.disabled = false;
                rrnBEl.disabled = false;
@@ -2335,13 +2128,9 @@ document.addEventListener('DOMContentLoaded', function () {
            toggleChildFields(this.checked);
        });
        
-       // (페이지 로드 시 초기 상태 체크)
        toggleChildFields(beforeBirthChk.checked);
     }
     
-  // ─────────────────────────────────────
-  // 자녀정보 처리
-  // ─────────────────────────────────────
   const hidden    = document.getElementById('childBirthDateHidden');
   const birth     = document.getElementById('birth-date');
   const rrnHidden = document.getElementById('child-rrn-hidden');
@@ -2369,14 +2158,8 @@ document.addEventListener('DOMContentLoaded', function () {
   setHiddenFromBirth(); 
   fillRrnFromBirth();
 
-  // ─────────────────────────────────────
-  // 제출 버튼 활성화
-  // ─────────────────────────────────────
   if (submitButton) submitButton.disabled = false;
   
-  // ─────────────────────────────────────
-  // JSTL로 미리 로드된 항목들에 콤마 서식 적용
-  // ─────────────────────────────────────
   const preloadedPayments = document.querySelectorAll('#dynamic-forms-container .period-company-payment');
   preloadedPayments.forEach(inp => {
         allowDigitsOnlyAndCommasDisplay(inp, 19);
@@ -2387,9 +2170,6 @@ document.addEventListener('DOMContentLoaded', function () {
             allowDigitsOnlyAndCommasDisplay(inp, 19);
   });
 
-  // ─────────────────────────────────────
-  // 폼 유효성 검사 함수 (지난 요청사항 포함)
-  // ─────────────────────────────────────
   function validateAndFocus() {
 	const beforeBirthChk = document.getElementById('before-birth-chk');
 	const isBeforeBirth = beforeBirthChk && beforeBirthChk.checked;
@@ -2421,7 +2201,6 @@ document.addEventListener('DOMContentLoaded', function () {
          return false;
     }
     
-    // (지난 요청) 5. 급여 신청 기간 선택 확인
     const checkedPeriodBoxes = document.querySelectorAll('.period-checkbox:checked');
     if (checkedPeriodBoxes.length === 0) {
          alert('신청할 급여 기간을 1개 이상 선택해주세요.');
@@ -2465,25 +2244,16 @@ document.addEventListener('DOMContentLoaded', function () {
          return false;
     }
 
-    return true; // 모든 검사 통과
+    return true; 
   }
 
-//─────────────────────────────────────
-    // [★★ 요청사항 반영 ★★] 폼 제출 이벤트 리스너 수정 (AJAX 파일 선처리)
-    // ─────────────────────────────────────
-
-    // 1. 폼 제출 전, 필드 정리 및 전송 준비 (기존 로직을 별도 함수로 분리)
     function processAndSubmitForm(submitter) {
       try {
-          // --- (기존 2~5번 로직 시작) ---
-          // 2. 체크된 항목을 찾아서 Spring List 바인딩에 맞게 'name' 속성을 부여합니다.
-          let newPeriodIndex = 0; // 0-based index for Spring list binding
+          let newPeriodIndex = 0; 
           const periodRows = form.querySelectorAll('#dynamic-forms-container .dynamic-form-row');
 
           periodRows.forEach(row => {
               const checkbox = row.querySelector('.period-checkbox');
-              
-              // 이 행의 모든 관련 input을 class로 찾습니다.
               const startDateInput = row.querySelector('.period-start-date-hidden');
               const endDateInput = row.querySelector('.period-end-date-hidden');
               const termIdInput = row.querySelector('.period-term-id');
@@ -2491,7 +2261,6 @@ document.addEventListener('DOMContentLoaded', function () {
               const companyInput = row.querySelector('.period-company-payment');
 
               if (checkbox && checkbox.checked) {
-                  // 2-1. 이 행이 '체크된' 경우:
                   if (startDateInput) {
                       startDateInput.disabled = false;
                       startDateInput.name = 'list[' + newPeriodIndex + '].startMonthDate';
@@ -2506,17 +2275,16 @@ document.addEventListener('DOMContentLoaded', function () {
                   }
                   if (govInput) {
                       govInput.disabled = false;
-                      govInput.value = onlyDigits(govInput.value); // 콤마 제거
+                      govInput.value = onlyDigits(govInput.value);
                       govInput.name = 'list[' + newPeriodIndex + '].govPayment';
                   }
                   if (companyInput) {
                       companyInput.disabled = false;
-                      companyInput.value = onlyDigits(companyInput.value); // 콤마 제거
+                      companyInput.value = onlyDigits(companyInput.value);
                       companyInput.name = 'list[' + newPeriodIndex + '].companyPayment';
                   }
                   newPeriodIndex++;
               } else {
-                  // 2-2. 이 행이 '체크되지 않은' 경우:
                   if (startDateInput) startDateInput.removeAttribute('name');
                   if (endDateInput) endDateInput.removeAttribute('name');
                   if (termIdInput) termIdInput.removeAttribute('name');
@@ -2524,37 +2292,26 @@ document.addEventListener('DOMContentLoaded', function () {
                   if (companyInput) companyInput.removeAttribute('name');
               }
           });
-          // --- [★★ 신규 로직 끝 ★★] ---
-
-          // 3. '신청 기간' 외의 'disabled' 필드를 활성화합니다.
           const otherDisabledElements = form.querySelectorAll('input:disabled, select:disabled, textarea:disabled');
           otherDisabledElements.forEach(el => {
-              // 'dynamic-forms-container' *내부*에 있는 필드는 위에서 처리했으므로 건드리지 않습니다.
               if (!el.closest('#dynamic-forms-container')) {
                   el.disabled = false;
               }
           });
           
-          // 4. '신청 기간' 외의 콤마/서식 필드를 처리합니다.
           if (wageEl) wageEl.value = onlyDigits(wageEl.value);
           if (weeklyEl) weeklyEl.value = onlyDigits(weeklyEl.value);
           if (brnEl) brnEl.value = onlyDigits(brnEl.value);
           if (accEl) accEl.value = onlyDigits(accEl.value);
           
-          // 5. 자녀 주민번호 합치기
           if (rrnHidden) {
-	                // ▼▼▼ [수정] '출산 전' 체크박스 확인 ▼▼▼
 	                const beforeBirthChk = document.getElementById('before-birth-chk');
 	                const isBeforeBirth = beforeBirthChk && beforeBirthChk.checked;
 	                
 	                if (isBeforeBirth) {
-	                    // '출산 전'이 체크된 경우, 주민번호 값을 전송하지 않음
 	                    rrnHidden.removeAttribute('name');
 	                    rrnHidden.value = '';
 	                } else {
-	                // ▲▲▲ [수정] '출산 전' 체크박스 확인 끝 ▲▲▲
-
-	                    // (기존 else 내부 로직)
 	                    const a = onlyDigits(rrnAEl ? rrnAEl.value : '');
 	                    const b = onlyDigits(rrnBEl ? rrnBEl.value : '');
 	                    if (a.length === 6 && b.length === 7) {
@@ -2569,11 +2326,9 @@ document.addEventListener('DOMContentLoaded', function () {
 	                            rrnHidden.removeAttribute('name');
 	                        }
 	                    }
-	                } // [수정] '출산 전' if-else 블록의 닫는 괄호
+	                } 
 	            }
-          // --- (기존 2~5번 로직 끝) ---
-          
-          // 6. 성공 알림
+
           const action = (submitter && submitter.name === 'action') ? submitter.value : null;
           if (action === 'submit') {
               alert('신청서가 저장되었습니다');
@@ -2581,20 +2336,15 @@ document.addEventListener('DOMContentLoaded', function () {
               alert('신청서가 수정되었습니다');
           }
 
-          // 7. 폼을 실제로 제출합니다.
-          // (form.submit()은 'submit' 이벤트를 다시 트리거하지 않으므로 무한 루프에 빠지지 않습니다)
           form.submit();
 
       } catch (err) {
           console.error("Form processing error:", err);
           alert("폼 제출 처리 중 오류가 발생했습니다.");
-          if (submitter) submitter.disabled = false; // 오류 시 버튼 복원
+          if (submitter) submitter.disabled = false;
       }
     }
-  
-  // ─────────────────────────────────────
-  // Enter로 인한 오제출 방지 (변경 없음)
-  // ─────────────────────────────────────
+
   if (form) {
     form.addEventListener('keydown', function (e) {
       if (e.key !== 'Enter') return;
@@ -2610,9 +2360,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
   
-  // ─────────────────────────────────────
-  // 센터 찾기 모달 처리 (변경 없음)
-  // ─────────────────────────────────────
   const findCenterBtn = document.getElementById('find-center-btn');
   const centerModal = document.getElementById('center-modal');
   const closeModalBtn = centerModal.querySelector('.close-modal-btn');
@@ -2669,12 +2416,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // ─────────────────────────────────────
-  // [★★ 신청 기간 / 조기복직 로직 (요청사항 통합) ★★]
-  // (기존 '신청 기간 체크박스 로직' 섹션을 대체합니다)
-  // ─────────────────────────────────────
-  
-  // --- [1. 신규] DOM 요소 캐싱 ---
   const totalSumDisplay = document.getElementById('total-sum-display');
   const periodCheckboxes = document.querySelectorAll('.period-checkbox');
   const startDateField = document.getElementById('start-date');
@@ -2682,60 +2423,51 @@ document.addEventListener('DOMContentLoaded', function () {
   const earlyReturnChk = document.getElementById('early-return-chk');
   const earlyReturnNotice = document.getElementById('early-return-notice');
 
-  // --- [2. 신규] 헬퍼 함수: 날짜 계산 (UTC) ---
-
-  // [★★ 요청사항 2에 필요한 헬퍼 함수 ★★]
-  // 'yyyy-MM-dd' 문자열에서 하루를 뺀 'yyyy-MM-dd' 문자열 반환
   function getPreviousDay(dateStr) {
        if (!dateStr) return '';
        try {
            const [y, m, d] = dateStr.split('-').map(Number);
-           const date = new Date(Date.UTC(y, m - 1, d)); // Use UTC
-           date.setUTCDate(date.getUTCDate() - 1); // Subtract one day
-           return date.toISOString().split('T')[0]; // Format back to 'yyyy-mm-dd'
+           const date = new Date(Date.UTC(y, m - 1, d));
+           date.setUTCDate(date.getUTCDate() - 1); 
+           return date.toISOString().split('T')[0];
        } catch (e) {
            console.error('Error getting previous day:', e);
-           return dateStr; // Fallback
+           return dateStr;
        }
   }
 
-  // 'yyyy-MM-dd' 형식의 두 날짜 사이의 일수 (양끝 포함)
   function daysBetween(dateStr1, dateStr2) {
          if (!dateStr1 || !dateStr2) return 0;
          try {
-             // new Date('yyyy-mm-dd')는 타임존 오류를 일으킬 수 있으므로 UTC로 파싱
              const [y1, m1, d1] = dateStr1.split('-').map(Number);
              const [y2, m2, d2] = dateStr2.split('-').map(Number);
-             const date1 = Date.UTC(y1, m1 - 1, d1); // 월은 0부터 시작
+             const date1 = Date.UTC(y1, m1 - 1, d1); 
              const date2 = Date.UTC(y2, m2 - 1, d2);
              
-             if (date2 < date1) return 0; // 종료일이 시작일보다 빠르면 0
+             if (date2 < date1) return 0; 
              
              const diffTime = date2 - date1;
              const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
              
-             return diffDays + 1; // +1 (시작일과 종료일 포함)
+             return diffDays + 1; 
          } catch(e) {
              console.error("Date calculation error:", e, dateStr1, dateStr2);
              return 0;
          }
   }
 
-  // --- [3. 신규] 헬퍼 함수: 마지막 선택 행 찾기 ---
   function getLastSelectedRow() {
          const checkedBoxes = document.querySelectorAll('.period-checkbox:checked');
          if (checkedBoxes.length === 0) return null;
          
-         // data-index를 기준으로 정렬
          const indices = Array.from(checkedBoxes).map(cb => parseInt(cb.dataset.index));
          indices.sort((a, b) => a - b);
-         const maxIndex = indices[indices.length - 1]; // 가장 큰 index (마지막 기간)
+         const maxIndex = indices[indices.length - 1]; 
          
          const lastBox = document.querySelector('.period-checkbox[data-index="' + maxIndex + '"]');
          return lastBox ? lastBox.closest('.dynamic-form-row') : null;
   }
 
-  // --- [4. 기존] 합계 계산 함수 (변경 없음) ---
   function updateApplicationTotalSum() {
          if (!totalSumDisplay) return;
          let totalSum = 0;
@@ -2753,94 +2485,65 @@ document.addEventListener('DOMContentLoaded', function () {
          totalSumDisplay.textContent = withCommas(totalSum) + ' 원';
   }
 
-  // --- [5. 신규] 헬퍼 함수: 마지막 항목 지급액 재계산 (Req 1, 6) ---
   function recalculateLastPayment() {
-         if (!earlyReturnChk || !earlyReturnChk.checked) return; // 조기복직 상태가 아니면 실행 안함
+         if (!earlyReturnChk || !earlyReturnChk.checked) return; 
 
          const lastRow = getLastSelectedRow();
-         if (!lastRow) return; // 선택된 항목이 없으면 실행 안함
+         if (!lastRow) return;
 
          const govInput = lastRow.querySelector('.period-gov-payment');
          const companyInput = lastRow.querySelector('.period-company-payment');
          const checkbox = lastRow.querySelector('.period-checkbox');
 
-         // JSP에서 data- 속성에 저장해둔 '원본' 금액과 날짜를 가져옴
-         // [★★ 요청 3 반영 ★★] 조기복직 시 govPaymentUpdate가 이미 value에 설정되었을 수 있으나,
-         // 재계산 로직은 항상 'data-original-gov' (순수 원본)을 기준으로 해야 함.
          const originalGov = parseInt(govInput.dataset.originalGov, 10); 
          const originalCompany = parseInt(companyInput.dataset.originalCompany, 10);
-         const periodStartStr = checkbox.dataset.startDate; // 이 기간의 시작일
-         const periodEndStr = checkbox.dataset.endDate;     // 이 기간의 *원본* 종료일
-         
-         // 사용자가 수정한 '육아휴직 종료일' 값을 가져옴
+         const periodStartStr = checkbox.dataset.startDate; 
+         const periodEndStr = checkbox.dataset.endDate; 
          const newEndDateStr = endDateField.value;
 
-         const totalDaysInLastPeriod = daysBetween(periodStartStr, periodEndStr); // 원본 기간의 총 일수
-         const daysOfNewPeriod = daysBetween(periodStartStr, newEndDateStr); // 새 기간의 총 일수
+         const totalDaysInLastPeriod = daysBetween(periodStartStr, periodEndStr); 
+         const daysOfNewPeriod = daysBetween(periodStartStr, newEndDateStr); 
 
-         if (totalDaysInLastPeriod <= 0) { // 분모가 0이 되는 것 방지
+         if (totalDaysInLastPeriod <= 0) { 
              console.error("원본 기간의 총 일수가 0입니다.");
              return;
          }
 
-         // (정부지급액 + 사업장 지급액) / 원본 총 일 수
          const totalOriginalPayment = originalGov + originalCompany;
          const dailyRate = totalOriginalPayment / totalDaysInLastPeriod;
          
-         // (일급 * 새 일수) - 사업장지급액
          let newGovPayment = (dailyRate * daysOfNewPeriod) - originalCompany;
-         
-         // [★★ 요청사항 1 ★★] 10원 단위로 내림 (1원 단위 절사)
          newGovPayment = Math.floor(newGovPayment / 10) * 10;
          
-         if (newGovPayment < 0) newGovPayment = 0; // 정부지급액이 음수가 될 수 없음
-
-         // 계산된 새 금액을 input에 반영 (콤마 포함)
+         if (newGovPayment < 0) newGovPayment = 0;
          govInput.value = withCommas(newGovPayment);
-         
-         // 합계 금액 다시 계산
          updateApplicationTotalSum();
   }
   
-  // --- [6. 신규] 헬퍼 함수: 모든 항목 지급액 원복 ---
-  function resetLastPayment() {
-         // 조기복직 체크 해제 시, 모든 기간의 정부지급액을 원본으로 되돌림
-         // [★★ 요청 3 반영 ★★] 
-         // JSTL이 이미 govPaymentUpdate가 적용된 값을 value에 렌더링했음.
-         // JS가 'recalculate'로 덮어쓰기 전의 값으로 돌아가야 함.
-         //
-         // [차선책]
-         // '조기복직 해제'는 'JSTL이 설정한 조기복직'도 취소하는 것으로 간주.
-         // 무조건 data-original-gov (순수 원본)으로 복구한다. 
-         
+  function resetLastPayment() {    
          periodCheckboxes.forEach(cb => {
              const row = cb.closest('.dynamic-form-row');
              const govInput = row.querySelector('.period-gov-payment');
              if (govInput && govInput.dataset.originalGov) {
                  
                  const originalGov = parseInt(govInput.dataset.originalGov, 10);
-                 
-                 // 현재 값과 순수 원본 값이 다를 경우에만 복구
+
                  if (onlyDigits(govInput.value) != originalGov) {
                       govInput.value = withCommas(originalGov);
                  }
              }
          });
-         
-         // 합계 금액 다시 계산
+
          updateApplicationTotalSum();
   }
 
-  // --- [7. 기존 + 수정] 상단 날짜 필드 업데이트 (Req 2, 4) ---
   function updateDateFieldsFromCheckboxes() {
          const checkedBoxes = document.querySelectorAll('.period-checkbox:checked');
          
          if (checkedBoxes.length === 0) {
-             // (지난 요청) 체크된 박스가 없으면, 시작일/종료일 필드를 빈 값("")으로 설정
              startDateField.value = '';
              endDateField.value = '';
              
-             // [수정] 조기복직 상태면 min/max 제거
              if (earlyReturnChk && earlyReturnChk.checked) {
                  endDateField.removeAttribute('min');
                  endDateField.removeAttribute('max');
@@ -2858,33 +2561,21 @@ document.addEventListener('DOMContentLoaded', function () {
          if (firstBox && lastBox) {
              startDateField.value = firstBox.dataset.startDate;
              
-             // [수정] 조기복직이 *아닐* 때만 마지막 날짜로 자동 설정
-             // [★★ 요청 2 반영 수정 ★★] JSTL이 이미 endDateField.value를 설정했으므로,
-             // 조기복직이 '체크된' 상태로 로드됐다면, 이 값을 덮어쓰지 않아야 함.
              if (!earlyReturnChk || !earlyReturnChk.checked) {
                  endDateField.value = lastBox.dataset.endDate;
              }
              
-             // [수정] 조기복직 상태면 min/max 설정 (Req 4)
              if (earlyReturnChk && earlyReturnChk.checked) {
                  
-                 // [★★ 요청사항 2 ★★]
                  const originalEndDate = lastBox.dataset.endDate;
-                 const maxEndDate = getPreviousDay(originalEndDate); // 종료일 전날 계산
+                 const maxEndDate = getPreviousDay(originalEndDate); 
 
                  endDateField.setAttribute('min', lastBox.dataset.startDate);
-                 // endDateField.setAttribute('max', lastBox.dataset.endDate); // (기존)
-                 endDateField.setAttribute('max', maxEndDate); // [★★ 요청사항 2 수정 ★★]
+                 endDateField.setAttribute('max', maxEndDate);
 
-                 // [★★ 요청 2 반영 수정 ★★]
-                 // JSTL이 설정한 값이 min/max를 벗어날 경우 보정
-                 // (JSTL이 설정한 값은 페이지 로드 시 endDateField.value에 이미 들어있음)
-                 
-                 // 현재 종료일 값이 새 max값을 넘으면 max로 강제
                  if (endDateField.value > maxEndDate) { 
                      endDateField.value = maxEndDate;
                  }
-                 // 현재 종료일 값이 새 min값보다 작으면 min으로 강제
                  if (endDateField.value < lastBox.dataset.startDate) {
                      endDateField.value = lastBox.dataset.startDate;
                  }
@@ -2892,31 +2583,23 @@ document.addEventListener('DOMContentLoaded', function () {
          }
   }
 
-  // --- [8. 기존 + 수정] 기간 체크박스 이벤트 (Req 3, 4) ---
-  // (지난 요청) 체크박스 'change' 이벤트 리스너 (연속 선택)
   periodCheckboxes.forEach(checkbox => {
          checkbox.addEventListener('change', function() {
 
-             // [★★ 요청사항 3 ★★]
-             // 조기복직이 선택된 상태에서 기간 체크박스를 변경하면, 조기복직을 해제합니다.
              if (earlyReturnChk && earlyReturnChk.checked) {
                  earlyReturnChk.checked = false;
-                 // 'change' 이벤트를 수동으로 발생시켜 해제 로직(UI 복구, 금액 원복) 실행
                  earlyReturnChk.dispatchEvent(new Event('change'));
              }
-             // [★★ 요청사항 3 끝 ★★]
 
              const wasChecked = this.checked;
              const currentIndex = parseInt(this.dataset.index);
 
              if (wasChecked) {
-                 // '체크' 시: 0번부터 현재까지 모두 체크
                  for (let i = 0; i <= currentIndex; i++) {
                      const boxToFill = document.querySelector('.period-checkbox[data-index="' + i + '"]');
                      if (boxToFill) boxToFill.checked = true;
                  }
              } else {
-                 // '체크 해제' 시: 현재부터 끝까지 모두 체크 해제
                  periodCheckboxes.forEach(cb => {
                      const cbIndex = parseInt(cb.dataset.index);
                      if (cbIndex >= currentIndex) {
@@ -2925,40 +2608,29 @@ document.addEventListener('DOMContentLoaded', function () {
                  });
              }
              
-             // 상단 날짜 필드 업데이트 (min/max 포함)
              updateDateFieldsFromCheckboxes(); 
-             
-             // [★★ 요청사항 3으로 인해 관련 로직(recalculateLastPayment 등)은 earlyReturnChk.checked가 false가 되어 자동으로 스킵됨 ★★]
-             
-             // 합계는 항상 마지막에 다시 계산
              updateApplicationTotalSum(); 
          });
   });
 
-  // --- [9. 기존] 가로줄 클릭 로직 (변경 없음) ---
-  // (지난 요청) 가로줄 클릭 로직
   const clickableRows = document.querySelectorAll('#dynamic-forms-container .dynamic-form-row');
   clickableRows.forEach(row => {
          row.style.cursor = 'pointer'; 
          row.addEventListener('click', function(e) {
-             // 체크박스 자체를 클릭한 경우는 제외 (이중 동작 방지)
              if (e.target.matches('.period-checkbox')) {
                  return;
              }
              const checkbox = this.querySelector('.period-checkbox');
              if (checkbox) {
                  checkbox.checked = !checkbox.checked;
-                 // 'change' 이벤트를 수동으로 발생시켜 모든 로직(연속선택, 계산 등) 실행
                  checkbox.dispatchEvent(new Event('change'));
              }
          });
   });
   
-  // --- [10. 신규] 조기복직 체크박스 이벤트 (Req 2, 3, 5) ---
   if (earlyReturnChk) {
          earlyReturnChk.addEventListener('change', function() {
              if (this.checked) {
-                 // 1. 조기복직 체크 시
                  const lastRow = getLastSelectedRow();
                  if (!lastRow) {
                      alert('조기복직을 설정하려면 먼저 신청기간을 1개 이상 선택해야 합니다.');
@@ -2966,66 +2638,41 @@ document.addEventListener('DOMContentLoaded', function () {
                      return;
                  }
                  
-                 // (Req 3) 종료일 활성화
                  endDateField.readOnly = false;
-                 
-                 // (Req 2) 안내문구 표시
                  if (earlyReturnNotice) earlyReturnNotice.style.display = 'flex';
                  
-                 // (Req 4) 종료일 범위 제한
                  const lastCheckbox = lastRow.querySelector('.period-checkbox');
 
-                 // [★★ 요청사항 2 ★★]
                  const originalEndDate = lastCheckbox.dataset.endDate;
-                 const maxEndDate = getPreviousDay(originalEndDate); // 종료일 전날 계산
+                 const maxEndDate = getPreviousDay(originalEndDate);
 
                  endDateField.setAttribute('min', lastCheckbox.dataset.startDate);
-                 // endDateField.setAttribute('max', lastBox.dataset.endDate); // (기존)
-                 endDateField.setAttribute('max', maxEndDate); // [★★ 요청사항 2 수정 ★★]
+                 endDateField.setAttribute('max', maxEndDate);
                  
-                 // [★★ 요청 2 반영 ★★] 
-                 // JSTL이 설정한 값이 있더라도, 체크 시 min/max 범위 재적용
                  if (endDateField.value > maxEndDate) endDateField.value = maxEndDate;
                  if (endDateField.value < lastCheckbox.dataset.startDate) endDateField.value = lastCheckbox.dataset.startDate;
 
                  endDateField.focus();
-
-                 // [★★ 요청 3+5 반영 ★★]
-                 // 체크 시, JSTL이 렌더링한 값(govPaymentUpdate)이 있더라도,
-                 // JS의 일할계산 로직을 한번 실행하여 덮어쓴다.
-                 // (사용자가 날짜를 바꾸지 않아도, 체크하는 순간 일할계산 적용)
                  recalculateLastPayment();
 
              } else {
-                 // 2. 조기복직 체크 해제 시
-                 
-                 // (Req 3) 종료일 비활성화
                  endDateField.readOnly = true;
                  
-                 // (Req 4) 종료일 범위 제한 해제
                  endDateField.removeAttribute('min');
                  endDateField.removeAttribute('max');
                  
-                 // (Req 2) 안내문구 숨김
                  if (earlyReturnNotice) earlyReturnNotice.style.display = 'none';
-                 
-                 // (Req 5 원상복구) 종료일 원복
                  updateDateFieldsFromCheckboxes();
                  
-                 // (Req 5 원상복구) 금액 원복
-                 // [★★ 요청 3 반영 ★★] '순수 원본' (data-original-gov)으로 복구
                  resetLastPayment(); 
              }
          });
   }
   
-  // --- [11. 신규] 조기복직 시 종료일 변경 이벤트 (Req 1, 5, 6) ---
   if (endDateField) {
          endDateField.addEventListener('change', function() {
-             // 조기복직이 체크된 상태에서만 재계산 로직 실행
              if (earlyReturnChk && earlyReturnChk.checked) {
                  
-                 // 날짜가 min/max 범위를 벗어났는지 확인 (수동 입력 대비)
                  const min = endDateField.getAttribute('min');
                  const max = endDateField.getAttribute('max');
                  if (min && endDateField.value < min) {
@@ -3035,31 +2682,20 @@ document.addEventListener('DOMContentLoaded', function () {
                      endDateField.value = max;
                  }
                  
-                 // (Req 1, 5, 6) 금액 재계산
                  recalculateLastPayment();
              }
          });
   }
 
-  // --- [12. 기존] 페이지 로드 시 초기화 ---
   updateApplicationTotalSum();
   updateDateFieldsFromCheckboxes();
   
-  // [★★ 요청 1, 2, 3 반영 ★★]
-  // JSTL에 의해 조기복직이 'checked' 상태로 로드되었을 경우,
-  // JS의 'change' 로직을 수동으로 실행하여
-  // 1. 종료일(endDateField)의 min/max 설정 (by updateDateFieldsFromCheckboxes)
-  // 2. JS 일할계산(recalculateLastPayment) 실행
-  //    (JSTL이 렌더링한 govPaymentUpdate 값을 JS 일할계산 값으로 덮어쓰기)
   if (earlyReturnChk && earlyReturnChk.checked) {
-      // JSTL이 이미 UI(readonly, display)를 설정했으므로,
-      // JS 로직 중 'recalculateLastPayment()'만 수동으로 호출해도 되지만,
-      // 'change' 이벤트를 발생시키는 것이 가장 안전하고 완전하게 JS 상태를 동기화합니다.
       earlyReturnChk.dispatchEvent(new Event('change'));
   }
 
 
-}); // <-- DOMContentLoaded 래퍼 종료
+});
 </script>
 
 </body>

@@ -6,7 +6,6 @@
 <c:set var="currentURI" value="${pageContext.request.requestURI}" />
 
 <style>
-    /* ========== Header & Navigation Styles ========== */
     .header {
         background-color: var(--white-color);
         padding: 15px 40px;
@@ -67,7 +66,6 @@
         width: 100%;
     }
     
-    /* ========== Button Styles (Used in Header) ========== */
     .btn {
         display: inline-block;
         padding: 10px 20px;
@@ -82,21 +80,15 @@
     .btn-primary { background-color: var(--primary-color); color: var(--white-color); border-color: var(--primary-color); }
     .btn-primary:hover { background-color: #364ab1; box-shadow: var(--shadow-md); transform: translateY(-2px); }
     
-    /* [수정] 로그아웃 버튼 스타일 (부드러운 회색 배경) */
     .btn-logout {
-        /* 1. 아이콘 + 텍스트 정렬 */
         display: inline-flex !important;
         align-items: center !important;
         justify-content: center !important;
-        gap: 8px !important; /* 아이콘과 텍스트 사이 간격 */
-        
-        /* 2. 디자인 변경 (투명 배경) */
+        gap: 8px !important;
         background-color: transparent !important;
-        color: var(--gray-color, #6c757d) !important; /* 기본은 회색 텍스트 */
-        border: none !important; /* 테두리 없음 */
-        outline: none !important; /* 포커스 테두리도 없음 */
-        
-        /* 3. 기본 .btn 스타일 적용 (패딩, 폰트 등) */
+        color: var(--gray-color, #6c757d) !important;
+        border: none !important;
+        outline: none !important;
         padding: 10px 20px !important;
         font-size: 15px !important;
         font-weight: 500 !important;
@@ -107,36 +99,31 @@
     }
     .btn-logout:hover,
     .btn-logout:focus {
-        background-color: var(--light-gray-color, #f8f9fa) !important; /* 호버 시 연한 회색 배경 */
-        color: var(--dark-gray-color, #343a40) !important; /* 호버 시 진한 텍스트 */
+        background-color: var(--light-gray-color, #f8f9fa) !important;
+        color: var(--dark-gray-color, #343a40) !important;
         box-shadow: none !important;
         transform: none !important;
-        border: none !important; /* 호버 시에도 테두리 없음 */
-        outline: none !important; /* 포커스 테두리 없음 */
+        border: none !important;
+        outline: none !important;
     }
     
-    /* [추가] 로그아웃 버튼 내부 SVG 아이콘 */
     .btn-logout .btn-icon {
          width: 16px !important;
          height: 16px !important;
-         fill: currentColor !important; /* 버튼의 color 값을 따라감 */
+         fill: currentColor !important;
          transition: fill 0.2s ease-in-out !important;
     }
 
     .btn-secondary { background-color: var(--white-color); color: var(--gray-color); border-color: var(--border-color); }
     .btn-secondary:hover { background-color: var(--light-gray-color); color: var(--dark-gray-color); border-color: #ccc; }
 
-
-    /* ---------------------------------- */
-    /* [수정] 햄버거 버튼 (JS 방식) */
-    /* ---------------------------------- */
     .nav-toggle {
-        display: none; /* 데스크탑에서는 숨김 */
+        display: none;
         background: none;
         border: none;
         cursor: pointer;
         padding: 10px;
-        z-index: 1001; /* [중요] 메뉴와 오버레이보다 위에 */
+        z-index: 1001;
     }
     .nav-toggle-icon {
         display: block;
@@ -159,7 +146,6 @@
     .nav-toggle-icon::before { top: -7px; }
     .nav-toggle-icon::after { top: 7px; }
 
-    /* 햄버거 X 모양 (활성화 시) */
     .nav-toggle.is-active .nav-toggle-icon {
         background-color: transparent;
     }
@@ -172,27 +158,20 @@
         top: 0;
     }
 
-    /* ---------------------------------- */
-    /* [추가] 오프캔버스 오버레이 */
-    /* ---------------------------------- */
     .offcanvas-overlay {
-        display: none; /* 기본 숨김 */
+        display: none;
         position: fixed;
         top: 0;
         left: 0;
         width: 100vw;
         height: 100vh;
         background-color: rgba(0, 0, 0, 0.5);
-        z-index: 999; /* 메뉴 패널(1000) 바로 뒤 */
+        z-index: 999;
     }
     .offcanvas-overlay.is-active {
-        display: block; /* 활성화 시 보임 */
+        display: block;
     }
 
-
-    /* ---------------------------------- */
-    /* 📱 반응형 스타일 (Tablet & Mobile) */
-    /* ---------------------------------- */
     @media (max-width: 992px) {
         .header {
             padding: 10px 20px;
@@ -200,53 +179,37 @@
         .header .logo img {
             height: 60px;
         }
-
-        /* [수정] 햄버거 버튼 보이기 (오른쪽 정렬) */
         .nav-toggle {
             display: block;
-            order: 3; /* 로고 | 메뉴(숨김) | 버튼 */
+            order: 3;
         }
-        
-        /* [수정] 데스크탑 중앙 내비 숨기기 */
         .header-nav {
             display: none;
         }
-
-        /* [대폭 수정] 오프캔버스 메뉴 패널 */
         .header-right-nav {
-            /* 1. 위치 및 크기 */
             position: fixed;
             top: 0;
-            right: 0; /* 오른쪽에 붙임 */
-            width: 300px; /* 패널 너비 */
-            max-width: 80%; /* 화면의 80%는 넘지 않게 */
-            height: 100vh; /* 화면 전체 높이 */
+            right: 0; 
+            width: 300px; 
+            max-width: 80%;
+            height: 100vh;
             background-color: var(--white-color);
-            z-index: 1000; /* 오버레이(999)보다 위 */
-
-            /* 2. 내부 정렬 (세로로) */
+            z-index: 1000;
             flex-direction: column;
             align-items: center;
             gap: 20px;
-            padding: 80px 20px 20px; /* 상단 여백 (버튼 피해서) */
-            
-            /* 3. 애니메이션 (초기 상태: 숨김) */
-            transform: translateX(100%); /* 오른쪽으로 100% 밀어내서 숨김 */
+            padding: 80px 20px 20px; 
+            transform: translateX(100%); 
             transition: transform 0.3s ease-in-out;
-            
-            /* [중요] display:none 대신 flex 유지 (애니메이션을 위해) */
             display: flex; 
         }
-
-        /* [수정] 오프캔버스 활성화 시 */
         .header-right-nav.is-active {
-            transform: translateX(0); /* 제자리(0)로 이동 */
-            box-shadow: -5px 0 15px rgba(0,0,0,0.1); /* 왼쪽에 그림자 */
+            transform: translateX(0);
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
         }
 
-        /* [수정] 오프캔버스 내부의 메뉴 링크 (ul) */
         .header-right-nav .header-nav {
-            display: flex; /* 숨겼던 .header-nav를 다시 보이게 */
+            display: flex; 
             position: static;
             transform: none;
             flex-direction: column;
@@ -259,9 +222,8 @@
             font-size: 16px;
         }
         
-        /* [수정] 오프캔버스 내부의 버튼 */
         .header-right-nav .btn {
-            width: 100%; /* 버튼 너비 100%로 */
+            width: 100%; 
             max-width: 250px;
             margin-top: 10px;
         }
@@ -275,9 +237,7 @@
 <header class="header">
     <a href="${pageContext.request.contextPath}/user/main" class="logo"><img src="${pageContext.request.contextPath}/resources/images/logo.png" alt="Logo" width="auto" height="80"></a>
 
-    <%-- [수정] 메뉴 컨테이너 (오른쪽 오프캔버스 패널이 됩니다) --%>
     <nav class="header-right-nav" id="main-nav-menu">
-        <%-- 데스크탑용 중앙 메뉴 (모바일에선 이 안으로 들어옴) --%>
         <ul class="header-nav">
             <li><a class="nav-link ${fn:contains(currentURI, '/main') ? 'active' : ''}" href="${pageContext.request.contextPath}/user/main">신청내역</a></li>
             <li><a class="nav-link ${fn:contains(currentURI, 'confirm_') ? 'active' : ''}" href="${pageContext.request.contextPath}/user/confirm/check">확인서 조회</a></li>
@@ -285,7 +245,6 @@
             <li><a class="nav-link ${fn:contains(currentURI, '/mypage') ? 'active' : ''}" href="${pageContext.request.contextPath}/mypage">마이페이지</a></li>
         </ul>
         
-        <%-- 인증 버튼 --%>
         <sec:authorize access="isAnonymous()">
             <a href="${pageContext.request.contextPath}/login" class="btn btn-primary">로그인</a>
         </sec:authorize>
@@ -303,17 +262,13 @@
             </a>
         </sec:authorize>
     </nav>
-
-    <%-- [추가] 어두운 배경 오버레이 --%>
     <div class="offcanvas-overlay" id="offcanvas-overlay"></div>
 
-    <%-- [수정] 햄버거 버튼 (체크박스 대신 JS 버튼으로 변경) --%>
     <button class="nav-toggle" id="nav-toggle-btn" aria-label="메뉴 열기" aria-expanded="false">
         <span class="nav-toggle-icon"></span>
     </button>
 </header>
 
-<%-- [수정] 오프캔버스 제어를 위한 JavaScript (DOM 로드 후 실행) --%>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const toggleBtn = document.getElementById('nav-toggle-btn');
@@ -322,29 +277,24 @@
 
         if (toggleBtn && navMenu && overlay) {
             
-            // 메뉴 열기 함수
             function openMenu() {
                 navMenu.classList.add('is-active');
                 toggleBtn.classList.add('is-active');
                 overlay.classList.add('is-active');
                 toggleBtn.setAttribute('aria-expanded', 'true');
                 toggleBtn.setAttribute('aria-label', '메뉴 닫기');
-                // [추가] 스크롤 방지
                 document.body.style.overflow = 'hidden'; 
             }
             
-            // 메뉴 닫기 함수
             function closeMenu() {
                 navMenu.classList.remove('is-active');
                 toggleBtn.classList.remove('is-active');
                 overlay.classList.remove('is-active');
                 toggleBtn.setAttribute('aria-expanded', 'false');
                 toggleBtn.setAttribute('aria-label', '메뉴 열기');
-                // [추가] 스크롤 복구
                 document.body.style.overflow = '';
             }
 
-            // 1. 햄버거 버튼 클릭 시
             toggleBtn.addEventListener('click', function() {
                 if (navMenu.classList.contains('is-active')) {
                     closeMenu();
@@ -353,7 +303,6 @@
                 }
             });
             
-            // 2. 오버레이(배경) 클릭 시
             overlay.addEventListener('click', function() {
                 closeMenu();
             });
