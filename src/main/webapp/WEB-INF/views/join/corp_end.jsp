@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #24A960; /* 테마 색상 변경 */
+            --primary-color: #24A960; 
             --white-color: #ffffff;
             --light-gray-color: #f0f2f5;
             --gray-color: #888;
@@ -84,21 +84,17 @@
             80% { transform: scale(1.1); opacity: 1; }
             100% { transform: scale(1); opacity: 1; }
         }
-        
-        /* ---------------------------------- */
-        /* 📱 반응형 스타일 (Tablet & Mobile) */
-        /* ---------------------------------- */
         @media (max-width: 768px) {
             .page-wrapper {
-                padding: 20px 10px; /* 페이지 전체 여백 축소 */
+                padding: 20px 10px; 
             }
 
             .signup-container {
-                padding: 40px 20px; /* 컨테이너 내부 여백 축소 */
+                padding: 40px 20px; 
             }
 
             .main-title {
-                font-size: 26px; /* 메인 타이틀 폰트 축소 */
+                font-size: 26px; 
                 margin-bottom: 30px;
             }
 
@@ -106,20 +102,18 @@
                 margin-bottom: 40px;
             }
 
-            /* [수정] 스텝 텍스트가 2줄이 될 수 있도록 수정된 버전 */
             .step {
                 font-size: 13px;
-                padding: 10px 5px;      /* 상하 여백 */
-                height: auto;           /* 고정 높이 제거 */
-                min-height: 40px;     /* 최소 높이 보장 */
-                line-height: 1.3;     /* 줄간격 */
-                word-break: break-word; /* 자연스러운 줄바꿈 허용 */
+                padding: 10px 5px;
+                height: auto;   
+                min-height: 40px; 
+                line-height: 1.3;  
+                word-break: break-word; 
                 display: flex;
                 align-items: center;
                 justify-content: center;
             }
 
-            /* 스텝 화살표 크기 및 위치 조정 */
             .step:not(:last-child)::after {
                 border-top-width: 20px;
                 border-bottom-width: 20px;
@@ -127,21 +121,20 @@
                 right: -10px;
             }
             
-            /* 스텝 화살표와 스텝의 최소 높이를 맞춤 */
             .step:not(:last-child)::before {
                  border-top-width: 20px;
                  border-bottom-width: 20px;
             }
 
             .content-box {
-                padding: 40px 0; /* 상하 여백 축소 */
+                padding: 40px 0; 
             }
 
             .completion-icon {
-                width: 70px; /* 아이콘 크기 축소 */
+                width: 70px; 
                 height: 70px;
             }
-            /* 아이콘 내부 체크마크 크기 조절 */
+
             .completion-icon::after {
                 width: 18px;
                 height: 36px;
@@ -149,30 +142,27 @@
             }
             
             .content-box h2 {
-                font-size: 22px; /* 완료 타이틀 폰트 축소 */
+                font-size: 22px; 
             }
 
             .content-box p {
-                font-size: 15px; /* 완료 메시지 폰트 축소 */
+                font-size: 15px;
                 margin-bottom: 30px;
             }
 
             .action-buttons {
-                flex-direction: column; /* 버튼 세로로 쌓기 */
+                flex-direction: column;
                 gap: 10px;
                 margin-top: 20px;
             }
 
             .btn {
-                width: 100%; /* 버튼 너비를 100%로 설정 */
+                width: 100%; 
                 padding-top: 16px;
                 padding-bottom: 16px;
             }
         }
 
-        /* ---------------------------------- */
-        /* 📱 더 작은 화면 (e.g., iPhone SE) */
-        /* ---------------------------------- */
         @media (max-width: 375px) {
             .signup-container {
                 padding: 30px 15px;
@@ -183,7 +173,7 @@
             }
             
             .step {
-                font-size: 12px; /* 스텝 폰트 더 축소 */
+                font-size: 12px; 
             }
 
             .content-box h2 {

@@ -96,6 +96,11 @@ public class AdminAddAmountService {
             }
         } catch (Exception ignore) {}
         try {
+            if (dto.getAccountNumber() != null && !dto.getAccountNumber().trim().isEmpty()) {
+                dto.setAccountNumber(aes256Util.decrypt(dto.getAccountNumber()));
+            }
+        } catch (Exception ignore) {}
+        try {
             if (dto.getUpdAccountNumber() != null && !dto.getUpdAccountNumber().trim().isEmpty()) {
                 dto.setUpdAccountNumber(aes256Util.decrypt(dto.getUpdAccountNumber()));
             }

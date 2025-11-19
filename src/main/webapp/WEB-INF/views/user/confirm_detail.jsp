@@ -19,7 +19,6 @@
 :root {
   --primary-color: #3f58d4;
 }
-/* 베이스 */
 *{margin:0;padding:0;box-sizing:border-box}
 html{height:100%}
 body{
@@ -29,7 +28,6 @@ body{
 }
 a{text-decoration:none;color:inherit}
 
-/* 컨테이너 */
 .main-container{
 	flex-grow:1;width:100%;max-width:1060px;
 	margin:40px auto !important;
@@ -46,7 +44,6 @@ h2{
   margin-bottom:15px;border-left:4px solid var(--primary-color);padding-left:10px;
 }
 
-/* 테이블 공통 */
 .info-table-container{margin-bottom:40px}
 .info-table{
   width:100%;border-collapse:collapse;border-top:2px solid var(--dark-gray-color);
@@ -60,7 +57,6 @@ h2{
 }
 .info-table td{background-color:var(--white-color);color:#333}
 
-/* 월별 내역 스크롤 래퍼 */
 .data-grid-container{
   overflow-x:auto;-webkit-overflow-scrolling:touch;
   border:1px solid var(--border-color);border-radius:8px;margin-top:-15px;margin-bottom:25px;
@@ -70,7 +66,6 @@ h2{
   white-space:nowrap;text-align:center;
 }
 
-/* 버튼 */
 .btn{
   display:inline-block;padding:10px 20px;font-size:15px;font-weight:500;
   border-radius:8px;border:1px solid var(--border-color);cursor:pointer;
@@ -97,12 +92,10 @@ h2{
 
 .footer{ text-align:center; padding:20px 0; font-size:14px; color:var(--gray-color); }
 
-/* PDF 생성 시 숨길 요소 */
 .pdf-hide {
     display: none !important;
 }
 
-/* [추가] 첫 번째 파일의 파일 링크 스타일 */
 .file-download-link {
     color: var(--primary-color);
     font-weight: 500;
@@ -307,7 +300,6 @@ h2{
           <c:if test="${not empty files}">
             <c:forEach var="f" items="${files}" varStatus="st">
 
-              <%-- 표시용 파일명 추출 --%>
               <c:set var="parts1" value="${fn:split(f.fileUrl, '/')}" />
               <c:choose>
                 <c:when test="${fn:length(parts1) > 1}">
@@ -319,7 +311,6 @@ h2{
                 </c:otherwise>
               </c:choose>
 
-              <%-- 파일 타입 라벨 (기존 파일의 라벨 유지) --%>
               <c:set var="typeLabel">
                 <c:choose>
                   <c:when test="${f.fileType == 'WAGE_PROOF'}">통상임금을 확인할 수 있는 증명자료</c:when>
@@ -376,7 +367,6 @@ h2{
   var end   = new Date(e + 'T00:00:00');
   if (isNaN(start) || isNaN(end)) return;
 
-  // 계산: 끝 - 시작 + 1
   var msPerDay = 24*60*60*1000;
   var days = Math.floor((end - start) / msPerDay) + 1;
   if (days < 0) return;
@@ -391,7 +381,6 @@ h2{
 <script>
 document.getElementById('btn-pdf-download').addEventListener('click', function() {
     
-    // 0. PDF 생성 전 준비
     const downloadBtn = this;
     const originalBtnText = downloadBtn.textContent;
     downloadBtn.textContent = 'PDF 생성 중...';
@@ -414,7 +403,7 @@ document.getElementById('btn-pdf-download').addEventListener('click', function()
         
         // 3. 캡처된 이미지를 jsPDF로 PDF에 추가
         try {
-            // ✨ [수정] 이미지를 고압축 JPEG로 변환 (용량 감소의 핵심)
+            //이미지를 고압축 JPEG로 변환
             // 0.75 = 75% 품질. (0.1 ~ 1.0 사이로 조절 가능)
             const imgData = canvas.toDataURL('image/jpeg', 0.9); 
             

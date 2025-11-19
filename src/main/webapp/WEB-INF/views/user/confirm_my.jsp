@@ -16,32 +16,31 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/comp.css">
 <style>
-    /* --- 테마 색상 및 기본 스타일 (파란색 테마) --- */
     :root {
         --primary-color: #3f58d4;
-        --primary-color-dark: #324ca8; /* 더 어두운 파란색 */
-        --primary-color-light: #f0f3fd; /* 아주 연한 파란색 */
+        --primary-color-dark: #324ca8;
+        --primary-color-light: #f0f3fd;
         
-        --status-approved: #3f58d4; /* 승인 (메인 파란색) */
-        --status-pending: #f59e0b;  /* 대기 (황색) */
-        --status-rejected: #ef4444; /* 반려 (적색) */
+        --status-approved: #3f58d4;
+        --status-pending: #f59e0b;
+        --status-rejected: #ef4444;
         
         --text-color: #333;
         --text-color-light: #555;
         --border-color: #e0e0e0;
-        --bg-color-soft: #f9fafb; /* 연한 회색 배경 */
+        --bg-color-soft: #f9fafb;
         --white: #ffffff;
     }
 
     body {
         font-family: 'Noto Sans KR', sans-serif;
-        background-color: var(--bg-color-soft); /* 전체 페이지 배경색 */
+        background-color: var(--bg-color-soft);
         color: var(--text-color);
         line-height: 1.6;
         display: flex;
         flex-direction: column;
-        min-height: 100vh; /* 뷰포트 전체 높이 */
-        margin: 0; /* body의 기본 마진 제거 */
+        min-height: 100vh;
+        margin: 0;
     }
 
     .main-container {
@@ -51,7 +50,6 @@
         flex-grow: 1;
     }
 
-    /* --- 콘텐츠 래퍼 (카드 디자인) --- */
     .content-wrapper {
         background-color: var(--white);
         border-radius: 12px;
@@ -75,7 +73,6 @@
         font-weight: 700;
     }
     
-    /* --- 버튼 (comp.css 오버라이드) --- */
     .btn {
         display: inline-flex;
         align-items: center;
@@ -111,7 +108,6 @@
         background-color: #d1d5db;
     }
 
-    /* --- 안내 상자 --- */
     .notice-box { 
         background-color: var(--primary-color-light); 
         border: 1px solid var(--primary-color); 
@@ -140,16 +136,11 @@
     }
     .notice-box li { margin-bottom: 6px; }
     .notice-box li:last-child { margin-bottom: 0; }
-
-    /* --- [수정] 리스트 테이블 스타일 (신청내역 페이지 참고) --- */
     
-    /* 반응형 테이블을 위한 컨테이너 */
     .table-container {
         width: 100%;
-        overflow-x: auto; /* 모바일에서 가로 스크롤 생성 */
+        overflow-x: auto;
         margin-top: 16px;
-        /* border: 1px solid var(--border-color); */
-        /* border-radius: 8px; */
     }
     
     .list-table { 
@@ -157,12 +148,12 @@
         border-collapse: collapse; 
         table-layout: fixed; 
         font-size: 15px; 
-        min-width: 700px; /* 가로 스크롤을 위한 최소 너비 */
+        min-width: 700px;
     }
     .list-table thead th { 
         padding: 14px 16px; 
         font-weight: 600; 
-        background-color: var(--primary-color); /* 파란색 헤더 */
+        background-color: var(--primary-color);
         color: var(--white); 
         text-align: left; 
         border-bottom: 2px solid var(--primary-color-dark); 
@@ -173,17 +164,16 @@
         vertical-align: middle; 
         border-bottom: 1px solid var(--border-color); 
         color: var(--text-color-light); 
-        white-space: nowrap; /* 줄바꿈 방지 */
+        white-space: nowrap;
     }
     .list-table tbody td:first-child { 
         color: var(--text-color); 
         font-weight: 500; 
     }
     .list-table tbody tr:hover { 
-        background: var(--primary-color-light); /* 마우스 오버 시 연한 파란색 */
+        background: var(--primary-color-light); 
     }
     
-    /* [수정] 테이블 내 버튼 스타일 */
     .list-table .btn { 
         padding: 6px 12px; 
         font-size: 13px; 
@@ -193,7 +183,6 @@
         margin: 0 2px; 
     }
     
-    /* [신규] 정렬 및 강조 스타일 */
     .list-table .col-center { text-align: center; }
     .list-table .col-left { text-align: left; }
     
@@ -206,7 +195,6 @@
         font-weight: 600;
     }
 
-    /* --- 빈 상태 박스 --- */
     .empty-state-box { 
         text-align: center; 
         padding: 60px 40px; 
@@ -243,9 +231,6 @@
        color: #888;
     }
 
-    /* ---------------------------------- */
-    /* 📱 반응형 스타일 (Tablet & Mobile) */
-    /* ---------------------------------- */
     @media (max-width: 768px) {
         .main-container {
             margin: 10px auto;
@@ -268,15 +253,14 @@
             padding-left: 18px;
         }
         
-        /* [수정] 테이블 반응형 스타일 */
         .list-table {
             font-size: 14px;
         }
         .list-table thead th,
         .list-table tbody td {
-            padding: 12px 10px; /* 패딩 축소 */
+            padding: 12px 10px;
             font-size: 14px;
-            white-space: nowrap; /* 가로 스크롤 유지 */
+            white-space: nowrap;
         }
 
         .empty-state-box {
@@ -345,7 +329,6 @@
                 </c:when>
                 <c:otherwise>
                     
-                    <%-- ✨ [수정] 테이블 컨테이너 및 테이블 클래스 변경 --%>
                     <div class="table-container">
                         <table class="list-table">
                             <thead>
@@ -372,7 +355,6 @@
                                         <td class="col-center col-start-date">${confirm.startDate}</td>
                                         <td class="col-center col-end-date">${confirm.endDate}</td>
                                         <td class="col-center">
-                                            <%-- ✨ [수정] 상세보기 버튼 스타일 변경 --%>
                                             <a href="${detailUrl}" class="btn btn-secondary">상세보기</a>
                                         </td>
                                     </tr>
@@ -392,7 +374,6 @@
     <p>&copy; 2025 육아휴직 서비스. All Rights Reserved.</p>
 </footer>
 
-<%-- ✨ 자바스크립트 (에러 알림만 유지) --%>
 <c:if test="${not empty error}">
     <script type="text/javascript">
     window.onload = function() {

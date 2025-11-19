@@ -296,11 +296,6 @@
         font-weight: 700;
     }
 
-    /* ---------------------------------- */
-    /* 📱 [추가] 반응형 스타일 */
-    /* ---------------------------------- */
-
-    /* 992px 이하 (태블릿) */
     @media (max-width: 992px) {
         .main-container {
             padding: 0 15px;
@@ -312,14 +307,12 @@
         .content-header h2 {
             font-size: 22px;
         }
-        /* 카드 최소 너비 줄이기 */
         .card-list-container {
              grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
              gap: 15px;
         }
     }
 
-    /* 768px 이하 (모바일) */
     @media (max-width: 768px) {
         .main-container {
             padding: 0;
@@ -339,13 +332,11 @@
             font-size: 20px;
         }
 
-        /* [수정] 모바일에서 1열로 강제 */
         .card-list-container {
             grid-template-columns: 1fr;
             gap: 15px;
         }
         
-        /* [수정] 모바일 카드 스타일 */
         .selectable-card {
             padding: 18px;
         }
@@ -364,7 +355,6 @@
             font-size: 15px; /* 14px -> 15px */
         }
 
-        /* [수정] 빈 상태 박스 패딩 줄이기 */
         .empty-state-box {
             padding: 40px 20px;
         }
@@ -374,8 +364,6 @@
         .empty-state-box p {
              font-size: 15px;
         }
-
-        /* [수정] 신청하기 버튼 100% 너비 */
         .submit-area {
             text-align: center;
             margin-top: 25px;
@@ -500,18 +488,15 @@
     </script>
 </c:if>
 
-<%-- (스크립트는 원본과 100% 동일) --%>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
     
-    // 1. 카드 선택 로직 (이 부분은 기존과 동일합니다)
     $('.card-list-container').on('click', '.selectable-card', function() {
         var $clickedCard = $(this);
         var selectedValue = $clickedCard.data('value');
         
         if ($clickedCard.hasClass('active')) {
-            // 이미 선택된 것을 다시 클릭하면 선택 해제
             $clickedCard.removeClass('active');
             $('#selectedConfirmNumber').val('');
         } else {
@@ -522,58 +507,39 @@ $(document).ready(function() {
         }
     });
 
-    // 2. 폼 제출 이벤트 수정 (AJAX 호출 로직 추가)
     $("#applyForm").submit(function(e) {
-        // 폼의 기본 제출 동작(페이지 새로고침/이동)을 일단 막습니다.
         e.preventDefault(); 
         
-        // 선택된 확인서 번호를 가져옵니다.
         var selectedValue = $('#selectedConfirmNumber').val();
-        
-        // ${pageContext.request.contextPath} 값을 JS 변수로 가져옵니다.
-        // JSP 스크립틀릿 안에서는 EL 태그를 따옴표로 감싸야 합니다.
         var contextPath = "${pageContext.request.contextPath}";
 
-        // 3-1. 유효성 검사 (아무것도 선택하지 않은 경우)
         if (selectedValue === '' || selectedValue == null) {
             alert('신청할 항목을 하나 선택해주세요.');
-            return; // 함수 중단
+            return;
         }
 
-        // 3-2. AJAX로 중복 신청(진행 중) 확인 API 호출
         var checkUrl = contextPath + "/user/check/confirm/" + selectedValue;
 
         $.ajax({
-            type: "GET",       // 컨트롤러가 @GetMapping이므로 GET 방식
+            type: "GET", 
             url: checkUrl,
-            dataType: "json",  // 서버가 JSON 객체를 반환
+            dataType: "json", 
             success: function(response) {
-                // 4. AJAX 응답 처리
                 if (response.success === true) {
-                    // 4a. 성공 (진행중인 건 없음): 신청 페이지로 이동
                     
-                    // <form>의 'action' 속성에 지정된 기본 URL (/user/application)
                     var baseUrl = $("#applyForm").attr('action'); 
-                    
-                    // 기본 URL 뒤에 선택된 값을 붙여서 새 URL 생성
                     var newUrl = baseUrl + "/" + selectedValue;
-                    
-                    // 해당 URL로 페이지 이동 (GET 요청)
+
                     window.location.href = newUrl;
 
                 } else {
-                    // 4b. 실패 (진행중인 건 있음): 서버가 보낸 메시지 표시 후, 상세 페이지로 리디렉션
                     alert(response.message);
-                    
-                    // 서버가 리디렉션 URL을 보냈는지 확인
                     if (response.redirectUrl) {
-                        // 컨트롤러에서 보낸 URL이 contextPath를 포함하지 않을 수 있으므로 붙여줍니다.
                         window.location.href = contextPath + response.redirectUrl;
                     }
                 }
             },
             error: function(xhr, status, error) {
-                // 5. (예외 처리) AJAX 통신 자체 실패 시
                 console.error("AJAX Error: ", status, error, xhr.responseText);
                 alert("신청 상태를 확인하는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
             }

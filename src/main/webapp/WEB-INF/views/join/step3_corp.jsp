@@ -57,63 +57,57 @@
         .btn-cancel:hover { background-color: var(--light-gray-color); }
         .btn-primary:disabled { background-color: #a0a0a0; border-color: #a0a0a0; cursor: not-allowed; }
 
-        /* ▼▼▼ [추가된 코드] 툴팁 스타일 ▼▼▼ */
         .tooltip-wrapper {
-            position: relative; /* 툴팁의 absolute 포지셔닝 기준점 */
+            position: relative; 
         }
         .custom-tooltip {
-            visibility: hidden; /* 기본 숨김 */
+            visibility: hidden; 
             opacity: 0;
             
             position: absolute;
-            bottom: 125%; /* input 위에 위치 */
+            bottom: 125%; 
             left: 50%;
-            transform: translateX(-50%); /* 중앙 정렬 */
+            transform: translateX(-50%); 
             
-            background-color: #333; /* 어두운 배경 */
+            background-color: #333; 
             color: var(--white-color); 
             text-align: center;
             padding: 8px 12px;
             border-radius: 6px;
             font-size: 13px;
             font-weight: 500;
-            white-space: nowrap; /* 툴팁 텍스트가 줄바꿈되지 않도록 */
+            white-space: nowrap; 
             
             z-index: 10;
             transition: opacity 0.2s ease, visibility 0.2s ease;
         }
-        /* 툴팁 꼬리 (화살표) */
         .custom-tooltip::after {
             content: "";
             position: absolute;
-            top: 100%; /* 툴팁 하단 중앙 */
+            top: 100%;
             left: 50%;
             margin-left: -5px;
             border-width: 5px;
             border-style: solid;
-            border-color: #333 transparent transparent transparent; /* 위쪽을 가리키는 삼각형 */
+            border-color: #333 transparent transparent transparent; 
         }
-        /* hover 뿐만 아니라 focus 시에도 툴팁이 보이도록 개선 */
         .tooltip-wrapper:hover .custom-tooltip,
         .tooltip-wrapper input:focus + .custom-tooltip {
             visibility: visible;
             opacity: 1;
         }
         
-        /* ---------------------------------- */
-        /* 📱 반응형 스타일 (Tablet & Mobile) */
-        /* ---------------------------------- */
         @media (max-width: 768px) {
             .page-wrapper {
-                padding: 20px 10px; /* 페이지 전체 여백 축소 */
+                padding: 20px 10px; 
             }
 
             .signup-container {
-                padding: 40px 20px; /* 컨테이너 내부 여백 축소 */
+                padding: 40px 20px; 
             }
 
             .main-title {
-                font-size: 26px; /* 메인 타이틀 폰트 축소 */
+                font-size: 26px;
                 margin-bottom: 30px;
             }
 
@@ -121,22 +115,19 @@
                 margin-bottom: 40px;
             }
 
-           /* 768px 미디어 쿼리 내의 .step 규칙을 이걸로 교체하세요 */
             .step {
                 font-size: 13px;
-                padding: 10px 5px;      /* [수정] 상하 여백을 주어 텍스트를 중앙 정렬 */
-                height: auto;           /* [수정] 고정 높이 제거 */
-                min-height: 40px;     /* [추가] 화살표 높이(40px)만큼 최소 높이 보장 */
-                line-height: 1.3;     /* [추가] 줄바꿈 시를 대비한 줄간격 */
-                word-break: break-word; /* [수정] 'keep-all' 대신 자연스러운 줄바꿈 허용 */
+                padding: 10px 5px;  
+                height: auto; 
+                min-height: 40px;  
+                line-height: 1.3;  
+                word-break: break-word; 
                 
-                /* [추가] 텍스트를 세로/가로 중앙에 배치하기 위해 flex 사용 */
                 display: flex;
                 align-items: center;
                 justify-content: center;
             }
 
-            /* 스텝 화살표 크기 및 위치 조정 */
             .step:not(:last-child)::after {
                 border-top-width: 20px;
                 border-bottom-width: 20px;
@@ -145,56 +136,50 @@
             }
 
             .content-box {
-                padding: 20px 0; /* 컨텐츠 박스 여백 축소 */
+                padding: 20px 0; 
             }
             
             .content-box h2 {
-                font-size: 22px; /* 서브 타이틀 폰트 축소 */
+                font-size: 22px;
                 margin-bottom: 30px;
             }
             
             .info-form {
-                max-width: 100%; /* 폼 최대 너비 제한 해제 */
+                max-width: 100%;
             }
 
             .form-group label {
-                font-size: 15px; /* 라벨 폰트 축소 */
+                font-size: 15px;
             }
 
             .form-group input {
-                font-size: 15px; /* 입력 폰트 축소 */
+                font-size: 15px;
             }
 
-            /* 사업자번호/휴대폰 입력칸들이 공간을 균등하게 나누도록 설정 */
             .hyphen-inputs input {
                 flex: 1;
-                min-width: 0; /* flex item이 줄어들 수 있도록 허용 */
+                min-width: 0; 
                 text-align: center;
             }
 
-            /* 툴팁이 화면 밖으로 나가지 않도록 수정 */
             .custom-tooltip {
-                white-space: normal; /* 텍스트 줄바꿈 허용 */
-                max-width: 80vw; /* 툴팁 최대 너비를 뷰포트의 80%로 제한 */
+                white-space: normal; 
+                max-width: 80vw; 
             }
 
-            /* 하단 버튼 */
             .action-buttons {
-                flex-direction: column; /* 버튼 세로로 쌓기 */
+                flex-direction: column;
                 gap: 10px;
                 margin-top: 40px;
             }
 
             .btn {
-                width: 100%; /* 버튼 너비를 100%로 설정 */
+                width: 100%; 
                 padding-top: 16px;
                 padding-bottom: 16px;
             }
         }
 
-        /* ---------------------------------- */
-        /* 📱 더 작은 화면 (e.g., iPhone SE) */
-        /* ---------------------------------- */
         @media (max-width: 375px) {
             .signup-container {
                 padding: 30px 15px;
@@ -209,7 +194,7 @@
             }
 
             .step {
-                font-size: 12px; /* 스텝 폰트 더 축소 */
+                font-size: 12px; 
             }
             
             .form-group label {
@@ -220,19 +205,17 @@
                 font-size: 14px;
             }
 
-            /* 아이디 중복확인, 주소 검색 버튼 그룹 */
             .input-group {
-                flex-direction: column; /* 인풋과 버튼을 세로로 쌓기 */
+                flex-direction: column; 
                 gap: 8px;
             }
 
             .input-group .btn-sm {
                 width: 100%;
-                padding: 12px; /* 버튼을 크게 만들어 터치하기 쉽게 */
+                padding: 12px; 
                 font-size: 14px;
             }
         }
-        /* ▲▲▲ [추가된 코드] 툴팁 스타일 ▲▲▲ */
     </style>
 </head>
 <body>
