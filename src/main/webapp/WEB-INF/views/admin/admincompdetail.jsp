@@ -890,13 +890,15 @@ textarea.form-control { resize: vertical; }
   <colgroup>
     <col style="width:15%">
     <col style="width:45%">
-    <col style="width:40%">
+    <col style="width:25%">
+    <col style="width:15%">
   </colgroup>
   <thead>
     <tr>
       <th style="text-align:center;">회차</th>
       <th style="text-align:center;">기간</th>
       <th style="text-align:center;">사업장 지급액</th>
+      <th style="text-align:center;">정부 지급액</th>
     </tr>
   </thead>
   <tbody id="edit-dynamic-forms-container">
@@ -1094,6 +1096,7 @@ document.addEventListener("DOMContentLoaded", function() {
             row.setAttribute('data-start-date', term.startMonthDate);
             row.setAttribute('data-end-date',   term.endMonthDate);
 
+            const govPay = term.govPayment || 0;
             const companyPay = term.companyPayment || 0;
             const rangeText = formatDate(new Date(term.startMonthDate)) +
                               ' ~ ' +
@@ -1105,8 +1108,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 '<td style="text-align:center;">' +
                   '<input type="text" name="editMonthlyCompanyPay" class="form-control" ' +
                   '       value="'+withCommas(companyPay)+'" ' +
-                  '       style="text-align:center; max-width:140px;">' +
-                '</td>';
+                  '       style="text-align:center; max-width:140px;">' + '</td>' +
+                  '<td style="text-align:center;">' +
+               	// 재계산된 정부 지급액을 표시
+  	            '<div class="col-term-gov" style="text-align: right; padding-right: 15px;">' +
+  	                '<span>' + withCommas(govPay) + '원</span>' + 
+  	            '</div>' + '</td>';
 
             editFormsContainer.appendChild(row);
 
@@ -1161,7 +1168,10 @@ generateEditBtn?.addEventListener('click', function(){
             '<td style="text-align:center;">' +
               '<input type="text" name="editMonthlyCompanyPay" class="form-control" ' +
               '       placeholder="사업장 지급액(원)" value="0" ' +
-              '       style="text-align:center; max-width:140px;">' +
+              '       style="text-align:center; max-width:140px;">' + '</td>' +
+              '<td style="text-align:center;">'+
+           	// 정부 지급액 필드는 빈 값으로 생성
+            '<div class="col-term-gov" style="text-align: right; padding-right: 15px;"><span>-</span></div>' +
             '</td>';
 
         editFormsContainer.appendChild(row);
