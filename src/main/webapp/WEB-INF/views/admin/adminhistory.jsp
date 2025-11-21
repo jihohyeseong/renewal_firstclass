@@ -485,7 +485,17 @@
                                         <td>${item.applicationNumber}</td>
                                         <td>${item.bankCode}</td>
                                         <td>${item.accountNumber}</td>
-                                        <td>${item.statusCode_App}</td>
+                                        <td>
+										    <c:choose>
+										        <c:when test="${item.statusCode_App eq 'ST_10'}"><span class="badge bg-secondary">작성중</span></c:when>
+										        <c:when test="${item.statusCode_App eq 'ST_20'}"><span class="badge bg-primary">제출완료</span></c:when>
+										        <c:when test="${item.statusCode_App eq 'ST_30'}"><span class="badge bg-warning text-dark">심사중</span></c:when>
+										        <c:when test="${item.statusCode_App eq 'ST_40'}"><span class="badge bg-warning text-dark">2차심사중</span></c:when>
+										        <c:when test="${item.statusCode_App eq 'ST_50'}"><span class="badge bg-success">승인</span></c:when>
+										        <c:when test="${item.statusCode_App eq 'ST_60'}"><span class="badge bg-danger">반려</span></c:when>
+										        <c:otherwise>${item.statusCode_App}</c:otherwise>
+										    </c:choose>
+										</td>
                                         <td>${item.paymentResult}</td>
                                         <td>${item.rejectionReasonCode_App}</td>
                                         <td><fmt:formatNumber value="${item.payment}" pattern="#,###" /></td>
@@ -523,6 +533,7 @@
                             <!-- 확인서 (23) -->
                             <th scope="col">[확인] 확인서번호</th>
                             <th scope="col">[확인] 신청일</th>
+                            <th scope="col">[확인] 상태코드</th>
                             <th scope="col">[확인] 시작일</th>
                             <th scope="col">[확인] 종료일</th>
                             <th scope="col">[확인] 주 소정근로</th>
@@ -561,6 +572,16 @@
                                         <!-- 확인서 (23) -->
                                         <td>${item.confirmNumber_Cnf}</td>
                                         <td><fmt:formatDate value="${item.applyDt}" pattern="yyyy-MM-dd" /></td>
+                                        <td>
+										    <c:choose>
+										        <c:when test="${item.statusCode_Cnf eq 'ST_10'}"><span class="badge bg-secondary">작성중</span></c:when>
+										        <c:when test="${item.statusCode_Cnf eq 'ST_20'}"><span class="badge bg-primary">제출완료</span></c:when>
+										        <c:when test="${item.statusCode_Cnf eq 'ST_30'}"><span class="badge bg-warning text-dark">심사중</span></c:when>
+										        <c:when test="${item.statusCode_Cnf eq 'ST_50'}"><span class="badge bg-success">승인</span></c:when>
+										        <c:when test="${item.statusCode_Cnf eq 'ST_60'}"><span class="badge bg-danger">반려</span></c:when>
+										        <c:otherwise>${item.statusCode_Cnf}</c:otherwise>
+										    </c:choose>
+										</td>
                                         <td><fmt:formatDate value="${item.startDate}" pattern="yyyy-MM-dd" /></td>
                                         <td><fmt:formatDate value="${item.endDate}" pattern="yyyy-MM-dd" /></td>
                                         <td>${item.weeklyHours}</td>

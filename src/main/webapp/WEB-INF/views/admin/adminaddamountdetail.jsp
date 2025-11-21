@@ -87,7 +87,16 @@
 	.info-table.table-4col td{width:auto}
 	.info-table.table-4col th,.info-table.table-4col td{border-top:none}
 	.info-table tr:first-child th,.info-table tr:first-child td{border-top:1px solid var(--border-color)}
-	
+	.info-table thead th {
+        text-align: center !important;
+    }
+
+    .text-right { text-align: right !important; }
+    .text-center { text-align: center !important; }
+    
+    .info-table td.text-right {
+        padding-right: 20px;
+    }
 	/* 버튼 */
 	.btn{
 		display:inline-block;padding:10px 20px;font-size:15px;font-weight:500;
@@ -356,7 +365,6 @@
 		from { opacity: 0; transform: translateY(-10px); }
 		to { opacity: 1; transform: translateY(0); }
 	}
-
 </style>
 </head>
 <body>
@@ -502,7 +510,7 @@
 		<tbody>
 			<tr>
 				<th>사업장 이름</th>
-				<td>
+				<td colspan="3">
 					<c:if test="${empty appDTO.businessName}">
 						<span class="highlight-warning">미입력</span>
 					</c:if>
@@ -577,8 +585,8 @@
 	<table class="info-table table-5col">
 		<thead>
 			<tr>
-				<th>회차</th>
-				<th>기간</th>
+				<th>시작일</th>
+				<th>종료일</th>
 				<th>사업장 지급액</th>
 				<th>정부 지급액</th>
 				<th>총 지급액</th>
@@ -589,11 +597,11 @@
 			
 			<c:forEach var="item" items="${dto.list}" varStatus="status">
 								<tr>
-									<td>
+									<td class="text-center">
 										<fmt:formatDate value="${item.startMonthDate}" pattern="yyyy.MM.dd"/>
 									</td>
 							
-									<td>
+									<td class="text-center">
 										<c:choose>
 											<c:when test="${not empty item.earlyReturnDate}">
 												<fmt:formatDate value="${item.earlyReturnDate}" pattern="yyyy.MM.dd"/>
@@ -604,11 +612,11 @@
 										</c:choose>
 									</td>
 							
-									<td>
+									<td class="text-right">
 										<fmt:formatNumber value="${item.companyPayment}" type="number" pattern="#,###" />원
 									</td>
 							
-									<td>
+									<td class="text-right">
 										<c:choose>
 											<c:when test="${not empty item.govPaymentUpdate}">
 												<fmt:formatNumber value="${item.govPaymentUpdate}" type="number" pattern="#,###" />원
@@ -619,7 +627,7 @@
 										</c:choose>
 									</td>
 							
-									<td>
+									<td class="text-right">
 										<fmt:formatNumber
 											value="${item.companyPayment + (not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}"
 											type="number"
@@ -633,7 +641,7 @@
 
 			<c:if test="${not empty dto.list}">
 								<tr style="background-color: var(--light-gray-color);">
-									<td colspan="2">
+									<%-- <td colspan="2">
 										<fmt:formatDate value="${dto.list[0].startMonthDate}" pattern="yyyy.MM.dd" />
 										-
 										<c:choose>
@@ -644,13 +652,13 @@
 												<fmt:formatDate value="${dto.list[fn:length(dto.list) - 1].endMonthDate}" pattern="yyyy.MM.dd" />
 											</c:otherwise>
 										</c:choose>
-									</td>
+									</td> --%>
 							
-									<td colspan="2" style="text-align: center; font-weight: 700; color: var(--dark-gray-color);">
+									<td colspan="4" style="text-align: center; font-weight: 700; color: var(--dark-gray-color);">
 										합계 신청금액
 									</td>
 							
-									<td style="text-align: center; font-weight: 700; font-size: 1.05em; color: var(--primary-color);">
+									<td style="text-align: right; font-weight: 700; font-size: 1.05em; color: var(--primary-color);">
 										<fmt:formatNumber value="${totalAmount}" type="number" pattern="#,###" />원
 									</td>
 								</tr>
@@ -872,8 +880,8 @@
 		<table class="info-table table-6col">
 			<thead>
 				<tr>
-					<th>회차</th>
-					<th>기간</th>
+					<th>시작일</th>
+					<th>종료일</th>
 					<th>사업장 지급액</th>
 					<th>정부 지급액</th>
 					<th>총 지급액</th>
@@ -885,11 +893,11 @@
 				
 				<c:forEach var="item" items="${dto.list}" varStatus="status">
 									<tr>
-										<td>
+										<td class="text-center">
 											<fmt:formatDate value="${item.startMonthDate}" pattern="yyyy.MM.dd"/>
 										</td>
 								
-										<td>
+										<td class="text-center">
 											<c:choose>
 												<c:when test="${not empty item.earlyReturnDate}">
 													<fmt:formatDate value="${item.earlyReturnDate}" pattern="yyyy.MM.dd"/>
@@ -900,11 +908,11 @@
 											</c:choose>
 										</td>
 								
-										<td>
+										<td class="text-right">
 											<fmt:formatNumber value="${item.companyPayment}" type="number" pattern="#,###" />원
 										</td>
 								
-										<td>
+										<td class="text-right">
 											<c:choose>
 												<c:when test="${not empty item.govPaymentUpdate}">
 													<fmt:formatNumber value="${item.govPaymentUpdate}" type="number" pattern="#,###" />원
@@ -915,7 +923,7 @@
 											</c:choose>
 										</td>
 								
-										<td>
+										<td class="text-right">
 											<fmt:formatNumber
 												value="${item.companyPayment + (not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}"
 												type="number"
@@ -1072,8 +1080,8 @@
         <table class="info-table table-6col">
             <thead>
                 <tr>
-                    <th>회차</th>
-                    <th>기간</th>
+                    <th>시작일</th>
+                    <th>종료일</th>
                     <th>사업장 지급액</th>
                     <th>정부 지급액</th>
                     <th>총 지급액</th>
@@ -1085,8 +1093,8 @@
                 <c:set var="totalAmount" value="0" />
                 <c:forEach var="item" items="${dto.list}" varStatus="status">
                     <tr>
-                        <td><fmt:formatDate value="${item.startMonthDate}" pattern="yyyy.MM.dd" /></td>
-                        <td>
+                        <td class="text-center"><fmt:formatDate value="${item.startMonthDate}" pattern="yyyy.MM.dd" /></td>
+                        <td class="text-center">
                             <c:choose>
                                 <c:when test="${not empty item.earlyReturnDate}">
                                     <fmt:formatDate value="${item.earlyReturnDate}" pattern="yyyy.MM.dd" />
@@ -1096,8 +1104,8 @@
                                 </c:otherwise>
                             </c:choose>
                         </td>
-                        <td><fmt:formatNumber value="${item.companyPayment}" type="number" pattern="#,###" />원</td>
-                        <td>
+                        <td class="text-right"><fmt:formatNumber value="${item.companyPayment}" type="number" pattern="#,###" />원</td>
+                        <td class="text-right">
                             <c:choose>
                                 <c:when test="${not empty item.govPaymentUpdate}">
                                     <fmt:formatNumber value="${item.govPaymentUpdate}" type="number" pattern="#,###" />원
@@ -1108,7 +1116,7 @@
                             </c:choose>
                         </td>
                         <c:set var="currentTotal" value="${item.companyPayment + (not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}" />
-                        <td><fmt:formatNumber value="${currentTotal}" type="number" pattern="#,###" />원</td>
+                        <td class="text-right"><fmt:formatNumber value="${currentTotal}" type="number" pattern="#,###" />원</td>
                         <c:set var="totalAmount" value="${totalAmount + currentTotal}" />
                         <td style="text-align: right; padding-right: 15px; font-weight: 500;">
                             <c:set var="savedDTO" value="${addAmountMap[item.termId]}" />
@@ -1126,7 +1134,7 @@
                     <td colspan="4" style="text-align: center; font-weight: 700; color: var(--dark-gray-color);">
                         합계 신청금액
                     </td>
-                    <td style="text-align: center; font-weight: 700; color: var(--primary-color);">
+                    <td style="text-align: right; font-weight: 700; color: var(--primary-color);">
                         <fmt:formatNumber value="${totalAmount}" type="number" pattern="#,###" />원
                     </td>
                     <td style="text-align: right; padding-right: 15px; font-weight: 700; color: var(--primary-color);">

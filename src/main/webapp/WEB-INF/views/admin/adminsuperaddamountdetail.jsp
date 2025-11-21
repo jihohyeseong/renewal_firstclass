@@ -86,7 +86,16 @@
 	.info-table.table-4col td{width:auto}
 	.info-table.table-4col th,.info-table.table-4col td{border-top:none}
 	.info-table tr:first-child th,.info-table tr:first-child td{border-top:1px solid var(--border-color)}
-	
+	.info-table thead th {
+        text-align: center !important;
+    }
+
+    .text-right { text-align: right !important; }
+    .text-center { text-align: center !important; }
+    
+    .info-table td.text-right {
+        padding-right: 20px;
+    }
 	/* 버튼 */
 	.btn{
 		display:inline-block;padding:10px 20px;font-size:15px;font-weight:500;
@@ -448,7 +457,7 @@
 		<tbody>
 			<tr>
 				<th>사업장 이름</th>
-				<td>
+				<td colspan="3">
 					<c:if test="${empty appDTO.businessName}">
 						<span class="highlight-warning">미입력</span>
 					</c:if>
@@ -523,8 +532,8 @@
 	<table class="info-table table-5col">
 		<thead>
 			<tr>
-				<th>회차</th>
-				<th>기간</th>
+				<th>시작일</th>
+				<th>종료일</th>
 				<th>사업장 지급액</th>
 				<th>정부 지급액</th>
 				<th>총 지급액</th>
@@ -535,11 +544,11 @@
 			
 			<c:forEach var="item" items="${dto.list}" varStatus="status">
 								<tr>
-									<td>
+									<td class="text-center">
 										<fmt:formatDate value="${item.startMonthDate}" pattern="yyyy.MM.dd"/>
 									</td>
 							
-									<td>
+									<td class="text-center">
 										<c:choose>
 											<c:when test="${not empty item.earlyReturnDate}">
 												<fmt:formatDate value="${item.earlyReturnDate}" pattern="yyyy.MM.dd"/>
@@ -550,11 +559,11 @@
 										</c:choose>
 									</td>
 							
-									<td>
+									<td class="text-right">
 										<fmt:formatNumber value="${item.companyPayment}" type="number" pattern="#,###" />원
 									</td>
 							
-									<td>
+									<td class="text-right">
 										<c:choose>
 											<c:when test="${not empty item.govPaymentUpdate}">
 												<fmt:formatNumber value="${item.govPaymentUpdate}" type="number" pattern="#,###" />원
@@ -565,7 +574,7 @@
 										</c:choose>
 									</td>
 							
-									<td>
+									<td class="text-right">
 										<fmt:formatNumber
 											value="${item.companyPayment + (not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}"
 											type="number"
@@ -579,7 +588,7 @@
 
 			<c:if test="${not empty dto.list}">
 								<tr style="background-color: var(--light-gray-color);">
-									<td colspan="2">
+									<%-- <td colspan="2">
 										<fmt:formatDate value="${dto.list[0].startMonthDate}" pattern="yyyy.MM.dd" />
 										-
 										<c:choose>
@@ -590,13 +599,13 @@
 												<fmt:formatDate value="${dto.list[fn:length(dto.list) - 1].endMonthDate}" pattern="yyyy.MM.dd" />
 											</c:otherwise>
 										</c:choose>
-									</td>
+									</td> --%>
 							
-									<td colspan="2" style="text-align: center; font-weight: 700; color: var(--dark-gray-color);">
+									<td colspan="4" style="text-align: center; font-weight: 700; color: var(--dark-gray-color);">
 										합계 신청금액
 									</td>
 							
-									<td style="text-align: center; font-weight: 700; font-size: 1.05em; color: var(--primary-color);">
+									<td style="text-align: right; font-weight: 700; font-size: 1.05em; color: var(--primary-color);">
 										<fmt:formatNumber value="${totalAmount}" type="number" pattern="#,###" />원
 									</td>
 								</tr>
@@ -818,8 +827,8 @@
         <table class="info-table table-6col">
             <thead>
                 <tr>
-                    <th>회차</th>
-                    <th>기간</th>
+                    <th>시작일</th>
+                    <th>종료일</th>
                     <th>사업장 지급액</th>
                     <th>정부 지급액</th>
                     <th>총 지급액</th>
@@ -830,9 +839,9 @@
                 <c:set var="totalAddAmount" value="0" />
                 <c:set var="totalAmount" value="0" />
                 <c:forEach var="item" items="${dto.list}" varStatus="status">
-                    <tr>
+                    <tr class="text-center">
                         <td><fmt:formatDate value="${item.startMonthDate}" pattern="yyyy.MM.dd" /></td>
-                        <td>
+                        <td class="text-center">
                             <c:choose>
                                 <c:when test="${not empty item.earlyReturnDate}">
                                     <fmt:formatDate value="${item.earlyReturnDate}" pattern="yyyy.MM.dd" />
@@ -842,8 +851,8 @@
                                 </c:otherwise>
                             </c:choose>
                         </td>
-                        <td><fmt:formatNumber value="${item.companyPayment}" type="number" pattern="#,###" />원</td>
-                        <td>
+                        <td class="text-right"><fmt:formatNumber value="${item.companyPayment}" type="number" pattern="#,###" />원</td>
+                        <td class="text-right">
                             <c:choose>
                                 <c:when test="${not empty item.govPaymentUpdate}">
                                     <fmt:formatNumber value="${item.govPaymentUpdate}" type="number" pattern="#,###" />원
@@ -854,7 +863,7 @@
                             </c:choose>
                         </td>
                         <c:set var="currentTotal" value="${item.companyPayment + (not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}" />
-                        <td><fmt:formatNumber value="${currentTotal}" type="number" pattern="#,###" />원</td>
+                        <td class="text-right"><fmt:formatNumber value="${currentTotal}" type="number" pattern="#,###" />원</td>
                         <c:set var="totalAmount" value="${totalAmount + currentTotal}" />
                         <td style="text-align: right; padding-right: 15px; font-weight: 500;">
                             <c:set var="savedDTO" value="${addAmountMap[item.termId]}" />
@@ -872,7 +881,7 @@
                     <td colspan="4" style="text-align: center; font-weight: 700; color: var(--dark-gray-color);">
                         합계 신청금액
                     </td>
-                    <td style="text-align: center; font-weight: 700; color: var(--primary-color);">
+                    <td style="text-align: right; font-weight: 700; color: var(--primary-color);">
                         <fmt:formatNumber value="${totalAmount}" type="number" pattern="#,###" />원
                     </td>
                     <td style="text-align: right; padding-right: 15px; font-weight: 700; color: var(--primary-color);">
@@ -961,27 +970,10 @@
 	        <div class="button-row">
 	        	<a href="${pageContext.request.contextPath}/admin/superior" class="btn btn-outline"
 	        	 style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">목록으로 돌아가기</a>
-	        </div>
-	        
-	        <%-- <div id="rejectForm">
-				<div class="form-row">
-				<label><strong>부지급 사유 선택</strong></label>
-				<select id="rejectReasons" class="form-control">
-					JS가 이 영역을 .reason-item으로 채웁니다
-				</select> 
-				</div>
-				<div class="form-row row-detail">
-					<label>상세 사유</label>
-					<textarea id="rejectComment" class="form-control" placeholder="상세 사유를 입력하세요 (선택)"></textarea>
-				</div>
-			</div>
-			<div class="button-row">
-				<a href="${pageContext.request.contextPath}/admin/superior" class="btn btn-outline btn-lg">목록으로</a>
-				<div class="judge-actions">
+	        	 <div class="judge-actions">
 					<button type="button" id="confirmBtn" class="btn btn-primary btn-lg">확인</button>
-					<button type="button" id="cancelBtn" class="btn btn-outline btn-lg">취소</button>
 				</div>
-			</div> --%>
+	        </div>
 		</c:otherwise>
 		</c:choose>
     	</div>
@@ -996,95 +988,60 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-	const ctx = '${pageContext.request.contextPath}';
-	console.log('ctx =', '${pageContext.request.contextPath}');
-	const applicationNumber = document.getElementById("applicationNumber")?.value;
-	/* const form = document.getElementById("addAmountForm");
-	const reasonSelect = document.getElementById("codeId");
-	
-	const selectedOption = reasonSelect.options[reasonSelect.selectedIndex];
-    const reasonCodeStr = selectedOption.getAttribute("data-code-str"); // "AR_30"
-    const reasonText = document.getElementById("addReason").value.trim(); */
-    
+    const ctx = '${pageContext.request.contextPath}';
+    const applicationNumber = document.getElementById("applicationNumber")?.value;
+    const userId = document.getElementById("userId")?.value;
+
     const btnApprove = document.getElementById("btnAddAmountApprove");
     const btnReject = document.getElementById("btnAddAmountReject");
-	
-	// userId 값 읽기
-	const userId = document.getElementById("userId")?.value;
+    const btnConfirm = document.getElementById("confirmBtn");
 
-	// 푸시 알림 전송 및 후속 처리를 위한 헬퍼 함수
-	function sendPushAndFinalize(userId, data, defaultMessage) {
-		const successMessage = data.message || defaultMessage;
-		
-		if (userId) {
-			// JQuery AJAX (GET 요청)
-			$.ajax({
-				url: ctx + '/push/' + userId, // API 엔드포인트
-				type: 'GET',
-				success: function(pushResponse) {
-					console.log('Push notification sent:', pushResponse);
-					// 푸시 성공 시
-					alert(successMessage);
-				},
-				error: function(xhr, status, error) {
-					console.error('Push notification failed:', error);
-					// 푸시 실패 시 (메시지에 실패 내역 추가)
-					alert(successMessage);
-				},
-				complete: function() {
-					// 푸시 성공/실패 여부와 관계없이 리디렉션 실행
-					if (data.redirectUrl) {
-						location.href = data.redirectUrl.startsWith('/') ? (ctx + data.redirectUrl) : data.redirectUrl;
-					}
-				}
-			});
-		} else {
-			// userId가 없는 경우 (푸시 X, 기존 로직만 실행)
-			console.warn('userId is not available. Skipping push notification.');
-			alert(successMessage);
-			if (data.redirectUrl) {
-				location.href = data.redirectUrl.startsWith('/') ? (ctx + data.redirectUrl) : data.redirectUrl;
-			}
-		}
-	}
+    let currentChoice = 'approve';
 
-    // 상위 관리자 추가지급 결재 버튼 핸들러
+    function updateButtonState() {
+        if (btnApprove) btnApprove.setAttribute('aria-pressed', currentChoice === 'approve' ? 'true' : 'false');
+        if (btnReject) btnReject.setAttribute('aria-pressed', currentChoice === 'reject' ? 'true' : 'false');
+    }
+
+    updateButtonState();
+
     if (btnApprove) {
         btnApprove.addEventListener("click", function() {
-            handleApproval("approve");
+            currentChoice = 'approve';
+            updateButtonState();
         });
     }
 
     if (btnReject) {
         btnReject.addEventListener("click", function() {
-            handleApproval("reject");
+            currentChoice = 'reject';
+            updateButtonState();
         });
     }
 
-    function handleApproval(actionType, clickedButton) {
+    if (btnConfirm) {
+        btnConfirm.addEventListener("click", function() {
+            processAction();
+        });
+    }
+
+    function processAction() {
         if (!applicationNumber) {
             alert("신청서 번호를 찾을 수 없습니다.");
             return;
         }
 
-        const isApprove = actionType === "approve";
+        const isApprove = (currentChoice === "approve");
         const actionText = isApprove ? "지급" : "부지급";
         
-        console.log("actionText:", actionText);
-        const url = isApprove ? "${pageContext.request.contextPath}/admin/superior/addamount/approve"
-        		: "${pageContext.request.contextPath}/admin/superior/addamount/reject";
+        const url = isApprove 
+            ? ctx + "/admin/superior/addamount/approve"
+            : ctx + "/admin/superior/addamount/reject";
 
-        if (btnApprove) btnApprove.setAttribute('aria-pressed', isApprove);
-  		if (btnReject) btnReject.setAttribute('aria-pressed', !isApprove);
-  		
-  		setTimeout(function() {
         if (!confirm("이 추가지급 신청을 '" + actionText + "' 처리하시겠습니까?")) {
-        	// 취소 누르면 버튼  눌린상태 해제
-            if (clickedButton) clickedButton.setAttribute('aria-pressed', 'false');
-        
-            return;
+            return; // 취소 시 중단
         }
-		
+
         fetch(url, {
             method: 'POST',
             headers: {
@@ -1104,10 +1061,39 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error('Error:', error);
             alert(`네트워크 오류 또는 서버 응답 실패: ${actionText}`);
         });
-    }, 0);
-}
-});
+    }
 
+    // 푸시 알림 전송 및 후속 처리를 위한 헬퍼 함수
+    function sendPushAndFinalize(userId, data, defaultMessage) {
+        const successMessage = data.message || defaultMessage;
+        
+        if (userId) {
+            $.ajax({
+                url: ctx + '/push/' + userId,
+                type: 'GET',
+                success: function(pushResponse) {
+                    console.log('Push notification sent:', pushResponse);
+                    alert(successMessage);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Push notification failed:', error);
+                    alert(successMessage);
+                },
+                complete: function() {
+                    if (data.redirectUrl) {
+                        location.href = data.redirectUrl.startsWith('/') ? (ctx + data.redirectUrl) : data.redirectUrl;
+                    }
+                }
+            });
+        } else {
+            console.warn('userId is not available. Skipping push notification.');
+            alert(successMessage);
+            if (data.redirectUrl) {
+                location.href = data.redirectUrl.startsWith('/') ? (ctx + data.redirectUrl) : data.redirectUrl;
+            }
+        }
+    }
+});
 </script>
 
 

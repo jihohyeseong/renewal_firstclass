@@ -282,12 +282,12 @@
         
 		<div class="filter-left">
 		<div class="filter-group">
-			<span class="filter-label">이름 검색 </span>
+			<span class="filter-label">자녀이름  </span>
 			<input type="text" name="nameKeyword" placeholder="자녀 이름 입력" value="${nameKeyword}" maxlength="50"/>
 	  	</div>
 	
 		<div class="filter-group">
-			<span class="filter-label">주민등록번호 검색</span>
+			<span class="filter-label">자녀주민등록번호</span>
 			<input type="text" name="regNoKeyword" placeholder="자녀 주민등록번호 입력" value="${regNoKeyword}" maxlength="13"/>
 		</div>
 		</div>
@@ -388,14 +388,16 @@ $(document).ready(function() {
 
         let html = '';
         $.each(list, function(index, item) {
+        	const childName = item.childName || '';
+            const childResiRegiNumber = item.childResiRegiNumber || '';
             // 날짜 포맷팅 
             const startDate = formatDate(item.startDate);
             const endDate = formatDate(item.endDate);
 
             html += '<tr>';
             html += '<td>' + item.confirmNumber + '</td>';
-            html += '<td>' + item.childName + '</td>';
-            html += '<td>' + item.childResiRegiNumber + '</td>'; // 복호화된 주민번호
+            html += '<td>' + childName + '</td>';
+            html += '<td>' + childResiRegiNumber + '</td>'; // 복호화된 주민번호
             html += '<td>' + item.name + '</td>';
             html += '<td>' + item.statusName + '</td>';
             html += '<td>' + startDate + ' ~ ' + endDate + '</td>';

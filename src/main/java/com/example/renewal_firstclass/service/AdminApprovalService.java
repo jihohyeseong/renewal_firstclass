@@ -35,7 +35,7 @@ public class AdminApprovalService {
     // 신청 상세 조회
     public ConfirmApplyDTO getConfirmForEditing(Long confirmNumber) {
         // 원본 데이터 조회
-        ConfirmApplyDTO originalDto = confirmApplyDAO.selectByConfirmNumber(confirmNumber);
+        ConfirmApplyDTO originalDto = adminApprovalDAO.selectByConfirmNumber(confirmNumber);
         if (originalDto == null) return null;
 
         // 수정된 데이터 포함 조회 
