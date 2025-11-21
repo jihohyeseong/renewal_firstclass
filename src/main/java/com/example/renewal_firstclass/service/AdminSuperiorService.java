@@ -151,7 +151,7 @@ public class AdminSuperiorService {
 
         // 상세 조회
         AdminUserApprovalDTO appDTO = adminSuperiorDAO.selectAppDetailByAppNo(applicationNumber);
-        if (appDTO == null) {
+        if (dto == null) {
             model.addAttribute("error", "존재하지 않는 신청입니다.");
             return;
         }
@@ -159,7 +159,7 @@ public class AdminSuperiorService {
         // 월별 단위기간 내역
         List<TermAmountDTO> terms = termAmountDAO.selectByConfirmId(appDTO.getConfirmNumber());
 
-        model.addAttribute("appDTO", appDTO);
+        model.addAttribute("appDTO", dto);
         model.addAttribute("terms", terms);
         model.addAttribute("isAddAmountDetail", false);
     }
@@ -215,7 +215,7 @@ public class AdminSuperiorService {
             }
         }
         model.addAttribute("addAmountMap", addAmountMap);
-        model.addAttribute("appDTO", appDTO);
+        model.addAttribute("appDTO", dto);
         model.addAttribute("terms", terms);
         
         model.addAttribute("isAddAmountDetail", true); 
