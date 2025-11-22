@@ -13,7 +13,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body, html { height: 100%; font-family: 'Noto Sans KR', sans-serif; background-color: var(--primary-color); overflow-x: hidden; }
 
-        /* --- Background Animation Styles --- */
         .background-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         .animation-bg span { position: absolute; bottom: -100px; background-color: rgba(255, 255, 255, 0.15); border-radius: 50%; animation: floatUp 20s linear infinite; }
         .animation-bg span:nth-child(1) { width: 40px; height: 40px; left: 10%; animation-duration: 25s; }
@@ -38,7 +37,6 @@
         .links-wrapper { margin-top: 30px; text-align: center; animation: fadeInUp 1s ease-out 0.4s forwards; opacity: 0; }
         .links-wrapper a { color: rgba(255, 255, 255, 0.8); text-decoration: none; font-size: 14px; margin: 0 10px; }
         
-        /* --- [Added] Phone Input Group Styles --- */
         .phone-input-group {
             display: flex;
             align-items: center;
@@ -53,7 +51,6 @@
             color: var(--gray-color);
         }
 
-        /* --- Animation Keyframes --- */
         @keyframes wave-animation { from { background-position-x: 0; } to { background-position-x: -1440px; } }
         @keyframes floatUp { from { transform: translateY(0); opacity: 1; } to { transform: translateY(-110vh); opacity: 0; } }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }

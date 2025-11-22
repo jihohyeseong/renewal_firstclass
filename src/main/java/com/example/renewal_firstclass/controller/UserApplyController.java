@@ -118,7 +118,7 @@ public class UserApplyController {
 	// 육아휴직 급여 저장
 	@PostMapping("/user/apply")
 	public String applyUserApplication(ApplicationDTO applicationDTO, boolean early, RedirectAttributes redirectAttributes, Model model) {
-		
+
 		if(applicationDTO.getBankCode() == null || applicationDTO.getAccountNumber() == null || applicationDTO.getCenterId() == null || applicationDTO.getGovInfoAgree() == null) {
 			model.addAttribute("applicationDTO", applicationDTO);
 			return "user/application";

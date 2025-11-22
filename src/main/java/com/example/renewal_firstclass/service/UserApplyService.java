@@ -121,7 +121,8 @@ public class UserApplyService {
 		applicationDTO.setRegistrationNumber(regiNum.substring(0,6) + regiNum.substring(7));
 		try {
 			applicationDTO.setRegistrationNumber(aes256Util.encrypt(applicationDTO.getRegistrationNumber()));
-			applicationDTO.setChildResiRegiNumber(aes256Util.encrypt(applicationDTO.getChildResiRegiNumber()));
+			if(applicationDTO.getChildResiRegiNumber() != null)
+				applicationDTO.setChildResiRegiNumber(aes256Util.encrypt(applicationDTO.getChildResiRegiNumber()));
 			applicationDTO.setAccountNumber(aes256Util.encrypt(applicationDTO.getAccountNumber()));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -189,7 +190,8 @@ public class UserApplyService {
 	public void updateApplication(ApplicationDTO applicationDTO, List<Long> termIdList, boolean early) {
 		
 		try {
-			applicationDTO.setChildResiRegiNumber(aes256Util.encrypt(applicationDTO.getChildResiRegiNumber()));
+			if(applicationDTO.getChildResiRegiNumber() != null)
+				applicationDTO.setChildResiRegiNumber(aes256Util.encrypt(applicationDTO.getChildResiRegiNumber()));
 			applicationDTO.setAccountNumber(aes256Util.encrypt(applicationDTO.getAccountNumber()));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -203,7 +205,8 @@ public class UserApplyService {
 		userApplyDAO.updateTermEarlyAndGov(applicationDTO.getApplicationNumber());
 		userApplyDAO.updateTermApplyBefore(termIdList);
 		userApplyDAO.updateTermApply(ids, applicationDTO.getApplicationNumber());
-		applyEarlyTerm(applicationDTO.getEndDate(), applicationDTO.getList().get(applicationDTO.getList().size() - 1));
+		if(early)
+			applyEarlyTerm(applicationDTO.getEndDate(), applicationDTO.getList().get(applicationDTO.getList().size() - 1));
 	}
 
 	public boolean userCheck(Long confirmNumber, String name) {

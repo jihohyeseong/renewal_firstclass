@@ -246,10 +246,12 @@
                     <div class="form-group">
                         <label for="rrn1">주민등록번호</label>
                         <div class="rrn-inputs">
-                            <input type="text" id="rrn1" maxlength="6" value="${joinDTO.registrationNumber != null ? joinDTO.registrationNumber.substring(0,6) : ''}" required>
-                            <span class="hyphen">-</span>
-                            <input type="password" id="rrn2" maxlength="7" value="${joinDTO.registrationNumber != null ? joinDTO.registrationNumber.substring(6,13) : ''}" required>
-                        </div>
+						    <input type="text" id="rrn1" maxlength="6" 
+						           value="${joinDTO.registrationNumber != null && fn:length(joinDTO.registrationNumber) == 13 ? joinDTO.registrationNumber.substring(0,6) : ''}" required>
+						    <span class="hyphen">-</span>
+						    <input type="password" id="rrn2" maxlength="7" 
+						           value="${joinDTO.registrationNumber != null && fn:length(joinDTO.registrationNumber) == 13 ? joinDTO.registrationNumber.substring(6,13) : ''}" required>
+						</div>
                         <c:if test="${not empty errors.registrationNumber}">
                             <p class="message error">${errors.registrationNumber}</p>
                         </c:if>

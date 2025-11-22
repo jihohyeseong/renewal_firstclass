@@ -921,8 +921,10 @@
                               <div class="form-group" style="margin-top: 5px; margin-bottom: 5px;">
                                     <label class="field-title" style="width: 160px;"></label> <div class="input-field">
                                      <div class="checkbox-group">
-                                          <input type="checkbox" name="early" id="early-return-chk" style="transform: scale(1.2);"
-                                                 ${not empty earlyReturnTerm ? 'checked' : ''}>
+                                          <input type="checkbox" id="early-return-chk" style="transform: scale(1.2);"
+											     ${not empty earlyReturnTerm ? 'checked' : ''}>
+											
+											<input type="hidden" name="early" id="early-hidden" value="${not empty earlyReturnTerm ? 'true' : 'false'}">
                                           <label for="early-return-chk" style="font-weight: 500; color: var(--primary-color);">조기복직(종료일 변경)</label>
                                      </div>
                                     </div>
@@ -2330,13 +2332,20 @@ document.addEventListener('DOMContentLoaded', function () {
 	            }
 
           const action = (submitter && submitter.name === 'action') ? submitter.value : null;
-          if (action === 'submit') {
-              alert('신청서가 저장되었습니다');
-          } else if (action === 'update') {
-              alert('신청서가 수정되었습니다');
-          }
-
-          form.submit();
+		  if (action === 'submit') {
+		      alert('신청서가 저장되었습니다');
+		  } else if (action === 'update') {
+		      alert('신청서가 수정되었습니다');
+		  }
+		
+		  const earlyChk = document.getElementById('early-return-chk');
+		  const earlyHidden = document.getElementById('early-hidden');
+		  
+		  if (earlyChk && earlyHidden) {
+		      earlyHidden.value = earlyChk.checked ? 'true' : 'false';
+		  }
+		
+		  form.submit();
 
       } catch (err) {
           console.error("Form processing error:", err);
