@@ -534,7 +534,6 @@
 				<th>종료일</th>
 				<th>사업장 지급액</th>
 				<th>정부 지급액</th>
-				<th>총 지급액</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -572,12 +571,12 @@
 										</c:choose>
 									</td>
 							
-									<td class="text-right">
+									<%-- <td class="text-right">
 										<fmt:formatNumber
 											value="${item.companyPayment + (not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}"
 											type="number"
 											pattern="#,###" />원
-									</td>
+									</td> --%>
 								</tr>
 							
 								<c:set var="totalAmount"
@@ -599,7 +598,7 @@
 										</c:choose>
 									</td> --%>
 							
-									<td colspan="4" style="text-align: center; font-weight: 700; color: var(--dark-gray-color);">
+									<td colspan="3" style="text-align: center; font-weight: 700; color: var(--dark-gray-color);">
 										합계 신청금액
 									</td>
 							

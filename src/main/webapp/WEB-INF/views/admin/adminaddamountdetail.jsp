@@ -589,7 +589,6 @@
 				<th>종료일</th>
 				<th>사업장 지급액</th>
 				<th>정부 지급액</th>
-				<th>총 지급액</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -627,16 +626,16 @@
 										</c:choose>
 									</td>
 							
-									<td class="text-right">
+									<%-- <td class="text-right">
 										<fmt:formatNumber
-											value="${item.companyPayment + (not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}"
+											value="${(not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}"
 											type="number"
 											pattern="#,###" />원
-									</td>
+									</td> --%>
 								</tr>
 							
 								<c:set var="totalAmount"
-									value="${totalAmount + item.companyPayment + (not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}" />
+									value="${totalAmount + (not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}" />
 							</c:forEach>
 
 			<c:if test="${not empty dto.list}">
@@ -654,7 +653,7 @@
 										</c:choose>
 									</td> --%>
 							
-									<td colspan="4" style="text-align: center; font-weight: 700; color: var(--dark-gray-color);">
+									<td colspan="3" style="text-align: center; font-weight: 700; color: var(--dark-gray-color);">
 										합계 신청금액
 									</td>
 							
@@ -877,14 +876,13 @@
 		</table>
 	
 		<h3 class="section-title" style="font-size: 16px; margin-top: 25px;">월별 지급 내역</h3>
-		<table class="info-table table-6col">
+		<table class="info-table table-5col">
 			<thead>
 				<tr>
 					<th>시작일</th>
 					<th>종료일</th>
 					<th>사업장 지급액</th>
 					<th>정부 지급액</th>
-					<th>총 지급액</th>
 					<th>추가지급액</th>
 				</tr>
 			</thead>
@@ -923,12 +921,12 @@
 											</c:choose>
 										</td>
 								
-										<td class="text-right">
+										<%-- <td class="text-right">
 											<fmt:formatNumber
-												value="${item.companyPayment + (not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}"
+												value="${(not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}"
 												type="number"
 												pattern="#,###" />원
-										</td>
+										</td> --%>
 										<td style="padding: 5px;">
 	                                            <input type="hidden" name="termId" value="${item.termId}">
 	                                            <input type="number" name="amount" class="form-control amount-input" 
@@ -1018,7 +1016,6 @@
 	                                style="width: 300px;">
 	                            <option value="">-- 사유를 선택하세요 --</option>
 	                            <c:forEach var="code" items="${addReasonCodes}">
-	                                <%-- Map의 키는 XML의 Alias "codeId", "name", "code" --%>
 	                                <option value="${code.codeId}" data-code-str="${code.code}">${code.name}</option>
 	                            </c:forEach>
 	                    </select>
@@ -1077,14 +1074,13 @@
         </table>
 
         <h3 class="section-title" style="font-size: 16px; margin-top: 25px;">월별 지급 내역</h3>
-        <table class="info-table table-6col">
+        <table class="info-table table-5col">
             <thead>
                 <tr>
                     <th>시작일</th>
                     <th>종료일</th>
                     <th>사업장 지급액</th>
                     <th>정부 지급액</th>
-                    <th>총 지급액</th>
                     <th style="background-color: var(--primary-light-color);">추가지급액</th>
                 </tr>
             </thead>
@@ -1115,8 +1111,8 @@
                                 </c:otherwise>
                             </c:choose>
                         </td>
-                        <c:set var="currentTotal" value="${item.companyPayment + (not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}" />
-                        <td class="text-right"><fmt:formatNumber value="${currentTotal}" type="number" pattern="#,###" />원</td>
+                        <c:set var="currentTotal" value="${(not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}" />
+                        <%-- <td class="text-right"><fmt:formatNumber value="${currentTotal}" type="number" pattern="#,###" />원</td> --%>
                         <c:set var="totalAmount" value="${totalAmount + currentTotal}" />
                         <td style="text-align: right; padding-right: 15px; font-weight: 500;">
                             <c:set var="savedDTO" value="${addAmountMap[item.termId]}" />
@@ -1131,7 +1127,7 @@
                     </tr>
                 </c:forEach>
                 <tr style="background-color: var(--light-gray-color);">
-                    <td colspan="4" style="text-align: center; font-weight: 700; color: var(--dark-gray-color);">
+                    <td colspan="3" style="text-align: center; font-weight: 700; color: var(--dark-gray-color);">
                         합계 신청금액
                     </td>
                     <td style="text-align: right; font-weight: 700; color: var(--primary-color);">
