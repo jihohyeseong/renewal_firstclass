@@ -18,7 +18,6 @@
   <tx:annotation-driven transaction-manager="transactionManager"/>
   <task:annotation-driven/>
 
-  <!-- ★ 기존 애플리케이션 dataSource/transactionManager 재사용 전제 -->
   <!-- job-repository = 배치 메타데이터 저장소(DB) -->
 <!-- batch-root.xml -->
 <bean id="jobRepository"
@@ -31,7 +30,7 @@
 
 </bean>
 
-  <!-- job-launcher = 잡 실행기 -->
+  <!-- job-launcher-->
   <bean id="jobLauncher"
         class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
     <property name="jobRepository" ref="jobRepository"/>

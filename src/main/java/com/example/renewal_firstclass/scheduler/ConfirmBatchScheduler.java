@@ -17,6 +17,7 @@ public class ConfirmBatchScheduler {
 
     // 매일 새벽 03:00 (KST)
     @Scheduled(cron = "0 0 3 * * *", zone = "Asia/Seoul")
+/*    @Scheduled(cron = "0/30 * * * * *", zone = "Asia/Seoul")*/
     public void run() throws Exception {
         jobLauncher.run(
                 confirmAutoApproveJob,

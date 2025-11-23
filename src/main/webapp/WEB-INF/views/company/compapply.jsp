@@ -426,6 +426,16 @@ input[type="checkbox"]:focus {
 	box-shadow: var(--shadow-md);
 	transform: translateY(-2px);
 }
+
+    .center-display-box:not(.filled)::before {
+        content: '센터 찾기 버튼을 클릭하여 관할 센터를 선택하세요.';
+        font-style: italic;
+        color: var(--gray-color);
+        font-size: 15px;
+    }
+    .center-display-box:not(.filled) p {
+        display: none; 
+    }
 </style>
 
 <title>육아휴직 확인서 제출</title>
@@ -466,7 +476,12 @@ input[type="checkbox"]:focus {
 							name="registrationNumber" id="employee-rrn-hidden">
 						<button type="button" id="find-employee-btn"
 							class="btn btn-secondary" style="white-space: nowrap;">
-							근로자 확인</button>
+							이름 검색</button>
+						    <button type="button" id="reset-employee-btn"
+						        class="btn btn-soft"
+						        style="white-space: nowrap; display:none;">
+						        지우기
+						    </button>
 					</div>
 				</div>
 			</div>
@@ -1393,22 +1408,96 @@ if (hidden && !hidden.value) hidden.removeAttribute('name');
     
 });
 
-//주민번호로 이름 자동 채우기
+//직원 주민번호로 이름 자동 채우기
+// 주민번호로 이름 자동 채우기 + 같은 버튼으로 '근로자 확인' ↔ '지우기' 토글 + 기간 초기화
 (function wireFindName(){
-  const btn   = document.getElementById('find-employee-btn');
-  const aEl   = document.getElementById('employee-rrn-a');
-  const bEl   = document.getElementById('employee-rrn-b');
-  const nameEl= document.getElementById('employee-name');
-  const hidEl = document.getElementById('employee-rrn-hidden');
+  const btn    = document.getElementById('find-employee-btn');
+  const aEl    = document.getElementById('employee-rrn-a');
+  const bEl    = document.getElementById('employee-rrn-b');
+  const nameEl = document.getElementById('employee-name');
+  const hidEl  = document.getElementById('employee-rrn-hidden');
 
-  if (!btn || !aEl || !bEl) return;
+  if (!btn || !aEl || !bEl || !nameEl) return;
 
-  function onlyDigits(s){ return (s||'').replace(/[^\d]/g,''); }
+  function onlyDigits(s){ return (s || '').replace(/[^\d]/g, ''); }
 
   const ctx = '${pageContext.request.contextPath}';
   const url = ctx + '/comp/apply/find-name';
 
+  let mode = 'find';    // 'find' = 근로자 확인 모드, 'reset' = 지우기 모드
+  let loading = false;  // 중복 클릭 방지
+
+  // 🔸 기간/단위기간 관련 필드 초기화
+  function resetPeriodFields() {
+    const startDate        = document.getElementById('start-date');
+    const endDate          = document.getElementById('end-date');
+    const formsContainer   = document.getElementById('dynamic-forms-container');
+    const headerRow        = document.getElementById('dynamic-header-row');
+    const noPaymentWrapper = document.getElementById('no-payment-wrapper');
+    const noPaymentChk     = document.getElementById('no-payment');
+
+    if (startDate) startDate.value = '';
+    if (endDate)   endDate.value = '';
+
+    if (formsContainer)   formsContainer.innerHTML = '';
+    if (headerRow)        headerRow.style.display = 'none';
+    if (noPaymentWrapper) noPaymentWrapper.style.display = 'none';
+    if (noPaymentChk)     noPaymentChk.checked = false;
+
+    // 이전 기간 정보도 리셋(겹침 체크용)
+    window.prevPeriod = { start: null, end: null, overlap: false };
+  }
+
+  // 🔸 버튼/필드 상태 바꾸는 공통 함수
+  function setMode(newMode){
+    mode = newMode;
+
+    if (mode === 'find') {
+      // ✅ 다시 조회할 수 있게: 버튼 텍스트/스타일 + 주민번호 입력 가능
+      btn.textContent = '이름 검색';
+      btn.classList.remove('btn-soft');
+      btn.classList.add('btn-secondary');
+
+      [aEl, bEl].forEach(el => {
+        el.readOnly = false;
+        el.classList.remove('readonly-like');
+      });
+
+    } else { // 'reset'
+      // ✅ 이름 조회된 상태: 주민번호 잠그고 버튼을 "지우기"
+      btn.textContent = '지우기';
+      btn.classList.remove('btn-secondary');
+      btn.classList.add('btn-soft');
+
+      [aEl, bEl].forEach(el => {
+        el.readOnly = true;
+        el.classList.add('readonly-like');
+      });
+    }
+  }
+
+  // 초기 상태
+  setMode('find');
+
   btn.addEventListener('click', async function(){
+    if (loading) return;
+
+    // 🔹 지우기 모드일 때: 전체 초기화
+    if (mode === 'reset') {
+      aEl.value = '';
+      bEl.value = '';
+      nameEl.value = '';
+      if (hidEl) hidEl.value = '';
+
+      // 🔸 지우기 눌렀을 때도 기간 초기화
+      resetPeriodFields();
+
+      setMode('find');
+      aEl.focus();
+      return;
+    }
+
+    // 🔹 여기부터는 'find' 모드 = 근로자 확인
     const a = onlyDigits(aEl.value);
     const b = onlyDigits(bEl.value);
 
@@ -1421,10 +1510,15 @@ if (hidden && !hidden.value) hidden.removeAttribute('name');
     const regNo = a + b;
     if (hidEl) hidEl.value = regNo;
 
+    // 🔸 새로운 이름 조회 시도 → 기존 기간/단위기간 먼저 초기화
+    resetPeriodFields();
+
     const csrfInput = document.querySelector('input[name="_csrf"]');
     const csrfToken = csrfInput ? csrfInput.value : null;
 
     try {
+      loading = true;
+
       const body = new URLSearchParams({ regNo });
       if (csrfToken) body.append('_csrf', csrfToken);
 
@@ -1433,7 +1527,7 @@ if (hidden && !hidden.value) hidden.removeAttribute('name');
         credentials: 'same-origin',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-          ...(csrfToken ? {'X-CSRF-TOKEN': csrfToken} : {})
+          ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {})
         },
         body
       });
@@ -1452,16 +1546,23 @@ if (hidden && !hidden.value) hidden.removeAttribute('name');
 
       const data = await resp.json();
       if (data && data.found && data.name) {
+        // ✅ 이름 조회 성공
         nameEl.value = data.name;
+        // → 주민번호 잠그고 버튼을 "지우기" 모드로 변경
+        setMode('reset');
       } else {
         alert('일치하는 근로자 정보를 찾을 수 없습니다.');
       }
     } catch (e) {
       console.error(e);
       alert('일시적인 오류로 조회에 실패했습니다.');
+    } finally {
+      loading = false;
     }
   });
 })();
+
+
 
 //이전 육휴기간(최신 1건) 조회 
 function renderClientAlert({ type = 'info', html = '' }) {

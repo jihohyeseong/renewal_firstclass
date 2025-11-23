@@ -32,7 +32,7 @@ public class ConfirmJobConfig {
         return stepBuilderFactory.get("autoApproveStep")
                 .tasklet((contribution, chunkContext) -> {
                     int updated = approvalBatchService.approveConfirmByBatch();
-                    System.out.println("[BATCH] auto approve updated: " + updated);
+                    System.out.println("[BATCH] 자동 배치 기능 실행: " + updated + "건");
                     return RepeatStatus.FINISHED;
                 })
                 .build();

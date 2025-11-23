@@ -130,6 +130,11 @@
             <button type="button" id="find-employee-btn" class="btn btn-secondary" style="white-space:nowrap;">
 		      	이름 검색
 		    </button>
+		    <button type="button" id="reset-employee-btn"
+			class="btn btn-soft"
+			style="white-space: nowrap; display:none;">
+			  지우기
+			 </button>
           </div>
         </div>
       </div>
@@ -1038,39 +1043,114 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-}); // DOMContentLoaded 끝
+});
 
-// ─────────────────────────────────────
-// 직원 주민번호로 이름 자동 채우기
-// ─────────────────────────────────────
+//직원 주민번호로 이름 자동 채우기
 (function wireFindName(){
-  const btn   = document.getElementById('find-employee-btn');
-  const aEl   = document.getElementById('employee-rrn-a');
-  const bEl   = document.getElementById('employee-rrn-b');
-  const nameEl= document.getElementById('employee-name');
-  const hidEl = document.getElementById('employee-rrn-hidden');
+  const btn    = document.getElementById('find-employee-btn');
+  const aEl    = document.getElementById('employee-rrn-a');
+  const bEl    = document.getElementById('employee-rrn-b');
+  const nameEl = document.getElementById('employee-name');
+  const hidEl  = document.getElementById('employee-rrn-hidden');
 
-  if (!btn || !aEl || !bEl) return;
-  function onlyDigits(s){ return (s||'').replace(/[^\d]/g,''); }
+  if (!btn || !aEl || !bEl || !nameEl) return;
+
+  function onlyDigits(s){ return (s || '').replace(/[^\d]/g, ''); }
 
   const ctx = '${pageContext.request.contextPath}';
   const url = ctx + '/comp/apply/find-name';
 
+  let mode    = 'find';
+  let loading = false;
+
+  function resetPeriodFields() {
+    const startDate        = document.getElementById('start-date');
+    const endDate          = document.getElementById('end-date');
+    const formsContainer   = document.getElementById('dynamic-forms-container');
+    const headerRow        = document.getElementById('dynamic-header-row');
+    const noPaymentWrapper = document.getElementById('no-payment-wrapper');
+    const noPaymentChk     = document.getElementById('no-payment');
+
+    if (startDate) startDate.value = '';
+    if (endDate)   endDate.value = '';
+
+    if (formsContainer)   formsContainer.innerHTML = '';
+    if (headerRow)        headerRow.style.display = 'none';
+    if (noPaymentWrapper) noPaymentWrapper.style.display = 'none';
+    if (noPaymentChk)     noPaymentChk.checked = false;
+
+    window.prevPeriod = { start: null, end: null, overlap: false };
+  }
+
+  function setMode(newMode){
+    mode = newMode;
+
+    if (mode === 'find') {
+      btn.textContent = '이름 검색';
+      btn.classList.remove('btn-soft');
+      btn.classList.add('btn-secondary');
+
+      [aEl, bEl].forEach(el => {
+        el.readOnly = false;
+        el.classList.remove('readonly-like');
+      });
+
+    } else { 
+      btn.textContent = '지우기';
+      btn.classList.remove('btn-secondary');
+      btn.classList.add('btn-soft');
+
+      [aEl, bEl].forEach(el => {
+        el.readOnly = true;
+        el.classList.add('readonly-like');
+      });
+    }
+  }
+
+  setMode('find');
+
+  const hasName = (nameEl.value || '').trim().length > 0;
+  const hasReg  = hidEl && onlyDigits(hidEl.value).length === 13;
+  if (hasName || hasReg) {
+    setMode('reset');
+  }
+
   btn.addEventListener('click', async function(){
+    if (loading) return;
+
+    if (mode === 'reset') {
+      aEl.value = '';
+      bEl.value = '';
+      nameEl.value = '';
+      if (hidEl) hidEl.value = '';
+
+      resetPeriodFields();
+
+      setMode('find');
+      aEl.focus();
+      return;
+    }
+
     const a = onlyDigits(aEl.value);
     const b = onlyDigits(bEl.value);
+
     if (a.length !== 6 || b.length !== 7) {
       alert('근로자 주민등록번호 앞 6자리와 뒤 7자리를 정확히 입력하세요.');
       (a.length !== 6 ? aEl : bEl).focus();
       return;
     }
+
     const regNo = a + b;
     if (hidEl) hidEl.value = regNo;
+
+    resetPeriodFields();
 
     const csrfInput = document.querySelector('input[name="_csrf"]');
     const csrfToken = csrfInput ? csrfInput.value : null;
 
     try {
+      loading = true;
+
       const body = new URLSearchParams({ regNo });
       if (csrfToken) body.append('_csrf', csrfToken);
 
@@ -1079,24 +1159,40 @@ document.addEventListener('DOMContentLoaded', function () {
         credentials: 'same-origin',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-          ...(csrfToken ? {'X-CSRF-TOKEN': csrfToken} : {})
+          ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {})
         },
         body
       });
 
       const ct = (resp.headers.get('content-type') || '').toLowerCase();
-      if (!resp.ok) { alert('이름 조회 요청에 실패했습니다. (' + resp.status + ')'); return; }
-      if (!ct.includes('application/json')) { alert('서버 응답이 JSON이 아닙니다.'); return; }
+      if (!resp.ok) {
+        console.error('[find-name] HTTP', resp.status, await resp.text().catch(()=> ''));
+        alert('이름 조회 요청에 실패했습니다. (' + resp.status + ')');
+        return;
+      }
+      if (!ct.includes('application/json')) {
+        console.error('[find-name] not JSON', ct, await resp.text().catch(()=> ''));
+        alert('서버 응답이 JSON이 아닙니다. (로그인 리다이렉트/시큐리티 확인)');
+        return;
+      }
 
       const data = await resp.json();
-      if (data && data.found && data.name) nameEl.value = data.name;
-      else alert('일치하는 근로자 정보를 찾을 수 없습니다.');
+      if (data && data.found && data.name) {
+        nameEl.value = data.name;
+        setMode('reset');
+      } else {
+        alert('일치하는 근로자 정보를 찾을 수 없습니다.');
+      }
     } catch (e) {
       console.error(e);
       alert('일시적인 오류로 조회에 실패했습니다.');
+    } finally {
+      loading = false;
     }
   });
 })();
+
+
 
 // ─────────────────────────────────────
 // 이전 육휴기간(최신 1건) 조회 (수정페이지 전용: nowConfirmNumber 포함)

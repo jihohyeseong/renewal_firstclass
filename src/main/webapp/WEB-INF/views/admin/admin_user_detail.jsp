@@ -711,96 +711,81 @@ textarea.form-control { resize: vertical; }
 
 
 
-<!-- [블록 2] 급여 신청 내역 -->
+<!-- 급여 신청 내역 -->
 <div class="info-table-container">
-  <h2 class="section-title">급여 신청 내역</h2>
-  <table class="info-table table-4col">
-    <table class="info-table a">
+  <h2 class="section-title">월별 지급 내역</h2>
+  <table class="info-table a">
     <thead>
-        <tr>
-            <th>시작일</th>
-            <th>종료일</th>
-            <th>사업장 지급액</th>
-            <th>정부 지급액</th> </tr>
+      <tr>
+        <th>시작일</th>
+        <th>종료일</th>
+        <th>사업장 지급액</th>
+        <th>정부 지급액</th>
+      </tr>
     </thead>
     <tbody>
+      <!-- 내역이 있는 경우 -->
+      <c:if test="${not empty dto.list}">
         <c:set var="totalAmount" value="${0}" />
-        
+
         <c:forEach var="item" items="${dto.list}" varStatus="status">
-            <tr>
-                <td>
-                    <fmt:formatDate value="${item.startMonthDate}" pattern="yyyy.MM.dd"/>
-                </td>
-        
-                <td>
-                    <c:choose>
-                        <c:when test="${not empty item.earlyReturnDate}">
-                            <fmt:formatDate value="${item.earlyReturnDate}" pattern="yyyy.MM.dd"/>
-                        </c:when>
-                        <c:otherwise>
-                            <fmt:formatDate value="${item.endMonthDate}" pattern="yyyy.MM.dd"/>
-                        </c:otherwise>
-                    </c:choose>
-                </td>
-        
-                <td>
-                    <fmt:formatNumber value="${item.companyPayment}" type="number" pattern="#,###" />원
-                </td>
-        
-                <td>
-                    <c:choose>
-                        <c:when test="${not empty item.govPaymentUpdate}">
-                            <fmt:formatNumber value="${item.govPaymentUpdate}" type="number" pattern="#,###" />원
-                        </c:when>
-                        <c:otherwise>
-                            <fmt:formatNumber value="${item.govPayment}" type="number" pattern="#,###" />원
-                        </c:otherwise>
-                    </c:choose>
-                </td>
-                
-                </tr>
-        
-            <c:set var="totalAmount"
-                value="${totalAmount + (not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}" />
+          <tr>
+            <td>
+              <fmt:formatDate value="${item.startMonthDate}" pattern="yyyy.MM.dd" />
+            </td>
+
+            <td>
+              <c:choose>
+                <c:when test="${not empty item.earlyReturnDate}">
+                  <fmt:formatDate value="${item.earlyReturnDate}" pattern="yyyy.MM.dd" />
+                </c:when>
+                <c:otherwise>
+                  <fmt:formatDate value="${item.endMonthDate}" pattern="yyyy.MM.dd" />
+                </c:otherwise>
+              </c:choose>
+            </td>
+
+            <td style="text-align: right;">
+              <fmt:formatNumber value="${item.companyPayment}" type="number" pattern="#,###" />원
+            </td>
+
+            <td style="text-align: right;">
+              <c:choose>
+                <c:when test="${not empty item.govPaymentUpdate}">
+                  <fmt:formatNumber value="${item.govPaymentUpdate}" type="number" pattern="#,###" />원
+                </c:when>
+                <c:otherwise>
+                  <fmt:formatNumber value="${item.govPayment}" type="number" pattern="#,###" />원
+                </c:otherwise>
+              </c:choose>
+            </td>
+          </tr>
+          <c:set var="totalAmount"
+                 value="${totalAmount + (not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}" />
         </c:forEach>
+        <tr style="background-color: var(--light-gray-color);">
+          <td colspan="3"
+              style="text-align: center; font-weight: 700; color: var(--dark-gray-color);">
+            합계 신청금액
+          </td>
+          <td style="text-align: right; font-weight: 700; font-size: 1.05em; color: var(--primary-color);">
+            <fmt:formatNumber value="${totalAmount}" type="number" pattern="#,###" />원
+          </td>
+        </tr>
+      </c:if>
 
-        <c:if test="${not empty dto.list}">
-            <tr style="background-color: var(--light-gray-color);">
-                <td colspan="2">
-                    <fmt:formatDate value="${dto.list[0].startMonthDate}" pattern="yyyy.MM.dd" />
-                    -
-                    <c:choose>
-                        <c:when test="${not empty dto.list[fn:length(dto.list) - 1].earlyReturnDate}">
-                            <fmt:formatDate value="${dto.list[fn:length(dto.list) - 1].earlyReturnDate}" pattern="yyyy.MM.dd" />
-                        </c:when>
-                        <c:otherwise>
-                            <fmt:formatDate value="${dto.list[fn:length(dto.list) - 1].endMonthDate}" pattern="yyyy.MM.dd" />
-                        </c:otherwise>
-                    </c:choose>
-                    (${totalDate}일)
-                </td>
-        
-                <td style="text-align: center; font-weight: 700; color: var(--dark-gray-color);">
-                    합계 신청금액
-                </td>
-        
-                <td style="text-align: center; font-weight: 700; font-size: 1.05em; color: var(--primary-color);">
-                    <fmt:formatNumber value="${totalAmount}" type="number" pattern="#,###" />원
-                </td>
-            </tr>
-        </c:if>
-    </tbody>
-</table>
-
-      <%-- 내역 없음 --%>
+      <!-- 내역이 없는 경우 -->
       <c:if test="${empty dto.list}">
         <tr>
-          <td colspan="5" style="text-align: center; color: #888;">단위기간 내역이 없습니다.</td>
+          <td colspan="4" style="text-align: center; color: #888;">
+            단위기간 내역이 없습니다.
+          </td>
         </tr>
       </c:if>
     </tbody>
   </table>
 </div>
+
 <!-- 자녀 정보 -->
 <div class="info-table-container">
   <h2 class="section-title">자녀 정보 (육아 대상)</h2>
