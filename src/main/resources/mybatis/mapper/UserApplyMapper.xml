@@ -10,8 +10,8 @@
 	    SELECT
 	        c.confirm_number,
 	        TO_CHAR(c.apply_dt, 'YYYY-MM-DD') AS applyDt,
-	        TO_CHAR(c.start_date, 'YYYY-MM-DD') AS startDate,
-	        TO_CHAR(c.end_date, 'YYYY-MM-DD')   AS endDate,
+	        TO_CHAR(COALESCE(c.upd_start_date, c.start_date), 'YYYY-MM-DD') AS startDate,
+	        TO_CHAR(COALESCE(c.upd_end_date, c.end_date), 'YYYY-MM-DD')     AS endDate,
 	        u.name,
 	        u.phone_number
 	    FROM
