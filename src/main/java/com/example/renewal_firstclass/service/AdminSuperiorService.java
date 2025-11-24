@@ -188,6 +188,11 @@ public class AdminSuperiorService {
                  dto.setUpdAccountNumber(aes256Util.decrypt(dto.getUpdAccountNumber()));
              }
          } catch (Exception ignore) {}
+         try {
+             if (dto.getAccountNumber() != null && !dto.getAccountNumber().trim().isEmpty()) {
+                 dto.setAccountNumber(aes256Util.decrypt(dto.getAccountNumber()));
+             }
+         } catch (Exception ignore) {}
 
         // 상세 조회
         AdminUserApprovalDTO appDTO = adminSuperiorDAO.selectAddAmountDetailByAppNo(applicationNumber);
