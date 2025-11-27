@@ -762,12 +762,10 @@ document.addEventListener('DOMContentLoaded', function () {
     	function bindYMDMask(el){
     		  if (!el) return;
     		  el.addEventListener('input', () => {
-    		    // 숫자만 추출하고 최대 8자리로 제한
     		    const digits = (el.value || '').replace(/[^\d]/g, '').slice(0, 8);
     		    const y = digits.slice(0, 4);
     		    const m = digits.slice(4, 6);
     		    const d = digits.slice(6, 8);
-    		    // 입력 중에도 즉시 yyyy-mm-dd 형태로 보이게
     		    el.value = [y, m, d].filter(Boolean).join('-');
     		  });
     		}
@@ -1409,7 +1407,6 @@ if (hidden && !hidden.value) hidden.removeAttribute('name');
 });
 
 //직원 주민번호로 이름 자동 채우기
-// 주민번호로 이름 자동 채우기 + 같은 버튼으로 '근로자 확인' ↔ '지우기' 토글 + 기간 초기화
 (function wireFindName(){
   const btn    = document.getElementById('find-employee-btn');
   const aEl    = document.getElementById('employee-rrn-a');
@@ -1424,10 +1421,9 @@ if (hidden && !hidden.value) hidden.removeAttribute('name');
   const ctx = '${pageContext.request.contextPath}';
   const url = ctx + '/comp/apply/find-name';
 
-  let mode = 'find';    // 'find' = 근로자 확인 모드, 'reset' = 지우기 모드
-  let loading = false;  // 중복 클릭 방지
+  let mode = 'find';
+  let loading = false;
 
-  // 🔸 기간/단위기간 관련 필드 초기화
   function resetPeriodFields() {
     const startDate        = document.getElementById('start-date');
     const endDate          = document.getElementById('end-date');
@@ -1444,16 +1440,14 @@ if (hidden && !hidden.value) hidden.removeAttribute('name');
     if (noPaymentWrapper) noPaymentWrapper.style.display = 'none';
     if (noPaymentChk)     noPaymentChk.checked = false;
 
-    // 이전 기간 정보도 리셋(겹침 체크용)
+
     window.prevPeriod = { start: null, end: null, overlap: false };
   }
 
-  // 🔸 버튼/필드 상태 바꾸는 공통 함수
   function setMode(newMode){
     mode = newMode;
 
     if (mode === 'find') {
-      // ✅ 다시 조회할 수 있게: 버튼 텍스트/스타일 + 주민번호 입력 가능
       btn.textContent = '이름 검색';
       btn.classList.remove('btn-soft');
       btn.classList.add('btn-secondary');
@@ -1463,8 +1457,7 @@ if (hidden && !hidden.value) hidden.removeAttribute('name');
         el.classList.remove('readonly-like');
       });
 
-    } else { // 'reset'
-      // ✅ 이름 조회된 상태: 주민번호 잠그고 버튼을 "지우기"
+    } else {
       btn.textContent = '지우기';
       btn.classList.remove('btn-secondary');
       btn.classList.add('btn-soft');
@@ -1482,14 +1475,14 @@ if (hidden && !hidden.value) hidden.removeAttribute('name');
   btn.addEventListener('click', async function(){
     if (loading) return;
 
-    // 🔹 지우기 모드일 때: 전체 초기화
+
     if (mode === 'reset') {
       aEl.value = '';
       bEl.value = '';
       nameEl.value = '';
       if (hidEl) hidEl.value = '';
 
-      // 🔸 지우기 눌렀을 때도 기간 초기화
+
       resetPeriodFields();
 
       setMode('find');
@@ -1497,7 +1490,6 @@ if (hidden && !hidden.value) hidden.removeAttribute('name');
       return;
     }
 
-    // 🔹 여기부터는 'find' 모드 = 근로자 확인
     const a = onlyDigits(aEl.value);
     const b = onlyDigits(bEl.value);
 
@@ -1510,7 +1502,6 @@ if (hidden && !hidden.value) hidden.removeAttribute('name');
     const regNo = a + b;
     if (hidEl) hidEl.value = regNo;
 
-    // 🔸 새로운 이름 조회 시도 → 기존 기간/단위기간 먼저 초기화
     resetPeriodFields();
 
     const csrfInput = document.querySelector('input[name="_csrf"]');
@@ -1546,9 +1537,7 @@ if (hidden && !hidden.value) hidden.removeAttribute('name');
 
       const data = await resp.json();
       if (data && data.found && data.name) {
-        // ✅ 이름 조회 성공
         nameEl.value = data.name;
-        // → 주민번호 잠그고 버튼을 "지우기" 모드로 변경
         setMode('reset');
       } else {
         alert('일치하는 근로자 정보를 찾을 수 없습니다.');

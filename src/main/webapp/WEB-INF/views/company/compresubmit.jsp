@@ -10,7 +10,6 @@
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/comp.css">
 
-  <!-- 신청서 폼 디자인과 동일한 공통 스타일 -->
   <style>
     /* 타이틀 */
     h1{ text-align:center; margin-bottom:30px; font-size:28px; }
@@ -23,7 +22,6 @@
     .form-section{ margin-bottom:40px; }
     .form-section + .form-section{ border-top:1px solid var(--border-color,#dee2e6); padding-top:30px; }
 
-    /* 폼 라인: 신청서와 동일한 그리드 레이아웃 */
     .form-group{
       display: grid !important;
       grid-template-columns: 200px minmax(0,1fr) !important;
@@ -318,7 +316,6 @@
         </div>
       </div>
       
-<!-- 첨부파일 (신청페이지와 동일 4박스, 각 박스에 기존 파일도 함께 표시) -->
 <div class="form-section">
   <h2>첨부파일</h2>
   <input type="hidden" id="fileId" name="fileId" value="${confirmDTO.fileId}" />
@@ -478,9 +475,7 @@
 <script type="text/javascript">
 document.addEventListener('DOMContentLoaded', function () {
 
-  // ─────────────────────────────────────
   // 공통 유틸 & 입력 바인딩
-  // ─────────────────────────────────────
   function withCommas(s){ return String(s).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
   function onlyDigits(s){ return (s||'').replace(/[^\d]/g,''); }
   function bindDigitsOnly(el){ if(el) el.addEventListener('input', () => { el.value = (el.value || '').replace(/[^\d]/g, ''); }); }
@@ -542,9 +537,7 @@ document.addEventListener('DOMContentLoaded', function () {
   bindDigitsOnly(document.getElementById('child-rrn-a'));
   bindDigitsOnly(document.getElementById('child-rrn-b'));
 
-  // ─────────────────────────────────────
-  // 기간 생성 관련 엘리먼트
-  // ─────────────────────────────────────
+  // 기간 생성 
   var startDateInput   = document.getElementById('start-date');
   var endDateInput     = document.getElementById('end-date');
   var generateBtn      = document.getElementById('generate-forms-btn');
@@ -582,9 +575,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (headerRow) headerRow.style.display = 'none';
   }
 
-  // ─────────────────────────────────────
   // 버튼 클릭 시에만 강력 검증 (신청페이지 로직)
-  // ─────────────────────────────────────
   function guardBeforeGenerate() {
     const chkPregnant = document.getElementById('pregnant-leave');
     const chkNoRRN    = document.getElementById('no-rrn-foreign');
@@ -621,9 +612,6 @@ document.addEventListener('DOMContentLoaded', function () {
     return true;
   }
 
-  // 입력 중엔 소프트 규칙(힌트만, alert/reset 없음)
-//입력 중엔 소프트 규칙(힌트만, alert/reset 없음)
-//★ 기존 (function applyPregnancyRulesSoft(){ ... })() 를 이 블록으로 교체
 (function applyPregnancyRulesSoft() {
  const chkPregnant = document.getElementById('pregnant-leave');
  const chkNoRRN    = document.getElementById('no-rrn-foreign');
@@ -648,9 +636,7 @@ document.addEventListener('DOMContentLoaded', function () {
    if (on) el.value = '';
  }
 
- // ★ 모드 자동 결정
- // - 임신 중 우선 판단: (시작·종료가 출산일 이전으로만 구성된 경우)
- // - 아니라면, 출산 후 모드에서 "이름 O && 자녀주민번호 X" 일 때만 no-rrn 자동 체크
+
  function autoDecideMode() {
    const childDate  = parseDate(childDateEl?.value);
    const startDate  = parseDate(startDateEl?.value);
@@ -672,12 +658,11 @@ document.addEventListener('DOMContentLoaded', function () {
    if (shouldPregnant) {
      // 임신 중 모드 강제 전환
      if (chkPregnant && !chkPregnant.checked) chkPregnant.checked = true;
-     if (chkNoRRN && chkNoRRN.checked) chkNoRRN.checked = false; // 임신 중일 땐 no-rrn 사용 X
+     if (chkNoRRN && chkNoRRN.checked) chkNoRRN.checked = false; 
    } else {
      // 출산 후 모드
      if (chkPregnant && chkPregnant.checked) chkPregnant.checked = false;
 
-     // ★ no-rrn 자동 체크 조건: "자녀주민번호만 없음" (이름은 있어야 함)
      if (chkNoRRN) {
        const shouldNoRRN = (!!nameVal) && rrnMissing;
        chkNoRRN.checked = shouldNoRRN;
@@ -706,16 +691,13 @@ document.addEventListener('DOMContentLoaded', function () {
  function applyFieldLockByMode() {
    const isPregnant = !!chkPregnant?.checked;
    if (isPregnant) {
-     // 임신 중: 자녀 이름/주민번호 입력 비활성화, no-rrn 체크 해제/비활성화
      toggleDisabled(childNameEl, true);
      toggleDisabled(rrnA, true);
      toggleDisabled(rrnB, true);
      if (chkNoRRN) { chkNoRRN.checked = false; toggleDisabled(chkNoRRN, true); }
    } else {
-     // 출산 후: 이름 활성화, no-rrn은 활성화하되 체크 여부는 autoDecideMode에서 결정
      toggleDisabled(childNameEl, false);
      toggleDisabled(chkNoRRN, false);
-
      const noRRN = !!chkNoRRN?.checked;
      toggleDisabled(rrnA, noRRN);
      toggleDisabled(rrnB, noRRN);
@@ -723,9 +705,7 @@ document.addEventListener('DOMContentLoaded', function () {
  }
 
  function onAnyChangeSoft() {
-   // 1) 먼저 자동 모드/체크 결정을 수행
    autoDecideMode();
-   // 2) 그에 맞춰 필드잠금/범위힌트 적용
    applyFieldLockByMode();
    enforceDateBoundsSoft();
  }
@@ -735,7 +715,6 @@ document.addEventListener('DOMContentLoaded', function () {
  startDateEl?.addEventListener('change', onAnyChangeSoft);
  endDateEl?.addEventListener('change', onAnyChangeSoft);
  chkNoRRN?.addEventListener('change', function(){
-   // 출산 후 모드에서만 RRN 입력 잠금 토글
    if (chkPregnant?.checked) return;
    const noRRN = !!chkNoRRN?.checked;
    toggleDisabled(rrnA, noRRN);
@@ -755,18 +734,17 @@ document.addEventListener('DOMContentLoaded', function () {
   });
   endDateInput.addEventListener('change', function () { resetPeriodUI(); });
 
-  // ─────────────────────────────────────
   // 기간 나누기 버튼
-  // ─────────────────────────────────────
+
   generateBtn.addEventListener('click',  async function() {
-    // 0) 이전 확인서 겹침 먼저 체크(이름/주민번호 미입력 시 안내)
+    // 이전 확인서 겹침 먼저 체크(이름/주민번호 미입력 시 안내)
     const okPrev = await showPrevPeriodAlert();
     if (!okPrev) { resetPeriodUI(); return; }
 
-    // 1) 임신/출산 강력 검증
+    // 임신/출산 강력 검증
     if (!guardBeforeGenerate()) { resetPeriodUI(); return; }
 
-    // 2) 기본 날짜 존재/역전
+    // 기본 날짜 존재/역전
     if (!startDateInput.value || !endDateInput.value) {
       alert('육아휴직 시작일과 종료일을 모두 선택해주세요.');
       resetPeriodUI(); return;
@@ -778,7 +756,7 @@ document.addEventListener('DOMContentLoaded', function () {
       resetPeriodUI(); return;
     }
 
-    // 3) 최소 1개월 / 최대 12개월
+    // 최소 1개월 / 최대 12개월
     const firstPeriodEndDate = getPeriodEndDate(originalStartDate, 1);
     if (finalEndDate < firstPeriodEndDate) {
       alert('신청 기간은 최소 1개월 이상이어야 합니다.');
@@ -793,7 +771,7 @@ document.addEventListener('DOMContentLoaded', function () {
       resetPeriodUI(); return;
     }
 
-    // 4) 행 생성
+    // 행 생성
     formsContainer.innerHTML = '';
     if (noPaymentWrapper) noPaymentWrapper.style.display = 'none';
     if (headerRow) headerRow.style.display = 'none';
@@ -933,7 +911,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // 숫자/주민번호/출생일 hidden 정리
         doFinalNormalizeBeforeSubmit();
 
-        // 파일 업로드(수정: fileId 있으면 append)
+        // 파일 업로드
         const up = await uploadAllFilesBeforeSubmit();
         if (!up.ok) {
           alert('파일 업로드 중 오류가 발생했습니다.');
@@ -952,7 +930,6 @@ document.addEventListener('DOMContentLoaded', function () {
           if (hidden && !hidden.value) hidden.remove();
         }
 
-        // 멀티파트 해제 및 파일 input 제거
         stripFileInputsBeforeFinalSubmit(form);
 
         form.removeEventListener('submit', arguments.callee);
@@ -966,7 +943,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   })();
 
-  // 엔터 제출 방지 (텍스트영역/버튼 제외)
+  // 엔터 제출 방지 
   {
     const formEl = document.getElementById('confirm-form');
     if (formEl) {
@@ -983,7 +960,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // 센터 찾기 모달 (기존 그대로)
+  // 센터 찾기 모달 
   const findCenterBtn   = document.getElementById('find-center-btn');
   const centerModal     = document.getElementById('center-modal');
   const closeModalBtn   = centerModal?.querySelector('.close-modal-btn');
@@ -1194,9 +1171,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-// ─────────────────────────────────────
-// 이전 육휴기간(최신 1건) 조회 (수정페이지 전용: nowConfirmNumber 포함)
-// ─────────────────────────────────────
+
+// 이전 육휴기간(최신 1건) 조회
 async function showPrevPeriodAlert() {
   try {
     const nameEl = document.getElementById('employee-name');
@@ -1286,13 +1262,12 @@ async function showPrevPeriodAlert() {
   } catch (e) {
     console.error(e);
     window.prevPeriod = { start:null, end:null, overlap:false };
-    return true; // 조회 실패 시 진행 허용(UX)
+    return true;
   }
 }
 
-// ─────────────────────────────────────
-// 파일 UI: 같은 박스에서 "기존 + 새 선택 파일" 함께 표시
-// ─────────────────────────────────────
+
+// 파일 UI
 (function bindUnifiedFileUI(){
   const groups = [
     { id: 'files_WAGE_PROOF',              selList: 'sel_WAGE_PROOF' },
@@ -1337,7 +1312,6 @@ async function showPrevPeriodAlert() {
   });
 })();
 
-// 기존 파일 inline 삭제
 (function bindFileDeleteInline(){
   const CTX  = '${pageContext.request.contextPath}';
   const csrf = document.querySelector('input[name="_csrf"]')?.value || '';
@@ -1369,7 +1343,7 @@ async function showPrevPeriodAlert() {
   });
 })();
 
-// 제출 직전 업로드(수정: fileId 있으면 /file/append, 없으면 /file/upload)
+// 제출 직전 업로드
 async function uploadAllFilesBeforeSubmit() {
   const map = [
     { id: 'files_WAGE_PROOF',            type: 'WAGE_PROOF' },
@@ -1417,7 +1391,6 @@ async function uploadAllFilesBeforeSubmit() {
   const newId = data?.fileId ?? null;
   if (!newId) return { ok:false, skipped:false, fileId:null };
 
-  // 업로드 성공 → 폼에 fileId hidden 동적 주입
   const form = document.getElementById('confirm-form');
   let hidden = form.querySelector('input[name="fileId"]');
   if (!hidden) {
@@ -1434,30 +1407,25 @@ async function uploadAllFilesBeforeSubmit() {
 
 // 최종 제출 직전 데이터 정리
 function doFinalNormalizeBeforeSubmit() {
-  // 금액 콤마 제거
   document.querySelectorAll('#regularWage, input[name^="monthlyCompanyPay"]').forEach(el => {
     el.value = (el.value || '').replace(/[^\d]/g, '');
   });
-  // 근로자 주민번호 합치기
   const empRrnHidden = document.getElementById('employee-rrn-hidden');
   if (empRrnHidden) {
     empRrnHidden.value =
       (document.getElementById('employee-rrn-a').value || '').replace(/[^\d]/g,'') +
       (document.getElementById('employee-rrn-b').value || '').replace(/[^\d]/g,'');
   }
-  // 자녀 주민번호(미발급이면 공백)
   const childRrnHidden = document.getElementById('child-rrn-hidden');
   if (childRrnHidden) {
     const a = (document.getElementById('child-rrn-a').value || '').replace(/[^\d]/g,'');
     const b = (document.getElementById('child-rrn-b').value || '').replace(/[^\d]/g,'');
     childRrnHidden.value = (a.length === 6 && b.length === 7) ? (a + b) : '';
   }
-  // 출생(예정)일 hidden name 처리
   const hidden = document.getElementById('childBirthDateHidden');
   if (hidden && !hidden.value) hidden.removeAttribute('name');
 }
 
-// 멀티파트 해제(폼에서 파일 input/hidden 제거)
 function stripFileInputsBeforeFinalSubmit(form) {
   form.querySelectorAll('input[name="files"], input[name="fileTypes"]').forEach(el => {
     el.removeAttribute('name');

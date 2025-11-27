@@ -570,16 +570,15 @@ table.data-table tbody tr:first-child td[colspan] {
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
-  // ====== 설정 ======
+
   var PAGE_SIZE = 10;
   var CXT = '<c:out value="${pageContext.request.contextPath}"/>';
   var ENDPOINT = CXT + '/admin/list/fetch';
   console.log('[adminlist] ENDPOINT=', ENDPOINT);
 
-  // ====== 상태 ======
   var state = { page: 1, total: 0 };
 
-  // ====== 유틸 ======
+
   function qs(id){ return document.getElementById(id); }
   function toParams(obj){
     var p = new URLSearchParams();
@@ -617,7 +616,6 @@ table.data-table tbody tr:first-child td[colspan] {
 	}
 
 
-  // ====== 서버 통신 ======
   async function fetchList(params){
     var url = ENDPOINT + '?' + toParams(params);
     console.log('[adminlist] request ->', url);
@@ -628,7 +626,7 @@ table.data-table tbody tr:first-child td[colspan] {
     }
     var data = await res.json();
     console.log('[adminlist] response <-', data);
-    return data; // { list, totalCount }
+    return data; 
   }
 
   function gatherParams(){
@@ -640,7 +638,6 @@ table.data-table tbody tr:first-child td[colspan] {
     return { keyword, docType, statusName, date, startList, listSize: PAGE_SIZE };
   }
 
-  // ====== 렌더링 ======
   function renderRows(list){
     var tbody = qs('listBody');
     if (!list || list.length === 0){
@@ -709,26 +706,24 @@ table.data-table tbody tr:first-child td[colspan] {
     }
   }
 
-  // ====== 카드 숫자 ======
 async function fetchCountWithStatus(baseParams, statusName){
   const p = Object.assign({}, baseParams, { startList: 0, listSize: 1 });
-  p.statusName = statusName || ''; // 전체는 빈 문자열
+  p.statusName = statusName || '';
   const data = await fetchList(p);
   return data.totalCount || 0;
 }
 
 async function loadCardCounts(){
-  // 🔹 카드는 항상 "전체 기준"으로만 계산하고 싶으니까
-  //    검색/필터 값은 안 쓴다. (빈 객체)
+
   const base = {};
 
   try{
     const [ total, submit, review2, approved, rejected ] = await Promise.all([
-      fetchCountWithStatus(base, ''),           // 총 문서
-      fetchCountWithStatus(base, '제출'),       // 제출 + 심사중 
-      fetchCountWithStatus(base, '2차 심사중'), // 2차 심사중
-      fetchCountWithStatus(base, '승인'),       // 승인
-      fetchCountWithStatus(base, '반려')        // 반려
+      fetchCountWithStatus(base, ''), 
+      fetchCountWithStatus(base, '제출'), 
+      fetchCountWithStatus(base, '2차 심사중'), 
+      fetchCountWithStatus(base, '승인'), 
+      fetchCountWithStatus(base, '반려')  
     ]);
 
     qs('statTotal').textContent    = total;
@@ -785,7 +780,6 @@ async function loadCardCounts(){
       load().then(loadCardCounts);
     });
 
-    // 카드 클릭 → 필터 반영 후 재조회
     (function wireSummaryCardClicks(){
       var cards = document.querySelectorAll('#statCards .stat-card');
       cards.forEach(function(card){
@@ -793,8 +787,8 @@ async function loadCardCounts(){
           cards.forEach(function(c){ c.classList.remove('active'); });
           this.classList.add('active');
 
-          var status = this.getAttribute('data-status'); // '', '제출', '심사중', '2차 심사중', '승인', '반려'
-          var doc    = this.getAttribute('data-doc');    // '', 'APPLICATION', 'CONFIRM'(확장용)
+          var status = this.getAttribute('data-status'); 
+          var doc    = this.getAttribute('data-doc'); 
 
           qs('statusName').value = status || '';
           if (qs('docType')) qs('docType').value = doc || '';
