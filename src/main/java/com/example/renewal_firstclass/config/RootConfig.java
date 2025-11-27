@@ -17,8 +17,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
   "com.example.renewal_firstclass.batch",
   "com.example.renewal_firstclass.scheduler"
 })
-@EnableScheduling               // @Scheduled 작동
-@EnableBatchProcessing          // JobRepository/JobLauncher/JBF/SBF 생성
+@EnableScheduling 
+@EnableBatchProcessing 
 @MapperScan("com.example.renewal_firstclass.dao")
 public class RootConfig {
 
@@ -26,7 +26,7 @@ public class RootConfig {
   public DataSource dataSource() {
     org.apache.commons.dbcp2.BasicDataSource ds = new org.apache.commons.dbcp2.BasicDataSource();
     ds.setDriverClassName("oracle.jdbc.OracleDriver");
-    ds.setUrl("jdbc:oracle:thin:@//HOST:1521/ORCLPDB1"); // 실제 값으로
+    ds.setUrl("jdbc:oracle:thin:@//HOST:1521/ORCLPDB1"); 
     ds.setUsername("USER"); ds.setPassword("PASS");
     ds.setInitialSize(3); ds.setMaxTotal(20);
     return ds;
@@ -37,7 +37,6 @@ public class RootConfig {
     return new org.springframework.jdbc.datasource.DataSourceTransactionManager(ds);
   }
 
-  // MyBatis 설정(매퍼 XML 경로)
   @Bean
   public org.apache.ibatis.session.SqlSessionFactory sqlSessionFactory(DataSource ds) throws Exception {
     org.mybatis.spring.SqlSessionFactoryBean fb = new org.mybatis.spring.SqlSessionFactoryBean();

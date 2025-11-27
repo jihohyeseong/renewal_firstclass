@@ -259,7 +259,7 @@
         </div>
       </div>
 
-      <!-- 대상 자녀 정보 (신청서와 동일한 레이아웃) -->
+      <!-- 대상 자녀 정보 ( -->
       <div class="form-section">
         <h2>대상 자녀 정보</h2>
 
@@ -357,7 +357,7 @@
           </div>
         </div>
 
-        <!-- 헤더 행(신청서 동일 룩) -->
+        <!-- 헤더 행 -->
         <div id="dynamic-header-row" class="dynamic-form-row"
              style="display:none; background:transparent; border-bottom:2px solid var(--border-color); font-weight:500; margin-bottom:0;">
           <div class="date-range-display"><span>신청기간</span></div>
@@ -365,7 +365,6 @@
         </div>
 
         <div id="dynamic-forms-container" class="dynamic-form-container">
-          <!-- 기존 저장된 단위기간을 신청서와 동일한 마크업으로 복원 -->
           <c:forEach var="t" items="${confirmDTO.termAmounts}">
             <div class="dynamic-form-row">
               <div class="date-range-display">
@@ -461,7 +460,6 @@
       <div id="list_${TYPE_WAGE}" class="info-box" style="margin-top:8px; min-height:40px;">
         <div class="existed-list" id="exist_${TYPE_WAGE}">
           <c:forEach var="f" items="${files}">
-            <!-- 🔥 여기 TYPE_WAGE 로 수정 -->
             <c:if test="${f.fileType == TYPE_WAGE}">
               <div class="file-chip" data-seq="${f.sequence}" style="display:flex; align-items:center; gap:8px; margin:4px 0;">
                 <span class="chip-label" style="flex:1; word-break:break-all;">
@@ -611,9 +609,7 @@
 <script type="text/javascript">
 document.addEventListener('DOMContentLoaded', function () {
 
-  // ─────────────────────────────────────
   // 공통 유틸 & 입력 바인딩
-  // ─────────────────────────────────────
   function withCommas(s){ return String(s).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
   function onlyDigits(s){ return (s||'').replace(/[^\d]/g,''); }
   function bindDigitsOnly(el){ if(el) el.addEventListener('input', () => { el.value = (el.value || '').replace(/[^\d]/g, ''); }); }
@@ -628,7 +624,7 @@ document.addEventListener('DOMContentLoaded', function () {
     format();
   }
 
-  // 날짜 입력: 신청페이지와 동일한 마스크/정규화
+  // 날짜 입력
   function normalizeDate(el){
     if (!el) return;
     el.addEventListener('blur', () => {
@@ -675,9 +671,7 @@ document.addEventListener('DOMContentLoaded', function () {
   bindDigitsOnly(document.getElementById('child-rrn-a'));
   bindDigitsOnly(document.getElementById('child-rrn-b'));
 
-  // ─────────────────────────────────────
   // 기간 생성 관련 엘리먼트
-  // ─────────────────────────────────────
   var startDateInput   = document.getElementById('start-date');
   var endDateInput     = document.getElementById('end-date');
   var generateBtn      = document.getElementById('generate-forms-btn');
@@ -715,9 +709,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (headerRow) headerRow.style.display = 'none';
   }
 
-  // ─────────────────────────────────────
-  // 버튼 클릭 시에만 강력 검증 (신청페이지 로직)
-  // ─────────────────────────────────────
+  // 버튼 클릭 시에만 강력 검증
   function guardBeforeGenerate() {
     const chkPregnant = document.getElementById('pregnant-leave');
     const chkNoRRN    = document.getElementById('no-rrn-foreign');
@@ -754,9 +746,7 @@ document.addEventListener('DOMContentLoaded', function () {
     return true;
   }
 
-  // 입력 중엔 소프트 규칙(힌트만, alert/reset 없음)
-//입력 중엔 소프트 규칙(힌트만, alert/reset 없음)
-//★ 기존 (function applyPregnancyRulesSoft(){ ... })() 를 이 블록으로 교체
+
 (function applyPregnancyRulesSoft() {
  const chkPregnant = document.getElementById('pregnant-leave');
  const chkNoRRN    = document.getElementById('no-rrn-foreign');
@@ -781,9 +771,6 @@ document.addEventListener('DOMContentLoaded', function () {
    if (on) el.value = '';
  }
 
- // ★ 모드 자동 결정
- // - 임신 중 우선 판단: (시작·종료가 출산일 이전으로만 구성된 경우)
- // - 아니라면, 출산 후 모드에서 "이름 O && 자녀주민번호 X" 일 때만 no-rrn 자동 체크
  function autoDecideMode() {
    const childDate  = parseDate(childDateEl?.value);
    const startDate  = parseDate(startDateEl?.value);

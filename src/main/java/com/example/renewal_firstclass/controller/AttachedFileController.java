@@ -55,6 +55,7 @@ public class AttachedFileController {
             @RequestParam("fileId") Long fileId,
             @RequestParam("seq") Integer seq) {
 
+        //로그인 사용자
         UserDTO me = currentUserOrNull();
         if (me == null || me.getId() == null) {
             return ResponseEntity.status(401).build();
@@ -64,9 +65,21 @@ public class AttachedFileController {
         if (meta == null) {
             return ResponseEntity.notFound().build();
         }
+
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = auth != null && auth.getAuthorities() != null &&
+                auth.getAuthorities().stream().anyMatch(a -> "ROLE_ADMIN".equals(a.getAuthority()));
+
+        // 권한 검증 
+        boolean allowed = fileService.canDownload(fileId, me.getId(), isAdmin);
+        if (!allowed) {
+            return ResponseEntity.status(403).build();
+        }
+
         ResponseEntity<org.springframework.core.io.Resource> resp = fileService.buildDownloadResponse(meta);
         return (resp != null) ? resp : ResponseEntity.internalServerError().build();
     }
+
     
     /** 수정시 새 첨부파일 추가*/
     @PostMapping("/file/append")

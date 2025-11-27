@@ -40,7 +40,6 @@ h2{
 }
 
 /* 테이블 공통 */
-/* 테이블 공통 */
 .info-table-container{
   margin-bottom:30px;
 }
@@ -561,7 +560,6 @@ h2{
   var end   = new Date(e + 'T00:00:00');
   if (isNaN(start) || isNaN(end)) return;
 
-  // 계산: 끝 - 시작 + 1
   var msPerDay = 24*60*60*1000;
   var days = Math.floor((end - start) / msPerDay) + 1;
   if (days < 0) return;

@@ -34,7 +34,6 @@ public class CompanyApplyService {
     @Transactional
     public Long createConfirm(ConfirmApplyDTO dto,
                               List<Long> monthlyCompanyPay) {
-        // 암호화
         try {
             if (notBlank(dto.getRegistrationNumber()))
                 dto.setRegistrationNumber(aes256Util.encrypt(dto.getRegistrationNumber()));
@@ -57,30 +56,25 @@ public class CompanyApplyService {
         Long wage = dto.getRegularWage();
 
         if (s != null && e != null && wage != null && !e.isBefore(s)) {
-            
-            // ### 수정된 부분 (createConfirm) ###
+
             List<Long> previousConfirmNumbers = confirmApplyDAO.findMyConfirmList(
                 dto.getChildBirthDate(), 
-                dto.getRegistrationNumber() // 암호화된 값
+                dto.getRegistrationNumber()
             );
             
-            // 1. 이력 중 가장 빠른 휴직 시작일 찾기 (DAO는 java.sql.Date 반환)
             java.sql.Date sqlStartDate = confirmApplyDAO.findFirstStartDateForPerson(
                 dto.getChildBirthDate(), 
                 dto.getRegistrationNumber(),
-                null // 새 신청이므로 제외할 번호 없음
+                null 
             );
             LocalDate firstEverStartDate = (sqlStartDate != null) ? sqlStartDate.toLocalDate() : null;
 
-            // 만약 이력이 없으면, 현재 신청이 첫 시작일
             if (firstEverStartDate == null) {
                 firstEverStartDate = s;
             }
 
-            // 2. 이전까지의 총 누적 일수 계산
             long totalPreviousDays = 0;
             if (previousConfirmNumbers != null && !previousConfirmNumbers.isEmpty()) {
-                // (selectTermsByConfirmNumbers는 DAO에 추가 필요)
                 List<TermAmountDTO> previousTerms = termAmountDAO.selectTermsByConfirmNumbers(previousConfirmNumbers);
                 for (TermAmountDTO term : previousTerms) {
                     if (term.getStartMonthDate() != null && term.getEndMonthDate() != null) {
@@ -93,7 +87,6 @@ public class CompanyApplyService {
             }
             
             deleteTerms(dto.getConfirmNumber());
-            // calculateTerms에 새 파라미터 전달
             List<TermAmountDTO> terms = calculateTerms(s, e, wage, monthlyCompanyPay, 
                                                     firstEverStartDate, totalPreviousDays);
             saveTerms(dto.getConfirmNumber(), terms);
@@ -116,14 +109,7 @@ public class CompanyApplyService {
         termAmountDAO.deleteTermsByConfirmId(confirmNumber);
     }
 
-    // ### 헬퍼 메서드 1 ###
-    /**
-     * '월'이 아닌 '일' 기준으로 이론적인 월 만기일을 계산하는 헬퍼 메서드
-     * (예: 1월 5일 -> 4월 4일 (3개월차 만기))
-     * @param firstEverStartDate 최초 휴직 시작일
-     * @param months 누적 개월 수
-     * @return
-     */
+
     private LocalDate getGlobalTheoreticalEnd(LocalDate firstEverStartDate, int months) {
         LocalDate nextStart = firstEverStartDate.plusMonths(months);
         if (nextStart.getDayOfMonth() != firstEverStartDate.getDayOfMonth()) {
@@ -132,26 +118,16 @@ public class CompanyApplyService {
         return nextStart.minusDays(1);
     }
 
-    // ### 헬퍼 메서드 2 ###
-    /**
-     * 누적 '일'을 기준으로 상한액(Cap)을 반환하는 헬퍼 메서드
-     * @param firstEverStartDate
-     * @param cumulativeDay (1일차, 2일차...)
-     * @param regularWage
-     * @return
-     */
+
     private long getCapByCumulativeDay(LocalDate firstEverStartDate, long cumulativeDay, long regularWage) {
-        // 3개월차 경계일 (예: 1/5 -> 4/4)
         LocalDate end3Months = getGlobalTheoreticalEnd(firstEverStartDate, 3);
-        long daysIn3Months = ChronoUnit.DAYS.between(firstEverStartDate, end3Months) + 1; // 예: 90일
+        long daysIn3Months = ChronoUnit.DAYS.between(firstEverStartDate, end3Months) + 1;
 
-        // 6개월차 경계일 (예: 1/5 -> 7/4)
         LocalDate end6Months = getGlobalTheoreticalEnd(firstEverStartDate, 6);
-        long daysIn6Months = ChronoUnit.DAYS.between(firstEverStartDate, end6Months) + 1; // 예: 181일
+        long daysIn6Months = ChronoUnit.DAYS.between(firstEverStartDate, end6Months) + 1;
 
-        // 12개월차 경계일 (예: 1/5 -> 1/4)
         LocalDate end12Months = getGlobalTheoreticalEnd(firstEverStartDate, 12);
-        long daysIn12Months = ChronoUnit.DAYS.between(firstEverStartDate, end12Months) + 1; // 예: 365일
+        long daysIn12Months = ChronoUnit.DAYS.between(firstEverStartDate, end12Months) + 1;
 
         
         if (cumulativeDay <= daysIn3Months) {          // 1~3개월차 (예: 1~90일)
@@ -166,16 +142,7 @@ public class CompanyApplyService {
     }
 
 
-    // ### 핵심 수정 메서드 ###
-    /**
-     * 단위기간 계산 (로직 전체 변경)
-     * @param newStart           현재 신청의 시작일 (예: 6/20)
-     * @param newEnd             현재 신청의 종료일 (예: 10/25)
-     * @param regularWage        통상임금
-     * @param monthlyCompanyPay  현재 신청의 사업주 지급액 리스트 (1, 2, 3... 번째 월)
-     * @param firstEverStartDate 전체 이력 중 첫 번째 휴직 시작일 (예: 1/5)
-     * @param totalPreviousDays  현재 신청 전까지 사용한 총 '일' 수 (예: 69일)
-     */
+
     public List<TermAmountDTO> calculateTerms(LocalDate newStart, LocalDate newEnd,
             long regularWage,
             List<Long> monthlyCompanyPay,
@@ -187,34 +154,30 @@ public class CompanyApplyService {
 		
 		List<TermAmountDTO> list = new ArrayList<>();
 		
-		LocalDate curProcessingDate = newStart; // 현재 처리 중인 *Local Month*의 시작일
-		long cumulativeDay = totalPreviousDays + 1; // 누적 일수 (예: 84일차부터 시작)
-		int localMonthIdx = 1; // 현재 신청 건의 1, 2, 3... 번째 월
-		
-		// --- 12개월 한도 ---
+		LocalDate curProcessingDate = newStart; 
+		long cumulativeDay = totalPreviousDays + 1; 
+		int localMonthIdx = 1; 
+
 		LocalDate end12Months = getGlobalTheoreticalEnd(firstEverStartDate, 12);
 		long daysIn12Months = ChronoUnit.DAYS.between(firstEverStartDate, end12Months) + 1;
-		
-		// --- 전역(Global) 상한액 경계일 계산 ---
+
 		LocalDate end3Months = getGlobalTheoreticalEnd(firstEverStartDate, 3);
-		long daysIn3Months = ChronoUnit.DAYS.between(firstEverStartDate, end3Months) + 1; // 예: 92일 (3/15~6/14)
+		long daysIn3Months = ChronoUnit.DAYS.between(firstEverStartDate, end3Months) + 1; 
 		LocalDate end6Months = getGlobalTheoreticalEnd(firstEverStartDate, 6);
-		long daysIn6Months = ChronoUnit.DAYS.between(firstEverStartDate, end6Months) + 1; // 예: 184일 (3/15~9/14)
+		long daysIn6Months = ChronoUnit.DAYS.between(firstEverStartDate, end6Months) + 1; 
 		
-		
-		// 'Local Month' (예: 8/15~9/14) 단위로 DTO를 생성하는 루프
+
 		while (!curProcessingDate.isAfter(newEnd) && cumulativeDay <= daysIn12Months) {
-		
-			// 1. 현재 Local Month의 경계 정의
+
 			LocalDate localMonthStart = curProcessingDate;
 			
 			LocalDate localNextStart = newStart.plusMonths(localMonthIdx);
 			if (localNextStart.getDayOfMonth() != newStart.getDayOfMonth()) {
 				localNextStart = localNextStart.plusMonths(1).withDayOfMonth(1);
 			}
-			LocalDate localTheoreticalEnd = localNextStart.minusDays(1); // 예: 9/14 (1차), 10/14 (2차)
+			LocalDate localTheoreticalEnd = localNextStart.minusDays(1); 
 			
-			LocalDate localMonthEnd = localTheoreticalEnd.isAfter(newEnd) ? newEnd : localTheoreticalEnd; // 예: 9/14 (1차), 10/10 (2차)
+			LocalDate localMonthEnd = localTheoreticalEnd.isAfter(newEnd) ? newEnd : localTheoreticalEnd; 
 			
 			if (localMonthStart.isAfter(localMonthEnd)) 
 				break;
@@ -222,68 +185,59 @@ public class CompanyApplyService {
 			long companyPay = (monthlyCompanyPay != null && monthlyCompanyPay.size() >= localMonthIdx)
 			? nz(monthlyCompanyPay.get(localMonthIdx - 1)) : 0L;
 			
-			// 2. 이 Local Month의 '이론적 총 일수' (일할계산 분모)
-			long daysInFullLocalMonth = ChronoUnit.DAYS.between(localMonthStart, localTheoreticalEnd) + 1; // 예: 31일 (8/15~9/14)
-			// 3. 이 Local Month의 '실제 총 일수' (일할계산 분자)
-			long daysInThisActualTerm = ChronoUnit.DAYS.between(localMonthStart, localMonthEnd) + 1; // 예: 31일 (1차), 26일 (2차 9/15~10/10)
-			
-			// 4. 정부지원금 목표액 (통상임금 - 사업주 지급액) 계산
+			long daysInFullLocalMonth = ChronoUnit.DAYS.between(localMonthStart, localTheoreticalEnd) + 1; 
+			long daysInThisActualTerm = ChronoUnit.DAYS.between(localMonthStart, localMonthEnd) + 1; 
 			long targetGovAmount = Math.max(0L, regularWage - companyPay);
-			// 이 Term이 부분월(예: 10/10 종료)인 경우, 목표액도 일할계산
 			if (daysInThisActualTerm < daysInFullLocalMonth) {
 				targetGovAmount = ((long) Math.floor((targetGovAmount * (double) daysInThisActualTerm / daysInFullLocalMonth) / 10)) * 10;
 			}
 			
-			// 5. 상한액(Cap)의 총합 계산 (가중 평균)
 			long totalProratedCapForTerm = 0;
-			LocalDate tempDate = localMonthStart; // 8/15
-			long currentCumulativeDay = cumulativeDay; // 84
+			LocalDate tempDate = localMonthStart; 
+			long currentCumulativeDay = cumulativeDay; 
 			
-			// 이 Local Month(8/15~9/14)를 (8/15~8/23)과 (8/24~9/14)로 쪼개서 계산하는 내부 루프
 			while(!tempDate.isAfter(localMonthEnd)) {
 			
-			long monthlyCap = getCapByCumulativeDay(firstEverStartDate, currentCumulativeDay, regularWage); // 예: 250만 (1차)
+			long monthlyCap = getCapByCumulativeDay(firstEverStartDate, currentCumulativeDay, regularWage); 
 			
 			// 현재 상한액(250만)이 끝나는 날짜 계산
 			LocalDate capEndDate;
 			if (currentCumulativeDay <= daysIn3Months) {
-			// 예: (92 - 84) = 8일 남음
+
 				long daysRemaining = daysIn3Months - currentCumulativeDay; 
-				capEndDate = tempDate.plusDays(daysRemaining); // 예: 8/15 + 8일 = 8/23
+				capEndDate = tempDate.plusDays(daysRemaining);
 			} 
 			else if (currentCumulativeDay <= daysIn6Months) {
 				long daysRemaining = daysIn6Months - currentCumulativeDay;
-				capEndDate = tempDate.plusDays(daysRemaining); // 예: 8/24 + (184-93) = 11/24
+				capEndDate = tempDate.plusDays(daysRemaining);
 			} 
 			else {
 				long daysRemaining = daysIn12Months - currentCumulativeDay;
 				capEndDate = tempDate.plusDays(daysRemaining);
 			}
 			
-			// 이 하위 기간(Sub-Period)의 종료일
-			// 예: min(Local종료일: 9/14, Cap종료일: 8/23) -> 8/23
+
 			LocalDate subPeriodEnd = localMonthEnd.isAfter(capEndDate) ? capEndDate : localMonthEnd;
 			
-			long daysInSubPeriod = ChronoUnit.DAYS.between(tempDate, subPeriodEnd) + 1; // 예: 9일 (8/15~8/23)
+			long daysInSubPeriod = ChronoUnit.DAYS.between(tempDate, subPeriodEnd) + 1;
 			
 			if (daysInSubPeriod <= 0) break;
 			
 				// 상한액 일할계산 (가중 평균)
-				// 예: (250만 * 9일 / 31일)
+
 				long proratedCap = ((long) Math.floor((monthlyCap * (double) daysInSubPeriod / daysInFullLocalMonth) / 10)) * 10;
-				totalProratedCapForTerm += proratedCap; // 예: 725,800
-				
-				// 다음 하위 기간 계산을 위해 포인터 이동
-				tempDate = subPeriodEnd.plusDays(1); // 예: 8/24
-				currentCumulativeDay += daysInSubPeriod; // 예: 84 + 9 = 93
-			} // --- 내부 루프 종료 ---
+				totalProratedCapForTerm += proratedCap; 
+
+				tempDate = subPeriodEnd.plusDays(1);
+				currentCumulativeDay += daysInSubPeriod; 
+			} 
 			
-			// 6. 최종 지급액 결정
-			// 예: min( (725,800 + 1,419,350), 2,700,000 )
+			// 최종 지급액 결정
+
 			long gov = Math.min(totalProratedCapForTerm, targetGovAmount);
 			gov = (gov / 10L) * 10L;
 			
-			// 7. DTO 생성
+			//  DTO 생성
 			TermAmountDTO t = TermAmountDTO.builder()
 			.startMonthDate(Date.valueOf(localMonthStart))
 			.endMonthDate(Date.valueOf(localMonthEnd))
@@ -292,12 +246,11 @@ public class CompanyApplyService {
 			.govPayment(gov)
 			.build();
 			list.add(t);
-			
-			// 8. 다음 'Local Month' 루프를 위한 포인터 이동
+
 			localMonthIdx++;
-			cumulativeDay += daysInThisActualTerm; // 실제 사용한 일수(31일)만큼 증가
-			curProcessingDate = localMonthEnd.plusDays(1); // 9/15
-		} // --- 외부 루프 종료 ---
+			cumulativeDay += daysInThisActualTerm;
+			curProcessingDate = localMonthEnd.plusDays(1);
+		} 
 		
 		return list;
 	}
@@ -368,10 +321,9 @@ public class CompanyApplyService {
 
         if (s != null && e != null && wage != null && !e.isBefore(s)) {
             
-            // ### 수정된 부분 (updateConfirm) ###
             List<Long> previousConfirmNumbers = confirmApplyDAO.findMyConfirmList(
                 dto.getChildBirthDate(), 
-                dto.getRegistrationNumber() // 암호화된 값
+                dto.getRegistrationNumber()
             );
             
             Long currentConfirmNumber = dto.getConfirmNumber();
@@ -381,23 +333,20 @@ public class CompanyApplyService {
                         .collect(Collectors.toList());
             }
 
-            // 1. 이력 중 가장 빠른 휴직 시작일 찾기 (DAO는 java.sql.Date 반환)
             java.sql.Date sqlStartDate = confirmApplyDAO.findFirstStartDateForPerson(
                 dto.getChildBirthDate(), 
                 dto.getRegistrationNumber(),
-                currentConfirmNumber // 현재 수정 건 제외
+                currentConfirmNumber 
             );
             LocalDate firstEverStartDate = (sqlStartDate != null) ? sqlStartDate.toLocalDate() : null;
 
-            // 만약 이전 이력이 없으면, 현재 수정 건이 첫 시작일
+
             if (firstEverStartDate == null) {
                 firstEverStartDate = s;
             }
 
-            // 2. 이전까지의 총 누적 일수 계산
             long totalPreviousDays = 0;
             if (previousConfirmNumbers != null && !previousConfirmNumbers.isEmpty()) {
-                // (selectTermsByConfirmNumbers는 DAO에 추가 필요)
                 List<TermAmountDTO> previousTerms = termAmountDAO.selectTermsByConfirmNumbers(previousConfirmNumbers);
                 for (TermAmountDTO term : previousTerms) {
                     if (term.getStartMonthDate() != null && term.getEndMonthDate() != null) {
@@ -410,7 +359,6 @@ public class CompanyApplyService {
             }
             
             deleteTerms(dto.getConfirmNumber());
-            // calculateTerms에 새 파라미터 전달
             List<TermAmountDTO> terms = calculateTerms(s, e, wage, monthlyCompanyPay, 
                                                     firstEverStartDate, totalPreviousDays);
             saveTerms(dto.getConfirmNumber(), terms);

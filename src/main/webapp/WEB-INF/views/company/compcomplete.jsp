@@ -12,7 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/comp.css">
 <style>
-/* 2) 표 컨테이너/섹션 타이틀 (공통에 없으니 페이지 전용 유지) */
+
 .info-table-container{
   width:100%;
   text-align:left;
@@ -29,7 +29,7 @@ h2.section-title{
   width:fit-content;
 }
 
-/* 3) 표 스타일 (공통에 없으니 페이지 전용 유지) */
+
 .info-table{
   width:100%;
   border-collapse:collapse;
@@ -62,11 +62,10 @@ h2.section-title{
   font-weight:500;
 }
 
-/* 4) 2열 테이블 보조 */
 .table-2col th{width:120px}
 .table-2col .data-title{width:120px}
 
-/* 5) “자세히 보기” 버튼 (페이지 전용 UI) */
+
 .detail-btn{
   display:inline-block;
   padding:3px 8px;
@@ -85,7 +84,7 @@ h2.section-title{
   color:var(--white-color);
 }
 
-/* 6) 완료 아이콘 (페이지 전용) */
+
 .completion-icon {
   width: 80px;
   height: 80px;
@@ -106,14 +105,13 @@ h2.section-title{
   transform: rotate(45deg);
 }
 
-/* 7) 팝인 애니메이션 */
+
 @keyframes pop-in {
   0%   { transform: scale(0);   opacity: 0; }
   80%  { transform: scale(1.1); opacity: 1; }
   100% { transform: scale(1);   opacity: 1; }
 }
 
-/* 8) 버튼 컨테이너 (공통 .btn은 위 CSS를 사용하므로 여기선 배치만) */
 .button-container{
   display: flex;
   justify-content: center;
@@ -124,7 +122,6 @@ h2.section-title{
   flex-wrap: wrap;
 }
 
-/* (선택) 이 페이지 버튼 조금 크게 */
 .button-container .btn{
   padding: 12px 30px;
   font-size: 1.1em;

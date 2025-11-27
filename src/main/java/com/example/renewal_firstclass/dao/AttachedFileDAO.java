@@ -28,5 +28,8 @@ public interface AttachedFileDAO {
 	    
 	    int deleteOne(@Param("fileId") Long fileId, @Param("sequence") Integer sequence);
 	    
+	    int existsOwnedFile(@Param("fileId") Long fileId,
+                @Param("userId") Long userId);
+	    
 
 }

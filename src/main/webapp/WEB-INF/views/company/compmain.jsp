@@ -411,7 +411,7 @@
 								<td>${app.name}</td>
 
 								<td class="status-cell"><c:set var="stCode"
-										value="${app.statusCode}" /> <%-- 화면에 보여줄 텍스트 결정 --%> <c:set
+										value="${app.statusCode}" />  <c:set
 										var="stName">
 										    <c:choose>
 										        <c:when test="${stCode == 'ST_10'}">등록(임시저장)</c:when>

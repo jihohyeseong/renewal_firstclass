@@ -26,7 +26,6 @@ public class AttachedFileService {
     
     private static final String BASE_DIR = "C:/uploadtest";
 
-    // 새 file_id 발급
     public Long selectNextFileId() {
         return fileDAO.selectNextFileId();
     }
@@ -64,6 +63,18 @@ public class AttachedFileService {
     /*다운로드 기능*/
     public AttachedFileDTO getMeta(Long fileId, Integer seq) {
         return fileDAO.selectOneByFileIdAndSeq(fileId, seq);
+    }
+    
+   /* 권한검증*/
+    public boolean canDownload(Long fileId, Long userId, boolean isAdmin) {
+        if (fileId == null || userId == null) return false;
+
+        // 관리자
+        if (isAdmin) return true;
+
+        // 일반 유저면 소유 여부
+        int count = fileDAO.existsOwnedFile(fileId, userId);
+        return count > 0;
     }
 
 
@@ -129,7 +140,6 @@ public class AttachedFileService {
         if (file == null || file.isEmpty()) {
             throw new IOException("Empty file");
         }
-        // 대상 디렉터리: BASE_DIR/{fileId}
         java.nio.file.Path dir = java.nio.file.Paths.get(BASE_DIR, String.valueOf(fileId));
         java.nio.file.Files.createDirectories(dir);
 
@@ -137,7 +147,6 @@ public class AttachedFileService {
         String originalName = file.getOriginalFilename();
         if (originalName == null || originalName.trim().isEmpty()) originalName = "file";
 
-        // OS에 안전한 파일명으로 정리(간단 버전)
         originalName = originalName.replaceAll("[\\\\/:*?\"<>|]", "_");
 
         // 확장자 분리
@@ -145,7 +154,6 @@ public class AttachedFileService {
         String base = (dot > 0) ? originalName.substring(0, dot) : originalName;
         String ext  = (dot > 0 && dot < originalName.length() - 1) ? originalName.substring(dot) : "";
 
-        // 중복 처리: base (n).ext
         java.nio.file.Path target = dir.resolve(originalName);
         int n = 2;
         while (java.nio.file.Files.exists(target)) {
@@ -156,7 +164,7 @@ public class AttachedFileService {
 
         // 실제 저장
         file.transferTo(target.toFile());
-        return target.toString(); // DB에 저장할 경로
+        return target.toString();
     }
 
 

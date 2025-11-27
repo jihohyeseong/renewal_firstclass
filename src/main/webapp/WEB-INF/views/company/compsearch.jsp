@@ -137,7 +137,7 @@
     </ul>
   </div>
 
-  <!-- 검색 카드 (제목/목록 버튼/구분선 제거) -->
+  <!-- 검색 카드  -->
   <div class="content-wrapper" style="padding-top:18px;">
     <form id="searchForm" method="post" action="${pageContext.request.contextPath}/comp/search">
       <input type="hidden" name="page" value="${empty page ? 1 : page}">
@@ -181,7 +181,6 @@
     </form>
   </div>
 
-  <!-- 결과 카드: 검색했을 때(searched=true)만 노출 -->
   <c:set var="searchedSafe" value="${empty searched ? false : searched}" />
   <c:if test="${searchedSafe}">
     <div class="content-wrapper">
@@ -288,10 +287,10 @@
     return false;
   }
 
-  // 주민번호 포맷 & 전송 값 관리
+  // 주민번호 포맷
   (function(){
-    const raw  = document.getElementById('regNoRaw');      // hidden (name="regNoKeyword")
-    const disp = document.getElementById('regNoDisplay');  // 표시용
+    const raw  = document.getElementById('regNoRaw');  
+    const disp = document.getElementById('regNoDisplay');  
     const form = document.getElementById('searchForm');
 
     const onlyDigits = s => String(s||'').replace(/\D/g,'').slice(0,13);

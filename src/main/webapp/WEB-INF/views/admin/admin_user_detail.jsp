@@ -168,16 +168,16 @@ textarea.form-control { resize: vertical; }
 .modal-buttons {
     display:flex;justify-content:flex-end;gap:10px;margin-top:30px;
 }
-/* [추가] 하이라이팅을 위한 CSS 클래스 */
+
 .highlight-warning {
-    background-color: #f8d7da; /* 부드러운 빨간색 배경 */
-    color: var(--danger-color); /* 진한 빨간색 텍스트 */
+    background-color: #f8d7da;
+    color: var(--danger-color);
     font-weight: 700;
     padding: 2px 6px;
     border-radius: 4px;
 }
 
-/* ===== 진행 상태 카드 (Step Progress Bar) - Blue Theme (5단계) ===== */
+
 .progress-card {
   background: #fff;
   border: 1px solid var(--border-color);
@@ -201,7 +201,7 @@ textarea.form-control { resize: vertical; }
   right: 6%;
   height: 8px;
   border-radius: 8px;
-  background-color: #dbe4ff; /* 연파랑 */
+  background-color: #dbe4ff; 
   z-index: 1;
   transform: translateY(-50%);
 }
@@ -217,7 +217,7 @@ textarea.form-control { resize: vertical; }
   background-color: #5c7cfa; box-shadow: inset 0 0 0 5px rgba(92,124,250,.22);
 }
 .stepper-item.current .step-counter {
-  background-color: var(--primary-color); /* #3f58d4 */
+  background-color: var(--primary-color); 
   box-shadow: 0 0 0 4px rgba(63,88,212,.18);
 }
 .stepper-wrapper .progress-line {
@@ -240,14 +240,14 @@ textarea.form-control { resize: vertical; }
 .judge-wrap {
   display: flex;
   align-items: center;
-  gap: 16px;             /* 라디오들 사이 간격 */
-  margin: 12px 0 16px;   /* 위/아래 마진 */
+  gap: 16px;          
+  margin: 12px 0 16px;  
 }
 .judge-wrap input[type="radio"] {
-  margin-right: 6px;     /* 아이콘과 텍스트 사이 */
+  margin-right: 6px;
 }
 
-/* ==== [추가] 버튼 리뉴얼 ==== */
+
 .btn{
   display:inline-flex; align-items:center; justify-content:center;
   gap:8px; padding:12px 18px; font-size:15px; font-weight:600;
@@ -266,7 +266,6 @@ textarea.form-control { resize: vertical; }
 .btn-ghost:hover{ background: var(--light-gray-color); color: var(--dark-gray-color); }
 .btn-lg{ padding:14px 24px; font-size:16px; border-radius:14px; }
 
-/* ==== [수정] 하단 버튼 바 ==== */
 .action-bar{
   margin-top:40px;
   text-align: center;
@@ -300,23 +299,19 @@ textarea.form-control { resize: vertical; }
 }
 .segment-btn + .segment-btn{ border-left:1px solid var(--border-color); }
 .segment-btn[aria-pressed="true"]{
-  background: #e9ecef;          /* 연회색 배경 */
-  color: #343a40;                /* 진회색 텍스트 */
+  background: #e9ecef;        
+  color: #343a40;     
   box-shadow: inset 0 1px 3px rgba(0,0,0,0.15);
 }
 
 
-/* ==== [추가] 반려/부지급 사유 영역 ==== */
 
-/* === RejectForm 레이아웃 컴팩트 (라벨 옆 공백 제거) === */
-/* === 반려 폼: 라벨-인풋 간 공백 최소화 & 정렬 안정화 === */
 #rejectForm{
   display:block;
   margin-top:10px; padding:10px 12px;
   border:1px solid #d1d9ff; background:#f0f2ff; border-radius:10px;
 }
 
-/* 공통 행: 라벨 110px + 인풋 1fr */
 #rejectForm .form-row{
   display:grid !important;
   grid-template-columns: 110px 1fr;
@@ -326,7 +321,6 @@ textarea.form-control { resize: vertical; }
   margin:8px 0 !important;
 }
 
-/* 라벨은 딱 맞게, 줄바꿈 금지 */
 #rejectForm label{
   margin:0 !important;
   white-space:nowrap !important;
@@ -344,34 +338,32 @@ textarea.form-control { resize: vertical; }
 /* 셀렉트가 폭을 벌리는 문제 제거 */
 #rejectForm select{ min-width:0 !important; }
 
-/* === 상세사유만 라벨 위 / textarea 아래 (스택) === */
 #rejectForm .form-row.row-detail{ align-items: start; }
 #rejectForm .form-row.row-detail label{ margin:0 !important; }
 #rejectForm .form-row.row-detail .form-control{ grid-column: 2; }
 #rejectForm .form-row.row-detail textarea.form-control{
-  min-height:140px;    /* 필요하면 160~200px로 늘리면 됨 */
+  min-height:140px;
   line-height:1.5;
   resize:vertical;
 }
 #rejectForm .form-row:first-of-type .form-control{
   flex: 0 0 auto !important;
-  width: clamp(160px, 26vw, 240px) !important; /* 160~240px 사이로 */
+  width: clamp(160px, 26vw, 240px) !important; 
   max-width: 240px !important;
-  justify-self: start; /* 왼쪽 정렬 */
+  justify-self: start; 
 }
 
-/* ===== 관리자 수정폼 테이블 공통 스타일 ===== */
 .info-table.edit-table th {
-  background: #b0baec;           /* 자녀정보(수정)에서 쓰던 파랑톤 */
+  background: #b0baec;          
 }
 
-/* 수정폼 테이블은 행 높이를 살짝 컴팩트하게 */
+
 .info-table.edit-table th,
 .info-table.edit-table td {
-  padding: 8px 10px;             /* 위쪽 보기용 테이블보다 살짝만 줄임 */
+  padding: 8px 10px;      
 }
 
-/* 수정폼 안 인풋 크기 줄이기 */
+
 .info-table.edit-table .form-control {
   padding: 6px 8px !important;
   font-size: 14px;
@@ -382,12 +374,12 @@ textarea.form-control { resize: vertical; }
   background-color: transparent;
 }
 .file-download-link {
-    color: var(--primary-color); /* 테마 색상 적용 */
+    color: var(--primary-color);
     font-weight: 500;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    gap: 8px; /* 아이콘과 텍스트 간격 */
+    gap: 8px; 
 }
 .file-download-link:hover {
     text-decoration: underline;
@@ -407,11 +399,11 @@ textarea.form-control { resize: vertical; }
 <jsp:include page="adminheader.jsp" />
 
 <main class="main-container">
-<%-- 상태 코드/결과 기반으로 서버에서 단계/진행폭 계산 --%>
+
 <c:set var="status" value="${appDTO.statusCode}" />
 <c:set var="payRes" value="${appDTO.paymentResult}" />
 
-<%-- 단계: 1 제출, 2 심사중(1차), 3 승인/반려, 4 심사중(2차), 5 최종지급결정 --%>
+
 <c:set var="currentStep" value="2" />
 <c:choose>
   <c:when test="${status == 'ST_20'}"><c:set var="currentStep" value="1"/></c:when>
@@ -421,7 +413,6 @@ textarea.form-control { resize: vertical; }
 </c:choose>
 <c:if test="${status == 'ST_50'}"><c:set var="currentStep" value="5"/></c:if>
 
-<%-- 진행선 폭 계산 --%>
 <c:set var="progressWidth" value="0"/>
 <c:choose>
   <c:when test="${currentStep == 1}"><c:set var="progressWidth" value="0"/></c:when>
@@ -665,7 +656,7 @@ textarea.form-control { resize: vertical; }
     </div>
 
 
-<!-- [블록 1] 급여 신청 기간 -->
+<!-- 급여 신청 기간 -->
 <div class="info-table-container">
   <h2 class="section-title">급여 신청 정보</h2>
   <table class="info-table table-4col">
@@ -855,7 +846,7 @@ textarea.form-control { resize: vertical; }
   </table>
 </div>
 
-<!-- 센터 정보 (고정 예시) -->
+<!-- 센터 정보 -->
 <div class="info-table-container">
   <h2 class="section-title">접수 처리 센터 정보</h2>
   <table class="info-table table-4col">
@@ -969,11 +960,9 @@ textarea.form-control { resize: vertical; }
 		<form id="adminUpdateForm" method="post"
 			action="${ctx}/admin/user/update" style="margin-top: 18px;">
 
-			<!-- 필수: 신청번호 -->
 			<input type="hidden" name="applicationNumber"
 				value="${appDTO.applicationNumber}" />
 
-			<!-- 계좌정보(업데이트) -->
 			<div class="info-table-container">
 				<h2 class="section-title">급여 입금 계좌정보 (수정)</h2>
 				<table class="info-table table-4col edit-table">
@@ -1115,7 +1104,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const segmentsWrap      = document.getElementById('judgeSegments');
   const segmentBtns       = segmentsWrap ? segmentsWrap.querySelectorAll('.segment-btn') : [];
   const rejectForm        = document.getElementById('rejectForm');
-  const reasonSelect      = document.getElementById('reasonSelect');   // select로 사유 선택
+  const reasonSelect      = document.getElementById('reasonSelect'); 
   const rejectCommentEl   = document.getElementById('rejectComment');
   const confirmBtn        = document.getElementById('confirmBtn');
   const saveBtn           = document.getElementById('saveBtn');
@@ -1125,7 +1114,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const userId            = document.getElementById('targetUserId')?.value;
 
   // ===== 상태 =====
-  let currentChoice = 'approve'; // 기본: 접수
+  let currentChoice = 'approve'; 
   let reasonsLoaded = false;
 
   // ===== 세그먼트 토글 핸들러 =====
@@ -1154,7 +1143,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 reasonSelect.appendChild(opt);
               });
             } else {
-              // 없을 때 기본 '기타'라도 제공
               const opt = document.createElement('option');
               opt.value = 'RJ_99';
               opt.textContent = '기타(사유코드 없음)';
@@ -1173,15 +1161,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // 초기 상태 동기화 (기본 접수)
+  // 초기 상태 동기화
   setChoice('approve');
 
-  // 세그먼트 클릭 바인딩
   segmentBtns.forEach(btn => {
     btn.addEventListener('click', () => setChoice(btn.dataset.choice));
   });
 
-  // ===== 확인(접수/반려) 처리 =====
   if (confirmBtn) {
     confirmBtn.addEventListener('click', function () {
       if (!applicationNumber) { alert('신청번호를 확인할 수 없습니다.'); return; }
@@ -1208,7 +1194,6 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      // === 반려 ===
       const code = reasonSelect?.value || '';
       const comment = (rejectCommentEl?.value || '').trim();
 
@@ -1232,7 +1217,6 @@ document.addEventListener("DOMContentLoaded", function () {
       .then(data => {
         alert(data.message || '반려 처리가 완료되었습니다.');
 
-        // 푸시 (성공/실패 상관없이 메인 흐름 영향 X)
         if (userId) {
           $.ajax({
             url: ctx + '/push/' + userId,
@@ -1252,7 +1236,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // ===== 저장 버튼 → 폼 제출 =====
   if (saveBtn && adminUpdateForm) {
     saveBtn.addEventListener('click', function () {
       adminUpdateForm.submit();

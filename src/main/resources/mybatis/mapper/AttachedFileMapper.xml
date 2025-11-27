@@ -66,6 +66,22 @@
     AND sequence = #{sequence}
 </delete>
 
+<select id="existsOwnedFile" parameterType="map" resultType="int">
+  SELECT COUNT(1)
+  FROM (
+    SELECT c.file_id, c.user_id
+    FROM TB_CONFIRM_APPLICATION c
+    WHERE c.delt_at = 'N'
+    
+    UNION ALL
+    
+    SELECT p.file_id, p.user_id
+    FROM TB_PARENTAL_LEAVE_APPLICATION p
+    WHERE p.delt_at = 'N'
+  ) t
+  WHERE t.file_id = #{fileId}
+    AND t.user_id = #{userId}
+</select>
 
 
 </mapper>
