@@ -15,7 +15,6 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
 <style>
-	/* ==== 기본 및 변수 ==== */
 	:root {
 		--primary-color: #3f58d4;
 		--primary-light-color: #f0f2ff;
@@ -31,7 +30,6 @@
 		--shadow-md: 0 6px 18px rgba(0, 0, 0, .06);
 	}
 
-	/* ==== 기본 레이아웃 ==== */
 	* { margin: 0; padding: 0; box-sizing: border-box; }
 	html { height: 100%; }
 	body {
@@ -44,14 +42,13 @@
 	}
 	a { text-decoration: none; color: inherit; }
 
-	/* ==== 메인 컨텐츠 영역 ==== */
 	.container-fluid.p-4 {
-		padding: 0 !important; /* Bootstrap P-4 리셋 */
+		padding: 0 !important; 
 	}
 	
 	.container.mt-4 {
 		max-width: 1200px;
-		margin: 2rem auto; /* mt-4 리셋하고 중앙 정렬 */
+		margin: 2rem auto; 
 		padding: 0;
 	}
 
@@ -66,7 +63,6 @@
 		margin-bottom: 1.5rem;
 	}
 	
-	/* ==== 검색 폼  ==== */
 	.search-form {
 		background: var(--white-color);
 		border: none;
@@ -76,30 +72,28 @@
 		margin-bottom: 1.5rem;
 	}
 
-	/* 폼 내부 레이아웃  */
 	#searchForm .row {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 1.5rem 1rem;
-		margin: 0; /* g-3, mt-2 리셋 */
+		margin: 0; 
 	}
 	#searchForm .row:not(:first-child) {
 		margin-top: 1rem;
 	}
 	
 	#searchForm [class*="col-"] {
-		flex: 1 1 250px; /* 유연한 너비 */
-		padding: 0; /* g-3 리셋 */
+		flex: 1 1 250px; 
+		padding: 0;
 	}
 	
 	#searchForm .d-flex {
 		display: flex;
-		align-items: flex-end; /* align-items-end */
-		justify-content: flex-end; /* justify-content-end */
+		align-items: flex-end; 
+		justify-content: flex-end; 
 		gap: 0.5rem;
 	}
 
-	/* 폼 요소  */
 	.search-form .form-label {
 		font-size: .9rem;
 		font-weight: 500;
@@ -131,7 +125,6 @@
 		box-shadow: 0 0 0 3px var(--primary-light-color);
 	}
 
-	/* 폼 버튼  */
 	.search-form button {
 		display: inline-flex;
 		align-items: center;
@@ -154,7 +147,6 @@
 		background-color: #f8f9fa;
 	}
 	
-	/* 검색 버튼  */
 	.search-form button[type="submit"] {
 		background: var(--primary-color);
 		border-color: var(--primary-color);
@@ -167,7 +159,6 @@
 		color: var(--white-color);
 	}
 	
-	/* ==== 탭 메뉴  ==== */
 	#actionTypeTabs {
 		display: flex;
 		list-style: none;
@@ -181,7 +172,7 @@
 	#actionTypeTabs .nav-link {
 		display: block;
 		padding: .75rem 1.25rem;
-		margin-bottom: -2px; /* 하단 보더와 겹치게 */
+		margin-bottom: -2px; 
 		border: none;
 		border-bottom: 2px solid transparent;
 		background: none;
@@ -200,7 +191,6 @@
 		font-weight: 700;
 	}
 
-	/* ==== 테이블 ==== */
 	.table-responsive-wrapper {
 		background: var(--white-color);
 		border: none;
@@ -215,7 +205,7 @@
 		border-collapse: collapse;
 		border-spacing: 0;
 		margin-bottom: 0;
-		text-align: left; /* .text-center 오버라이드 */
+		text-align: left; 
 	}
 
 	table.table th,
@@ -225,10 +215,9 @@
 		vertical-align: middle;
 		font-size: .9rem;
 		white-space: nowrap;
-		text-align: left; /* .text-center 오버라이드 */
+		text-align: left; 
 	}
 	
-	/* 테이블 헤더 */
 	table.table thead th {
 		background: var(--white-color);
 		font-weight: 600;
@@ -276,12 +265,12 @@
 	  font-size: .75rem;
 	  font-weight: 500;
 	  background: var(--white-color);
-	  color: #555; /* 기본 텍스트 색상 (글자) */
+	  color: #555; 
 	}
 	
 	.doc-chip i {
 	  font-size: 1rem;
-	  color: #555; /* 기본 회색 */
+	  color: #555; 
 	}
 	
 	.doc-chip.chip-primary i {
@@ -299,7 +288,6 @@
 		font-size: .95rem;
 	}
 	
-	/* 총 건수 표시 */
 	.d-flex.justify-content-between.mb-2 {
 		display: flex;
 		justify-content: space-between;
@@ -313,7 +301,7 @@
 		justify-content: center;
 		gap: .5rem;
 		margin-top: 2rem;
-		padding: 0; /* list-style 리셋 */
+		padding: 0; 
 	}
 
 	.pagination a,
@@ -324,7 +312,7 @@
 		width: 38px;
 		height: 38px;
 		border: 1px solid var(--border-color);
-		border-radius: 999px; /* 원형 버튼 */
+		border-radius: 999px; 
 		background: var(--white-color);
 		color: var(--text-muted);
 		text-decoration: none;
@@ -439,20 +427,16 @@
     <div class="table-responsive-wrapper" style="overflow-x: auto; border: 1px solid var(--border-color); border-radius: 8px; box-shadow: var(--shadow-sm); background-color: var(--white-color);">
         <c:set var="formType" value="${search.formType}" />
         <c:choose>
-            <%-- Case 1: '신청서' 선택 --%>
             <c:when test="${formType eq '신청서'}">
                 <table class="table table-hover text-center" style="min-width: 2000px;">
                     <thead class="table-light">
                         <tr>
-                            <!-- 공통 (6) -->
-                            <!-- <th scope="col">번호</th> -->
                             <th scope="col">서식 구분</th>
                             <th scope="col">변경 유형</th>
                             <th scope="col">변경 시간</th>
                             <th scope="col">사용자 이름</th>
                             <th scope="col">사용자 주민번호</th>
                             
-                            <!-- 신청서 (13) -->
                             <th scope="col">[신청] 접수번호</th>
                             <th scope="col">[신청] 은행코드</th>
                             <th scope="col">[신청] 계좌번호</th>
@@ -473,15 +457,12 @@
                             <c:when test="${not empty list}">
                                 <c:forEach var="item" items="${list}" varStatus="status">
                                     <tr>
-                                        <!-- 공통 (6) -->
-                                        <%-- <td>${pageDTO.totalCnt - ( (pageDTO.pageNum - 1) * pageDTO.listSize + status.index )}</td> --%>
                                         <td><span class="doc-chip chip-primary"><i class="bi bi-file-earmark-text"></i> ${item.formType}</span></td>
                                         <td>${item.actionType}</td>
                                         <td><fmt:formatDate value="${item.actionTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
                                         <td>${item.userName}</td>
                                         <td>${item.userRegiNumber}</td>
                                         
-                                        <!-- 신청서 (13) -->
                                         <td>${item.applicationNumber}</td>
                                         <td>${item.bankCode}</td>
                                         <td>${item.accountNumber}</td>
@@ -518,19 +499,16 @@
                 </table>
             </c:when>
 
-            <%-- Case 2: '확인서' 선택 --%>
             <c:when test="${formType eq '확인서'}">
                 <table class="table table-hover text-center" style="min-width: 3500px;">
                      <thead class="table-light">
                         <tr>
-                            <!-- 공통 (5) -->
                             <th scope="col">서식 구분</th>
                             <th scope="col">변경 유형</th>
                             <th scope="col">변경 시간</th>
                             <th scope="col">사용자 이름</th>
                             <th scope="col">사용자 주민번호</th>
                             
-                            <!-- 확인서 (23) -->
                             <th scope="col">[확인] 확인서번호</th>
                             <th scope="col">[확인] 신청일</th>
                             <th scope="col">[확인] 상태코드</th>
@@ -562,14 +540,12 @@
                             <c:when test="${not empty list}">
                                 <c:forEach var="item" items="${list}" varStatus="status">
                                     <tr>
-                                        <!-- 공통 (6) -->
                                         <td><span class="doc-chip chip-success"><i class="bi bi-patch-check"></i> ${item.formType}</span></td>
                                         <td>${item.actionType}</td>
                                         <td><fmt:formatDate value="${item.actionTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
                                         <td>${item.userName}</td>
                                         <td>${item.userRegiNumber}</td>
 
-                                        <!-- 확인서 (23) -->
                                         <td>${item.confirmNumber_Cnf}</td>
                                         <td><fmt:formatDate value="${item.applyDt}" pattern="yyyy-MM-dd" /></td>
                                         <td>
@@ -616,7 +592,6 @@
                 </table>
             </c:when>
 
-            <%-- Case 3: '전체' 선택  --%>
             <c:otherwise>
                  <table class="table table-hover text-center" style="min-width: 1200px;">
                     <thead class="table-light">
@@ -677,11 +652,9 @@
     </c:url>
 
     <div class="pagination">
-	    <!-- 이전 버튼 (항상 활성화) -->
     	<a class="js-page-link prev" data-page="${pageDTO.pageNum - 1}" style="cursor: pointer;">&laquo;</a>
 
 	
-	    <!-- 페이지 번호 -->
 	    <c:forEach begin="${pageDTO.paginationStart}" end="${pageDTO.paginationEnd}" var="p">
 	        <c:choose>
 	            <c:when test="${p == pageDTO.pageNum}">
@@ -693,7 +666,6 @@
 	        </c:choose>
 	    </c:forEach>
 	
-	    <!-- 다음 버튼 (항상 활성화) -->
     	<a class="js-page-link next" data-page="${pageDTO.pageNum + 1}" style="cursor: pointer;">&raquo;</a>
 	</div>
 
@@ -703,7 +675,6 @@
 <script>
 	
     $(document).ready(function() {
-        // 탭 클릭 이벤트
         $('#actionTypeTabs .nav-link').on('click', function(e) {
             e.preventDefault();
 
@@ -717,13 +688,10 @@
     $('.js-page-link').on('click', function(e) {
         e.preventDefault();
 
-        // 클릭한 링크의 data-page 값을 가져옴
         const newPage = $(this).data('page');
 
-        // 폼 내부의 hidden input (pageNum) 값을 변경
         $('#searchForm input[name="pageNum"]').val(newPage);
 
-        // 폼 전송 (GET 방식)
         $('#searchForm').submit();
     });
 </script>

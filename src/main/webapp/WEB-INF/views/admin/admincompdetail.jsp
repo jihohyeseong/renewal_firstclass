@@ -18,7 +18,7 @@
 
 <style>
         :root {
-	    --primary-color: #24A960; /* 통일된 기본색 (초록) */
+	    --primary-color: #24A960; 
 	    --white-color: #ffffff;
 	    --light-gray-color: #f9fafb;
 	    --gray-color: #6b7280;
@@ -31,7 +31,6 @@
 	    --success-color: #24A960;
 		}
 
-/* 기본 스타일 */
 *{margin:0;padding:0;box-sizing:border-box}
 html{height:100%}
 body{
@@ -62,13 +61,11 @@ h2{
 	padding-bottom:10px;margin-bottom:25px;font-size:20px;
 }
 
-/* 섹션 타이틀 */
 .section-title{
 	font-size:20px;font-weight:700;color:var(--dark-gray-color);
 	margin-bottom:15px;border-left:4px solid var(--primary-color);padding-left:10px;
 }
 
-/* 테이블 */
 .info-table-container{margin-bottom:30px}
 .info-table{
   width:100%;
@@ -107,7 +104,6 @@ h2{
 }
 
 
-/* 버튼 */
 .btn{
 	display:inline-block;padding:10px 20px;font-size:15px;font-weight:500;
 	border-radius:8px;border:1px solid var(--border-color);cursor:pointer;
@@ -120,7 +116,6 @@ h2{
 .btn-logout{background-color:var(--dark-gray-color);color:#fff;border:none}
 .btn-logout:hover{background-color:#555}
 
-/* 하단 버튼 컨테이너 */
 .button-container{text-align:center;margin-top:50px}
 .bottom-btn{padding:12px 30px;font-size:1.1em}
 #edit-btn{background-color:var(--primary-color);color:#fff;border-color:var(--primary-color)}
@@ -135,7 +130,6 @@ h2{
 .detail-btn:hover{background-color:var(--primary-light-color)}
 .success-text{color:var(--success-color);font-weight:500}
 
-/* 모달 스타일 */
 .modal-overlay{
     position:fixed;top:0;left:0;width:100%;height:100%;
     background-color:rgba(0,0,0,0.5);display:flex;
@@ -168,16 +162,14 @@ textarea.form-control { resize: vertical; }
 .modal-buttons {
     display:flex;justify-content:flex-end;gap:10px;margin-top:30px;
 }
-/* 하이라이팅을 위한 CSS 클래스 */
 .highlight-warning {
-    background-color: #f8d7da; /* 부드러운 빨간색 배경 */
-    color: var(--danger-color); /* 진한 빨간색 텍스트 */
+    background-color: #f8d7da; 
+    color: var(--danger-color);
     font-weight: 700;
     padding: 2px 6px;
     border-radius: 4px;
 }
 
-	/* ===== 진행 상태 카드 ===== */
 	  .progress-card {
 	    background: #fff;
 	    border: 1px solid var(--border-color);
@@ -199,7 +191,7 @@ textarea.form-control { resize: vertical; }
 	.stepper-wrapper::before {
 	  content: '';
 	  position: absolute;
-	  top: 50%; /* 원 중심선과 맞춤 */
+	  top: 50%; 
 	  left: 8%;
 	  right: 8%;
 	  height: 10px;
@@ -239,28 +231,24 @@ textarea.form-control { resize: vertical; }
 	  display: block;
 	}
 	
-	/* 완료된 단계 */
 	.stepper-item.completed .step-counter {
 	  background-color: #81c784; /* 연한 초록색 */
-	  box-shadow: inset 0 0 0 5px rgba(46,125,50,0.25); /* 채워진 원 느낌 */
+	  box-shadow: inset 0 0 0 5px rgba(46,125,50,0.25); 
 	}
 	
-	/* 현재 진행 단계 */
 	.stepper-item.current .step-counter {
-	  background-color: #2e7d32; /* 진한 초록색 */
+	  background-color: #2e7d32;
 	  box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.2);
 	}
 	
-	/* 결과대기 상태 */
 	.stepper-item.waiting .step-counter {
 	  background-color: #dcdcdc;
 	  color: #999;
 	}
 	
-	/* 완료 구간 연결선 */
 	.stepper-wrapper .progress-line {
 	  position: absolute;
-	  top: 50%; /* 원 중심과 맞춤 */
+	  top: 50%; 
 	  left: 8%;
 	  height: 10px;
 	  border-radius: 10px;
@@ -278,7 +266,7 @@ textarea.form-control { resize: vertical; }
   display: flex;
   align-items: center;
   gap: 16px;             
-  margin: 12px 0 16px;   /* 위/아래 마진 */
+  margin: 12px 0 16px;   
 }
 .judge-wrap input[type="radio"] {
   margin-right: 6px;     
@@ -302,7 +290,6 @@ textarea.form-control { resize: vertical; }
 .btn-ghost:hover{ background: var(--light-gray-color); color: var(--dark-gray-color); }
 .btn-lg{ padding:14px 24px; font-size:16px; border-radius:14px; }
 
-/* ==== 하단 버튼 바 ==== */
 .action-bar{
   margin-top:40px;
   text-align: center;
@@ -336,13 +323,12 @@ textarea.form-control { resize: vertical; }
 }
 .segment-btn + .segment-btn{ border-left:1px solid var(--border-color); }
 .segment-btn[aria-pressed="true"]{
-  background: #e9ecef;          /* 연회색 배경 */
-  color: #343a40;                /* 진회색 텍스트 */
+  background: #e9ecef;          
+  color: #343a40;                
   box-shadow: inset 0 1px 3px rgba(0,0,0,0.15);
 }
 
 
-/* ==== 반려/부지급 사유 영역 ==== */
 
 #rejectForm{
   display:block;
@@ -350,7 +336,6 @@ textarea.form-control { resize: vertical; }
   border:1px solid #d6ecde; background:#d6ecde; border-radius:10px;
 }
 
-/* 공통 행: 라벨 110px + 인풋 1fr */
 #rejectForm .form-row{
   display:grid !important;
   grid-template-columns: 110px 1fr;
@@ -373,26 +358,23 @@ textarea.form-control { resize: vertical; }
   border-radius:10px;
 }
 
-/* 셀렉트가 폭을 벌리는 문제 제거 */
 #rejectForm select{ min-width:0 !important; }
 
-/* === 상세사유만 라벨 위 / textarea 아래  === */
 #rejectForm .form-row.row-detail{ align-items: start; }
 #rejectForm .form-row.row-detail label{ margin:0 !important; }
 #rejectForm .form-row.row-detail .form-control{ grid-column: 2; }
 #rejectForm .form-row.row-detail textarea.form-control{
-  min-height:140px;    /* 필요하면 160~200px로 늘리면 됨 */
+  min-height:140px;    
   line-height:1.5;
   resize:vertical;
 }
 #rejectForm .form-row:first-of-type .form-control{
   flex: 0 0 auto !important;
-  width: clamp(160px, 26vw, 240px) !important; /* 160~240px 사이로 */
+  width: clamp(160px, 26vw, 240px) !important; 
   max-width: 240px !important;
   justify-self: start; /* 왼쪽 정렬 */
 }
 
-/* ===== 관리자 수정폼 테이블 공통 스타일 ===== */
 .info-table.edit-table th {
   background: #d6ecde;
 }
@@ -402,7 +384,6 @@ textarea.form-control { resize: vertical; }
   padding: 10px 10px;
 }
 
-/* 수정폼 안 인풋 크기 줄이기 */
 .info-table.edit-table .form-control {
   padding: 4px 8px !important;
   font-size: 14px;
@@ -425,7 +406,6 @@ textarea.form-control { resize: vertical; }
     text-decoration: underline;
 }
 
-/* 월별 지급 내역 (수정) - 제목 옆 버튼 */
 .term-edit-header{
   display:flex;
   align-items:center;
@@ -434,7 +414,7 @@ textarea.form-control { resize: vertical; }
   margin-bottom:10px;
 }
 .term-edit-header .section-title{
-  margin-bottom:0; /* 아래 여백 제거해서 버튼이랑 라인 맞추기 */
+  margin-bottom:0; 
 }
 
 
@@ -445,7 +425,6 @@ textarea.form-control { resize: vertical; }
   margin-bottom:8px;
 }
 
-/* 안내 문구 스타일 */
 .term-edit-notice{
   display:block;
   margin-top:8px;
@@ -463,7 +442,6 @@ textarea.form-control { resize: vertical; }
 <jsp:include page="adminheader.jsp" />
 
 <main class="main-container">
-<%-- ===== 진행 상태 / 진행폭 계산 (3단계) ===== --%>
 <c:set var="status" value="${confirmDTO.statusCode}" />
 <c:set var="currentStep" value="1" />
 <c:choose>
@@ -482,7 +460,6 @@ textarea.form-control { resize: vertical; }
   <c:when test="${currentStep == 3}"><c:set var="progressWidth" value="100"/></c:when>
 </c:choose>
 
-<!-- 진행 상태 카드 -->
 <div class="progress-card">
   <div class="stepper-wrapper">
     <div class="progress-line" style="width:${progressWidth}%;"></div>
@@ -510,7 +487,6 @@ textarea.form-control { resize: vertical; }
 
 <h1>육아휴직 확인서 상세 보기</h1>
 
-<!-- 반려시 -->
 <c:if test="${confirmDTO.statusCode == 'ST_60'}">
   <div class="info-table-container">
     <table class="info-table table-4col reject-table">
@@ -556,9 +532,7 @@ textarea.form-control { resize: vertical; }
 </c:if>
 
 
-<!-- ===== 원본 정보 블록들 ===== -->
 
-<!-- 접수 정보 -->
 <div class="info-table-container">
   <h2 class="section-title">접수 정보</h2>
   <table class="info-table table-4col">
@@ -744,7 +718,6 @@ textarea.form-control { resize: vertical; }
   </table>
 </div>
 
-<!-- 첨부파일 (확인서 관련) -->
 <div class="info-table-container">
   <h2 class="section-title">첨부파일</h2>
   <table class="info-table table-4col">
@@ -1023,7 +996,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const ctx = '${pageContext.request.contextPath}';
     const confirmNumber = document.getElementById("confirmNumber")?.value;
 
-    // 단위기간 초기 데이터 (이미 저장된 수정본 표시용)
     const initialData = {
         termAmounts: ${gson.toJson(confirmDTO.updatedTermAmounts)} || [],
         originalTermAmounts: ${gson.toJson(confirmDTO.termAmounts)} || []
@@ -1123,7 +1095,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
 
-    // 페이지 로드 시 이미 저장된 수정 단위기간 있으면 표시
     if (initialData.termAmounts && initialData.termAmounts.length > 0) {
         updateTermRows(initialData.termAmounts);
     }
@@ -1141,7 +1112,6 @@ generateEditBtn?.addEventListener('click', function(){
         return;
     }
 
-    // 새로 나누기 → 기존 행 리셋
     editFormsContainer.innerHTML = '';
     if (termEditBox) termEditBox.style.display = 'block';
 
@@ -1200,7 +1170,6 @@ editEndDateInput?.addEventListener('change', function(){
 });
 
 
-    // ===== 수정 저장 버튼 이벤트 (단위기간 + upd* 필드 저장) =====
     updateBtn?.addEventListener("click", function(){
         if (!confirmNumber){
             alert('확인서 번호를 확인할 수 없습니다.');
@@ -1261,7 +1230,6 @@ editEndDateInput?.addEventListener('change', function(){
         });
     });
 
-    // ===== 접수/반려 세그먼트 & 반려 처리 =====
     const segmentsWrap    = document.getElementById('judgeSegments');
     const segmentBtns     = segmentsWrap ? segmentsWrap.querySelectorAll('.segment-btn') : [];
     const rejectForm      = document.getElementById('rejectForm');
@@ -1325,7 +1293,6 @@ editEndDateInput?.addEventListener('change', function(){
         });
     }
 
-    // 확인 버튼이벤트 - 접수/반려 확정
     confirmBtn?.addEventListener('click', function(){
         if (!confirmNumber){
             alert('확인서 번호를 확인할 수 없습니다.');

@@ -52,7 +52,6 @@ public class AdminApprovalController {
         return userService.findByUsername(ud.getUsername());
     }
 
-	// 관리자 접수
     @PostMapping("admin/judge/approve")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> adminApprove(@RequestBody AdminJudgeDTO judgeDTO, HttpServletRequest request){
@@ -82,7 +81,6 @@ public class AdminApprovalController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     
-    // 관리자 반려
     @PostMapping("admin/judge/reject")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> adminReject(@RequestBody AdminJudgeDTO judgeDTO, HttpServletRequest request){
@@ -128,7 +126,6 @@ public class AdminApprovalController {
     	return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     
-    // 날짜 포맷팅
     private static final TypeAdapter<Date> SQL_DATE_ADAPTER = new TypeAdapter<Date>() {
         private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         @Override
@@ -145,7 +142,6 @@ public class AdminApprovalController {
         }
     };
 
-    // Gson 객체 생성
     private final Gson gson = new GsonBuilder()
             .registerTypeAdapter(Date.class, SQL_DATE_ADAPTER)
             .create();
@@ -189,7 +185,6 @@ public class AdminApprovalController {
         }
     }
     
-	 // 확인서 수정 저장
 	 @PostMapping("/admin/judge/update")
 	 @ResponseBody
 	 public ResponseEntity<Map<String, Object>> updateConfirm(
@@ -209,13 +204,11 @@ public class AdminApprovalController {
 	     try {
 	         dto.setProcessorId(userDTO.getId());
 	         
-	         // 수정사항 저장
 	         boolean updateSuccess = adminApprovalService.saveConfirmEdits(dto);
 	         if (!updateSuccess) {
 	             throw new IllegalStateException("확인서 정보 업데이트에 실패했습니다.");
 	         }
 	         
-	         // 저장 후, 모든 최신 데이터를 다시 조회하여 클라이언트에 전달
 	         ConfirmApplyDTO updatedFullDto = adminApprovalService.getConfirmForEditing(dto.getConfirmNumber());
 	         
 	         response.put("success", true);

@@ -11,7 +11,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
-<%-- JQuery 로드 (AJAX 호출에 필요) --%>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/global.css">
 
@@ -32,7 +31,6 @@
 		--shadow-md:0 4px 8px rgba(0,0,0,0.07);
 	}
 	
-	/* 기본 스타일 */
 	*{margin:0;padding:0;box-sizing:border-box}
 	html{height:100%}
 	body{
@@ -66,7 +64,6 @@
 		margin-bottom:15px;border-left:4px solid var(--primary-color);padding-left:10px;
 	}
 	
-	/* 테이블 */
 	.info-table-container{margin-bottom:30px}
 	.info-table{
 		width:100%;border-collapse:collapse;
@@ -96,7 +93,6 @@
     .info-table td.text-right {
         padding-right: 20px;
     }
-	/* 버튼 */
 	.btn{
 		display:inline-block;padding:10px 20px;font-size:15px;font-weight:500;
 		border-radius:8px;border:1px solid var(--border-color);cursor:pointer;
@@ -109,7 +105,6 @@
 	.btn-logout{background-color:var(--dark-gray-color);color:#fff;border:none}
 	.btn-logout:hover{background-color:#555}
 	
-	/* 하단 버튼 컨테이너 */
 	.button-container{text-align:center;margin-top:50px}
 	.bottom-btn{padding:12px 30px;font-size:1.1em}
 	#edit-btn{background-color:var(--primary-color);color:#fff;border-color:var(--primary-color)}
@@ -124,7 +119,6 @@
 	.detail-btn:hover{background-color:var(--primary-light-color)}
 	.success-text{color:var(--success-color);font-weight:500}
 	
-	/* 모달 스타일 */
 	.modal-overlay{
 		position:fixed;top:0;left:0;width:100%;height:100%;
 		background-color:rgba(0,0,0,0.5);display:flex;
@@ -157,16 +151,14 @@
 	.modal-buttons {
 		display:flex;justify-content:flex-end;gap:10px;margin-top:30px;
 	}
-	/* 하이라이팅을 위한 CSS 클래스 */
 	.highlight-warning {
-		background-color: #f8d7da; /* 부드러운 빨간색 배경 */
-		color: var(--danger-color); /* 진한 빨간색 텍스트 */
+		background-color: #f8d7da; 
+		color: var(--danger-color); 
 		font-weight: 700;
 		padding: 2px 6px;
 		border-radius: 4px;
 	}
 	
-	/* ===== 진행 상태 카드(5단계) ===== */
 	.progress-card {
 		background: #fff;
 		border: 1px solid var(--border-color);
@@ -216,7 +208,6 @@
 		width: 0%; max-width: 88%; transition: width .35s ease;
 	}
 	
-	/* ===== 버튼 영역 수정 ===== */
 	 .button-container {
 	  margin-top:40px;
 	  text-align: center;
@@ -246,8 +237,8 @@
 	}
 	.segment-btn + .segment-btn{ border-left:1px solid var(--border-color); }
 	.segment-btn[aria-pressed="true"]{
-	  background: #e9ecef;          /* 연회색 배경 */
-	  color: #343a40;                /* 진회색 텍스트 */
+	  background: #e9ecef;          
+	  color: #343a40;                
 	  box-shadow: inset 0 1px 3px rgba(0,0,0,0.15);
 	}
 	  
@@ -260,7 +251,6 @@
     	padding: 10px 4px;
     	height: 38px;
 	}
-	/* ===== 부지급 사유 영역  ===== */
 	#rejectForm{
 	  display:none;
 	  margin-top:10px; padding:10px 12px;
@@ -268,10 +258,9 @@
 	}
 	#rejectForm.active {
 	  display: block;
-	  animation: fadeInDown 0.3s ease-out; /* 가지고 계신 애니메이션 적용 */
+	  animation: fadeInDown 0.3s ease-out; 
 	}
 	
-	/* 공통 행: 라벨 110px + 인풋 1fr */
 	#rejectForm .form-row{
 	  display:grid !important;
 	  grid-template-columns: 110px 1fr;
@@ -294,23 +283,21 @@
 	  border-radius:10px;
 	}
 	
-	/* 셀렉트가 폭을 벌리는 문제 제거 */
 	#rejectForm select{ min-width:0 !important; }
 	
-	/* 상세사유만 라벨 위 / textarea 아래  */
 	#rejectForm .form-row.row-detail{ align-items: start; }
 	#rejectForm .form-row.row-detail label{ margin:0 !important; }
 	#rejectForm .form-row.row-detail .form-control{ grid-column: 2; }
 	#rejectForm .form-row.row-detail textarea.form-control{
-	  min-height:140px;    /* 필요하면 160~200px로 늘리면 됨 */
+	  min-height:140px;   
 	  line-height:1.5;
 	  resize:vertical;
 	}
 	#rejectForm .form-row:first-of-type .form-control{
 	  flex: 0 0 auto !important;
-	  width: clamp(160px, 26vw, 240px) !important; /* 160~240px 사이로 */
+	  width: clamp(160px, 26vw, 240px) !important; 
 	  max-width: 240px !important;
-	  justify-self: start; /* 왼쪽 정렬 */
+	  justify-self: start; 
 	}
 </style>
 </head>
@@ -319,11 +306,9 @@
 <jsp:include page="adminheader.jsp" />
 
 <main class="main-container">
-<%-- 상태 코드/결과 기반으로 서버에서 단계/진행폭 계산 --%>
 <c:set var="status" value="${appDTO.statusCode}" />
 <c:set var="payRes" value="${appDTO.paymentResult}" />
 
-<%-- 단계: 1 제출, 2 심사중(1차), 3 승인/반려, 4 심사중(2차), 5 최종지급결정 --%>
 <c:set var="currentStep" value="2" />
 <c:choose>
 	<c:when test="${status == 'ST_20'}"><c:set var="currentStep" value="1"/></c:when>
@@ -333,7 +318,6 @@
 </c:choose>
 <c:if test="${status == 'ST_50'}"><c:set var="currentStep" value="5"/></c:if>
 
-<%-- 진행선 폭 계산 --%>
 <c:set var="progressWidth" value="0"/>
 <c:choose>
 	<c:when test="${currentStep == 1}"><c:set var="progressWidth" value="0"/></c:when>
@@ -573,12 +557,6 @@
 										</c:choose>
 									</td>
 							
-									<%-- <td class="text-right">
-										<fmt:formatNumber
-											value="${(not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}"
-											type="number"
-											pattern="#,###" />원
-									</td> --%>
 								</tr>
 							
 								<c:set var="totalAmount"
@@ -587,18 +565,6 @@
 
 			<c:if test="${not empty dto.list}">
 								<tr style="background-color: var(--light-gray-color);">
-									<%-- <td colspan="2">
-										<fmt:formatDate value="${dto.list[0].startMonthDate}" pattern="yyyy.MM.dd" />
-										-
-										<c:choose>
-											<c:when test="${not empty dto.list[fn:length(dto.list) - 1].earlyReturnDate}">
-												<fmt:formatDate value="${dto.list[fn:length(dto.list) - 1].earlyReturnDate}" pattern="yyyy.MM.dd" />
-											</c:when>
-											<c:otherwise>
-												<fmt:formatDate value="${dto.list[fn:length(dto.list) - 1].endMonthDate}" pattern="yyyy.MM.dd" />
-											</c:otherwise>
-										</c:choose>
-									</td> --%>
 							
 									<td colspan="3" style="text-align: center; font-weight: 700; color: var(--dark-gray-color);">
 										합계 신청금액
@@ -1061,7 +1027,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // 푸시 알림 전송 및 후속 처리를 위한 헬퍼 함수
     function sendPushAndFinalize(userId, data, defaultMessage) {
         const successMessage = data.message || defaultMessage;
         

@@ -54,8 +54,6 @@ public class AdminAddAmountController {
         model.addAttribute("applicationList", result.get("list"));
         model.addAttribute("pageDTO", result.get("pageDTO"));
         model.addAttribute("counts", result.get("counts"));
-
-        // 검색어 유지
         model.addAttribute("nameKeyword", nameKeyword);
         model.addAttribute("appNoKeyword", appNoKeyword);
         model.addAttribute("date", date);
@@ -93,7 +91,6 @@ public class AdminAddAmountController {
         } catch (IllegalArgumentException e) {
             log.warn("추가지급 신청 유효성 검사 실패: {}", e.getMessage());
             rttr.addFlashAttribute("error", e.getMessage());
-            // 실패 시 상세 페이지로 리다이렉트
             return "redirect:/admin/addamount/detail?appNo=" + applicationNumber;
         } catch (Exception e) {
             log.error("추가지급 신청 처리 중 오류 발생", e);

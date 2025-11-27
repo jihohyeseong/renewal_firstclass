@@ -117,7 +117,7 @@ a { text-decoration: none; color: inherit; }
   border-radius: .75rem;
   padding: 1.5rem 2rem;
   box-shadow: var(--shadow-sm);
-  max-width: 1200px; /* main-content와 동일하게 */
+  max-width: 1200px; 
   margin: 0 auto;
 }
 .table-header {
@@ -150,14 +150,12 @@ a { text-decoration: none; color: inherit; }
   color: var(--primary-color);
 }
 
-/* 필터 그룹 (라벨 + 입력창을 가로로 정렬) */
 .filter-group {
   display: flex;
   align-items: center;
   gap: 0;
 }
 
-/* 라벨 왼쪽 배치 */
 .filter-group label,
 .filter-group input {
   font-size: .85rem;
@@ -172,7 +170,6 @@ a { text-decoration: none; color: inherit; }
   font-weight: 500;
   color: var(--text-muted);
 }
-/* 왼쪽 필터 묶음 */
 .filter-left {
   display: flex;
   flex-wrap: nowrap;
@@ -182,7 +179,6 @@ a { text-decoration: none; color: inherit; }
   justify-content: flex-start;
 }
 
-/* 오른쪽 필터 묶음 */
 .filter-right {
   display: flex;
   gap: 0.5rem;
@@ -191,10 +187,10 @@ a { text-decoration: none; color: inherit; }
 }
 .table-filters {
   display: flex;
-  align-items: center;      /* 수직 중앙정렬 */
+  align-items: center;      
   gap: .4rem;
   margin-bottom: 0.85rem;
-  flex-wrap: nowrap;          /* 반응형 줄바꿈 */
+  flex-wrap: nowrap;          
 }
 
 .table-filters input[type="text"],
@@ -306,7 +302,6 @@ a { text-decoration: none; color: inherit; }
 }
 
 
-/* ==== 재사용 컴포넌트 ==== */
 .badge {
   display: inline-block;
   padding: .35em .65em;
@@ -335,7 +330,6 @@ a { text-decoration: none; color: inherit; }
   color: var(--success-color);
 }
 
-/* 상세보기 버튼 (테이블 내부) */
 .table-btn {
   display: inline-block;
   padding: .25rem .75rem;
@@ -346,7 +340,7 @@ a { text-decoration: none; color: inherit; }
   font-size: .8rem;
   font-weight: 600;
   transition: all .15s ease;
-  border: 1px solid transparent; /* 크기 유지 */
+  border: 1px solid transparent; 
 }
 .table-btn:hover {
   background: var(--primary-color);
@@ -421,7 +415,7 @@ a { text-decoration: none; color: inherit; }
   width: 38px;
   height: 38px;
   border: 1px solid var(--border-color);
-  border-radius: 999px; /* 원형 버튼 */
+  border-radius: 999px; 
   background: var(--white-color);
   color: var(--text-muted);
   text-decoration: none;
@@ -540,7 +534,6 @@ a { text-decoration: none; color: inherit; }
 				        <i class="bi bi-arrow-clockwise"></i>
 				    </button> 
 				
-                    <%-- 날짜 필터 - hidden input으로 값 전달 --%>
     				<c:if test="${not empty date}">
         				<input type="hidden" name="date" value="${date}">
     				</c:if>
@@ -637,7 +630,6 @@ a { text-decoration: none; color: inherit; }
                     </tbody>
                 </table>
                 <div class="pagination">
-				    <!-- 이전 버튼 (항상 활성화) -->
     				<a class="js-page-link prev" data-page="${pageDTO.pageNum - 1}" style="cursor: pointer;">&laquo;</a>
 				
 				    <c:forEach begin="${pageDTO.paginationStart}" end="${pageDTO.paginationEnd}" var="p">
@@ -650,7 +642,6 @@ a { text-decoration: none; color: inherit; }
 				        </c:choose>
 				    </c:forEach>
 				
-				    <!-- 다음 버튼 (항상 활성화) -->
     				<a class="js-page-link next" data-page="${pageDTO.pageNum + 1}" style="cursor: pointer;">&raquo;</a>
 				</div>
             </div>
@@ -672,11 +663,10 @@ a { text-decoration: none; color: inherit; }
 	 	// flatpickr 달력 초기화
 	    const fp = flatpickr(dateBtn, {
 	        dateFormat: "Y-m-d",
-	        defaultDate: "${date}" || null, // 선택된 날짜가 있으면 표시
+	        defaultDate: "${date}" || null, 
 	        position: "below",
 	        onChange: function(selectedDates, dateStr) {
 	            if (dateStr) {
-	                // hidden input이 없으면 생성
 	                let hiddenDate = form.querySelector('input[name="date"]');
 	                if (!hiddenDate) {
 	                    hiddenDate = document.createElement('input');
@@ -719,12 +709,10 @@ a { text-decoration: none; color: inherit; }
 	            
 	            pageInput.value = newPage;
 	            
-	            // 폼 POST 전송
 	            form.submit();
 	        });
 	    });
 	    
-	 	// 달력 버튼 클릭이벤트
 	    dateBtn.addEventListener("click", (e) => {
 	        e.preventDefault();
 	        e.stopPropagation(); 
@@ -744,7 +732,6 @@ a { text-decoration: none; color: inherit; }
 	        
 	        fp.clear();
 	        
-		    // 전체 목록으로 다시 요청
 		    form.submit();
 			
 		});

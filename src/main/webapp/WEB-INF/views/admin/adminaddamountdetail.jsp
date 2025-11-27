@@ -11,7 +11,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
-<%-- JQuery 로드 (AJAX 호출에 필요) --%>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/global.css">
 
@@ -32,7 +31,6 @@
 		--shadow-md:0 4px 8px rgba(0,0,0,0.07);
 	}
 	
-	/* 기본 스타일 */
 	*{margin:0;padding:0;box-sizing:border-box}
 	html{height:100%}
 	body{
@@ -61,13 +59,11 @@
 		padding-bottom:10px;margin-bottom:25px;font-size:20px;
 	}
 	
-	/* 섹션 타이틀 */
 	.section-title{
 		font-size:20px;font-weight:700;color:var(--dark-gray-color);
 		margin-bottom:15px;border-left:4px solid var(--primary-color);padding-left:10px;
 	}
 	
-	/* 테이블 */
 	.info-table-container{margin-bottom:30px}
 	.info-table{
 		width:100%;border-collapse:collapse;
@@ -97,7 +93,6 @@
     .info-table td.text-right {
         padding-right: 20px;
     }
-	/* 버튼 */
 	.btn{
 		display:inline-block;padding:10px 20px;font-size:15px;font-weight:500;
 		border-radius:8px;border:1px solid var(--border-color);cursor:pointer;
@@ -110,7 +105,6 @@
 	.btn-logout{background-color:var(--dark-gray-color);color:#fff;border:none}
 	.btn-logout:hover{background-color:#555}
 	
-	/* 하단 버튼 컨테이너 */
 	.button-container{text-align:center;margin-top:50px}
 	.bottom-btn{padding:12px 30px;font-size:1.1em}
 	#edit-btn{background-color:var(--primary-color);color:#fff;border-color:var(--primary-color)}
@@ -125,7 +119,6 @@
 	.detail-btn:hover{background-color:var(--primary-light-color)}
 	.success-text{color:var(--success-color);font-weight:500}
 	
-	/* 모달 스타일 */
 	.modal-overlay{
 		position:fixed;top:0;left:0;width:100%;height:100%;
 		background-color:rgba(0,0,0,0.5);display:flex;
@@ -158,7 +151,6 @@
 	.modal-buttons {
 		display:flex;justify-content:flex-end;gap:10px;margin-top:30px;
 	}
-	/* 하이라이팅을 위한 CSS 클래스 */
 	.highlight-warning {
 		background-color: #f8d7da; /* 부드러운 빨간색 배경 */
 		color: var(--danger-color); /* 진한 빨간색 텍스트 */
@@ -167,7 +159,6 @@
 		border-radius: 4px;
 	}
 	
-	/* ===== 진행 상태 카드(5단계) ===== */
 	.progress-card {
 		background: #fff;
 		border: 1px solid var(--border-color);
@@ -191,7 +182,7 @@
 		right: 6%;
 		height: 8px;
 		border-radius: 8px;
-		background-color: #dbe4ff; /* 연파랑 */
+		background-color: #dbe4ff; 
 		z-index: 1;
 		transform: translateY(-50%);
 	}
@@ -223,7 +214,7 @@
 	    padding-bottom: 20px;
 	  }
 	
-	  .judge-actions { /* 반려 폼 내부 버튼 정렬 */
+	  .judge-actions { 
 		text-align: right; 
 		margin-top: 20px; 
 		padding-bottom: 20px;
@@ -326,7 +317,6 @@
 		transform: translateY(-50%) scale(1);
 	}
 	
-	/* 상세 사유 입력 */
 	.comment-wrapper {
 		margin-top: 24px;
 	}
@@ -372,11 +362,9 @@
 <jsp:include page="adminheader.jsp" />
 
 <main class="main-container">
-<%-- 상태 코드/결과 기반으로 서버에서 단계/진행폭 계산 --%>
 <c:set var="status" value="${appDTO.statusCode}" />
 <c:set var="payRes" value="${appDTO.paymentResult}" />
 
-<%-- 단계: 1 제출, 2 심사중(1차), 3 승인/반려, 4 심사중(2차), 5 최종지급결정 --%>
 <c:set var="currentStep" value="2" />
 <c:choose>
 	<c:when test="${status == 'ST_20'}"><c:set var="currentStep" value="1"/></c:when>
@@ -386,7 +374,6 @@
 </c:choose>
 <c:if test="${status == 'ST_50'}"><c:set var="currentStep" value="5"/></c:if>
 
-<%-- 진행선 폭 계산 --%>
 <c:set var="progressWidth" value="0"/>
 <c:choose>
 	<c:when test="${currentStep == 1}"><c:set var="progressWidth" value="0"/></c:when>
@@ -848,11 +835,9 @@
 
 <!-- 추가지급 --> 
 <c:choose>
-    <%-- 추가지급 신청 전 (데이터 없음, ST_50 상태) --%>
     <c:when test="${empty addAmountData}">
 	<form id="addAmountForm" action="${pageContext.request.contextPath}/admin/addamount/apply" method="POST">
 		
-	    <%-- 컨트롤러로 넘길 신청번호  --%>
 	    <input type="hidden" name="applicationNumber" value="${appDTO.applicationNumber}" />
 	<div class="info-table-container">
 		<h2 class="section-title">급여 신청 기간 및 월별 내역(추가지급)</h2>
@@ -921,12 +906,6 @@
 											</c:choose>
 										</td>
 								
-										<%-- <td class="text-right">
-											<fmt:formatNumber
-												value="${(not empty item.govPaymentUpdate ? item.govPaymentUpdate : item.govPayment)}"
-												type="number"
-												pattern="#,###" />원
-										</td> --%>
 										<td style="padding: 5px;">
 	                                            <input type="hidden" name="termId" value="${item.termId}">
 	                                            <input type="number" name="amount" class="form-control amount-input" 
@@ -1220,7 +1199,6 @@ document.addEventListener("DOMContentLoaded", function () {
 	// userId 값 읽기
 	const userId = document.getElementById("userId")?.value;
 
-	// 푸시 알림 전송 및 후속 처리를 위한 헬퍼 함수
 	function sendPushAndFinalize(userId, data, defaultMessage) {
 		const successMessage = data.message || defaultMessage;
 		
@@ -1231,12 +1209,10 @@ document.addEventListener("DOMContentLoaded", function () {
 				type: 'GET',
 				success: function(pushResponse) {
 					console.log('Push notification sent:', pushResponse);
-					// 푸시 성공 시
 					alert(successMessage);
 				},
 				error: function(xhr, status, error) {
 					console.error('Push notification failed:', error);
-					// 푸시 실패 시 (메시지에 실패 내역 추가)
 					alert(successMessage);
 				},
 				complete: function() {
@@ -1258,20 +1234,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	const form = document.getElementById("addAmountForm");
 
-	// 폼 유효성 검사
     if (form) {
         form.addEventListener("submit", function(e) {
             
-            // 사유 선택 검사
             const reasonSelect = document.getElementById("codeId");
             if (!reasonSelect.value) {
                 alert("추가지급 사유를 선택하세요.");
                 reasonSelect.focus();
-                e.preventDefault(); // 폼 제출 중단
+                e.preventDefault(); 
                 return;
             }
 
-            // '기타' 선택 시 상세 사유 검사
             const selectedOption = reasonSelect.options[reasonSelect.selectedIndex];
             const reasonCodeStr = selectedOption.getAttribute("data-code-str"); 
             const reasonText = document.getElementById("addReason").value.trim();
@@ -1283,7 +1256,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // 최소 1개 이상 금액 입력 검사
             const amountInputs = document.querySelectorAll("input[name='amount']");
             let totalAmountEntered = 0;
             let hasValidInput = false;
@@ -1303,9 +1275,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // 모든 검사 통과
             if (!confirm("총 " + totalAmountEntered.toLocaleString() + "원의 추가지급을 신청하시겠습니까?")) {
-                e.preventDefault(); // 사용자가 '취소' 누르면 제출 중단
+                e.preventDefault();
             }
         });
     }

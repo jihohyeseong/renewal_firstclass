@@ -14,7 +14,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
    <style>
-/* ==== 기본 및 변수 ==== */
 :root {
   --primary-color: #3f58d4;
   --primary-light-color: #f0f2ff;
@@ -42,7 +41,6 @@ body {
 }
 a { text-decoration: none; color: inherit; }
 
-/* ==== 레이아웃 ==== */
 .content-container {
   margin-left: 0px; 
   width: 100%;
@@ -59,7 +57,6 @@ a { text-decoration: none; color: inherit; }
   margin-bottom: 1.5rem;
 }
 
-/* ==== 처리상태 카드  ==== */
 .stat-cards-container {
   display: grid;
   grid-template-columns: repeat(5, 1fr); 
@@ -177,7 +174,6 @@ a { text-decoration: none; color: inherit; }
   font-weight: 500;
   color: var(--text-muted);
 }
-/* 왼쪽 필터 묶음 */
 .filter-left {
   display: flex;
   flex-wrap: nowrap;
@@ -187,7 +183,6 @@ a { text-decoration: none; color: inherit; }
   justify-content: flex-start;
 }
 
-/* 오른쪽 필터 묶음 */
 .filter-right {
   display: flex;
   gap: 0.5rem;
@@ -285,7 +280,6 @@ a { text-decoration: none; color: inherit; }
 }
 
 
-/* ==== 재사용 컴포넌트 ==== */
 .badge {
   display: inline-block;
   padding: .35em .65em;
@@ -298,7 +292,6 @@ a { text-decoration: none; color: inherit; }
 .badge-approved { background-color: var(--success-color); }
 .badge-rejected { background-color: var(--text-muted); }
 
-/* 상세보기 버튼 (테이블 내부) */
 .table-btn {
   display: inline-block;
   padding: .25rem .75rem;
@@ -309,7 +302,7 @@ a { text-decoration: none; color: inherit; }
   font-size: .8rem;
   font-weight: 600;
   transition: all .15s ease;
-  border: 1px solid transparent; /* 크기 유지 */
+  border: 1px solid transparent; 
 }
 .table-btn:hover {
   background: var(--primary-color);
@@ -464,7 +457,6 @@ a { text-decoration: none; color: inherit; }
                     
                     <input type="hidden" name="page" value="${pageDTO.pageNum}">
                     <div class="filter-left">
-                    <%-- 처리 상태 필터 --%>
 				    <div class="filter-group"><label for="statusSelect">처리상태</label>
 						<select name="status" id="statusSelect" onchange="this.form.submit()">
 				            <option value="">전체</option>
@@ -490,7 +482,6 @@ a { text-decoration: none; color: inherit; }
 				        <i class="bi bi-arrow-clockwise"></i>
 				    </button> 
 				
-                    <%-- 날짜 필터 - hidden input으로 값 전달 --%>
     				<c:if test="${not empty date}">
         				<input type="hidden" name="date" value="${date}">
     				</c:if>
@@ -561,7 +552,6 @@ a { text-decoration: none; color: inherit; }
                     </tbody>
                 </table>
                 <div class="pagination">
-				    <!-- 이전 버튼 (항상 활성화) -->
     				<a class="js-page-link prev" data-page="${pageDTO.pageNum - 1}" style="cursor: pointer;">&laquo;</a>
 				
 				    <c:forEach begin="${pageDTO.paginationStart}" end="${pageDTO.paginationEnd}" var="p">
@@ -574,7 +564,6 @@ a { text-decoration: none; color: inherit; }
 				        </c:choose>
 				    </c:forEach>
 				
-				    <!-- 다음 버튼 (항상 활성화) -->
     				<a class="js-page-link next" data-page="${pageDTO.pageNum + 1}" style="cursor: pointer;">&raquo;</a>
 				</div>
             </div>
@@ -595,12 +584,10 @@ a { text-decoration: none; color: inherit; }
 
 	 	// flatpickr 달력 초기화
 	    const fp = flatpickr(dateBtn, {
-	        dateFormat: "Y-m-d",
-	        defaultDate: "${date}" || null, // 선택된 날짜가 있으면 표시
+	        dateFormat: "Y-m-d",// 선택된 날짜가 있으면 표시
 	        position: "below",
 	        onChange: function(selectedDates, dateStr) {
 	            if (dateStr) {
-	                // hidden input이 없으면 생성
 	                let hiddenDate = form.querySelector('input[name="date"]');
 	                if (!hiddenDate) {
 	                    hiddenDate = document.createElement('input');
@@ -643,12 +630,10 @@ a { text-decoration: none; color: inherit; }
 	            
 	            pageInput.value = newPage;
 	            
-	            // 폼 POST 전송
 	            form.submit();
 	        });
 	    });
 	    
-	 	// 달력 버튼 클릭 이벤트
 	    dateBtn.addEventListener("click", (e) => {
 	        e.preventDefault();
 	        e.stopPropagation(); 
@@ -668,7 +653,6 @@ a { text-decoration: none; color: inherit; }
 	        
 	        fp.clear();
 	        
-		    // 전체 목록으로 다시 요청
 		    form.submit();
 			
 		});

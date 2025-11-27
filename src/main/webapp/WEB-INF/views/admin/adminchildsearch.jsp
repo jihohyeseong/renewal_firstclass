@@ -15,7 +15,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <style>
-	/* 공통 스타일 */
 	:root {
             --primary-color: #3f58d4;
             --primary-light-color: #f0f2ff;
@@ -58,7 +57,6 @@
         .btn-secondary { background-color: var(--white-color); color: var(--gray-color); border-color: var(--border-color); }
         .btn-secondary:hover { background-color: var(--light-gray-color); color: var(--dark-gray-color); border-color: #ccc; }
         
-        /* ==== 레이아웃 ==== */
 		.main-content {
 		  max-width: 1200px;
 		  margin: 0 auto;
@@ -71,7 +69,6 @@
 		  margin-bottom: 1.5rem;
 		}
         
-		/* 레이블 + 인풋 묶음 */
 		.filter-group {
 		  display: inline-flex;
 		  align-items: center;
@@ -85,7 +82,6 @@
 		  color: var(--text-muted);
 		}
 		
-		/* 테이블 */ 
         .status-form { 
               display: flex;
 			  flex-wrap: wrap;
@@ -167,7 +163,6 @@
 	  font-weight: 700;
 	}
 
-      /* 테이블 */
     table.result-table {
         width: 100%;
         border-collapse: collapse;
@@ -198,7 +193,7 @@
 	}
 	
 	table.result-table tbody tr:hover {
-	  background-color: #fcfdff; /* 매우 연한 호버 효과 */
+	  background-color: #fcfdff;
 	}
 	
 	table.result-table tbody td {
@@ -219,7 +214,7 @@
 	  width: 38px;
 	  height: 38px;
 	  border: 1px solid var(--border-color);
-	  border-radius: 999px; /* 원형 버튼 */
+	  border-radius: 999px; 
 	  background: var(--white-color);
 	  color: var(--text-muted);
 	  text-decoration: none;
@@ -249,7 +244,6 @@
 	  color: #ced4da;
 	  pointer-events: none;
 	}
-	/* 왼쪽 필터 묶음 */
 	.filter-left {
 	  display: flex;
 	  flex-wrap: wrap;
@@ -257,7 +251,6 @@
 	  gap: .5rem;
 	}
 	
-	/* 오른쪽 필터 묶음 */
 	.filter-right {
 	  display: flex;
 	  flex-wrap: wrap;
@@ -390,7 +383,6 @@ $(document).ready(function() {
         $.each(list, function(index, item) {
         	const childName = item.childName || '';
             const childResiRegiNumber = item.childResiRegiNumber || '';
-            // 날짜 포맷팅 
             const startDate = formatDate(item.startDate);
             const endDate = formatDate(item.endDate);
 
@@ -427,7 +419,6 @@ $(document).ready(function() {
         $area.html(html);
     }
 
-    // 날짜 변환 헬퍼 함수
     function formatDate(timestamp) {
         if(!timestamp) return "";
         const date = new Date(timestamp);
