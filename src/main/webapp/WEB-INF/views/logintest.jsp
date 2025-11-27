@@ -33,27 +33,53 @@
         .animation-bg span:nth-child(5) { width: 50px; height: 50px; left: 65%; animation-duration: 22s; animation-delay: 1s; }
         .animation-bg span:nth-child(6) { width: 25px; height: 25px; left: 80%; animation-duration: 28s; animation-delay: 9s; }
         .animation-bg span:nth-child(7) { width: 35px; height: 35px; left: 90%; animation-duration: 20s; animation-delay: 4s; }
+        
         .welcome-content { animation: fadeIn 1s ease-in-out 0.8s forwards; opacity: 0; text-align: center; position: relative; z-index: 2; }
-        .welcome-content h1 { font-size: 28px; font-weight: 700; margin-bottom: 15px; }
-        .welcome-content p { font-size: 16px; font-weight: 300; line-height: 1.6; max-width: 300px; }
+        .welcome-content h1 { font-size: 32px; /* Increased from 28px */ font-weight: 700; margin-bottom: 20px; }
+        .welcome-content p { font-size: 18px; /* Increased from 16px */ font-weight: 300; line-height: 1.6; max-width: 350px; }
 
         .right-panel { flex: 1; background-color: var(--white-color); display: flex; justify-content: center; align-items: center; padding: 40px; animation: slideInFromRight 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
-        .login-form { width: 100%; max-width: 380px; }
+        
+        .login-form { width: 100%; max-width: 420px; /* Increased from 380px */ }
         .login-form > * { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; }
         .login-form h2 { animation-delay: 0.5s; }
         .login-form p { animation-delay: 0.6s; }
         .login-form form { animation-delay: 0.7s; }
         .login-form .links { animation-delay: 0.8s; }
-        .login-form h2 { font-size: 26px; font-weight: 700; color: var(--dark-gray-color); margin-bottom: 10px; }
-        .login-form p { font-size: 15px; color: var(--gray-color); margin-bottom: 35px; }
         
-        .input-group { position: relative; margin-bottom: 25px; }
-        .input-group input { width: 100%; padding: 10px 5px; border: none; border-bottom: 2px solid var(--border-color); background-color: transparent; font-size: 16px; transition: border-color 0.3s ease; }
+        .login-form h2 { font-size: 30px; /* Increased from 26px */ font-weight: 700; color: var(--dark-gray-color); margin-bottom: 12px; }
+        .login-form p { font-size: 17px; /* Increased from 15px */ color: var(--gray-color); margin-bottom: 40px; }
+        
+        .input-group { position: relative; margin-bottom: 30px; /* Increased margin */ }
+        .input-group input { 
+            width: 100%; 
+            padding: 12px 5px; /* Increased padding */
+            border: none; 
+            border-bottom: 2px solid var(--border-color); 
+            background-color: transparent; 
+            font-size: 18px; /* Increased from 16px */
+            transition: border-color 0.3s ease; 
+        }
         .input-group input:focus { outline: none; border-bottom-color: var(--primary-color); }
-        .login-btn { width: 100%; padding: 14px; margin-top: 20px; border: none; border-radius: 8px; background-color: var(--primary-color); color: var(--white-color); font-size: 16px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(63, 88, 212, 0.2); }
+        
+        .login-btn { 
+            width: 100%; 
+            padding: 16px; /* Increased from 14px */
+            margin-top: 25px; 
+            border: none; 
+            border-radius: 10px; /* Slightly rounder */
+            background-color: var(--primary-color); 
+            color: var(--white-color); 
+            font-size: 18px; /* Increased from 16px */
+            font-weight: 500; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            box-shadow: 0 4px 15px rgba(63, 88, 212, 0.2); 
+        }
         .login-btn:hover { background-color: #364ab1; transform: translateY(-3px); box-shadow: 0 6px 20px rgba(63, 88, 212, 0.3); }
-        .links { text-align: center; margin-top: 20px; font-size: 14px; }
-        .links a { color: var(--gray-color); text-decoration: none; margin: 0 10px; transition: color 0.3s ease; }
+        
+        .links { text-align: center; margin-top: 25px; font-size: 15px; /* Increased from 14px */ }
+        .links a { color: var(--gray-color); text-decoration: none; margin: 0 12px; transition: color 0.3s ease; }
         .links a:hover { color: var(--primary-color); }
 
         .waves { position: absolute; bottom: 0; left: 0; width: 100%; height: 150px; z-index: 3; }
@@ -85,7 +111,7 @@
             </div>
             <div class="welcome-content">
                 <h1>육아휴직 신청 서비스</h1>
-                <p>소중한 시간을 위한 첫걸음, 간편하게 신청하고 관리하세요.</p>
+                <p>소중한 시간을 위한 첫걸음,<br>간편하게 신청하고 관리하세요.</p>
             </div>
             <div class="waves">
                 <div class="wave wave1"></div>

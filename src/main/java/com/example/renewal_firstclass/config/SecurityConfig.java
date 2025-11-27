@@ -25,6 +25,7 @@ public class SecurityConfig {
 		http
 	        .authorizeHttpRequests()
 	            .requestMatchers(
+	            	new AntPathRequestMatcher("/resources/**"),
 	                new AntPathRequestMatcher("/login"),
 	                new AntPathRequestMatcher("/loginProc"),
 	                new AntPathRequestMatcher("/join/**"),

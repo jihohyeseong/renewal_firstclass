@@ -19,7 +19,7 @@ public class AES256Util {
 	 private String key;
 	
 	 private String getIv() {
-	     // IV는 키의 앞 16바이트를 사용합니다.
+
 	     return this.key.substring(0, 16);
 	 }
 	
